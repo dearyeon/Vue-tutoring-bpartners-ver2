@@ -62,9 +62,9 @@ export default {
 
 
 <style>
-@import "./assets/styles/bootstrap.min.css";
-@import "./assets/font-awesome/css/font-awesome.css";
-@import "./assets/styles/style.css";
+@import "./assets/styles/bootstrap/css/bootstrap.min.css";
+@import "./assets/styles/font-awesome/css/font-awesome.min.css";
+@import "./assets/styles/theme/style.css";
 @import "./assets/styles/b2b.css";
 
 </style>
