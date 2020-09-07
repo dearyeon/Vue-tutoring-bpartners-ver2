@@ -15,18 +15,11 @@
           </div>
         </li>
 
-        <li>
-          <router-link to="/applyList">
-            <span class="nav-label">
-              <i class="fa fa-star"/> 수강신청 현황
-            </span>
-          </router-link>
-        </li>
 
-        <li>
-          <router-link to="/billingList">
+        <li v-for="m in menus" :key="m.id" :class="{active: m.isActive}" v-on:click="selectMenu(m.id)">
+          <router-link :to="m.route">
             <span class="nav-label">
-              <i class="fa fa-star"/> 결제정보 관리
+              <i :class="['fa', 'fa-'+m.icon]"/> {{ m.name }}
             </span>
           </router-link>
         </li>
@@ -40,11 +33,33 @@
 
 
 <script>
+import menus from "@/menus";
+
 export default {
   name: "Menu",
+  data() {
+    const selectedMenuId = sessionStorage.getItem('selectedMenuId');
+
+    for(const i in menus) {
+      const m = menus[i]
+      m.isActive = (m.id==selectedMenuId)
+    }
+
+    return {
+      menus
+    }
+  },
+  methods: {
+    selectMenu(menuId) {
+      for(const i in menus) {
+        const m = menus[i]
+        m.isActive = (m.id==menuId)
+      }
+      sessionStorage.setItem('selectedMenuId', menuId)
+    }
+  },
   created() {
-    const aaa = "bbb";
-    console.log(aaa);
+
   }
 }
 </script>
