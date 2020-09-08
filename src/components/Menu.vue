@@ -60,9 +60,6 @@ export default {
       sessionStorage.setItem('selectedMenuId', menuId)
     }
   },
-  created() {
-
-  }
 }
 </script>
 

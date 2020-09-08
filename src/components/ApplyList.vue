@@ -66,9 +66,16 @@
 </template>
 
 <script>
+import api from "@/common/api";
+
 export default {
-name: "ApplyList"
+  name: "ApplyList",
+  async created() {
+    const res = await api.get('/partners/apply/applyList', {bapIdx:1});
+    console.log('kenres', res);
+  }
 }
+
 </script>
 
 <style scoped>

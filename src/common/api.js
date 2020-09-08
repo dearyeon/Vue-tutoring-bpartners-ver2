@@ -1,7 +1,7 @@
 import axios from "axios";
 import querystring from "querystring";
 
-const server = 'https://btb-api.tutoring.co.kr';
+const server = 'https://api.tutoring.co.kr';
 
 const api = {
     get : async function(endpoint, params) {
