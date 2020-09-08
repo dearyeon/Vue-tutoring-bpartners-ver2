@@ -54,6 +54,8 @@ export default {
   components: {
     Menu
 
+  },
+  created() {
   }
 }
 </script>
@@ -67,4 +69,7 @@ export default {
 @import "./assets/styles/theme/style.css";
 @import "./assets/styles/b2b.css";
 
+#wrapper, #page-wrapper {
+  height: 100%;
+}
 </style>

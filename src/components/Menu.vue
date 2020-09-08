@@ -33,6 +33,7 @@
 
 
 <script>
+
 import menus from "@/menus";
 
 export default {
@@ -46,7 +47,8 @@ export default {
     }
 
     return {
-      menus
+      menus,
+      nav: 'nav-label'
     }
   },
   methods: {
