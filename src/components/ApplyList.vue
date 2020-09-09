@@ -67,10 +67,13 @@
 
 <script>
 import api from "@/common/api";
+import shared from "@/common/shared"
 
 export default {
   name: "ApplyList",
+
   async created() {
+    shared.bast = 'BAT5f5872afe960a5f5872afe964a';
     const res = await api.get('/partners/applyList', {bapIdx:1});
     console.log('kenres', res);
   }

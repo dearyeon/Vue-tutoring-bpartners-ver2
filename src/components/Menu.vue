@@ -17,7 +17,7 @@
 
 
         <li v-for="m in menus" :key="m.id" :class="{active: m.isActive}" v-on:click="selectMenu(m.id)">
-          <router-link :to="m.route">
+          <router-link :to="m.path">
             <span class="nav-label">
               <i :class="['fa', 'fa-'+m.icon]"/> {{ m.name }}
             </span>
@@ -39,16 +39,13 @@ import menus from "@/menus";
 export default {
   name: "Menu",
   data() {
-    const selectedMenuId = sessionStorage.getItem('selectedMenuId');
-
     for(const i in menus) {
       const m = menus[i]
-      m.isActive = (m.id==selectedMenuId)
+      m.isActive = (m.path==this.$route.path)
     }
 
     return {
-      menus,
-      nav: 'nav-label'
+      menus
     }
   },
   methods: {
@@ -57,9 +54,9 @@ export default {
         const m = menus[i]
         m.isActive = (m.id==menuId)
       }
-      sessionStorage.setItem('selectedMenuId', menuId)
     }
   },
+
 }
 </script>
 

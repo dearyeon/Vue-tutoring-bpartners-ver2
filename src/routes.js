@@ -1,10 +1,18 @@
 import ApplyList from "./components/ApplyList";
 import BillingList from "@/components/BillingList";
+import Main from "@/components/Main";
+import Login from "@/components/Login";
 
 const routes = [
-    { path: '', redirect: '/applyList' },
-    { path: '/applyList', component: ApplyList },
-    { path: '/billingList', component: BillingList },
+    { path: '', redirect: '/login' },
+    { path: '/login', component: Login },
+    { path: '/main', component: Main,
+      children: [
+          { path: '/', redirect: '/applyList' },
+          { path: '/applyList', component: ApplyList },
+          { path: '/billingList', component: BillingList },
+      ]
+    },
 ];
 
 export default routes;
