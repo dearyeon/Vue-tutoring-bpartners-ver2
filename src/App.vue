@@ -69,7 +69,7 @@ export default {
 @import "./assets/styles/theme/style.css";
 @import "./assets/styles/b2b.css";
 
-#wrapper, #page-wrapper {
+#wrapper {
   height: 100%;
 }
 </style>
