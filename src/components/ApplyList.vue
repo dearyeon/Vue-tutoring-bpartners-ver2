@@ -71,7 +71,7 @@ import api from "@/common/api";
 export default {
   name: "ApplyList",
   async created() {
-    const res = await api.get('/partners/apply/applyList', {bapIdx:1});
+    const res = await api.get('/partners/applyList', {bapIdx:1});
     console.log('kenres', res);
   }
 }
