@@ -1,9 +1,54 @@
 <template>
   <div class="row">
+    <Modal ref="modalBach">
+      <div slot="header">
+        <h2>결제 배치 정보</h2>
+        <p>결제 배치 정보를 확인해주세요.</p>
+      </div>
+      <div slot="body">
+        <table>
+          <tr>
+            <td>고객사명</td>
+            <td><input class="form-control" type="text" value="남양주시청" readonly /></td>
+          </tr>
+          <tr>
+            <td>자동결제 예정일</td>
+            <td><input class="form-control" type="text" value="2020-08-05 10:00:00" readonly /></td>
+          </tr>
+          <tr>
+            <td>수동결제 예정일</td>
+            <td><input class="form-control" type="text" value="2020-08-05 10:00:00" readonly /></td>
+          </tr>
+        </table>
+      </div>
+    </Modal>
+    <Modal ref="modalCard">
+      <div slot="header">
+        <h2>카드정보 관리</h2>
+        <p>결제 배치 정보를 확인해주세요.</p>
+      </div>
+      <div slot="body">
+        <table>
+          <tr>
+            <td>카드사</td>
+            <td><input class="form-control" type="text" value="신한" readonly /></td>
+          </tr>
+          <tr>
+            <td>카드번호</td>
+            <td><input class="form-control" type="text" value="****_****_****_1234" readonly /></td>
+          </tr>
+        </table>
+      </div>
+    </Modal>
     <div class="col-lg-12">
       <div class="ibox-title title">
         <h2 class="pull-left">결제정보 관리</h2>
-        <button class="btn btn-success mx-3 pull-right" data-toggle="modal" data-target="#bachInfoModal">
+        <button
+          @click="$refs.modalBach.open()"
+          class="btn btn-success mx-3 pull-right"
+          data-toggle="modal"
+          data-target="#bachInfoModal"
+        >
           배치 정보 확인
         </button>
       </div>
@@ -14,7 +59,7 @@
           <!--<form id="listform" action="{{ route('b2b.payInfoAdmin') }}">-->
           <form id="listform">
             <div class="subtitle">
-              <h1>남양주 시청</h1>
+              <h1>{{ this.id === 1 ? "남양주 시청" : "한국수력원자력" }}</h1>
               <div class="btn-group p-w-xs" style="vertical-align: bottom;">
                 <button data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle" aria-expanded="false">
                   <strong>1차</strong><span class="caret"></span>
@@ -98,18 +143,18 @@
                       <tbody id="chargeInfoList">
                         <!--정기 결제 -->
                         <tr v-for="(item, index) in listInfo" :key="`biillingDetailItem-${index}`" class="text-center">
-                          <td>{{ item.idx }}</td>
+                          <td>{{ index + 1 }}</td>
                           <td>{{ item.user.name }}</td>
                           <td>{{ item.goods.charge_plan.title_plan }}</td>
                           <td>{{ bapInfo.charge_day }}</td>
-                          <td>yet</td>
+                          <td>결제 처리 현황</td>
                           <td>
                             <button class="btn" :class="[item.bill_status === 'R' ? 'btn-primary' : 'disabled']">
                               {{ item.bill_status === "R" ? "결제 대기" : "결제 완료" }}
                             </button>
                           </td>
                           <td><button class="btn btn-default">skip</button></td>
-                          <td><button class="btn btn-default">확인</button></td>
+                          <td><button class="btn btn-default" @click="$refs.modalCard.open()">확인</button></td>
                           <td>관리 태그</td>
                           <td><button class="btn btn-default">입력</button></td>
                         </tr>
@@ -153,6 +198,7 @@
 
 <script>
 import api from "@/common/api";
+import Modal from "./Modal";
 
 export default {
   async created() {
@@ -180,6 +226,9 @@ export default {
     bapInfo: function(val) {
       this.bapInfo = val;
     },
+  },
+  components: {
+    Modal,
   },
 };
 </script>
