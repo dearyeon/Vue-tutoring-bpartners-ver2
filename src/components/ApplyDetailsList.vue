@@ -29,6 +29,8 @@
                   <th class="text-center">부서</th>
                   <th class="text-center">직위</th>
                   <th class="text-center">이름</th>
+                  <th class="text-center">이메일</th>
+                  <th class="text-center">연락처</th>
                   <th class="text-center">수강권</th>
                   <th class="text-center">제공가</th>
                   <th class="text-center">회사지원금</th>
@@ -37,11 +39,14 @@
                 </tr>
                 </thead>
                 <tbody id="applyerList">
-                    <tr data-toggle="" data-target="" class="userInfo hover-pointer" data-u_idx="2393501" data-bs_idx="58" data-bo_idx="410" v-for="(data, index) in list" v-bind:key="data.id">
+                    <tr data-toggle="" data-target="" class="userInfo hover-pointer" data-u_idx="2393501" data-bs_idx="58" data-bo_idx="410" 
+                        v-for="(data, index) in list" v-bind:key="data.id">
                         <td class="number" style="vertical-align: middle;">{{ index + 1 }}</td>
                         <td class="part">{{ data.user.department }}</td>
                         <td class="position">{{ data.user.position }}</td>
                         <td class="hover-pointer name" data-toggle="modal" data-target="#applyerInfoModal" data-name="" data-cel="" data-email="">{{ data.user.name }}</td>
+                        <td class="email">{{ data.user.email_id }}{{ bap }}</td>
+                        <td class="cel">{{ data.user.cel }}</td>
                         <td class="charge-plan__title">{{ data.__ob__.value.goods.charge_plan.title_plan }}</td>
                         <td class="supply_price" >{{ data.__ob__.value.goods.supply_price }}</td>
                         <td class="company-charge__price" v-on:cmpprice="companyChargePrice" style="vertical-align: middle;">{{ companyChargePrice(index) }}</td>
@@ -63,6 +68,7 @@ import api from "@/common/api";
 export default {
     data() {
         return {
+            bap: "",
             list: []
         };
     },
@@ -73,9 +79,11 @@ export default {
       },
     },
     async created() {
-        const res = await api.get('/partners/applyList', {bapIdx: this.id });
+        const res = await api.get('/partners/applyList', { bapIdx: this.id });
         this.list = res.data.list;
+        this.bap = res.data.bap;
         console.log(this.id);
+        console.log(this.bap);
     },
     methods: {
         companyChargePrice(index) {

@@ -16,9 +16,12 @@
       </div>
 
 
-      <CardList :data="dummy" detailView="applyList" v-if="$route.path === '/applyList'" />
+      <CardList :data="dummy" detailView="/applyDetailsList" />
+       <!-- 
       <router-view></router-view>
-       <!-- v-for="data in dummy" v-bind:key="data.id" 
+
+         v-if="$route.path === '/applyList/'"
+         v-for="data in dummy" v-bind:key="data.id" 
       <router-link to="/applyList/bapIdx/1">
         <div class="ibox" v-if="$route.path === '/applyList'">
           <CardList :data="dummy" detailView="applyList/bapIdx" />  
@@ -31,7 +34,7 @@
 </template>
 
 <script>
-import api from "@/common/api";
+//import api from "@/common/api";
 import CardList from "@/components/CardList";
 
 export default {
@@ -47,11 +50,11 @@ export default {
           email: "ksw0@korea.co.kr"
         },        
         { 
-          company: "company2",
-          name: "name2",
-          part: "",
-          tel: "tel2",
-          email: "email2"
+          company: "한국수력원자력",
+          name: "김지용",
+          part: "인사처 인재양성부",
+          tel: "",
+          email: "-"
         }
       ]
     };
@@ -60,8 +63,8 @@ export default {
     CardList
   },
   async created() {
-    const res = await api.get('/partners/applyList', {bapIdx:1});
-    console.log('kenres', res);
+    //const res = await api.get('/partners/applyList', {bapIdx:1});
+    //console.log('kenres', res);
   }
 }
 

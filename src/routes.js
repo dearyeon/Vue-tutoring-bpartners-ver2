@@ -1,5 +1,5 @@
 import ApplyList from "./components/ApplyList";
-import ApplyListidx from "./components/ApplyList-idx";
+import ApplyDetailsList from "./components/ApplyDetailsList";
 import BillingList from "@/components/BillingList";
 import BillingDetailsList from "@/components/BillingDetailsList";
 import Main from "@/components/Main";
@@ -13,18 +13,8 @@ const routes = [
     component: Main,
     children: [
       { path: "/", redirect: "/applyList" },
-      { 
-        path: '/applyList', 
-        component: ApplyList,
-        children: [
-          {
-              name: 'applyListIdx1',
-              path: ':id',
-              component: ApplyListidx,
-              props: true
-          }
-        ]
-      },
+      { path: '/applyList', component: ApplyList },
+      { name: "applydetailslist", path: '/applydetailslist/:id', component: ApplyDetailsList, props: true },
       { path: "/billingList", component: BillingList },
       { name: "billingDetailsList", path: "/billingDetailsList/:id", component: BillingDetailsList, props: true },
     ],
