@@ -39,14 +39,14 @@
                 </tr>
                 </thead>
                 <tbody id="applyerList">
-                    <tr data-toggle="" data-target="" class="userInfo hover-pointer" data-u_idx="2393501" data-bs_idx="58" data-bo_idx="410" 
+                    <tr data-toggle="" data-target="" class="userInfo hover-pointer" data-u_idx="2393501" data-bs_idx="58" data-bo_idx="410"
                         v-for="(data, index) in list" v-bind:key="data.id">
                         <td class="number" style="vertical-align: middle;">{{ index + 1 }}</td>
                         <td class="part">{{ data.user.department }}</td>
                         <td class="position">{{ data.user.position }}</td>
                         <td class="hover-pointer name" data-toggle="modal" data-target="#applyerInfoModal" data-name="" data-cel="" data-email="">{{ data.user.name }}</td>
-                        <td class="email">{{ data.user.email_id }}{{ bap }}</td>
-                        <td class="cel">{{ data.user.cel }}</td>
+                        <td class="email">{{ data.user.email_id ? data.user.email_id+'@'+bap.email_domain : '[정보 보안]' }}</td>
+                        <td class="cel">{{ data.user.cel ? data.user.cel : '[정보 보안]' }}</td>
                         <td class="charge-plan__title">{{ data.__ob__.value.goods.charge_plan.title_plan }}</td>
                         <td class="supply_price" >{{ data.__ob__.value.goods.supply_price }}</td>
                         <td class="company-charge__price" v-on:cmpprice="companyChargePrice" style="vertical-align: middle;">{{ companyChargePrice(index) }}</td>
@@ -56,7 +56,7 @@
                 </tbody>
               </table>
             </div>
-          </div> 
+          </div>
         </div>
 
   </div>
