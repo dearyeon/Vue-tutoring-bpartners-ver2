@@ -2,7 +2,7 @@ import axios from "axios";
 import querystring from "querystring";
 import shared from "@/common/shared";
 
-const server = 'https://b2b-api.tutoring.co.kr';
+const server = window.location.hostname.startsWith('partners') ? 'https://api.tutoring.co.kr' : 'https://b2b-api.tutoring.co.kr';
 
 const api = {
     get : async function(endpoint, params) {
