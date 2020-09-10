@@ -26,3 +26,4 @@ pnpm-debug.log*
 .Prettierrc
 
 package-lock.json
+deploy.config.js
