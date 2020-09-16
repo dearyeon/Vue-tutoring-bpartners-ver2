@@ -1,3 +1,5 @@
+import LessonList from "./components/LessonList";
+import LessonDetailsList from "./components/LessonDetailsList";
 import ApplyList from "./components/ApplyList";
 import ApplyDetailsList from "./components/ApplyDetailsList";
 import BillingList from "@/components/BillingList";
@@ -12,7 +14,9 @@ const routes = [
     path: "/main",
     component: Main,
     children: [
-      { path: "/", redirect: "/applyList" },
+      { path: "/", redirect: "/lessonList" },
+      { path: '/lessonList', component: LessonList },
+      { name: "lessonDetailsList", path: '/lessonDetailsList/:id/:c_no', component: LessonDetailsList, props: true },
       { path: '/applyList', component: ApplyList },
       { name: "applydetailslist", path: '/applydetailslist/:id', component: ApplyDetailsList, props: true },
       { path: "/billingList", component: BillingList },
