@@ -6,15 +6,16 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "doploy_TEST" : "npm run build && node deploy.js B2B",
-    "doploy_REAL" : "npm run build && node deploy.js REAL"
+    "doploy_TEST": "npm run build && node deploy.js B2B",
+    "doploy_REAL": "npm run build && node deploy.js REAL"
   },
   "dependencies": {
     "axios": "^0.20.0",
     "core-js": "^3.6.5",
     "querystring": "^0.2.0",
     "vue": "^2.6.11",
-    "vue-router": "^3.4.3"
+    "vue-router": "^3.4.3",
+    "vue-sweetalert2": "^3.0.8"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
