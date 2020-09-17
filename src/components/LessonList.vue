@@ -62,7 +62,7 @@
 
                                         <tr class="hover-pointer LESSON_INFO" 
                                             v-for="(item, index) in list" :key="`Lesson-${index}`" 
-                                            @click="routeDetailPage(index,item.c_no[0])" v-show="index>=(currentPage-1)*30 && index<currentPage*30">
+                                            @click="routeDetailPage(index,item.orderList[0].c_no)" v-show="index>=(currentPage-1)*30 && index<currentPage*30">
                                         <div/>
                                             <!-- <td><img alt="image" class="img-rounded" src="{{ $item->prof_img?getSiteImage($item->prof_img,'_S'):getProfileImage('') }}" style="width: 20px;" /></td>   -->
                                             <td>
@@ -71,7 +71,7 @@
                                             <td class="text-center">
                                                 <div class="btn-group p-w-xs">
                                                     <button data-toggle="dropdown" class="btn btn-default btn-xs dropdown-toggle">
-                                                        <strong>{{ item.c_no?item.c_no[0]+'차':'-' }}</strong><span class="caret"></span>
+                                                        <strong>{{ item.orderList?item.orderList[0].c_no+'차':'-' }}</strong><span class="caret"></span>
                                                     </button>
                                                    <!-- <ul class="dropdown-menu">
                                                         <li class="dropdown-menu__item" v-for="value in 10" v-bind:key="value.id">
@@ -184,7 +184,9 @@ const tempInfo = {
 const tempData = [
     {
         company: "튜터링 테스트",
-        c_no: ["11", "10", "9"],
+        orderList: [
+            { c_no: 11 }, { c_no: 10 }, { c_no: 9 }
+        ],
         status: 2,
         e_cnt: 1,
         c_cnt: 1,
@@ -195,7 +197,9 @@ const tempData = [
     },
     {
         company: "클레어회사",
-        c_no: ["5","4","3"],
+        orderList: [
+            { c_no: 11 }, { c_no: 10 }, { c_no: 9 }
+        ],
         status: 3,
         e_cnt: 1,
         c_cnt: 0,
