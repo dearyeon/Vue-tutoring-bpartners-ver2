@@ -219,9 +219,9 @@ export default {
 const baseInfotemp = {
     company: "1. 튜터링 테스트",
     c_no: 11,
-    orderList: {
-
-    },
+    orderList: [
+        { c_no: 11 }, { c_no: 10 }, { c_no: 9 }
+    ],
     max_cnt: 28
 }
 
