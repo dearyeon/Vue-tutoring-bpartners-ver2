@@ -17,17 +17,6 @@
 
 
       <CardList :data="dummy" detailView="/applyDetailsList" />
-       <!-- 
-      <router-view></router-view>
-
-         v-if="$route.path === '/applyList/'"
-         v-for="data in dummy" v-bind:key="data.id" 
-      <router-link to="/applyList/bapIdx/1">
-        <div class="ibox" v-if="$route.path === '/applyList'">
-          <CardList :data="dummy" detailView="applyList/bapIdx" />  
-        </div>
-      </router-link> -->
-
 
     </div>
   </div>

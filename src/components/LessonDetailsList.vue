@@ -88,7 +88,7 @@
                                         <td>{{ index + 1 }}</td>
                                         <td>사</td>
                                         <!-- <td><img alt="image" class="img-circle" src="{{getProfileImage($item->prof_img,'_S')}}" style="width: 20px;height:20px;" /></td>-->
-                                        <td data-toggle="modal" data-target="#userInfoModal" class="userInfo hover-pointer">{{ item.name }}</td>
+                                        <td data-toggle="modal" data-target="#userInfoModal" class="userInfo hover-pointer" @click="openUserInfo">{{ item.name }}</td>
                                         <td>
                                             <!--<span class="pie-chart-label">{{ item.lesson_min? item.lesson_min:0 }}/{{ item.total_min? item.total_min:1 }}</span>-->
                                             <span class="lesson-rate">{{ item.lesson_rate? item.lesson_rate+'%':'' }}</span>
@@ -154,6 +154,7 @@
 
 <script>
 //import api from "@/common/api";
+//import UserInfoModal from "./UserInfoModal";
 
 export default {
     data() {
@@ -164,7 +165,8 @@ export default {
             d_type: "all",
             currentPage: '',
             totalPage: '',
-            sortKey: ''
+            sortKey: '',
+            visible: false
         };
     },
     props: {
@@ -176,6 +178,9 @@ export default {
         type: String,
         required: true
       }
+    },
+    components: {
+        //UserInfoModal
     },
     created() {
         this.baseInfo = baseInfotemp;
@@ -211,7 +216,10 @@ export default {
                 confirmButtonText: 'OK',
                 cancelButtonText: 'Cancel'
             });
-        }
+        },
+        openUserInfo() {
+            this.visible = !this.visible;
+        } 
     }
 }
 
