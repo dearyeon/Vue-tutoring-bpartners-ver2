@@ -24,7 +24,7 @@ async function deploy() {
 
 
 function upload() {
-	const cmd =	`rsync -auz --delete ./dist/ ${user}@${getHost()}:/www/${env}/b2b/${proj}/`;
+	const cmd =	`rsync -auz --delete ./dist/ ${user}@${getHost()}:/www/ROOT/`;
 
 	return new Promise((resolve, reject) => {
 		console.log(`\n\n>>> 업로드 시작`);
