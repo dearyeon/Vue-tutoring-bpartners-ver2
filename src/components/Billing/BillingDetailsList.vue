@@ -1,12 +1,12 @@
 <template>
   <div class="row">
-    <Modal ref="modalBach">
+    <Modal ref="modalBach" v-cloak>
       <div slot="header">
-        <h2>결제 배치 정보</h2>
+        <h1>결제 배치 정보</h1>
         <p>결제 배치 정보를 확인해주세요.</p>
       </div>
       <div slot="body">
-        <table>
+        <table class="table">
           <tr>
             <td>고객사명</td>
             <td><input class="form-control" type="text" value="남양주시청" readonly /></td>
@@ -22,33 +22,39 @@
         </table>
       </div>
     </Modal>
-    <Modal ref="modalCard">
+    <Modal ref="modalCard" v-cloak>
       <div slot="header">
-        <h2>카드정보 관리</h2>
-        <p>결제 배치 정보를 확인해주세요.</p>
+        <h1>카드정보 관리</h1>
+        <p>카드 정보를 확인해주세요.</p>
       </div>
       <div slot="body">
-        <table>
-          <tr>
-            <td>카드사</td>
-            <td><input class="form-control" type="text" value="신한" readonly /></td>
-          </tr>
-          <tr>
-            <td>카드번호</td>
-            <td><input class="form-control" type="text" value="****_****_****_1234" readonly /></td>
-          </tr>
-        </table>
+        <span>카드사</span>
+        <input class="form-control" type="text" value="신한" readonly />
+        <br />
+        <span>카드번호</span>
+        <input class="form-control" type="text" value="****_****_****_1234" readonly />
+      </div>
+      <div slot="footer">
+        <button class="btn btn-danger pull" @click="$refs.modalCard.close()">카드정보삭제</button>
+        <div>
+          <button class="btn" @click="$refs.modalCard.close()">일시정지</button>
+          <button class="btn btn-success" @click="[$refs.modalCardEdit.open(), $refs.modalCard.close()]">수정</button>
+        </div>
+      </div>
+    </Modal>
+    <Modal ref="modalCardEdit" v-cloak>
+      <div slot="header">
+        <h1>카드 정보 수정</h1>
+        <p>카드 정보를 확인해주세요.</p>
+      </div>
+      <div slot="body">
+        <!-- 카드 정보 변경 body -->
       </div>
     </Modal>
     <div class="col-lg-12">
       <div class="ibox-title title">
         <h2 class="pull-left">결제정보 관리</h2>
-        <button
-          @click="$refs.modalBach.open()"
-          class="btn btn-success mx-3 pull-right"
-          data-toggle="modal"
-          data-target="#bachInfoModal"
-        >
+        <button @click="$refs.modalBach.open()" class="btn btn-success mx-3 pull-right">
           배치 정보 확인
         </button>
       </div>
@@ -56,33 +62,29 @@
     <div class="row">
       <div class="ibox content">
         <div class="ibox-content">
-          <!--<form id="listform" action="{{ route('b2b.payInfoAdmin') }}">-->
           <form id="listform">
             <div class="subtitle">
-              <h1>{{ this.id === 1 ? "남양주 시청" : "한국수력원자력" }}</h1>
-              <div class="btn-group p-w-xs" style="vertical-align: bottom;">
-                <button data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle" aria-expanded="false">
-                  <strong>1차</strong><span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                  <li>1차</li>
-                </ul>
-              </div>
+              <h1>{{ bapInfo.idx === 1 ? "남양주 시청" : "한국수력원자력" }}</h1>
+              <Dropdown
+                :defaultValue="aNoList.length !== 0 ? aNoList[$route.params.aNo - 1] : ''"
+                :itemList="aNoList"
+                @dropItemClick="chANo"
+              />
             </div>
 
-            <div class="formOptions">
-              <div class="input-group">
-                <input
-                  type="text"
-                  name="q"
-                  value=""
-                  placeholder="성명 or 이메일 or 고객식별ID"
-                  class="form-control"
-                  aria-describedby="basic-addon2"
-                />
-                <span class="input-group-addon" id="basic-addon2">검색</span>
-              </div>
-              <div class="form-group">
+            <div class="input-group col-lg-4 pull-left">
+              <input
+                type="text"
+                name="q"
+                value=""
+                placeholder="성명 or 이메일 or 고객식별ID"
+                class="form-control"
+                aria-describedby="basic-addon2"
+              />
+              <span class="input-group-addon" id="basic-addon2">검색</span>
+            </div>
+            <div class="col-lg-5 col-md-12">
+              <div class="col-lg-6 col-md-6">
                 <label class="control-label" for="en_i">결제 실패건 모아보기</label>
                 <div class="switch">
                   <div class="onoffswitch">
@@ -95,7 +97,7 @@
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="col-lg-6 col-md-6">
                 <label class="control-label" for="en_p">결제 일시정지건 모아보기</label>
                 <div class="switch">
                   <div class="onoffswitch">
@@ -110,20 +112,20 @@
             </div>
           </form>
 
-          <div>
+          <div class="col-lg-12">
             <!-- 탭 부분 -->
             <div class="panel blank-panel">
               <div class="panel-options">
                 <ul class="nav nav-tabs customer_tab">
-                  <li class="active"><a data-toggle="tab" data-index="1">정기결제</a></li>
-                  <li class=""><a data-toggle="tab" data-index="2">추가결제(미수료)</a></li>
+                  <li :class="{ active: tab === 1 }"><a @click="chTab(1)">정기결제</a></li>
+                  <li :class="{ active: tab === 2 }"><a @click="chTab(2)">추가결제(미수료)</a></li>
                 </ul>
               </div>
             </div>
 
             <div class="panel-body">
               <div class="tab-content">
-                <div class="tab-pane active" id="tab-1">
+                <div class="tab-pane" :class="{ active: tab === 1 }">
                   <div class="row">
                     <table class="table table-striped text-center table-hover dataTable">
                       <thead>
@@ -162,7 +164,7 @@
                     </table>
                   </div>
                 </div>
-                <div class="tab-pane" id="tab-2">
+                <div class="tab-pane" :class="{ active: tab === 2 }">
                   <div class="row">
                     <table class="table table-striped text-center table-hover dataTable">
                       <thead>
@@ -183,6 +185,24 @@
                       </thead>
                       <tbody id="pchargeInfoList">
                         <!--추가 결제 -->
+                        <tr v-for="(item, index) in listInfo" :key="`biillingDetailItem-${index}`" class="text-center">
+                          <td>{{ index + 1 }}</td>
+                          <td>{{ item.user.name }}</td>
+                          <td>{{ item.goods.charge_plan.title_plan }}</td>
+                          <td>%</td>
+                          <td>%</td>
+                          <td>2(hard)</td>
+                          <td>결제 처리 현황</td>
+                          <td>
+                            <button class="btn" :class="[item.bill_status === 'R' ? 'btn-primary' : 'disabled']">
+                              {{ item.bill_status === "R" ? "결제 대기" : "결제 완료" }}
+                            </button>
+                          </td>
+                          <td><button class="btn btn-default">skip</button></td>
+                          <td><button class="btn btn-default" @click="$refs.modalCard.open()">확인</button></td>
+                          <td>관리 태그</td>
+                          <td><button class="btn btn-default">입력</button></td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -198,37 +218,63 @@
 
 <script>
 import api from "@/common/api";
-import Modal from "./Modal";
+import Modal from "../atom/Modal";
+import Dropdown from "../atom/Dropdown";
 
 export default {
   async created() {
-    const res = await api.get("/partners/chargeList", { bapIdx: this.id });
+    const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo });
+    const resP = await api.get("/partners/pchargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo });
     this.listInfo = res.data.list;
     this.bapInfo = res.data.bap;
-    console.log(res);
-  },
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
+    this.listInfoP = resP.data.list;
+    this.bapInfoP = resP.data.bap;
+    this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
   },
   data() {
     return {
       listInfo: "",
       bapInfo: 0,
+      listInfoP: "",
+      bapInfoP: 0,
+      tab: 1,
+      aNoList: [],
     };
   },
-  watch: {
-    listInfo: function(val) {
-      this.listInfo = val;
+  computed: {
+    defaultDrop() {
+      return item => {
+        if (item !== undefined)
+          return ` | ${item.apply_fr_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")} ~ ${item.apply_to_dt.replace(
+            /(\d{4}-\d{2}-\d{2}).*/,
+            "$1",
+          )}`;
+        else return "";
+      };
     },
-    bapInfo: function(val) {
-      this.bapInfo = val;
+  },
+  methods: {
+    chTab: function(index) {
+      this.tab = index;
+    },
+    chANo: async function(index) {
+      const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: index + 1 });
+      this.listInfo = res.data.list;
+      this.bapInfo = res.data.bap;
+      this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
+    },
+    aNoFormat: function(item) {
+      if (typeof item === "object" && "a_no" in item)
+        return `${item.a_no}회차 | ${item.apply_fr_dt.replace(
+          /(\d{4}-\d{2}-\d{2}).*/,
+          "$1",
+        )} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")}`;
+      else return "";
     },
   },
   components: {
     Modal,
+    Dropdown,
   },
 };
 </script>
@@ -242,26 +288,17 @@ export default {
   display: flex;
   flex-direction: column;
 }
-
 .subtitle {
   display: flex;
   align-items: center;
 }
-
-.formOptions {
-  display: flex;
-  align-items: center;
+.subtitle h1 {
+  margin-right: 12px;
 }
-
 .input-group {
-  flex: 0.4;
+  padding-bottom: 8px;
 }
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 0.2;
-  margin: 8px;
+td {
+  vertical-align: middle;
 }
 </style>
