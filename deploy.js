@@ -2,7 +2,6 @@ const {config} = require('./deploy.config.js')
 const { exec } = require("child_process")
 const args = process.argv.slice(2)
 const env = args[0]
-const proj = config.projectId
 const user = config.developer
 const testHost = config.testHost
 const realHost = config.realHost
