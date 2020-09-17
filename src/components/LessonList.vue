@@ -47,21 +47,21 @@
                                     <thead>
                                     <tr>
                                         <th style="width:20px"></th>
-                                        <th class="pagesubmit sorting" field="order" value="company">고객사명</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="max_c_no">차수</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="status">현재상태</th>
+                                        <th class="pagesubmit sorting" field="order" value="company" @click="sortBy('company')">고객사명</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="max_c_no" @click="sortBy('orderList[0].c_no')">차수</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="status" @click="sortBy('status')">현재상태</th>
                                         <th>과목</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt">시작날짜</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt">종료날짜</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="cnt">인원수</th>
-                                        <th class="pagesubmit sorting" field="order" value="lesson_rate" style="width:35%">수업 달성률</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="sortBy('fr_dt')">시작날짜</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="sortBy('to_dt')">종료날짜</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="sortBy('headcount')">인원수</th>
+                                        <th class="pagesubmit sorting" field="order" value="lesson_rate" style="width:35%" @click="sortBy('lesson_rate')">수업 달성률</th>
                                     </tr>
                                     </thead>
                                     <tbody>
 
 
                                         <tr class="hover-pointer LESSON_INFO" 
-                                            v-for="(item, index) in list" :key="`Lesson-${index}`" 
+                                            v-for="(item, index) in items" :key="`Lesson-${index}`" 
                                             @click="routeDetailPage(index,item.orderList[0].c_no)" v-show="index>=(currentPage-1)*30 && index<currentPage*30">
                                         <div/>
                                             <!-- <td><img alt="image" class="img-rounded" src="{{ $item->prof_img?getSiteImage($item->prof_img,'_S'):getProfileImage('') }}" style="width: 20px;" /></td>   -->
@@ -132,15 +132,16 @@ export default {
     data() {
         return {
             info: [],
-            list: [],
+            items: [],
             currentPage: '',
-            totalPage: ''
+            totalPage: '',
+            sortKey: ''
         };
     },
     created() {
-        this.list = tempData;
+        this.items = tempData;
         this.info = tempInfo;
-        this.totalPage = parseInt(this.list.length/30) + 1;
+        this.totalPage = parseInt(this.items.length/30) + 1;
         this.currentPage = 1;
     },
     methods: {
@@ -161,6 +162,12 @@ export default {
         },
         getProgressStyle(lesson_rate) {
             return "width:" + (lesson_rate && lesson_rate > 90 ? 100 : lesson_rate) + "%"
+        },
+        sortBy(sortKey) {
+            (this.sortKey === sortKey) ? this.items.reverse() : ( this.items.sort(function(a, b) {
+                return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
+            }))
+            this.sortKey = sortKey;
         },
         setPage(page_num) {
             if(page_num > 0 && page_num <= this.totalPage) {
@@ -198,7 +205,7 @@ const tempData = [
     {
         company: "클레어회사",
         orderList: [
-            { c_no: 11 }, { c_no: 10 }, { c_no: 9 }
+            { c_no: 5 }, { c_no: 4 }, { c_no: 3 }
         ],
         status: 3,
         e_cnt: 1,
