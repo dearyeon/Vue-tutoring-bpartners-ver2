@@ -1,21 +1,21 @@
 <template>
   <div class="row auto-clear">
     <div class="col-sm-6 col-md-4 col-lg-3 cardItem" v-for="(item, index) in data" :key="`Card-${index}`">
-      <router-link :to="`${detailView}/${index + 1}`">
+      <router-link :to="{ name: detailView, params: { sIdx: item.s_idx, aNo: item.last_a_no } }">
         <div class="ibox-title">
           <div>
-            <h4 class="no-margins">{{ item.company }}</h4>
+            <h4 class="no-margins">{{ item.site.company }}</h4>
           </div>
         </div>
         <div class="ibox-content">
           <div class="row customer">
             <div>
-              <strong class="hr-stressed">{{ item.name }}</strong>
-              <small>{{ item.part }}</small>
+              <strong class="hr-stressed">{{ item.site.name }}</strong>
+              <small>{{ item.site.part }}</small>
             </div>
             <div>
-              <strong class="hr-stressed">{{ item.tel }}</strong>
-              <small>{{ item.email }}</small>
+              <strong class="hr-stressed">{{ item.site.tel }}</strong>
+              <small>{{ item.site.email }}</small>
             </div>
           </div>
         </div>
