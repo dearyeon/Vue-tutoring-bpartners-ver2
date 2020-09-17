@@ -55,7 +55,7 @@ export default {
 
   methods: {
     async loginSubmit() {
-      const res = await api.post('/open/b2b/partnersLogin', {id:this.id, pw:this.pw})
+      const res = await api.post('/partners/login', {id:this.id, pw:this.pw})
       console.log('ken', res)
       if(res.result==1000 || !res.data) {
         alert('로그인 실패')
