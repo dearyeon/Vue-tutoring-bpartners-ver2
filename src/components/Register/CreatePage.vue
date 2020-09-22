@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="ibox-title title">
         <h2 class="pull-left">페이지 생성(기본 정보 등록)</h2>
-        <button class="btn btn-danger pull-right">제거</button>
+        <button class="btn btn-danger pull-right" @click="$router.go(-1)">제거</button>
       </div>
     </div>
     <div class="row">
@@ -105,23 +105,23 @@
             </table>
           </div>
 
-          <div class="col-lg-12">
+          <div class="col-lg-6">
             <table class="table">
-              <tbody>
-                <tr>
-                  <th>수강권 선택(추가)</th>
-                  <td>
-                    <Dropdown
-                      style="display: flex"
-                      defaultValue="선택해주세요"
-                      :itemList="b2bList"
-                      @dropItemClick="addCourse"
-                    />
-                  </td>
-                </tr>
-              </tbody>
+              <tr>
+                <th>수강권 선택(추가)</th>
+                <td>
+                  <Dropdown
+                    style="display: flex"
+                    defaultValue="선택해주세요"
+                    :itemList="b2bList"
+                    @dropItemClick="addCourse"
+                  />
+                </td>
+              </tr>
             </table>
+          </div>
 
+          <div class="col-lg-12">
             <table class="table">
               <thead>
                 <tr>
@@ -166,7 +166,7 @@
                       <p>원</p>
                     </div>
                   </td>
-                  <td class="text-center"><button class="btn btn-danger">취소</button></td>
+                  <td class="text-center"><button class="btn btn-danger" @click="removeCourse(index)">취소</button></td>
                 </tr>
               </tbody>
             </table>
@@ -192,6 +192,9 @@ export default {
   methods: {
     addCourse: function(index) {
       this.courseList.push(this.b2bList[index]);
+    },
+    removeCourse: function(index) {
+      this.courseList.splice(index, 1);
     },
   },
   components: {
@@ -221,15 +224,9 @@ export default {
   font-size: 14px;
   font-weight: 500;
 }
-/*tbody {
-  border
-}*/
 .table th,
 .table td {
   padding: 6px 12px;
-}
-.col-lg-6 {
-  /*margin-bottom: 40px;*/
 }
 .table {
   margin-bottom: 16px;
