@@ -2,6 +2,7 @@ const {config} = require('./deploy.config.js')
 const { exec } = require("child_process")
 const args = process.argv.slice(2)
 const env = args[0]
+const proj = config.projectId
 const user = config.developer
 const testHost = config.testHost
 const realHost = config.realHost
@@ -23,7 +24,7 @@ async function deploy() {
 
 
 function upload() {
-	const cmd =	`rsync -auz --delete ./dist/ ${user}@${getHost()}:/www/ROOT/`;
+	const cmd =	`rsync -auz --delete ./dist/ ${user}@${getHost()}:/www/${proj}/`;
 
 	return new Promise((resolve, reject) => {
 		console.log(`\n\n>>> 업로드 시작`);
