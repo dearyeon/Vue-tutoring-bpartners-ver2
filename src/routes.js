@@ -1,5 +1,5 @@
-import LessonList from "./components/LessonList";
-import LessonDetailsList from "./components/LessonDetailsList";
+import LessonList from "./components//Lesson/LessonList";
+import LessonDetailsList from "./components/Lesson/LessonDetailsList";
 import UserList from "./components/UserList";
 import UserDetailsList from "./components/UserDetailsList";
 import ApplyList from "./components/Apply/ApplyList";
