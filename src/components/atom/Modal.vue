@@ -1,8 +1,8 @@
 <template>
   <transition name="modal">
-    <div class="modal-mask" v-show="show">
+    <div class="modal-mask" v-show="show" @mousedown="close">
       <div class="modal-wrapper">
-        <div class="modal-container">
+        <div class="modal-container" @mousedown.stop>
           <button class="modal-button" @click="close">X</button>
           <div class="modal-header">
             <slot name="header">default header</slot>
@@ -21,6 +21,14 @@
 
 <script>
 export default {
+  created() {
+    const onEscape = e => {
+      if (this.open && e.keyCode === 27) {
+        this.close();
+      }
+    };
+    document.addEventListener("keydown", onEscape);
+  },
   data() {
     return {
       show: false,
