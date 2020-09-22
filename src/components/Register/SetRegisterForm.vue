@@ -32,12 +32,12 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="col-lg-6">
-                        <label class="btn btn-success col-lg-12" for="file">이미지 변경</label>
+                      <td class="col-lg-6 col-md-6 col-xs-6">
+                        <label class="btn btn-success col-lg-12 col-md-12 col-xs-12" for="file">이미지 변경</label>
                         <input type="file" id="file" accept="image/*" ref="image" @change="imageUpload" />
                       </td>
-                      <td class="col-lg-6">
-                        <button class="btn btn-danger col-lg-12" @click="imageDelete">삭제</button>
+                      <td class="col-lg-6 col-md-6 col-xs-6">
+                        <button class="btn btn-danger col-lg-12 col-md-12 col-xs-12" @click="imageDelete">삭제</button>
                       </td>
                     </tr>
                   </td>
