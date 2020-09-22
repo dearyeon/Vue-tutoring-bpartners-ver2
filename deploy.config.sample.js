@@ -1,5 +1,5 @@
 exports.config = {
-  "developer" : "",
-  "realHost" : "tutoring.co.kr",
+  "developer" : "ken",
+  "realHost" : "partners2.tutoring.co.kr",
   "testHost" : "partners-dev.tutoring.co.kr"
 }
