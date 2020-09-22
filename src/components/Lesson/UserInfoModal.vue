@@ -131,11 +131,75 @@
                     <button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;" @click="openModify">학생 수정</button>
                     <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
 
+                </div>
+            </div>
+        </div>
 
-                    <div class="modal inmodal fade in" id="userUpdateModal" style="display: block;" v-show="showModify===true">
+        <div class="modal inmodal fade in" id="userUpdateModal" v-show="showModify===true">
                         <div class="modal-dialog modal-sm">
+                            <div class="modal-content" style="width:450px;">
+
+                                <div class="modal-header" style="border-bottom:0px;padding-bottom: 25px; width:450px;">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true" @click="openModify">×</span><span class="sr-only">Close</span></button>
+                                    <br>
+                                    <h5 class="modal-title" style="">학습자 정보 변경</h5>
+                                    <small>학습자 정보를 변경해주세요.</small>
+                                </div>
+
+<!--
+                                <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px">
+                                    <div class="col-lg-12" style="text-align:center;margin-bottom: 15px">
+                                        <img alt="image" id="ui_image" class="img-circle" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_S" style="width: 90px;height: 90px;">
+                                    </div>
+                                    <div class="col-lg-12" style="margin-bottom: 5px">
+                                        <div class="col-lg-9" style="padding:0;line-height: 35px;text-align: right;">
+                                            고객식별ID
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <input name="ui_email" type="text" class="form-control" readonly="">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12" style="margin-bottom: 5px">
+                                        <div class="col-lg-9" style="padding:0;line-height: 35px;text-align: right;">
+                                            학습자 이름
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <input name="ui_name" type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12" style="margin-bottom: 5px">
+                                        <div class="col-lg-9" style="padding:0;line-height: 35px;text-align: right;">
+                                            부서
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <input name="ui_part" type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-9" style="padding:0;line-height: 35px;text-align: right;">
+                                            직책
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <input name="ui_position" type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12" style="margin-bottom: 25px">
+                                        <div class="col-lg-9" style="padding:0;line-height: 35px;text-align: right;">
+                                            비고
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <input name="ui_memo" type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div style="position: absolute;left: -9999px;">
+                                        <input name="bo_idx" type="text" class="form-control">
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                       <!-- <div class="modal-dialog modal-sm">
                             <div class="modal-content" style="width:450px;height:450px">
-                                <div class="modal-header" style="border-bottom:0px;padding-bottom: 25px;">
+                                <div class="modal-header" style="border-bottom:0px;padding-bottom: 25px; display: inline;">
                                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true" @click="openModify">×</span><span class="sr-only">Close</span></button>
                                     <br>
                                     <h5 class="modal-title">학습자 정보 변경</h5>
@@ -197,13 +261,11 @@
                                     <button type="button" class="btn btn-success" id="userUpdateSubmit">변경 완료</button>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
-
-                </div>
-            </div>
-        </div>
     </div>
+
+    
 </template>
 
 <script>

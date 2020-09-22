@@ -23,6 +23,7 @@
                 <th class="text-center">No</th>
                 <th class="text-center">부서</th>
                 <th class="text-center">직위</th>
+                <th class="text-center" v-if="bap.idx!==1">사번</th>
                 <th class="text-center">이름</th>
                 <th class="text-center">이메일</th>
                 <th class="text-center">연락처</th>
@@ -47,6 +48,7 @@
                 <td class="number" style="vertical-align: middle;">{{ index + 1 }}</td>
                 <td class="part">{{ data.user.department }}</td>
                 <td class="position">{{ data.user.position }}</td>
+                <td class="emp_no" v-if="bap.idx!==1">{{ data.user.emp_no }}</td>
                 <td
                   class="hover-pointer name"
                   data-toggle="modal"
