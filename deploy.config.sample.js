@@ -1,6 +1,6 @@
 exports.config = {
-  "projectId" : "apply",
+  "projectId" : "PARTNERS",
   "developer" : "ken",
   "realHost" : "partners2.tutoring.co.kr",
-  "testHost" : "partners-dev.tutoring.co.kr"
+  "testHost" : "partners-st.tutoring.co.kr"
 }
