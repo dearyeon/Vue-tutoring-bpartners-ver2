@@ -115,19 +115,17 @@
               />
             </div>
 
-            <div class="input-group col-lg-4 pull-left">
+            <div class="input-group col-lg-4 col-md-12 col-xs-12 pull-left">
               <input
                 type="text"
-                name="q"
-                value=""
+                v-model="search"
                 placeholder="성명 or 이메일 or 고객식별ID"
                 class="form-control"
-                aria-describedby="basic-addon2"
+                @keydown.enter.prevent
               />
-              <span class="input-group-addon" id="basic-addon2">검색</span>
             </div>
-            <div class="col-lg-5 col-md-12">
-              <div class="col-lg-6 col-md-6">
+            <div class="col-lg-5 col-md-12 col-xs-12">
+              <div class="col-lg-6 col-md-6 col-xs-6">
                 <label class="control-label" for="en_i">결제 실패건 모아보기</label>
                 <div class="switch">
                   <div class="onoffswitch">
@@ -140,7 +138,7 @@
                 </div>
               </div>
 
-              <div class="col-lg-6 col-md-6">
+              <div class="col-lg-6 col-md-6 col-xs-6">
                 <label class="control-label" for="en_p">결제 일시정지건 모아보기</label>
                 <div class="switch">
                   <div class="onoffswitch">
@@ -187,7 +185,11 @@
                       </thead>
                       <tbody id="chargeInfoList">
                         <!--정기 결제 -->
-                        <tr v-for="(item, index) in listInfo" :key="`biillingDetailItem-${index}`" class="text-center">
+                        <tr
+                          v-for="(item, index) in filteredList(listInfo)"
+                          :key="`biillingDetailItem-${index}`"
+                          class="text-center"
+                        >
                           <td>{{ index + 1 }}</td>
                           <td>{{ item.user.name }}</td>
                           <td>{{ item.goods.charge_plan.title_plan }}</td>
@@ -232,7 +234,11 @@
                       </thead>
                       <tbody id="pchargeInfoList">
                         <!--추가 결제 -->
-                        <tr v-for="(item, index) in listInfo" :key="`biillingDetailItem-${index}`" class="text-center">
+                        <tr
+                          v-for="(item, index) in filteredList(listInfoP)"
+                          :key="`biillingDetailItem-${index}`"
+                          class="text-center"
+                        >
                           <td>{{ index + 1 }}</td>
                           <td>{{ item.user.name }}</td>
                           <td>{{ item.goods.charge_plan.title_plan }}</td>
@@ -291,6 +297,7 @@ export default {
       tab: 1,
       aNoList: [],
       tag: "",
+      search: "",
     };
   },
   computed: {
@@ -303,6 +310,12 @@ export default {
           )}`;
         else return "";
       };
+    },
+    filteredList() {
+      return list => {
+        if (list.length !== 0) return list.filter(item => item.user.name.includes(this.search.trim()));
+      };
+      //TODO: email, 고객식별 id 추가
     },
   },
   methods: {
