@@ -24,7 +24,8 @@ async function deploy() {
 
 
 function upload() {
-	const cmd =	`rsync -rupz --chmod=Fug=rw,Dug=rwx --delete ./dist/ ${user}@${getHost()}:/www/${proj}/`;
+	const destPath = `/www/${proj}`;
+	const cmd =	`rsync -rupz --chmod=Fug=rw,Dug=rwx --delete ./dist/ ${user}@${getHost()}:${destPath}/`;
 
 	return new Promise((resolve, reject) => {
 		console.log(`\n\n>>> 업로드 시작`);
@@ -36,6 +37,7 @@ function upload() {
 				if(line.startsWith('Uploading')) console.log(line);
 			});
 
+			console.log(`${destPath}`);
 			console.log(`>>> 업로드 끝`);
 
 			resolve();
