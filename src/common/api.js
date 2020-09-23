@@ -1,7 +1,7 @@
 import axios from "axios";
 import querystring from "querystring";
 import shared from "@/common/shared";
-import {config} from "../../deploy.config.sample"
+import {config} from "../../deploy.config"
 
 let server = window.location.hostname.startsWith('partners') ? 'https://bapi.tutoring.co.kr' : 'https://bapi-dev.tutoring.co.kr';
 
