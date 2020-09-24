@@ -13,7 +13,7 @@
 
 <script>
 import api from "@/common/api";
-import CardList from "../CardList";
+import CardList from "../atom/CardList";
 
 export default {
   async created() {
