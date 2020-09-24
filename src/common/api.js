@@ -10,7 +10,7 @@ if(hostId=='partners-st') {
 }
 //로컬 API 개발자 전용 설정
 else if(config.developer=='ken' && window.location.hostname=='localhost') {
-    server = 'https://localhost';
+    server = 'https://local.tutoring.co.kr';
 }
 
 const api = {
