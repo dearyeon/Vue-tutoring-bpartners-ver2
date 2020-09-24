@@ -1,32 +1,5 @@
 <template>
   <div class="row">
-    <Modal ref="modalBach" v-cloak>
-      <div slot="header">
-        <h1>결제 배치 정보</h1>
-        <p>결제 배치 정보를 확인해주세요.</p>
-      </div>
-      <div slot="body">
-        <table class="table">
-          <tr>
-            <td>고객사명</td>
-            <td><input class="form-control" type="text" :value="bapInfo.site_name" readonly /></td>
-          </tr>
-          <tr>
-            <td>자동결제 예정일</td>
-            <td><input class="form-control" type="text" :value="listInfo.charge_day" readonly /></td>
-            <!-- TODO: listInfo에서 가져올 것 -->
-          </tr>
-          <tr>
-            <td>자동 결제 회차</td>
-            <td><input class="form-control" type="text" :value="[listInfo[0] && listInfoP[0].b_no]" readonly /></td>
-          </tr>
-          <tr>
-            <td>수동결제 예정일</td>
-            <td><input class="form-control" type="text" value="2020-08-05 10:00:00" readonly /></td>
-          </tr>
-        </table>
-      </div>
-    </Modal>
     <Modal ref="modalCard" v-cloak>
       <div slot="header">
         <h1>카드정보 관리</h1>
@@ -101,9 +74,6 @@
     <div class="col-lg-12">
       <div class="ibox-title title">
         <h2 class="pull-left">결제정보 관리</h2>
-        <button @click="$refs.modalBach.open()" class="btn btn-success mx-3 pull-right">
-          배치 정보 확인
-        </button>
       </div>
     </div>
     <div class="row">
