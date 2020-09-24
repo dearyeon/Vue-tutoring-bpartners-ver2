@@ -19,6 +19,6 @@ shared.install = function() {
         get() { return shared }
     })
 }
-
+shared.install();
 
 export default shared;
