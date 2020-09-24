@@ -14,11 +14,8 @@ const shared = {
     }
 }
 
-shared.install = function() {
-    Object.defineProperty(Vue.prototype,'$shared', {
-        get() { return shared }
-    })
-}
-shared.install();
+Object.defineProperty(Vue.prototype,'$shared', {
+    get() { return shared }
+})
 
 export default shared;
