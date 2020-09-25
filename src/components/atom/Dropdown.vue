@@ -56,6 +56,7 @@ export default {
 .p-w-xs {
   position: relative;
   padding: 0px;
+  margin: auto 8px;
 }
 .drop-item {
   position: absolute;
@@ -69,7 +70,6 @@ export default {
 }
 .drop-item button {
   background-color: #fff;
-  padding-right: 26px;
   text-align: left;
 }
 .btn-group > * {
@@ -79,6 +79,7 @@ export default {
   display: flex;
   flex: 1;
   justify-content: space-between;
+  width: 100%;
 }
 .btn .caret {
   margin: 8px 0px 8px 8px;
