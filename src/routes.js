@@ -29,7 +29,7 @@ const routes = [
       { path: "/billingList", component: BillingList },
       {
         name: "billingDetailsList",
-        path: "/billingDetailsList/:sIdx/:aNo",
+        path: "/billingDetailsList/:sIdx/:aNo/:bNo",
         component: BillingDetailsList,
         props: true,
       },

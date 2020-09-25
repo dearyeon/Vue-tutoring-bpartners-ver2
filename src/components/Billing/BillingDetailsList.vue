@@ -87,6 +87,11 @@
                 :itemList="aNoList"
                 @dropItemClick="chANo"
               />
+              <Dropdown
+                :defaultValue="bNoList.length !== 0 ? bNoList[$route.params.bNo - 1] : ''"
+                :itemList="bNoList"
+                @dropItemClick="chBNo"
+              />
             </div>
 
             <div class="input-group col-lg-4 col-md-12 col-xs-12 pull-left">
@@ -211,7 +216,7 @@
                                 item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
                             }}
                           </td>
-                          <td>{{ item.mng_tag ? item.mng_tag : "관리태그" }}</td>
+                          <td>{{ item.mng_tag ? item.mng_tag : tag }}</td>
                           <td>
                             <button class="btn btn-default" @click="$refs.modalTag.open()">수정</button>
                           </td>
@@ -293,7 +298,7 @@
                                 item.pcharged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
                             }}
                           </td>
-                          <td>{{ item.mng_tag ? item.mng_tag : "관리태그" }}</td>
+                          <td>{{ item.mng_tag ? item.mng_tag : tag }}</td>
                           <td>
                             <button class="btn btn-default" @click="$refs.modalTag.open()">수정</button>
                           </td>
@@ -325,6 +330,7 @@ export default {
     this.listInfoP = resP.data.list;
     this.bapInfoP = resP.data.bap;
     this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
+    this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item));
   },
   data() {
     return {
@@ -334,22 +340,13 @@ export default {
       bapInfoP: 0,
       tab: 1,
       aNoList: [],
+      bNoList: [],
       tag: "",
       search: "",
       cardInfo: { cp: "", num: "" },
     };
   },
   computed: {
-    defaultDrop() {
-      return item => {
-        if (item !== undefined)
-          return ` | ${item.apply_fr_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")} ~ ${item.apply_to_dt.replace(
-            /(\d{4}-\d{2}-\d{2}).*/,
-            "$1",
-          )}`;
-        else return "";
-      };
-    },
     filteredList() {
       return list => {
         if (list.length !== 0)
@@ -386,10 +383,29 @@ export default {
       this.tab = index;
     },
     chANo: async function(index) {
-      const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: index + 1 });
+      const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 });
+      const resP = await api.get("/partners/pchargeList", { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 });
       this.listInfo = res.data.list;
       this.bapInfo = res.data.bap;
-      this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
+      this.listInfoP = res.data.list;
+      this.bapInfoP = resP.data.bap;
+      //this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
+    },
+    chBNo: async function(index) {
+      const res = await api.get("/partners/chargeList", {
+        sIdx: this.$route.params.sIdx,
+        aNo: this.$route.params.aNo,
+        bNo: index + 1,
+      });
+      const resP = await api.get("/partners/pchargeList", {
+        sIdx: this.$route.params.sIdx,
+        aNo: this.$route.params.aNo,
+        bNo: index + 1,
+      });
+      this.listInfo = res.data.list;
+      this.bapInfo = res.data.bap;
+      this.listInfoP = res.data.list;
+      this.bapInfoP = resP.data.bap;
     },
     aNoFormat: function(item) {
       if (typeof item === "object" && "a_no" in item)
@@ -398,6 +414,13 @@ export default {
           "$1",
         )} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")}`;
       else return "";
+    },
+    bNoFormat: function(item) {
+      if (typeof item === "object" && "b_no" in item)
+        return `${item.b_no} | ${item.charge_dt.replace(
+          /(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/gi,
+          "$2.$3",
+        )}`;
     },
     waitPayment: function() {
       this.$swal
