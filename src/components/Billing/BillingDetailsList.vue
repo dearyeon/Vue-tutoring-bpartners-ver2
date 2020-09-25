@@ -1,27 +1,5 @@
 <template>
   <div class="row">
-    <Modal ref="modalBach" v-cloak>
-      <div slot="header">
-        <h1>결제 배치 정보</h1>
-        <p>결제 배치 정보를 확인해주세요.</p>
-      </div>
-      <div slot="body">
-        <table class="table">
-          <tr>
-            <td>고객사명</td>
-            <td><input class="form-control" type="text" value="남양주시청" readonly /></td>
-          </tr>
-          <tr>
-            <td>자동결제 예정일</td>
-            <td><input class="form-control" type="text" :value="bapInfo.charge_day" readonly /></td>
-          </tr>
-          <tr>
-            <td>수동결제 예정일</td>
-            <td><input class="form-control" type="text" value="2020-08-05 10:00:00" readonly /></td>
-          </tr>
-        </table>
-      </div>
-    </Modal>
     <Modal ref="modalCard" v-cloak>
       <div slot="header">
         <h1>카드정보 관리</h1>
@@ -29,15 +7,14 @@
       </div>
       <div slot="body">
         <span>카드사</span>
-        <input class="form-control" type="text" value="신한" readonly />
+        <input class="form-control" type="text" :value="cardInfo.cp" readonly />
         <br />
         <span>카드번호</span>
-        <input class="form-control" type="text" value="****_****_****_1234" readonly />
+        <input class="form-control" type="text" :value="cardInfo.num" readonly />
       </div>
       <div slot="footer">
         <button class="btn btn-danger" @click="$refs.modalCard.close()">카드정보삭제</button>
         <div>
-          <button class="btn" @click="$refs.modalCard.close()">일시정지</button>
           <button class="btn btn-success" @click="[$refs.modalCardEdit.open(), $refs.modalCard.close()]">수정</button>
         </div>
       </div>
@@ -97,9 +74,6 @@
     <div class="col-lg-12">
       <div class="ibox-title title">
         <h2 class="pull-left">결제정보 관리</h2>
-        <button @click="$refs.modalBach.open()" class="btn btn-success mx-3 pull-right">
-          배치 정보 확인
-        </button>
       </div>
     </div>
     <div class="row">
@@ -107,11 +81,16 @@
         <div class="ibox-content">
           <form id="listform">
             <div class="subtitle">
-              <h1>{{ bapInfo.idx === 1 ? "남양주 시청" : "한국수력원자력" }}</h1>
+              <h1>{{ bapInfo.site_name }}</h1>
               <Dropdown
                 :defaultValue="aNoList.length !== 0 ? aNoList[$route.params.aNo - 1] : ''"
                 :itemList="aNoList"
                 @dropItemClick="chANo"
+              />
+              <Dropdown
+                :defaultValue="bNoList.length !== 0 ? bNoList[$route.params.bNo - 1] : ''"
+                :itemList="bNoList"
+                @dropItemClick="chBNo"
               />
             </div>
 
@@ -119,7 +98,7 @@
               <input
                 type="text"
                 v-model="search"
-                placeholder="성명 or 이메일 or 고객식별ID"
+                placeholder="성명 or 고객식별ID"
                 class="form-control"
                 @keydown.enter.prevent
               />
@@ -129,6 +108,7 @@
                 <label class="control-label" for="en_i">결제 실패건 모아보기</label>
                 <div class="switch">
                   <div class="onoffswitch">
+                    <!-- FIXME: filter 기능 -->
                     <input class="onoffswitch-checkbox form-control" name="en_i" id="en_i" type="checkbox" value="" />
                     <label class="onoffswitch-label" for="en_i">
                       <span class="onoffswitch-inner"></span>
@@ -173,14 +153,16 @@
                         <tr>
                           <th class="text-center">No</th>
                           <th class="text-center">학생</th>
+                          <th class="text-center">고객식별 ID</th>
                           <th class="text-center">수강권</th>
-                          <th class="text-center">정기 결제 일자</th>
-                          <th class="text-center">결제 처리 현황</th>
-                          <th class="text-center">자동 결제 실패건 처리</th>
-                          <th class="text-center">당월 결제 skip</th>
-                          <th class="text-center">카드정보 관리</th>
-                          <th class="text-center">관리 태그</th>
-                          <th class="text-center">태그입력</th>
+                          <th class="text-center">결제회차</th>
+                          <th class="text-center">정기결제일시</th>
+                          <th class="text-center">실결제일시</th>
+                          <th class="text-center">결제처리현황</th>
+                          <th class="text-center">결제카드변경</th>
+                          <th class="text-center">결제처리결과정보</th>
+                          <th class="text-center">관리태그</th>
+                          <th class="text-center">태그수정</th>
                         </tr>
                       </thead>
                       <tbody id="chargeInfoList">
@@ -190,24 +172,54 @@
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
                         >
-                          <td>{{ index + 1 }}</td>
-                          <td>{{ item.user.name }}</td>
-                          <td>{{ item.goods.charge_plan.title_plan }}</td>
-                          <td>{{ bapInfo.charge_day }}</td>
-                          <td>결제 처리 현황</td>
+                          <td>{{ item.no }}</td>
+                          <td>{{ item.user_name }}</td>
+                          <td>{{ item.cus_id }}</td>
+                          <td>{{ item.goods_name }}</td>
+                          <td>{{ item.b_no }}</td>
+                          <td>
+                            {{
+                              item.charge_dt &&
+                                item.charge_dt.replace(/(\d{4})-(\d{2})-(\d{2})\s(\d{2}).*/gi, "$1년 $2월 $3일 $4시")
+                            }}
+                          </td>
+                          <td>
+                            {{
+                              item.charged_dt && item.charged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1")
+                            }}
+                          </td>
                           <td>
                             <button
                               class="btn"
-                              :class="[item.bill_status === 'R' ? 'btn-primary' : 'disabled']"
-                              @click="handleBillStatus"
+                              :class="chargeBtnStatus(item.charge_status).class"
+                              @click="
+                                [
+                                  chargeBtnStatus(item.charge_status).click &&
+                                    chargeBtnStatus(item.charge_status).click(),
+                                ]
+                              "
                             >
-                              {{ item.bill_status === "R" ? "결제 대기" : "결제 완료" }}
+                              {{ chargeBtnStatus(item.charge_status).text }}
                             </button>
                           </td>
-                          <td><button class="btn btn-default" @click="handleSkip">skip</button></td>
-                          <td><button class="btn btn-default" @click="$refs.modalCard.open()">확인</button></td>
-                          <td>{{ tag === "" ? "관리 태그" : tag }}</td>
-                          <td><button class="btn btn-default" @click="$refs.modalTag.open()">입력</button></td>
+                          <td>
+                            <button
+                              class="btn btn-default"
+                              @click="[$refs.modalCard.open(), setCardInfo(item.charged_info)]"
+                            >
+                              카드변경
+                            </button>
+                          </td>
+                          <td>
+                            {{
+                              item.charged_info &&
+                                item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
+                            }}
+                          </td>
+                          <td>{{ item.mng_tag ? item.mng_tag : tag }}</td>
+                          <td>
+                            <button class="btn btn-default" @click="$refs.modalTag.open()">수정</button>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -220,45 +232,76 @@
                         <tr>
                           <th class="text-center">No</th>
                           <th class="text-center">학생</th>
+                          <th class="text-center">고객식별ID</th>
                           <th class="text-center">수강권</th>
-                          <th class="text-center">기준 출석률</th>
+                          <th class="text-center">기준출석률</th>
                           <th class="text-center">달성률</th>
-                          <th class="text-center">추가 결제 일자</th>
-                          <th class="text-center">추가 결제 처리현황</th>
-                          <th class="text-center">자동 결제 실패건 처리</th>
-                          <th class="text-center">당월 결제 skip</th>
-                          <th class="text-center">카드정보 관리</th>
-                          <th class="text-center">관리 태그</th>
-                          <th class="text-center">태그입력</th>
+                          <th class="text-center">추가결제회차</th>
+                          <th class="text-center">정기결제일시</th>
+                          <th class="text-center">실결제일시</th>
+                          <th class="text-center">결제처리현황</th>
+                          <th class="text-center">결제카드변경</th>
+                          <th class="text-center">결제처리결과정보</th>
+                          <th class="text-center">관리태그</th>
+                          <th class="text-center">태그수정</th>
                         </tr>
                       </thead>
                       <tbody id="pchargeInfoList">
-                        <!--추가 결제 -->
                         <tr
                           v-for="(item, index) in filteredList(listInfoP)"
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
                         >
-                          <td>{{ index + 1 }}</td>
-                          <td>{{ item.user.name }}</td>
-                          <td>{{ item.goods.charge_plan.title_plan }}</td>
-                          <td>%</td>
-                          <td>%</td>
-                          <td>2(hard)</td>
-                          <td>결제 처리 현황</td>
+                          <td>{{ item.no }}</td>
+                          <td>{{ item.user_name }}</td>
+                          <td>{{ item.cus_id }}</td>
+                          <td>{{ item.goods_name }}</td>
+                          <td>{{ item.penalty_attend_pct }}</td>
+                          <td>{{ item.attend_pct }}</td>
+                          <td>{{ item.b_no }}</td>
+                          <td>
+                            {{
+                              item.pcharge_dt &&
+                                item.pcharge_dt.replace(/(\d{4})-(\d{2})-(\d{2})\s(\d{2}).*/gi, "$1년 $2월 $3일 $4시")
+                            }}
+                          </td>
+                          <td>
+                            {{
+                              item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1")
+                            }}
+                          </td>
                           <td>
                             <button
                               class="btn"
-                              :class="[item.bill_status === 'R' ? 'btn-primary' : 'disabled']"
-                              @click="handleBillStatus"
+                              :class="chargeBtnStatus(item.pcharge_status).class"
+                              @click="
+                                [
+                                  chargeBtnStatus(item.pcharge_status).click &&
+                                    chargeBtnStatus(item.pcharge_status).click(),
+                                ]
+                              "
                             >
-                              {{ item.bill_status === "R" ? "결제 대기" : "결제 완료" }}
+                              {{ chargeBtnStatus(item.pcharge_status).text }}
                             </button>
                           </td>
-                          <td><button class="btn btn-default" @click="handleSkip">skip</button></td>
-                          <td><button class="btn btn-default" @click="$refs.modalCard.open()">확인</button></td>
-                          <td>{{ tag === "" ? "관리 태그" : tag }}</td>
-                          <td><button class="btn btn-default" @click="$refs.modalTag.open()">입력</button></td>
+                          <td>
+                            <button
+                              class="btn btn-default"
+                              @click="[$refs.modalCard.open(), setCardInfo(item.charged_info)]"
+                            >
+                              카드변경
+                            </button>
+                          </td>
+                          <td>
+                            {{
+                              item.pcharged_info &&
+                                item.pcharged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
+                            }}
+                          </td>
+                          <td>{{ item.mng_tag ? item.mng_tag : tag }}</td>
+                          <td>
+                            <button class="btn btn-default" @click="$refs.modalTag.open()">수정</button>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -280,13 +323,14 @@ import Dropdown from "../atom/Dropdown";
 
 export default {
   async created() {
-    const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo });
-    const resP = await api.get("/partners/pchargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo });
+    const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: this.$route.params.bNo });
+    const resP = await api.get("/partners/pchargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: this.$route.params.bNo });
     this.listInfo = res.data.list;
     this.bapInfo = res.data.bap;
     this.listInfoP = resP.data.list;
     this.bapInfoP = resP.data.bap;
     this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
+    this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item));
   },
   data() {
     return {
@@ -296,26 +340,42 @@ export default {
       bapInfoP: 0,
       tab: 1,
       aNoList: [],
+      bNoList: [],
       tag: "",
       search: "",
+      cardInfo: { cp: "", num: "" },
     };
   },
   computed: {
-    defaultDrop() {
-      return item => {
-        if (item !== undefined)
-          return ` | ${item.apply_fr_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")} ~ ${item.apply_to_dt.replace(
-            /(\d{4}-\d{2}-\d{2}).*/,
-            "$1",
-          )}`;
-        else return "";
-      };
-    },
     filteredList() {
       return list => {
-        if (list.length !== 0) return list.filter(item => item.user.name.includes(this.search.trim()));
+        if (list.length !== 0)
+          return list.filter(
+            item =>
+              (item.user_name && item.user_name.includes(this.search.trim())) ||
+              (item.cus_id && item.cus_id.includes(this.search.trim())),
+          );
       };
-      //TODO: email, 고객식별 id 추가
+    },
+    chargeBtnStatus() {
+      return status => {
+        if (status === "B") return { class: "btn-primary", text: "결제 대기", click: this.waitPayment };
+        if (status === "P") return { class: "btn-warning", text: "일시 정지", click: this.pausePayment };
+        if (status === "F") return { class: "btn-danger", text: "결제 실패" };
+        if (status === "S") return { class: "disabled", text: "결제 성공" };
+        if (status === "Q") return { class: "btn-success", text: "환불 요청" };
+        return { class: "btn-info", text: "환불 완료" }; //status === "R"
+      };
+    },
+    setCardInfo() {
+      return info => {
+        if (info)
+          this.cardInfo = {
+            cp: info.replace(/[^가-힣]/gi, ""),
+            num: info.replace(/(\[[가-힣]+\]\/)|(\/\d{1})/gi, ""),
+          };
+        else this.cardInfo = { cp: "", num: "" };
+      };
     },
   },
   methods: {
@@ -323,10 +383,28 @@ export default {
       this.tab = index;
     },
     chANo: async function(index) {
-      const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: index + 1 });
+      const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 });
+      const resP = await api.get("/partners/pchargeList", { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 });
       this.listInfo = res.data.list;
       this.bapInfo = res.data.bap;
-      this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
+      this.listInfoP = res.data.list;
+      this.bapInfoP = resP.data.bap;
+    },
+    chBNo: async function(index) {
+      const res = await api.get("/partners/chargeList", {
+        sIdx: this.$route.params.sIdx,
+        aNo: this.$route.params.aNo,
+        bNo: index + 1,
+      });
+      const resP = await api.get("/partners/pchargeList", {
+        sIdx: this.$route.params.sIdx,
+        aNo: this.$route.params.aNo,
+        bNo: index + 1,
+      });
+      this.listInfo = res.data.list;
+      this.bapInfo = res.data.bap;
+      this.listInfoP = res.data.list;
+      this.bapInfoP = resP.data.bap;
     },
     aNoFormat: function(item) {
       if (typeof item === "object" && "a_no" in item)
@@ -336,53 +414,64 @@ export default {
         )} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")}`;
       else return "";
     },
-    handleSkip: function() {
+    bNoFormat: function(item) {
+      if (typeof item === "object" && "b_no" in item)
+        return `${item.b_no} | ${item.charge_dt.replace(
+          /(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/gi,
+          "$2.$3",
+        )}`;
+    },
+    waitPayment: function() {
       this.$swal
         .fire({
-          title: "",
-          html: "<strong>MM월 DD일 N회차</strong> 결제가 skip됩니다.<br>수정하시겠습니까?",
-          icon: "warning",
+          icon: "info",
           showCancelButton: true,
-          confirmButtonColor: "#8fd0f5",
-          cancelButtonColor: "#d8d8d8",
-          cancelButtonText: "취소",
-          confirmButtonText: "확인",
-          padding: "3em",
-          reverseButtons: true,
+          cancelButtonColor: "#5bc0de",
+          cancelButtonText: "수동 결제",
+          confirmButtonColor: "#FAD961",
+          confirmButtonText: "일시 정지",
+          focusConfirm: false,
         })
         .then(result => {
           if (result.isConfirmed) {
-            //TODO: bill.status
-            this.$swal.fire({
-              text: "작업이 완료되었습니다.",
+            this.$swal({
+              title: "일시정지 되었습니다.",
               icon: "success",
+              confirmButtonColor: "#8FD0F5",
               confirmButtonText: "확인",
             });
+          }
+          if (result.isDismissed) {
+            this.$swal
+              .fire({
+                html: `<strong>${this.$route.params.aNo}회차</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
+                icon: "warning",
+                showCancelButton: true,
+                cancelButtonColor: "#d8d8d8",
+                cancelButtonText: "취소",
+                confirmButtonColor: "#8FD0F5",
+                confirmButtonText: "확인",
+                reverseButtons: true,
+              })
+              .then(result => {
+                if (result.isConfirmed) {
+                  this.$swal.fire({
+                    text: "결제 처리 되었습니다",
+                    icon: "success",
+                    confirmButtonText: "확인",
+                    confirmButtonColor: "#8FD0F5",
+                  });
+                }
+              });
           }
         });
     },
-    handleBillStatus: function() {
-      this.$swal
-        .fire({
-          html: "<strong>N회차</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?",
-          icon: "warning",
-          showCancelButton: true,
-          cancelButtonColor: "#d8d8d8",
-          cancelButtonText: "취소",
-          confirmButtonColor: "#8FD0F5",
-          confirmButtonText: "확인",
-          reverseButtons: true,
-        })
-        .then(result => {
-          if (result.isConfirmed) {
-            this.$swal.fire({
-              text: "결제 처리 되었습니다",
-              icon: "success",
-              confirmButtonText: "확인",
-              confirmButtonColor: "#8FD0F5",
-            });
-          }
-        });
+    pausePayment: function() {
+      this.$swal.fire({
+        title: "일시 정지를 해제하시겠습니까?",
+        confirmButtonColor: "#8FD0F5",
+        confirmButtonText: "확인",
+      });
     },
   },
   components: {

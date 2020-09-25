@@ -1,7 +1,7 @@
 <template>
   <div class="row auto-clear">
     <div class="col-sm-6 col-md-4 col-lg-3 cardItem" v-for="(item, index) in data" :key="`Card-${index}`">
-      <router-link :to="{ name: detailView, params: { sIdx: item.s_idx, aNo: item.last_a_no } }">
+      <router-link :to="{ name: detailView, params: { sIdx: item.s_idx, aNo: item.last_a_no, bNo: 1 } }">
         <div class="ibox-title">
           <div>
             <h4 class="no-margins">{{ item.site.company }}</h4>

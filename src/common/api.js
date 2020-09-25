@@ -3,11 +3,17 @@ import querystring from "querystring";
 import shared from "@/common/shared";
 import {config} from "../../deploy.config"
 
-let server = window.location.hostname.startsWith('partners') ? 'https://bapi.tutoring.co.kr' : 'https://bapi-dev.tutoring.co.kr';
-
+const hostId = window.location.hostname.split('.')[0];
+let server = 'https://bapi-dev.tutoring.co.kr';
+if(hostId=='partners2') {
+    server = 'https://bapi.tutoring.co.kr';
+}
+else if(hostId=='partners-st') {
+    server = 'https://bapi-st.tutoring.co.kr';
+}
 //로컬 API 개발자 전용 설정
-if(config.developer=='ken' && window.location.hostname=='localhost') {
-     server = 'https://localhost';
+else if(config.developer=='ken' && window.location.hostname=='localhost') {
+    server = 'https://local.tutoring.co.kr';
 }
 
 const api = {
