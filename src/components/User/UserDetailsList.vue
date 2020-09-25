@@ -94,13 +94,7 @@
                             <div>
                                 <div class="row">
                                     <div class="text-center">
-                                        <ul class="pagination">
-                                            <li><a rel="prev" @click="setPage(currentPage-1)">&laquo;</a></li>
-                                            <li :class="(currentPage===pn)?'active':''" v-for="pn in totalPage" :key="pn">
-                                                <a @click="setPage(pn)">{{ pn }}</a>
-                                            </li>
-                                            <li><a rel="next" @click="setPage(currentPage+1)">&raquo;</a></li>
-                                        </ul>
+                                        <Pagination :totalPage="parseInt(this.items.length/30) + 1" @returnPage="setCurrentPage" />
                                     </div>
                                 </div>
                             </div>
@@ -200,6 +194,7 @@
 
 
 <script>
+import Pagination from "../Pagination";
 export default {
     data() {
         return {
@@ -207,9 +202,11 @@ export default {
             search: '',
             items: [],
             currentPage: '',
-            totalPage: '',
             sortKey: ''
         };
+    },
+    components: {
+        Pagination
     },
     props: {
       id: {
@@ -224,23 +221,20 @@ export default {
     created() {
         this.baseInfo = baseInfotemp;
         this.items = tempItems;
-        this.totalPage = parseInt(this.items.length/30) + 1;
         this.currentPage = 1;
     },
     methods: {
         setSearch(input) {
             this.search = input;
         },
-        setPage(page_num) {
-            if(page_num > 0 && page_num <= this.totalPage) {
-                this.currentPage = page_num;
-            }
-        },
         sortBy(sortKey) {
             (this.sortKey === sortKey) ? this.items.reverse() : ( this.items.sort(function(a, b) {
                 return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
             }))
             this.sortKey = sortKey;
+        },
+        setCurrentPage(data) {
+            this.currentPage = data;
         }
     }
 }

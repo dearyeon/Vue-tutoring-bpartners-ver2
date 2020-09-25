@@ -112,13 +112,7 @@
             <div>
                 <div class="row">
                     <div class="text-center">
-                        <ul class="pagination">
-                            <li><a rel="prev" @click="setPage(currentPage-1)">&laquo;</a></li>
-                            <li :class="(currentPage===pn)?'active':''" v-for="pn in totalPage" :key="pn">
-                                <a @click="setPage(pn)">{{ pn }}</a>
-                            </li>
-                            <li><a rel="next" @click="setPage(currentPage+1)">&raquo;</a></li>
-                        </ul>
+                        <Pagination :totalPage="parseInt(this.items.length/30) + 1" @returnPage="setCurrentPage" />
                     </div>
                 </div>
             </div>
@@ -128,20 +122,22 @@
 
 
 <script>
+import Pagination from "../Pagination";
 export default {
     data() {
         return {
             info: [],
             items: [],
-            currentPage: '',
-            totalPage: '',
-            sortKey: ''
+            sortKey: '',
+            currentPage: ''
         };
+    },
+    components: {
+        Pagination
     },
     created() {
         this.items = tempData;
         this.info = tempInfo;
-        this.totalPage = parseInt(this.items.length/30) + 1;
         this.currentPage = 1;
     },
     methods: {
@@ -169,10 +165,8 @@ export default {
             }))
             this.sortKey = sortKey;
         },
-        setPage(page_num) {
-            if(page_num > 0 && page_num <= this.totalPage) {
-                this.currentPage = page_num;
-            }
+        setCurrentPage(data) {
+            this.currentPage = data;
         }
     }
 }
@@ -272,7 +266,3 @@ const tempData = [
     }
 ]
 </script>
-
-<style lang="css">
-
-</style>

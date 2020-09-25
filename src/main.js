@@ -4,10 +4,14 @@ import App from './App.vue'
 import shared from './common/shared'
 import routes from "@/routes";
 import swal from 'vue-sweetalert2';
+import 'chart.js'
+import 'hchs-vue-charts'
+
 
 Vue.use(VueRouter)
 Vue.use(shared)
 Vue.use(swal)
+Vue.use(window.VueCharts)
 
 Vue.config.productionTip = false
 
