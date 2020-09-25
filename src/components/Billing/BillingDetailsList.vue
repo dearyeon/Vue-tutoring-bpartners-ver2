@@ -323,8 +323,8 @@ import Dropdown from "../atom/Dropdown";
 
 export default {
   async created() {
-    const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo });
-    const resP = await api.get("/partners/pchargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo });
+    const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: this.$route.params.bNo });
+    const resP = await api.get("/partners/pchargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: this.$route.params.bNo });
     this.listInfo = res.data.list;
     this.bapInfo = res.data.bap;
     this.listInfoP = resP.data.list;
@@ -389,7 +389,6 @@ export default {
       this.bapInfo = res.data.bap;
       this.listInfoP = res.data.list;
       this.bapInfoP = resP.data.bap;
-      //this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
     },
     chBNo: async function(index) {
       const res = await api.get("/partners/chargeList", {
