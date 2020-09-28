@@ -341,22 +341,7 @@ import Dropdown from "../atom/Dropdown";
 
 export default {
   async created() {
-    const res = await api.get("/partners/chargeList", {
-      sIdx: this.$route.params.sIdx,
-      aNo: this.$route.params.aNo,
-      bNo: this.$route.params.bNo,
-    });
-    const resP = await api.get("/partners/pchargeList", {
-      sIdx: this.$route.params.sIdx,
-      aNo: this.$route.params.aNo,
-      bNo: this.$route.params.bNo,
-    });
-    this.listInfo = res.data.list;
-    this.bapInfo = res.data.bap;
-    this.listInfoP = resP.data.list;
-    this.bapInfoP = resP.data.bap;
-    this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
-    this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item));
+    this.apiCall(this.$route.params.aNo, this.$route.params.bNo);
   },
   data() {
     return {
@@ -412,38 +397,41 @@ export default {
       };
     },
   },
-  watch: {
-    currentItem: function(val) {
-      console.log(val);
-    },
-  },
   methods: {
+    apiCall: async function(aNo, bNo) {
+      const res = await api.get("/partners/chargeList", {
+        sIdx: this.$route.params.sIdx,
+        aNo: aNo,
+        bNo: bNo,
+      });
+      const resP = await api.get("/partners/pchargeList", {
+        sIdx: this.$route.params.sIdx,
+        aNo: aNo,
+        bNo: bNo,
+      });
+      this.listInfo = res.data.list;
+      this.bapInfo = res.data.bap;
+      this.listInfoP = resP.data.list;
+      this.bapInfoP = resP.data.bap;
+      this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
+      this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item));
+    },
     chTab: function(index) {
       this.tab = index;
     },
     chANo: async function(index) {
-      const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 });
-      const resP = await api.get("/partners/pchargeList", { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 });
-      this.listInfo = res.data.list;
-      this.bapInfo = res.data.bap;
-      this.listInfoP = res.data.list;
-      this.bapInfoP = resP.data.bap;
+      this.apiCall(index + 1, 1);
+      this.$router.push({
+        name: "billingDetailsList",
+        params: { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 },
+      });
     },
     chBNo: async function(index) {
-      const res = await api.get("/partners/chargeList", {
-        sIdx: this.$route.params.sIdx,
-        aNo: this.$route.params.aNo,
-        bNo: index + 1,
+      this.apiCall(this.$route.params.aNo, index + 1);
+      this.$router.push({
+        name: "billingDetailsList",
+        params: { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: index + 1 },
       });
-      const resP = await api.get("/partners/pchargeList", {
-        sIdx: this.$route.params.sIdx,
-        aNo: this.$route.params.aNo,
-        bNo: index + 1,
-      });
-      this.listInfo = res.data.list;
-      this.bapInfo = res.data.bap;
-      this.listInfoP = res.data.list;
-      this.bapInfoP = resP.data.bap;
     },
     aNoFormat: function(item) {
       if (typeof item === "object" && "a_no" in item)
