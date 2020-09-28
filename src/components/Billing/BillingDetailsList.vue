@@ -495,7 +495,7 @@ export default {
                     baoIdx: baoIdx,
                     isPenaltyCharge: this.tab - 1,
                   });
-                  if (!chargeOrder.bao)
+                  if (chargeOrder.result === 1000)
                     this.$swal.fire({
                       text: "결제 처리에 실패하였습니다",
                       icon: "error",
