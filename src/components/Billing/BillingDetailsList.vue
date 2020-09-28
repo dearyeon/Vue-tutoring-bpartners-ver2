@@ -7,15 +7,17 @@
       </div>
       <div slot="body">
         <span>카드사</span>
-        <input class="form-control" type="text" :value="cardInfo.cp" readonly />
+        <input class="form-control" type="text" :value="currentItem.cardCompany" readonly />
         <br />
         <span>카드번호</span>
-        <input class="form-control" type="text" :value="cardInfo.num" readonly />
+        <input class="form-control" type="text" :value="currentItem.cardNo" readonly />
       </div>
       <div slot="footer">
         <button class="btn btn-danger" @click="$refs.modalCard.close()">카드정보삭제</button>
         <div>
-          <button class="btn btn-success" @click="[$refs.modalCardEdit.open(), $refs.modalCard.close()]">수정</button>
+          <button class="btn btn-success" @click="[$refs.modalCardEdit.open(), $refs.modalCard.close()]">
+            수정
+          </button>
         </div>
       </div>
     </Modal>
@@ -28,28 +30,48 @@
         <table class="table">
           <tr>
             <th>카드번호</th>
-            <td colspan="4"><input type="text" class="form-control" placeholder="1234-1234-1234-1234" /></td>
+            <td colspan="4">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="'-'를 제외한 카드번호를 입력해주세요."
+                v-model="newCardInfo.cardNo"
+                maxlength="16"
+              />
+            </td>
           </tr>
           <tr>
             <th>유효기간</th>
-            <td><input type="text" class="form-control" placeholder="YY" /></td>
+            <td>
+              <input type="text" class="form-control" placeholder="YY" v-model="newCardInfo.yy" maxlength="2" />
+            </td>
             <td>년</td>
-            <td><input type="text" class="form-control" placeholder="MM" /></td>
+            <td><input type="text" class="form-control" placeholder="MM" v-model="newCardInfo.mm" maxlength="2" /></td>
             <td>월</td>
           </tr>
           <tr>
             <th>결제비밀번호 (앞 2자리)</th>
-            <td><input type="password" class="form-control" value="00" /></td>
+            <td>
+              <input type="password" class="form-control" placeholder="00" v-model="newCardInfo.pw" maxlength="2" />
+            </td>
             <td colspan="2">* *</td>
           </tr>
           <tr>
             <th>생년월일</th>
-            <td colspan="4"><input type="text" class="form-control" placeholder="YYYY-MM-DD" /></td>
+            <td colspan="4">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="YYMMDD"
+                v-model="newCardInfo.birthYYMMDD"
+                maxlength="6"
+              />
+            </td>
           </tr>
         </table>
       </div>
       <div slot="footer" class="pull-right">
-        <button class="btn btn-success" @click="$refs.modalCardEdit.close()">저장</button>
+        <button class="btn btn-success" @click="editCardInfo(currentItem.no)">저장</button>
       </div>
     </Modal>
     <Modal ref="modalTag" v-cloak>
@@ -171,6 +193,7 @@
                           v-for="(item, index) in filteredList(listInfo)"
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
+                          @click="setCardInfo(item)"
                         >
                           <td>{{ item.no }}</td>
                           <td>{{ item.user_name }}</td>
@@ -195,7 +218,7 @@
                               @click="
                                 [
                                   chargeBtnStatus(item.charge_status).click &&
-                                    chargeBtnStatus(item.charge_status).click(),
+                                    chargeBtnStatus(item.charge_status).click(item.user_name),
                                 ]
                               "
                             >
@@ -203,10 +226,7 @@
                             </button>
                           </td>
                           <td>
-                            <button
-                              class="btn btn-default"
-                              @click="[$refs.modalCard.open(), setCardInfo(item.charged_info)]"
-                            >
+                            <button class="btn btn-default" @click="$refs.modalCard.open()">
                               카드변경
                             </button>
                           </td>
@@ -277,7 +297,7 @@
                               @click="
                                 [
                                   chargeBtnStatus(item.pcharge_status).click &&
-                                    chargeBtnStatus(item.pcharge_status).click(),
+                                    chargeBtnStatus(item.pcharge_status).click(item.user_name),
                                 ]
                               "
                             >
@@ -285,10 +305,7 @@
                             </button>
                           </td>
                           <td>
-                            <button
-                              class="btn btn-default"
-                              @click="[$refs.modalCard.open(), setCardInfo(item.charged_info)]"
-                            >
+                            <button class="btn btn-default" @click="$refs.modalCard.open()">
                               카드변경
                             </button>
                           </td>
@@ -323,8 +340,16 @@ import Dropdown from "../atom/Dropdown";
 
 export default {
   async created() {
-    const res = await api.get("/partners/chargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: this.$route.params.bNo });
-    const resP = await api.get("/partners/pchargeList", { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: this.$route.params.bNo });
+    const res = await api.get("/partners/chargeList", {
+      sIdx: this.$route.params.sIdx,
+      aNo: this.$route.params.aNo,
+      bNo: this.$route.params.bNo,
+    });
+    const resP = await api.get("/partners/pchargeList", {
+      sIdx: this.$route.params.sIdx,
+      aNo: this.$route.params.aNo,
+      bNo: this.$route.params.bNo,
+    });
     this.listInfo = res.data.list;
     this.bapInfo = res.data.bap;
     this.listInfoP = resP.data.list;
@@ -343,7 +368,8 @@ export default {
       bNoList: [],
       tag: "",
       search: "",
-      cardInfo: { cp: "", num: "" },
+      newCardInfo: { cardNo: "", yy: "", mm: "", pw: "", birthYYMMDD: "" },
+      currentItem: {},
     };
   },
   computed: {
@@ -368,13 +394,19 @@ export default {
       };
     },
     setCardInfo() {
-      return info => {
-        if (info)
-          this.cardInfo = {
-            cp: info.replace(/[^가-힣]/gi, ""),
-            num: info.replace(/(\[[가-힣]+\]\/)|(\/\d{1})/gi, ""),
+      return item => {
+        if (item.charged_info)
+          this.currentItem = {
+            ...item,
+            cardCompany: item.charged_info.replace(/[^가-힣]/gi, ""),
+            cardNo: item.charged_info.replace(/(\[[가-힣]+\]\/)|(\/\d{1})/gi, ""),
           };
-        else this.cardInfo = { cp: "", num: "" };
+        if (item.pcharged_info)
+          this.currentItem = {
+            ...item,
+            cardCompany: item.pcharged_info.replace(/[^가-힣]/gi, ""),
+            cardNo: item.pcharged_info.replace(/(\[[가-힣]+\]\/)|(\/\d{1})/gi, ""),
+          };
       };
     },
   },
@@ -421,7 +453,7 @@ export default {
           "$2.$3",
         )}`;
     },
-    waitPayment: function() {
+    waitPayment: function(user) {
       this.$swal
         .fire({
           icon: "info",
@@ -444,24 +476,37 @@ export default {
           if (result.isDismissed) {
             this.$swal
               .fire({
-                html: `<strong>${this.$route.params.aNo}회차</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
+                html: `${user}님 <strong>${this.$route.params.aNo}회차</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
                 icon: "warning",
                 showCancelButton: true,
                 cancelButtonColor: "#d8d8d8",
                 cancelButtonText: "취소",
                 confirmButtonColor: "#8FD0F5",
                 confirmButtonText: "확인",
+                showLoaderOnConfirm: true,
                 reverseButtons: true,
+                preConfirm: async () => {
+                  const chargeOrder = await api.post("/partners/chargeOrder", {
+                    baoIdx: this.currentItem.idx,
+                    isPenaltyCharge: this.tab - 1,
+                  });
+                  if (!chargeOrder.bao)
+                    this.$swal.fire({
+                      text: "결제 처리에 실패하였습니다",
+                      icon: "error",
+                      confirmButtonText: "확인",
+                      confirmButtonColor: "#8FD0F5",
+                    });
+                },
               })
               .then(result => {
-                if (result.isConfirmed) {
+                if (result.isConfirmed)
                   this.$swal.fire({
                     text: "결제 처리 되었습니다",
                     icon: "success",
                     confirmButtonText: "확인",
                     confirmButtonColor: "#8FD0F5",
                   });
-                }
               });
           }
         });
@@ -472,6 +517,27 @@ export default {
         confirmButtonColor: "#8FD0F5",
         confirmButtonText: "확인",
       });
+    },
+    editCardInfo: async function(bauIdx) {
+      const res = await api.post("/partners/modifyBillCard", { bauIdx, ...this.newCardInfo });
+      if (res.bau)
+        this.$swal
+          .fire({
+            text: "결제 카드 정보가 수정되었습니다",
+            icon: "success",
+            confirmButtonText: "확인",
+            confirmButtonColor: "#8FD0F5",
+          })
+          .then(result => {
+            if (result.isConfirmed) this.$refs.modalCardEdit.close();
+          });
+      else
+        this.$swal.fire({
+          text: res.errorMsg,
+          icon: "error",
+          confirmButtonText: "확인",
+          confirmButtonColor: "#8FD0F5",
+        });
     },
   },
   components: {
