@@ -218,7 +218,7 @@
                               @click="
                                 [
                                   chargeBtnStatus(item.charge_status).click &&
-                                    chargeBtnStatus(item.charge_status).click(item.user_name, item.idx),
+                                    chargeBtnStatus(item.charge_status).click(),
                                 ]
                               "
                             >
@@ -271,6 +271,7 @@
                           v-for="(item, index) in filteredList(listInfoP)"
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
+                          @click="setCurrentItem(item)"
                         >
                           <td>{{ item.no }}</td>
                           <td>{{ item.user_name }}</td>
@@ -297,7 +298,7 @@
                               @click="
                                 [
                                   chargeBtnStatus(item.pcharge_status).click &&
-                                    chargeBtnStatus(item.pcharge_status).click(item.user_name, item.idx),
+                                    chargeBtnStatus(item.pcharge_status).click(),
                                 ]
                               "
                             >
@@ -407,6 +408,7 @@ export default {
             cardCompany: item.pcharged_info.replace(/[^가-힣]/gi, ""),
             cardNo: item.pcharged_info.replace(/(\[[가-힣]+\]\/)|(\/\d{1})/gi, ""),
           };
+        else this.currentItem = item;
       };
     },
   },
@@ -458,7 +460,7 @@ export default {
           "$2.$3",
         )}`;
     },
-    waitPayment: function(user, baoIdx) {
+    waitPayment: function() {
       this.$swal
         .fire({
           icon: "info",
@@ -481,7 +483,7 @@ export default {
           if (result.isDismissed) {
             this.$swal
               .fire({
-                html: `${user}님 <strong>${this.$route.params.aNo}회차</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
+                html: `${this.currentItem.user_name}님 <strong>${this.$route.params.aNo}회차(baoidx: ${this.currentItem.idx})</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
                 icon: "warning",
                 showCancelButton: true,
                 cancelButtonColor: "#d8d8d8",
@@ -492,7 +494,7 @@ export default {
                 reverseButtons: true,
                 preConfirm: async () => {
                   const chargeOrder = await api.post("/partners/chargeOrder", {
-                    baoIdx: baoIdx,
+                    baoIdx: this.currentItem.idx,
                     isPenaltyCharge: this.tab - 1,
                   });
                   if (chargeOrder.result === 1000)
