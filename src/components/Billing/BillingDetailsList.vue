@@ -193,7 +193,7 @@
                           v-for="(item, index) in filteredList(listInfo)"
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
-                          @click="setCardInfo(item)"
+                          @click="setCurrentItem(item)"
                         >
                           <td>{{ item.no }}</td>
                           <td>{{ item.user_name }}</td>
@@ -218,7 +218,7 @@
                               @click="
                                 [
                                   chargeBtnStatus(item.charge_status).click &&
-                                    chargeBtnStatus(item.charge_status).click(item.user_name),
+                                    chargeBtnStatus(item.charge_status).click(item.user_name, item.idx),
                                 ]
                               "
                             >
@@ -297,7 +297,7 @@
                               @click="
                                 [
                                   chargeBtnStatus(item.pcharge_status).click &&
-                                    chargeBtnStatus(item.pcharge_status).click(item.user_name),
+                                    chargeBtnStatus(item.pcharge_status).click(item.user_name, item.idx),
                                 ]
                               "
                             >
@@ -393,7 +393,7 @@ export default {
         return { class: "btn-info", text: "환불 완료" }; //status === "R"
       };
     },
-    setCardInfo() {
+    setCurrentItem() {
       return item => {
         if (item.charged_info)
           this.currentItem = {
@@ -408,6 +408,11 @@ export default {
             cardNo: item.pcharged_info.replace(/(\[[가-힣]+\]\/)|(\/\d{1})/gi, ""),
           };
       };
+    },
+  },
+  watch: {
+    currentItem: function(val) {
+      console.log(val);
     },
   },
   methods: {
@@ -453,7 +458,7 @@ export default {
           "$2.$3",
         )}`;
     },
-    waitPayment: function(user) {
+    waitPayment: function(user, baoIdx) {
       this.$swal
         .fire({
           icon: "info",
@@ -487,7 +492,7 @@ export default {
                 reverseButtons: true,
                 preConfirm: async () => {
                   const chargeOrder = await api.post("/partners/chargeOrder", {
-                    baoIdx: this.currentItem.idx,
+                    baoIdx: baoIdx,
                     isPenaltyCharge: this.tab - 1,
                   });
                   if (!chargeOrder.bao)
