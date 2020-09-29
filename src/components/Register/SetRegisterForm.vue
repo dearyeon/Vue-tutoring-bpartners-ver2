@@ -204,7 +204,7 @@ export default {
     return {
       image: "",
       preview:
-        "https://s3-alpha-sig.figma.com/img/911a/6151/4c7eb8a41cad075d0c95050d0bf9576a?Expires=1601251200&Signature=gGMNkI8zHURCtidWQDFKLvJGqsKcUdIrZUd3JdBrGzBxWndZmZXAoJpK93nZ37edqjSwuD9EG3F18NctLiN7rX-w0oby8mJquoOA8SMJXieOZbVFR7O~Xn3S~N0Ud8a5IX3YXqHrs9Qky3xrPyqXYDW-ro8WpRZaXIC1dE9Ico9Y6fG45PzOUAkhggVNYGhl8YX121Oup9bsGyvGfonKlFRUNtnz4X9cjwe4OjyYh0K0vfq4P40Q0Qklmxg-~uOjNGRiyMW5w9J6SM-LIchcxaXHoxY43qqFgYl5StkwVSTp1UmX-Fv8CNgFyGnJPYA-cKwfLjsH-vqZWV~HyABA3Q__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA",
+        "https://s3-alpha-sig.figma.com/img/911a/6151/4c7eb8a41cad075d0c95050d0bf9576a?Expires=1602460800&Signature=YuUFI8EGRfBtnq8MZrlqnwUlUuCdjr20SSE3~yMeXS5x9vjpqOsQrK4CyqtuH9d2v7l1VzqCjVDiOHg53SFGHYG5JcsbKoPwdo78yirNBB5DRQBuNmzLAxikSRwV5sel1K9HkMdG5cbxDxtK54piFZuVQMP30MCF271EJkLajk44AyClnXau-pT~mxR6zov1KxaMpdp7tNJyyZwpZXJfRg53-cVIS2Q9Z8Ml6o0LM4JuV5wok5-7g6q4nLhvbhJBgwefVucy2~ehgCwrzNlJX7jcFX8-2DtRqItU5L~Z-2M56VE4p3AwbJspxnJm~~ACwiqk0VpSuLZtQHB5wkGxgQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA",
       disclaimer:
         "*신청시 주의 사항을 확인해주세요\n*프로그램은 인당 월 1개에 한해 가능합니다.\n(중복 신청시 마지막 신청 정보로 반영)\n*신청 및 정정은 기한내에만 가능합니다.\n(신청~25일까지, 정정 및 취소 26~말일까지)\n*신청 기한내(~25일) 정정은 재 신청 해주시고, 신청 기한 이후(26일~말일) 정정 및 취소는 하기 메일로 요청 해주시기 바랍니다.(b2b@tutoring.co.kr)\n*신청자에 한해 27일 학습 안내 메일이 발송될 예정입니다.\n*GTP 대상/비대상에 따라 급여공제가 진행되므로 GTP여부를 반드시 확인 후 신청 해주시기 바랍니다.(비용 익월 공제)",
     };

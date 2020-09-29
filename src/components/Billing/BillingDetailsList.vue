@@ -524,7 +524,7 @@ export default {
       console.log(this.currentItem);
       this.$swal
         .fire({
-          html: `${this.currentItem.user_name}`,
+          html: `${this.currentItem.charged_bill_dump}`,
           icon: "error",
           confirmButtonText: "수동 재결제",
           confirmButtonColor: "#8FD0F5",
