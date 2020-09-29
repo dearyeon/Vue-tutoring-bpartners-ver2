@@ -90,7 +90,7 @@
         </table>
       </div>
       <div slot="footer" class="pull-right">
-        <button class="btn btn-success" @click="[$refs.modalTag.close()]">저장</button>
+        <button class="btn btn-success" @click="[$refs.modalTag.close(), editTag()]">저장</button>
       </div>
     </Modal>
     <div class="col-lg-12">
@@ -277,8 +277,8 @@
                           <td>{{ item.user_name }}</td>
                           <td>{{ item.cus_id }}</td>
                           <td>{{ item.goods_name }}</td>
-                          <td>{{ item.penalty_attend_pct }}</td>
-                          <td>{{ item.attend_pct }}</td>
+                          <td>{{ item.penalty_attend_pct }}%</td>
+                          <td>{{ item.attend_pct }}%</td>
                           <td>{{ item.b_no }}</td>
                           <td>
                             {{
@@ -394,6 +394,7 @@ export default {
             cardNo: item.pcharged_info.replace(/(\[[가-힣]+\]\/)|(\/\d{1})/gi, ""),
           };
         else this.currentItem = item;
+        if (item) this.tag = item.mng_tag;
       };
     },
   },
@@ -415,6 +416,9 @@ export default {
       this.bapInfoP = resP.data.bap;
       this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
       this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item));
+    },
+    refresh: function() {
+      this.apiCall(this.$route.params.aNo, this.$route.params.bNo);
     },
     chTab: function(index) {
       this.tab = index;
@@ -486,22 +490,30 @@ export default {
                     isPenaltyCharge: this.tab - 1,
                   });
                   if (chargeOrder.result === 1000)
-                    this.$swal.fire({
-                      text: "결제 처리에 실패하였습니다",
-                      icon: "error",
-                      confirmButtonText: "확인",
-                      confirmButtonColor: "#8FD0F5",
-                    });
+                    this.$swal
+                      .fire({
+                        text: "결제 처리에 실패하였습니다",
+                        icon: "error",
+                        confirmButtonText: "확인",
+                        confirmButtonColor: "#8FD0F5",
+                      })
+                      .then(result => {
+                        if (result.isConfirmed) this.refresh();
+                      });
                 },
               })
               .then(result => {
                 if (result.isConfirmed)
-                  this.$swal.fire({
-                    text: "결제 처리 되었습니다",
-                    icon: "success",
-                    confirmButtonText: "확인",
-                    confirmButtonColor: "#8FD0F5",
-                  });
+                  this.$swal
+                    .fire({
+                      text: "결제 처리 되었습니다",
+                      icon: "success",
+                      confirmButtonText: "확인",
+                      confirmButtonColor: "#8FD0F5",
+                    })
+                    .then(result => {
+                      if (result.isConfirmed) this.refresh();
+                    });
               });
           }
         });
@@ -533,6 +545,10 @@ export default {
           confirmButtonText: "확인",
           confirmButtonColor: "#8FD0F5",
         });
+    },
+    editTag: async function() {
+      const res = await api.post("/partners/updateMngTag", { idx: this.currentItem.idx, mngTag: this.tag });
+      if (res) this.refresh();
     },
   },
   components: {
