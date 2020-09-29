@@ -13,7 +13,7 @@
       <div slot="header">
         <h1>카드 정보 수정</h1>
         <p>카드 정보를 확인해주세요.</p>
-        <strong>{{ currentItem.charged_info ? currentItem.charged_info.replace(/(\/\d{1})/gi, "") : "" }}</strong>
+        <strong>{{ currentItem.bill_card ? currentItem.bill_card.replace(/(\/\d{1})/gi, "") : "" }}</strong>
       </div>
       <div slot="body">
         <table class="table">
@@ -456,7 +456,10 @@ export default {
                   confirmButtonColor: "#8FD0F5",
                 })
                 .then(result => {
-                  if (result.isConfirmed) this.$refs.modalCardEdit.close();
+                  if (result.isConfirmed) {
+                    this.$refs.modalCardEdit.close();
+                    this.refresh();
+                  }
                 });
             else
               this.$swal({
@@ -525,6 +528,10 @@ export default {
           icon: "error",
           confirmButtonText: "수동 재결제",
           confirmButtonColor: "#8FD0F5",
+          showCancelButton: true,
+          cancelButtonColor: "#d8d8d8",
+          cancelButtonText: "취소",
+          reverseButtons: true,
         })
         .then(result => {
           if (result.isConfirmed) this.makePayment();
