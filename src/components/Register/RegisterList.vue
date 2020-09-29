@@ -39,11 +39,16 @@
                   <button class="btn btn-page-set">페이지 설정</button>
                 </router-link>
               </td>
-              <td>{{ register.applys[0].upd_dt }}</td>
+              <td>{{ register.applys[currentANo[index]].upd_dt }}</td>
               <td>
-                <a :href="`https://tutoring.co.kr/client_idx${register.s_idx}`">{{
-                  `https://tutoring.co.kr/client_idx${register.s_idx}`
-                }}</a>
+                <router-link
+                  :to="{
+                    name: 'applyDetailsList',
+                    params: { sIdx: register.s_idx, aNo: register.applys[currentANo[index]].a_no },
+                  }"
+                >
+                  <p>link</p>
+                </router-link>
               </td>
             </tr>
           </table>
@@ -62,11 +67,13 @@ export default {
     const res = await api.get("/partners/applyPageList");
     this.registers = res;
     this.aNoList = res.map(register => register.applys.map(item => this.aNoFormat(item)));
+    this.currentANo = res.map(() => 0);
   },
   data() {
     return {
       registers: [],
       aNoList: [],
+      currentANo: [],
     };
   },
   methods: {
@@ -77,6 +84,9 @@ export default {
           "$1",
         )} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")}`;
       else return "";
+    },
+    chANo: function(index, pick) {
+      this.currentANo[index] = pick;
     },
   },
   components: {
