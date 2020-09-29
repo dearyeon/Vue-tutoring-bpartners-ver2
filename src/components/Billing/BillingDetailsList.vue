@@ -59,7 +59,7 @@
       </div>
       <div slot="footer">
         <button class="btn btn-danger">삭제</button>
-        <button class="btn btn-success" @click="editCardInfo(currentItem.no)">수정</button>
+        <button class="btn btn-success" @click="editCardInfo(currentItem.bau_idx)">수정</button>
       </div>
     </Modal>
     <Modal ref="modalTag" v-cloak>
