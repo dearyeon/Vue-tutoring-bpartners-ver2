@@ -5,10 +5,10 @@
         <div class="modal-container" @mousedown.stop>
           <button class="modal-button" @click="close">X</button>
           <div class="modal-header">
-            <slot name="header">default header</slot>
+            <slot name="header"></slot>
           </div>
           <div class="modal-body">
-            <slot name="body">default body</slot>
+            <slot name="body"></slot>
           </div>
           <div class="modal-footer">
             <slot name="footer"></slot>

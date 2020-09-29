@@ -1,30 +1,19 @@
 <template>
   <div class="row">
-    <Modal ref="modalCard" v-cloak>
-      <div slot="header">
-        <h1>카드정보 관리</h1>
-        <p>카드 정보를 확인해주세요.</p>
+    <Modal ref="modalWaitPayment" v-cloak>
+      <div slot="body" style="align-items:center">
+        <h1><strong>결제 방법을 선택해주세요.</strong></h1>
       </div>
-      <div slot="body">
-        <span>카드사</span>
-        <input class="form-control" type="text" :value="currentItem.cardCompany" readonly />
-        <br />
-        <span>카드번호</span>
-        <input class="form-control" type="text" :value="currentItem.cardNo" readonly />
-      </div>
-      <div slot="footer">
-        <button class="btn btn-danger" @click="$refs.modalCard.close()">카드정보삭제</button>
-        <div>
-          <button class="btn btn-success" @click="[$refs.modalCardEdit.open(), $refs.modalCard.close()]">
-            수정
-          </button>
-        </div>
+      <div slot="footer" style="justify-content: center">
+        <button class="btn btn-warning" @click="$refs.modalWaitPayment.close()">일시정지</button>
+        <button class="btn btn-info" @click="[$refs.modalWaitPayment.close(), makePayment()]">수동결제</button>
       </div>
     </Modal>
     <Modal ref="modalCardEdit" v-cloak>
       <div slot="header">
         <h1>카드 정보 수정</h1>
         <p>카드 정보를 확인해주세요.</p>
+        <strong>{{ currentItem.charged_info ? currentItem.charged_info.replace(/(\/\d{1})/gi, "") : "" }}</strong>
       </div>
       <div slot="body">
         <table class="table">
@@ -70,8 +59,9 @@
           </tr>
         </table>
       </div>
-      <div slot="footer" class="pull-right">
-        <button class="btn btn-success" @click="editCardInfo(currentItem.no)">저장</button>
+      <div slot="footer">
+        <button class="btn btn-danger">삭제</button>
+        <button class="btn btn-success" @click="editCardInfo(currentItem.no)">수정</button>
       </div>
     </Modal>
     <Modal ref="modalTag" v-cloak>
@@ -226,7 +216,7 @@
                             </button>
                           </td>
                           <td>
-                            <button class="btn btn-default" @click="$refs.modalCard.open()">
+                            <button class="btn btn-default" @click="[(newCardInfo = {}), $refs.modalCardEdit.open()]">
                               카드변경
                             </button>
                           </td>
@@ -306,7 +296,7 @@
                             </button>
                           </td>
                           <td>
-                            <button class="btn btn-default" @click="$refs.modalCard.open()">
+                            <button class="btn btn-default" @click="[(newCardInfo = {}), $refs.modalCardEdit.open()]">
                               카드변경
                             </button>
                           </td>
@@ -371,9 +361,9 @@ export default {
     },
     chargeBtnStatus() {
       return status => {
-        if (status === "B") return { class: "btn-primary", text: "결제 대기", click: this.waitPayment };
+        if (status === "B") return { class: "btn-primary", text: "결제 대기", click: this.$refs.modalWaitPayment.open };
         if (status === "P") return { class: "btn-warning", text: "일시 정지", click: this.pausePayment };
-        if (status === "F") return { class: "btn-danger", text: "결제 실패" };
+        if (status === "F") return { class: "btn-danger", text: "결제 실패", click: this.paymentFailed };
         if (status === "S") return { class: "disabled", text: "결제 성공" };
         if (status === "Q") return { class: "btn-success", text: "환불 요청" };
         return { class: "btn-info", text: "환불 완료" }; //status === "R"
@@ -381,20 +371,10 @@ export default {
     },
     setCurrentItem() {
       return item => {
-        if (item.charged_info)
-          this.currentItem = {
-            ...item,
-            cardCompany: item.charged_info.replace(/[^가-힣]/gi, ""),
-            cardNo: item.charged_info.replace(/(\[[가-힣]+\]\/)|(\/\d{1})/gi, ""),
-          };
-        if (item.pcharged_info)
-          this.currentItem = {
-            ...item,
-            cardCompany: item.pcharged_info.replace(/[^가-힣]/gi, ""),
-            cardNo: item.pcharged_info.replace(/(\[[가-힣]+\]\/)|(\/\d{1})/gi, ""),
-          };
-        else this.currentItem = item;
-        if (item) this.tag = item.mng_tag;
+        if (item) {
+          this.currentItem = item;
+          this.tag = item.mng_tag;
+        }
       };
     },
   },
@@ -452,72 +432,6 @@ export default {
           "$2.$3",
         )}`;
     },
-    waitPayment: function() {
-      this.$swal
-        .fire({
-          icon: "info",
-          showCancelButton: true,
-          cancelButtonColor: "#5bc0de",
-          cancelButtonText: "수동 결제",
-          confirmButtonColor: "#FAD961",
-          confirmButtonText: "일시 정지",
-          focusConfirm: false,
-        })
-        .then(result => {
-          if (result.isConfirmed) {
-            this.$swal({
-              title: "일시정지 되었습니다.",
-              icon: "success",
-              confirmButtonColor: "#8FD0F5",
-              confirmButtonText: "확인",
-            });
-          }
-          if (result.isDismissed) {
-            this.$swal
-              .fire({
-                html: `${this.currentItem.user_name}님 <strong>${this.$route.params.aNo}회차(baoidx: ${this.currentItem.idx})</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
-                icon: "warning",
-                showCancelButton: true,
-                cancelButtonColor: "#d8d8d8",
-                cancelButtonText: "취소",
-                confirmButtonColor: "#8FD0F5",
-                confirmButtonText: "확인",
-                showLoaderOnConfirm: true,
-                reverseButtons: true,
-                preConfirm: async () => {
-                  const chargeOrder = await api.post("/partners/chargeOrder", {
-                    baoIdx: this.currentItem.idx,
-                    isPenaltyCharge: this.tab - 1,
-                  });
-                  if (chargeOrder.result === 1000)
-                    this.$swal
-                      .fire({
-                        text: "결제 처리에 실패하였습니다",
-                        icon: "error",
-                        confirmButtonText: "확인",
-                        confirmButtonColor: "#8FD0F5",
-                      })
-                      .then(result => {
-                        if (result.isConfirmed) this.refresh();
-                      });
-                },
-              })
-              .then(result => {
-                if (result.isConfirmed)
-                  this.$swal
-                    .fire({
-                      text: "결제 처리 되었습니다",
-                      icon: "success",
-                      confirmButtonText: "확인",
-                      confirmButtonColor: "#8FD0F5",
-                    })
-                    .then(result => {
-                      if (result.isConfirmed) this.refresh();
-                    });
-              });
-          }
-        });
-    },
     pausePayment: function() {
       this.$swal.fire({
         title: "일시 정지를 해제하시겠습니까?",
@@ -526,8 +440,8 @@ export default {
       });
     },
     editCardInfo: async function(bauIdx) {
-      const res = await api.post("/partners/modifyBillCard", { bauIdx, ...this.newCardInfo });
-      if (res.bau)
+      const res = await api.post("/partners/updateBillkey", { bauIdx, ...this.newCardInfo });
+      if (res.result === 2000)
         this.$swal
           .fire({
             text: "결제 카드 정보가 수정되었습니다",
@@ -539,8 +453,8 @@ export default {
             if (result.isConfirmed) this.$refs.modalCardEdit.close();
           });
       else
-        this.$swal.fire({
-          text: res.errorMsg,
+        this.$swal({
+          text: "다시 시도 해주세요",
           icon: "error",
           confirmButtonText: "확인",
           confirmButtonColor: "#8FD0F5",
@@ -549,6 +463,63 @@ export default {
     editTag: async function() {
       const res = await api.post("/partners/updateMngTag", { idx: this.currentItem.idx, mngTag: this.tag });
       if (res) this.refresh();
+    },
+    makePayment: function() {
+      this.$swal
+        .fire({
+          html: `${this.currentItem.user_name}님 <strong>${this.$route.params.aNo}회차(baoidx: ${this.currentItem.idx})</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonColor: "#d8d8d8",
+          cancelButtonText: "취소",
+          confirmButtonColor: "#8FD0F5",
+          confirmButtonText: "확인",
+          showLoaderOnConfirm: true,
+          reverseButtons: true,
+          preConfirm: async () => {
+            const chargeOrder = await api.post("/partners/chargeOrder", {
+              baoIdx: this.currentItem.idx,
+              isPenaltyCharge: this.tab - 1,
+            });
+            if (chargeOrder.result === 1000)
+              this.$swal
+                .fire({
+                  text: "결제 처리에 실패하였습니다",
+                  icon: "error",
+                  confirmButtonText: "확인",
+                  confirmButtonColor: "#8FD0F5",
+                })
+                .then(result => {
+                  if (result.isConfirmed) this.refresh();
+                });
+          },
+        })
+        .then(result => {
+          if (result.isConfirmed)
+            this.$swal
+              .fire({
+                text: "결제 처리 되었습니다",
+                icon: "success",
+                confirmButtonText: "확인",
+                confirmButtonColor: "#8FD0F5",
+              })
+              .then(result => {
+                if (result.isConfirmed) this.refresh();
+              });
+        });
+    },
+    paymentFailed: function() {
+      console.log(this.currentItem);
+      this.$swal
+        .fire({
+          html: `${this.currentItem.user_name}`,
+          icon: "error",
+          confirmButtonText: "수동 재결제",
+          confirmButtonColor: "#8FD0F5",
+        })
+        .then(result => {
+          if (result.isConfirmed) this.makePayment();
+        });
     },
   },
   components: {
@@ -586,5 +557,8 @@ textarea {
 }
 .swal2-popup {
   font-size: 1.3rem !important;
+}
+.swal2-container {
+  z-index: 300000 !important;
 }
 </style>
