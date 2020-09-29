@@ -236,7 +236,7 @@
                                 item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
                             }}
                           </td>
-                          <td>{{ item.mng_tag ? item.mng_tag : tag }}</td>
+                          <td>{{ item.mng_tag ? item.mng_tag : "" }}</td>
                           <td>
                             <button class="btn btn-default" @click="$refs.modalTag.open()">수정</button>
                           </td>
@@ -316,7 +316,7 @@
                                 item.pcharged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
                             }}
                           </td>
-                          <td>{{ item.mng_tag ? item.mng_tag : tag }}</td>
+                          <td>{{ item.mng_tag ? item.mng_tag : "" }}</td>
                           <td>
                             <button class="btn btn-default" @click="$refs.modalTag.open()">수정</button>
                           </td>
