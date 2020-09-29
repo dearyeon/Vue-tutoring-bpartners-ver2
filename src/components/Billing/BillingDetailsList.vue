@@ -31,12 +31,10 @@
           </tr>
           <tr>
             <th>유효기간</th>
-            <td>
-              <input type="text" class="form-control" placeholder="YY" v-model="newCardInfo.yy" maxlength="2" />
-            </td>
-            <td>년</td>
             <td><input type="text" class="form-control" placeholder="MM" v-model="newCardInfo.mm" maxlength="2" /></td>
             <td>월</td>
+            <td><input type="text" class="form-control" placeholder="YY" v-model="newCardInfo.yy" maxlength="2" /></td>
+            <td>년</td>
           </tr>
           <tr>
             <th>결제비밀번호 (앞 2자리)</th>
@@ -439,25 +437,36 @@ export default {
         confirmButtonText: "확인",
       });
     },
-    editCardInfo: async function(bauIdx) {
-      const res = await api.post("/partners/updateBillkey", { bauIdx, ...this.newCardInfo });
-      if (res.result === 2000)
-        this.$swal
-          .fire({
-            text: "결제 카드 정보가 수정되었습니다",
-            icon: "success",
-            confirmButtonText: "확인",
-            confirmButtonColor: "#8FD0F5",
-          })
-          .then(result => {
-            if (result.isConfirmed) this.$refs.modalCardEdit.close();
-          });
-      else
-        this.$swal({
-          text: "다시 시도 해주세요",
-          icon: "error",
+    editCardInfo: function(bauIdx) {
+      this.$swal
+        .fire({
+          title: "수정 하시겠습니까?",
           confirmButtonText: "확인",
           confirmButtonColor: "#8FD0F5",
+        })
+        .then(async result => {
+          if (result.isConfirmed) {
+            const res = await api.post("/partners/updateBillkey", { bauIdx, ...this.newCardInfo });
+            if (res.result === 2000)
+              this.$swal
+                .fire({
+                  text: "결제 카드 정보가 수정되었습니다",
+                  icon: "success",
+                  confirmButtonText: "확인",
+                  confirmButtonColor: "#8FD0F5",
+                })
+                .then(result => {
+                  if (result.isConfirmed) this.$refs.modalCardEdit.close();
+                });
+            else
+              this.$swal({
+                title: "다시 시도 해주세요",
+                text: res.message.errMsg,
+                icon: "error",
+                confirmButtonText: "확인",
+                confirmButtonColor: "#8FD0F5",
+              });
+          }
         });
     },
     editTag: async function() {
