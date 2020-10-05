@@ -110,7 +110,6 @@
                 v-model="search"
                 placeholder="성명 or 고객식별ID"
                 class="form-control"
-                @keydown.enter.prevent
               />
             </div>
             <div class="col-lg-5 col-md-12 col-xs-12">

@@ -1,6 +1,6 @@
 <template>
   <div class="p-w-xs">
-    <button class="btn btn-default dropdown-toggle" @click="chDrop">
+    <button class="btn btn-default dropdown-toggle" @click.prevent="chDrop">
       <strong>{{ checkedValue }}</strong
       ><span class="caret" />
     </button>
@@ -8,7 +8,7 @@
       <button
         v-for="(item, index) in itemList"
         class="btn"
-        @click="[chDrop(item), itemClick(index)]"
+        @click.prevent="itemClick(index,item)"
         :key="`dropItem-${index}`"
       >
         {{ item }}
@@ -41,12 +41,12 @@ export default {
     },
   },
   methods: {
-    chDrop: function(item) {
+    chDrop: function() {
       this.drop = !this.drop;
-      if (typeof item !== "object") this.checkedValue = item;
     },
-    itemClick: function(index) {
-      this.$emit("dropItemClick", index);
+    itemClick: function(index,item) {
+      this.chDrop()
+      item !== this.checkedValue && this.$emit("dropItemClick", index)
     },
   },
 };
