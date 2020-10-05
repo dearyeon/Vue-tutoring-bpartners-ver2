@@ -12,24 +12,24 @@
                 <div class="col-lg-3">
                     <small>총 수업 수(최근 30일)</small>
                     <h2>{{ info.this_month_cnt }}회
-                        <small :class="(info.this_month_cnt - info.last_month_cnt)>=0 ? 'text-info':'text-danger'">
-                            {{ info.last_month_cnt==0 ? 100:(info.this_month_cnt-info.last_month_cnt)/info.last_month_cnt * 100 }}%(최근 30일 대비)
+                        <small :class="(info.this_month_cnt-info.last_month_cnt)>=0 ? 'text-info':'text-danger'">
+                            {{ info.last_month_cnt==0 ? 100:(info.this_month_cnt-info.last_month_cnt)/info.last_month_cnt*100 }}%(최근 30일 대비)
                         </small>
                     </h2>
                 </div>
                 <div class="col-lg-3">
                     <small>총 수업 수(최근 7일)</small>
                     <h2>{{ info.this_week_cnt }}회
-                        <small :class="info.this_week_cnt - info.last_week_cnt>=0 ? 'text-info':'text-danger'">
-                            {{ info.last_week_cnt==0 ? 100:(info.this_week_cnt-info.last_week_cnt)/info.last_week_cnt * 100 }}%(최근 7일 대비)
+                        <small :class="info.this_week_cnt-info.last_week_cnt>=0 ? 'text-info':'text-danger'">
+                            {{ info.last_week_cnt==0 ? 100:(info.this_week_cnt-info.last_week_cnt)/info.last_week_cnt*100 }}%(최근 7일 대비)
                         </small>
                     </h2>
                 </div>
                 <div class="col-lg-3">
                     <small>총 수업 수(최근 3일)</small>
                     <h2>{{ info.this_three_cnt }}회
-                        <small :class="info.this_three_cnt - info.last_three_cnt>=0 ? 'text-info':'text-danger'">
-                            {{ info.last_three_cnt==0 ? 100:(info.this_three_cnt-info.last_three_cnt)/info.last_three_cnt * 100 }}%(최근 3일 대비)
+                        <small :class="info.this_three_cnt-info.last_three_cnt>=0 ? 'text-info':'text-danger'">
+                            {{ info.last_three_cnt==0 ? 100:(info.this_three_cnt-info.last_three_cnt)/info.last_three_cnt*100 }}%(최근 3일 대비)
                         </small>
                     </h2>
                 </div>
@@ -53,7 +53,7 @@
                                         <th>과목</th>
                                         <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="sortBy('fr_dt')">시작날짜</th>
                                         <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="sortBy('to_dt')">종료날짜</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="sortBy('headcount')">인원수</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="sortBy('cnt')">인원수</th>
                                         <th class="pagesubmit sorting" field="order" value="lesson_rate" style="width:35%" @click="sortBy('lesson_rate')">수업 달성률</th>
                                     </tr>
                                     </thead>
@@ -62,7 +62,7 @@
 
                                         <tr class="hover-pointer LESSON_INFO" 
                                             v-for="(item, index) in items" :key="`Lesson-${index}`" 
-                                            @click="routeDetailPage(index,item.orderList[0].c_no)" v-show="index>=(currentPage-1)*30 && index<currentPage*30">
+                                            @click="routeDetailPage(index,item.orderList[0].c_no)" v-show="calculatePage(index)">
                                         <div/>
                                             <!-- <td><img alt="image" class="img-rounded" src="{{ $item->prof_img?getSiteImage($item->prof_img,'_S'):getProfileImage('') }}" style="width: 20px;" /></td>   -->
                                             <td>
@@ -79,12 +79,10 @@
                                                         </li>
                                                     </ul> -->
 
-
-
                                                 </div>
                                             </td>
                                             <td class="text-center">
-                                                <label :class="getstatus(item.status, 1)" style="width:60px;text-align: center">{{ getstatus(item.status, 0) }}</label>
+                                                <label :class="status.class" style="width:60px;text-align: center">{{ status.state }}</label>
                                             </td>
                                             <td class="text-left">
                                                 <label class="btn-info img-circle text-center no-margins" style="width: 20px;height: 20px" v-if="item.e_cnt>0"><strong>AB</strong></label>
@@ -92,7 +90,7 @@
                                             </td>
                                             <td class="text-center">{{ item.fr_dt!=0 ? item.fr_dt:'-'}}</td>
                                             <td class="text-center">{{ item.to_dt!=0 ? item.to_dt:'-'}}</td>
-                                            <td class="text-center">{{ item.headcount }}명</td>
+                                            <td class="text-center">{{ item.cnt }}명</td>
                                             <td>
                                                 <div class="progress progress-striped active no-margins">
                                                     <span class="progress-value" value="item.lesson_rate">{{ item.lesson_rate? item.lesson_rate : 0 }}%</span>
@@ -129,7 +127,8 @@ export default {
             info: [],
             items: [],
             sortKey: '',
-            currentPage: ''
+            currentPage: '',
+            status: []
         };
     },
     components: {
@@ -139,22 +138,30 @@ export default {
         this.items = tempData;
         this.info = tempInfo;
         this.currentPage = 1;
+
+        let status = [];
+        this.items.forEach(function(item) {
+            switch(item.status) {
+            case 1:
+                status.push({class:"b-r-sm bg-warning", state:"대기중"}); break;
+            case 2:
+                status.push({class:"b-r-sm bg-primary", state:"진행중"}); break;
+            case 3:
+                status.push({class:"b-r-sm bg-success", state:"완료"}); break;
+            case 4:
+                status.push({class:"b-r-sm bg-danger", state:"취소됨"}); break;
+        }})
+        this.status = status;
     },
     methods: {
         routeDetailPage(index, c_no) {
-            this.$router.push({path: '/lessonDetailsList/'+(index+1)+'/'+c_no});
+            this.$router.push({
+                name: "lessonDetailsList",
+                params: { id: index+1, c_no:c_no }
+            })
         },
-        getstatus(status,value) {
-            switch(status) {
-            case 1:
-                return value ? "b-r-sm bg-warning": "대기중"
-            case 2:
-                return value ? "b-r-sm bg-primary": "진행중"
-            case 3:
-                return value ? "b-r-sm bg-success": "완료"
-            case 4:
-                return value ? "b-r-sm bg-danger": "취소됨"
-            }
+        calculatePage(index) {
+            return index>=(this.currentPage-1)*30 && index<this.currentPage*30;
         },
         getProgressStyle(lesson_rate) {
             return "width:" + (lesson_rate && lesson_rate > 90 ? 100 : lesson_rate) + "%"
@@ -193,7 +200,7 @@ const tempData = [
         c_cnt: 1,
         fr_dt: "2020.09.01",
         to_dt: "2020.09.03",
-        headcount: 0,
+        cnt: 0,
         lesson_rate: 70
     },
     {
@@ -206,7 +213,7 @@ const tempData = [
         c_cnt: 0,
         fr_dt: "2020.04.01",
         to_dt: "2020.06.30",
-        headcount: 0,
+        cnt: 0,
         lesson_rate: 100
     },
     {

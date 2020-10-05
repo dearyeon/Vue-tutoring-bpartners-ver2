@@ -129,7 +129,10 @@ export default {
             this.search = input;
         },
         routeDetailPage(index, c_no) {
-            this.$router.push({path: '/userDetailsList/'+(index+1)+'/'+c_no});
+            this.$router.push({
+                name: "userDetailsList",
+                params: { id: index+1, c_no:c_no }
+            })
         },
         getstatus(status,value) {
             switch(status) {
@@ -204,6 +207,61 @@ const tempItems = [
                 total_lesson_cnt: ''
             }
         ]
+    },
+    {
+         "company": "에스에이치엔엠",
+        "target_rate": 90,
+        "prof_img": null,
+        "u_img": null,
+        "name": "장혜진",
+        "tel": null,
+        "email": "soongsiledu@gmail.com",
+        "part": null,
+        "del_yn": 0,
+        "status": 3,
+        "fr_dt": "2020.04.07",
+        "to_dt": "2020.04.30",
+        "c_no": 1,
+        "bo_idx": 408,
+        "orderList": [
+            {
+            "idx": 551,
+            "c_no": 8
+            },
+            {
+            "idx": 535,
+            "c_no": 7
+            },
+            {
+            "idx": 515,
+            "c_no": 6
+            },
+            {
+            "idx": 493,
+            "c_no": 5
+            },
+            {
+            "idx": 473,
+            "c_no": 4
+            },
+            {
+            "idx": 442,
+            "c_no": 3
+            },
+            {
+            "idx": 441,
+            "c_no": 2
+            },
+            {
+            "idx": 408,
+            "c_no": 1
+            }
+        ],
+        "cnt": 3,
+        "fr": "2020-04-07",
+        "to": "2020-04-30",
+        "dateDiff": 23,
+        "max_cnt": 23
     }
 ]
 </script>

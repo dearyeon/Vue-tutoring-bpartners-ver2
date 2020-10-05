@@ -1,0 +1,138 @@
+<template>
+    <div class="modal inmodal fade in"  style="display: block;">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header" style="border-bottom:0px;padding-bottom: 15px;">
+              <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true" @click="$emit('close')">&times;</span>
+                <span class="sr-only">Close</span>
+              </button>
+              <br />
+            </div>
+            <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px">
+              <UserInfo :data="item"/>
+            </div>
+            <div class="modal-footer" style="border-top:0px">
+              <button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;" @click="openModify">학생 수정</button>
+              <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
+            </div>
+
+            <div class="modal inmodal fade in" id="userUpdateModal" style="display: block;" v-show="showModify===true">
+              <div class="modal-dialog modal-sm">
+                <div class="modal-content" style="width:450px;">
+                  <!-- locarStorage 사용할 것 -->
+                  <div class="modal-header" style="border-bottom:0px;padding-bottom: 25px;">
+                    <button type="button" class="close" data-dismiss="modal">
+                      <span aria-hidden="true" @click="openModify">×</span>
+                      <span class="sr-only">Close</span>
+                    </button>
+                    <br />
+                    <h5 class="modal-title">학습자 정보 변경</h5>
+                    <small>학습자 정보를 변경해주세요.</small>
+                  </div>
+
+                  <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px; width:100%">
+                    <div class="col-lg-12" style="margin-bottom: 15px; position:absoulte; left:35%">
+                      <img alt="image" id="ui_image" class="img-circle" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_S" style="width:90px;height:90px;"/>
+                    </div>
+
+                    <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
+                      <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">고객식별ID</div>
+                      <div class="col-lg-8">
+                        <input name="ui_email" type="text" class="form-control" :placeholder="modifyItem.userInfo.cus_id" readonly/>
+                      </div>
+                    </div>
+                    <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
+                      <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">학습자 이름</div>
+                      <div class="col-lg-8">
+                        <input name="ui_name" type="text" class="form-control" v-model="modifyItem.userInfo.name"/>
+                      </div>
+                    </div>
+                    <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
+                      <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">부서</div>
+                      <div class="col-lg-8">
+                        <input name="ui_part" type="text" class="form-control" v-model="modifyItem.userInfo.part"/>
+                      </div>
+                    </div>
+                    <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
+                      <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">직책</div>
+                      <div class="col-lg-8">
+                        <input name="ui_position" type="text" class="form-control" v-model="modifyItem.userInfo.position"/>
+                      </div>
+                    </div>
+                    <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
+                      <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">비고</div>
+                      <div class="col-lg-8">
+                        <input name="ui_memo" type="text" class="form-control" v-model="modifyItem.userInfo.memo"/>
+                      </div>
+                    </div>
+                    <div style="position: absolute;left: -9999px;">
+                      <input name="bo_idx" type="text" class="form-control" />
+                    </div>
+                  </div>
+
+                  <div class="modal-footer" style="border-top:0px">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" @click="closeModify">닫기</button>
+                    <button type="button" class="btn btn-success" id="userUpdateSubmit" @click="applyModify">변경 완료</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+</template>
+
+<script>
+import UserInfo from "@/components/atom/UserInfo";
+export default {
+    data() {
+        return {
+            showModify: false,
+            modifyItem: []
+        }
+    },
+    components: {
+        UserInfo
+    },
+    props: {
+        item: {
+            type: Object,
+            required: true,
+        }
+    },
+    created(){
+        this.modifyItem = JSON.parse(JSON.stringify(this.item));
+    },
+    methods: {
+        openModify() {
+            this.modifyItem = JSON.parse(JSON.stringify(this.item));
+            this.showModify = !this.showModify;
+        },
+        closeModify() {
+            this.showModify = !this.showModify;
+        },
+        applyModify() {
+            var self = this;
+            this.$swal({
+                title: "정보 변경",
+                text: "학습자 정보를 변경 하시겠습니까?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "OK",
+            }).then((isConfirmed) => {
+                if(isConfirmed.isConfirmed){
+                    self.$emit("update", self.modifyItem);
+                    self.modifyItem.length = 0;
+                    self.$swal({
+                        title: "정보 변경",
+                        text: "정보가 변경 됐습니다.",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                    })
+                }
+            });
+        },
+    }
+}
+</script>
