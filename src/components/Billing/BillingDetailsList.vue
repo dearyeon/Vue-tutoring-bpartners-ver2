@@ -104,7 +104,7 @@
               />
             </div>
 
-            <div class="input-group col-lg-4 col-md-12 col-xs-12 pull-left">
+            <div class="input-group col-lg-3 col-md-12 col-xs-12 pull-left">
               <input
                 type="text"
                 v-model="search"
@@ -138,6 +138,17 @@
                     </label>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-12 col-xs-12">
+              <!-- 정기결제 -->
+              <div class="col-lg-12 col-md-6 col-xs-6" v-if="tab === 1">
+                <button class="col-lg-5 col-lg-offset-7 btn btn-primary">일괄 결제</button>
+              </div>
+              <!--추가결제-->
+              <div class="col-lg-12 col-md-6 col-xs-6" v-if="tab === 2">
+                <button class="btn btn-primary col-lg-5">달성률 일괄결산</button>
+                <button class="btn btn-danger col-lg-5 col-lg-offset-1">일괄 결제</button>
               </div>
             </div>
           </form>
@@ -177,7 +188,7 @@
                       <tbody id="chargeInfoList">
                         <!--정기 결제 -->
                         <tr
-                          v-for="(item, index) in filteredList(listInfo)"
+                          v-for="(item, index) in listInfo"
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
                           @click="setCurrentItem(item)"
@@ -255,7 +266,7 @@
                       </thead>
                       <tbody id="pchargeInfoList">
                         <tr
-                          v-for="(item, index) in filteredList(listInfoP)"
+                          v-for="(item, index) in listInfo"
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
                           @click="setCurrentItem(item)"
@@ -334,8 +345,6 @@ export default {
     return {
       listInfo: "",
       bapInfo: 0,
-      listInfoP: "",
-      bapInfoP: 0,
       tab: 1,
       aNoList: [],
       bNoList: [],
@@ -363,6 +372,7 @@ export default {
         if (status === "F") return { class: "btn-danger", text: "결제 실패", click: this.paymentFailed };
         if (status === "S") return { class: "disabled", text: "결제 성공" };
         if (status === "Q") return { class: "btn-success", text: "환불 요청" };
+        if (status === null) return { class: "", text: "달성률 결산" };
         return { class: "btn-info", text: "환불 완료" }; //status === "R"
       };
     },
@@ -375,59 +385,65 @@ export default {
       };
     },
   },
-  methods: {
-    apiCall: async function(aNo, bNo) {
-      const res = await api.get("/partners/chargeList", {
-        sIdx: this.$route.params.sIdx,
-        aNo: aNo,
-        bNo: bNo,
-      });
-      const resP = await api.get("/partners/pchargeList", {
-        sIdx: this.$route.params.sIdx,
-        aNo: aNo,
-        bNo: bNo,
-      });
-      this.listInfo = res.data.list;
-      this.bapInfo = res.data.bap;
-      this.listInfoP = resP.data.list;
-      this.bapInfoP = resP.data.bap;
-      this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
-      this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item));
-    },
-    refresh: function() {
-      this.apiCall(this.$route.params.aNo, this.$route.params.bNo);
-    },
-    chTab: function(index) {
-      this.tab = index;
-    },
-    chANo: async function(index) {
-      this.apiCall(index + 1, 1);
-      this.$router.push({
-        name: "billingDetailsList",
-        params: { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 },
-      });
-    },
-    chBNo: async function(index) {
-      this.apiCall(this.$route.params.aNo, index + 1);
-      this.$router.push({
-        name: "billingDetailsList",
-        params: { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: index + 1 },
-      });
-    },
-    aNoFormat: function(item) {
-      if (typeof item === "object" && "a_no" in item)
-        return `${item.a_no}회차 | ${item.apply_fr_dt.replace(
-          /(\d{4}-\d{2}-\d{2}).*/,
-          "$1",
-        )} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")}`;
-      else return "";
-    },
+	methods: {
+		apiCall: async function (aNo, bNo) {
+			let res
+			if (this.tab === 1) {
+				res = await api.get('/partners/chargeList', {
+					sIdx: this.$route.params.sIdx,
+					aNo: aNo,
+					bNo: bNo,
+				})
+        this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item))
+        this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item))
+			} else {
+				res = await api.get('/partners/pchargeList', {
+					sIdx: this.$route.params.sIdx,
+					aNo: aNo,
+					bNo: bNo,
+				})
+			}
+
+			this.listInfo = res.data.list
+			this.bapInfo = res.data.bap
+
+		},
+		refresh: function () {
+			this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
+		},
+		chTab: function (index) {
+			this.tab = index
+      this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
+		},
+		chANo: async function (index) {
+			this.apiCall(index + 1, 1)
+			this.$router.push({
+				name: 'billingDetailsList',
+				params: { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 },
+			})
+		},
+		chBNo: async function (index) {
+			this.apiCall(this.$route.params.aNo, index + 1)
+			this.$router.push({
+				name: 'billingDetailsList',
+				params: { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: index + 1 },
+			})
+		},
+		aNoFormat: function (item) {
+			if (typeof item === 'object' && 'a_no' in item)
+				return `${item.a_no}회차 | ${item.apply_fr_dt.replace(
+					/(\d{4}-\d{2}-\d{2}).*/,
+					'$1',
+				)} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, '$1')}`
+			else return ''
+		},
     bNoFormat: function(item) {
       if (typeof item === "object" && "b_no" in item)
         return `${item.b_no} | ${item.charge_dt.replace(
           /(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/gi,
-          "$2.$3",
-        )}`;
+          '$2.$3',
+        )}(정기) / ${item.pcharge_dt.replace(/(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/gi,
+          '$2.$3',)}(추가)`
     },
     pausePayment: function() {
       this.$swal.fire({
