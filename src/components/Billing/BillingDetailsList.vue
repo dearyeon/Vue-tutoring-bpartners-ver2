@@ -89,7 +89,7 @@
     <div class="row">
       <div class="ibox content">
         <div class="ibox-content">
-          <form id="listform">
+          <div id="listform">
             <div class="subtitle">
               <h1>{{ bapInfo.site_name }}</h1>
               <Dropdown
@@ -143,15 +143,15 @@
             <div class="col-lg-4 col-md-12 col-xs-12">
               <!-- 정기결제 -->
               <div class="col-lg-12 col-md-6 col-xs-6" v-if="tab === 1">
-                <button class="col-lg-5 col-lg-offset-7 btn btn-primary">일괄 결제</button>
+                <button class="col-lg-5 col-lg-offset-7 btn btn-primary" @click="chargeBatch">일괄 결제</button>
               </div>
               <!--추가결제-->
               <div class="col-lg-12 col-md-6 col-xs-6" v-if="tab === 2">
-                <button class="btn btn-primary col-lg-5">달성률 일괄결산</button>
-                <button class="btn btn-danger col-lg-5 col-lg-offset-1">일괄 결제</button>
+                <button class="btn btn-primary col-lg-5" @click="updatePChargeTarget">달성률 일괄결산</button>
+                <button class="btn btn-danger col-lg-5 col-lg-offset-1" @click="pChargeBatch">일괄 결제</button>
               </div>
             </div>
-          </form>
+          </div>
 
           <div class="col-lg-12">
             <!-- 탭 부분 -->
@@ -552,6 +552,62 @@ export default {
           if (result.isConfirmed) this.makePayment();
         });
     },
+    chargeBatch: async function() {
+      const res = await api.post('/partners/chargeBatch', {
+        bapIdx: 1,
+        bNo: this.$route.params.bNo
+      })
+
+      console.log(res);
+      if(res.result === 2000) {
+        location.href = '/'
+      } else {
+        this.$swal
+          .fire({
+            title: res.message,
+            confirmButtonText: "확인",
+            confirmButtonColor: "#8FD0F5",
+          })
+      }
+
+
+    },
+    pChargeBatch: async function() {
+      const res = await api.post('/partners/pchargeBatch', {
+        bapIdx: 1,
+        bNo: this.$route.params.bNo
+      })
+      console.log(res);
+      if(res.result === 2000) {
+        location.href = '/'
+      } else {
+        this.$swal
+        .fire({
+          title: res.message,
+          confirmButtonText: "확인",
+          confirmButtonColor: "#8FD0F5",
+        })
+      }
+
+    },
+    updatePChargeTarget: async function() {
+      const res = await api.post('/partners/updatePChargeTarget', {
+        bapIdx: 1,
+        bNo: this.$route.params.bNo
+      })
+      console.log(res);
+      if(res.result === 2000) {
+        location.href = '/'
+      } else {
+        this.$swal
+        .fire({
+          title: res.message,
+          confirmButtonText: "확인",
+          confirmButtonColor: "#8FD0F5",
+        })
+      }
+
+    }
   },
   components: {
     Modal,
