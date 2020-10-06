@@ -143,12 +143,12 @@
             <div class="col-lg-4 col-md-12 col-xs-12">
               <!-- 정기결제 -->
               <div class="col-lg-12 col-md-6 col-xs-6" v-if="tab === 1">
-                <button class="col-lg-5 col-lg-offset-7 btn btn-primary" @click="chargeBatch">일괄 결제</button>
+                <button class="col-lg-5 col-lg-offset-7 btn btn-success" @click="chargeBatch">결제 대기건 일괄 결제</button>
               </div>
               <!--추가결제-->
               <div class="col-lg-12 col-md-6 col-xs-6" v-if="tab === 2">
-                <button class="btn btn-primary col-lg-5" @click="updatePChargeTarget">달성률 일괄결산</button>
-                <button class="btn btn-danger col-lg-5 col-lg-offset-1" @click="pChargeBatch">일괄 결제</button>
+                <button class="btn btn-primary col-lg-5" @click="updatePChargeTarget">결재대상 판정</button>
+                <button class="btn btn-success col-lg-5 col-lg-offset-1" @click="pChargeBatch">결제 대기건 일괄 결제</button>
               </div>
             </div>
           </div>
@@ -290,7 +290,7 @@
                             }}
                           </td>
                           <td>
-                            <button
+                            <button v-show="item.pcharge_status"
                               class="btn"
                               :class="chargeBtnStatus(item.pcharge_status).class"
                               @click="
@@ -372,8 +372,9 @@ export default {
         if (status === "F") return { class: "btn-danger", text: "결제 실패", click: this.paymentFailed };
         if (status === "S") return { class: "disabled", text: "결제 성공" };
         if (status === "Q") return { class: "btn-success", text: "환불 요청" };
-        if (status === null) return { class: "", text: "달성률 결산" };
-        return { class: "btn-info", text: "환불 완료" }; //status === "R"
+        if (status === "N") return { class: "", text: "대상 아님" };
+        if (status === "R") return { class: "btn-info", text: "환불 완료" };
+        return { class: "", text: "" }; //status === "R"
       };
     },
     setCurrentItem() {
@@ -560,6 +561,7 @@ export default {
 
       console.log(res);
       if(res.result === 2000) {
+        console.log('a')
         location.href = '/'
       } else {
         this.$swal
@@ -569,8 +571,6 @@ export default {
             confirmButtonColor: "#8FD0F5",
           })
       }
-
-
     },
     pChargeBatch: async function() {
       const res = await api.post('/partners/pchargeBatch', {
@@ -579,6 +579,7 @@ export default {
       })
       console.log(res);
       if(res.result === 2000) {
+        console.log('b')
         location.href = '/'
       } else {
         this.$swal
@@ -597,6 +598,7 @@ export default {
       })
       console.log(res);
       if(res.result === 2000) {
+        console.log('c')
         location.href = '/'
       } else {
         this.$swal
