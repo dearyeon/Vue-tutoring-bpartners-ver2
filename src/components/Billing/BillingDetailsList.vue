@@ -561,8 +561,15 @@ export default {
 
       console.log(res);
       if(res.result === 2000) {
-        console.log('a')
-        location.href = '/'
+        this.$swal.fire({
+          title: "success",
+          confirmButtonText: "확인",
+          confirmButtonColor: "#8FD0F5",
+        }).then( result => {
+          if(result.isConfirmed) {
+            window.location.reload()
+          }
+        })
       } else {
         this.$swal
           .fire({
@@ -579,8 +586,15 @@ export default {
       })
       console.log(res);
       if(res.result === 2000) {
-        console.log('b')
-        location.href = '/'
+        this.$swal.fire({
+            title: "success",
+            confirmButtonText: "확인",
+            confirmButtonColor: "#8FD0F5",
+        }).then( result => {
+          if(result.isConfirmed) {
+            window.location.reload()
+          }
+        })
       } else {
         this.$swal
         .fire({
@@ -598,8 +612,15 @@ export default {
       })
       console.log(res);
       if(res.result === 2000) {
-        console.log('c')
-        location.href = '/'
+        this.$swal.fire({
+          title: "success",
+          confirmButtonText: "확인",
+          confirmButtonColor: "#8FD0F5",
+        }).then( result => {
+          if(result.isConfirmed) {
+            window.location.reload()
+          }
+        })
       } else {
         this.$swal
         .fire({
