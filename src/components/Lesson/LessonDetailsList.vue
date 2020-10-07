@@ -142,9 +142,6 @@
           </div>
         </div>
       </div>
-
-      <LessonModal v-if="showModal" :item="modalitem" @update="updateItem" @close="closeModal"/>
-
       <div>
         <div class="row">
           <div class="text-center">
@@ -153,12 +150,36 @@
         </div>
       </div>
     </div>
+
+    <div class="modal inmodal fade in"  style="display: block;" v-if="showModal">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header" style="border-bottom:0px;padding-bottom: 15px;">
+            <button type="button" class="close" data-dismiss="modal">
+              <span aria-hidden="true" @click="closeModal">&times;</span>
+              <span class="sr-only">Close</span>
+            </button>
+            <br />
+          </div>
+          <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px">
+            <UserInfo :data="modalitem"/> 
+          </div>
+          <div class="modal-footer" style="border-top:0px">
+            <button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;" @click="openModify">학생 수정</button>
+            <button type="button" class="btn btn-white" data-dismiss="modal" @click="closeModal">닫기</button>
+          </div>
+          <UserModifyModal v-if="showModify" :item="modalitem" @update="updateItem" @close="openModify"/>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
 //import api from "@/common/api";
-import LessonModal from "@/components/Lesson/LessonModal";
+import UserInfo from "@/components/atom/UserInfo";
+import UserModifyModal from "@/components/atom/UserModifyModal";
 import Pagination from "../Pagination";
 export default {
   data() {
@@ -170,18 +191,21 @@ export default {
       currentPage: "",
       sortKey: "",
       showModal: false,
-      tempModalNum: '',
-      modalitem: []
+      showModify: false,
+      UserNum: '',
+      modalitem: [],
     };
   },
   components: {
-    LessonModal,
+    UserInfo,
+    UserModifyModal,
     Pagination,
   },
   created() {
     this.baseInfo = baseInfotemp[0].baseInfo;
     this.items = baseInfotemp;
     this.currentPage = 1;
+    this.modalitem = baseInfotemp[0];
   },
   methods: {
     setCycle(type) {
@@ -196,17 +220,11 @@ export default {
           });
       this.sortKey = sortKey;
     },
-    openUserInfo(index) {
-      this.tempModalNum = index;
-      this.modalitem = this.items[this.tempModalNum];
-      this.showModal = !this.showModal;
+    setCurrentPage(data) {
+      this.currentPage = data;
     },
-    updateItem(item) {
-      this.items[this.tempModalNum] = JSON.parse(JSON.stringify(item));
-      this.modalitem = this.items[this.tempModalNum];
-    },
-    closeModal() {
-      this.showModal = !this.showModal;
+    getPage(item, index) {
+       return (!item.userInfo.name.indexOf(this.search) || !item.userInfo.cus_id.indexOf(this.search) || !item.baseInfo.email.indexOf(this.search)) && (index>=(this.currentPage-1)*30 && index<this.currentPage*30)
     },
     openModal() {
       this.$swal({
@@ -219,25 +237,22 @@ export default {
         cancelButtonText: "Cancel",
       });
     },
-    openCompleted() {
-      this.$swal.fire({
-        container: "completed-swal",
-        title: "정보 변경",
-        text: "학습자 정보를 변경 하시겠습니까?",
-        icon: "warning",
-        showCancelButton: true,
-        showCloseButton: true,
-        cancelButtonText: "Cancel",
-        confirmButtonText: "OK",
-      });
+    openUserInfo(index) {
+      this.UserNum = index;
+      this.modalitem = this.items[this.UserNum];
+      this.showModal = !this.showModal;
     },
-    setCurrentPage(data) {
-      this.currentPage = data;
+    closeModal() {
+      this.showModal = !this.showModal;
     },
-    getPage(item, index) {
-       return (!item.userInfo.name.indexOf(this.search) || !item.userInfo.cus_id.indexOf(this.search) || !item.baseInfo.email.indexOf(this.search)) && (index>=(this.currentPage-1)*30 && index<this.currentPage*30)
+    openModify() {
+      this.showModify = !this.showModify;
+    },
+    updateItem(item) {
+      this.items[this.UserNum] = JSON.parse(JSON.stringify(item));
+      this.modalitem = this.items[this.UserNum];
     }
-  },
+  }
 };
 
 const baseInfotemp = [

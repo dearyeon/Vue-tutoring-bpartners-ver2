@@ -1,17 +1,17 @@
 <template>
     <div class="col-lg-12" style="padding:0;">
         <form class="form-inline">
-            <div class="col-lg-7">
+            <div class="col-lg-7" :style="(comp)? 'width:100%':''">
                 <div class="col-lg-12" style="width:100%;">
                     <form class="form-inline"  style="width:100%;">
-                        <div class="col-lg-4"> <!-- center-block -->
+                        <div :class="(comp)?'col-auto':'col-lg-4'"> <!-- center-block -->
                             <div class="m-b-sm center-block"> <!-- center-block -->
                                 <img alt="image" class="img-circle s_image" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_S" style="width: 90px;height: 90px;">
                                 <div class="text-success center-block s_name" style="font-size: 16px;"><h3>{{ data.userInfo.name }}님</h3></div>
                                 <div class="s_part center-block" style="font-size: 10px; margin-top:-10px"><h6>{{ data.userInfo.part }}/{{ data.userInfo.position }}</h6></div>
                             </div>
                         </div>
-                        <div class="col-lg-8" >
+                        <div class="col-lg-8" v-if="!comp">
                             <dl class="dl-horizontal">
                                 <dt>식별ID | </dt>
                                 <dd><span class="s_mail">{{ data.userInfo.cus_id }}</span></dd>
@@ -58,7 +58,9 @@
                     <strong>레벨 테스트 결과비교</strong>
                 </div>
                 <div class="col-lg-12" style="margin-top:20px;margin-left:20px;width:100%" >
-                    <chartjs-radar :labels="labels" :datasets="datasets" :option="options" :height="275" :width="275" class="center-block"></chartjs-radar>
+                    <div class="center-block" style="height:275px;width:275px">
+                    <chartjs-radar :labels="labels" :datasets="datasets" :option="options" :height="275" :width="275"></chartjs-radar>
+                </div>
                 </div>
             </div>
             <div class="col-auto">
@@ -71,14 +73,14 @@
                     </form>
                 </div>
                 <div class="col-lg-12" style="margin-top:20px;">
-                    <div class="client-detail" style="height:700px;w">
+                    <div class="client-detail" style="height:700px;">
                         <div class="full-height-scroll" style="overflow: hidden; height: 100%;padding-right:5px;overflow-y:auto;">
-                            <div id="vertical-timeline" class="vertical-container dark-timeline" style="margin-top:0px;">
+                            <div id="vertical-timeline" class="vertical-container dark-timeline">
                                 <div class="vertical-timeline-block" v-for="item in data.review" :key="item.id">
-                                    <div class="vertical-timeline-icon" style="border:0px">
+                                    <div class="vertical-timeline-icon" style="border:0px;">
                                         <img alt="image" class="img-circle s_tutor_image" style="width: 50px;height: 50px;margin-left: -5px;" :src="getImageSrc(item.prof_img)">
                                     </div>
-                                    <div class="vertical-timeline-content">
+                                    <div class="vertical-timeline-content" style="background-color:black;" :style="(comp)? 'position:absolute':''">
                                         <strong class="s_tutor_name">{{ item.name }}</strong>
                                         <span class="small text-muted pull-right s_lesson_dt">{{ item.lesson_dt }}</span>
                                         <hr><p class="s_review">{{ item.comment }}</p>
@@ -132,12 +134,15 @@ export default {
     },
     props: {
         data: {
-        type: Object,
-        required: true,
+            type: Object,
+            required: true,
+        },
+        comp: {
+            type: Number,
+            default: 0
         }
     },
     created() {
-        console.log(this.data);
         const firstTest = this.data.userInfo.firstTest;
         const lastTest = this.data.userInfo.lastTest;
         this.labels = [firstTest.point_0_title, firstTest.point_1_title, firstTest.point_2_title, firstTest.point_3_title, firstTest.point_4_title];
