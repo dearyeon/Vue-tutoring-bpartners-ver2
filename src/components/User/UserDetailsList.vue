@@ -55,8 +55,8 @@
                                             <th class="pagesubmit sorting" field="order" value="lesson_rate" @click="sortBy('target_rate')" style="width:65px">달성률</th>
                                             <th class="pagesubmit sorting" field="order" value="lesson_min" @click="sortBy('lesson_min')">수업시간</th>
                                             <th class="pagesubmit sorting" field="order" value="mode" @click="sortBy('e_cnt')">과목</th>
-											<th>이전 레벨</th>
-											<th>마지막 레벨</th>
+                                            <th>이전 레벨</th>
+                                            <th>마지막 레벨</th>
                                             <th>고객식별ID</th>
                                             <th class="pagesubmit sorting" field="order" value="part" @click="sortBy('part')">부서(학과)</th>
                                             <th class="pagesubmit sorting" field="order" value="position" @click="sortBy('position')">직급(직책)</th>
@@ -102,63 +102,49 @@
                     </div>
                 </div>
                 <div class="col-sm-4">
-                    <div class="ibox">
-                        <div class="ibox-content" style="min-height: 950px">
-              <UserInfo :data="item"/>
-                            <div class="tab-content">
-                                <div id="contact" class="tab-pane">
-                                    <div class="row">
-                                        <div class="col-lg-12" style="height: 40px;margin-top: -10px;padding: 0px">
-                                            <div class="pull-right social-action dropdown">
-                                                <button data-toggle="dropdown" class="dropdown-toggle btn-white">
-                                                    <i class="fa fa-angle-down"></i>
-                                                </button>
-                                                <ul class="dropdown-menu m-t-xs">
-                                                    <li><a data-toggle="modal" data-target="#userUpdateModal" class="userUpdate">학생 수정</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="client-detail">
-                                        <div class="full-height-scroll">
-                                            <div id="vertical-timeline" class="vertical-container dark-timeline" style="margin-top: 0px;">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
+                    <div class="ibox" style="height:100%;">
+                      <div class="col-sm-12" style="height:100%;">
+                        <div class="ibox-content" style="min-height: 900px; overflow:auto; margin:0px -15px;">
+                          <button class="btn btn-default btn-xs pull-right exportReviewList" @click="openModify">학생 수정</button>
+                          <div style="margin:0px -20px">
+                            <UserInfo :data="items[UserNum]" :comp="1"/>
+                          </div>
                         </div>
                     </div>
+                  </div>
                 </div>
             </div>
         </div>
+        <UserModifyModal v-if="showModify" :item="items[UserNum]" @update="updateItem" @close="openModify"/>
     </div>
 </template>
 
 
 <script>
-import Pagination from "../Pagination";
 import UserInfo from "@/components/atom/UserInfo";
+import UserModifyModal from "@/components/atom/UserModifyModal";
+import Pagination from "../Pagination";
 export default {
     data() {
         return {
             baseInfo: [],
             search: '',
             items: [],
-            item: {},
+            UserNum: '',
             currentPage: '',
-            sortKey: ''
+            sortKey: '',
+            showModify: false,
         };
     },
     components: {
         UserInfo,
+        UserModifyModal,
         Pagination
     },
     created() {
         this.baseInfo = tempItems[0].baseInfo;
         this.items = tempItems;
-        this.item = tempItems[0];
+        this.UserNum = 0;
         this.currentPage = 1;
     },
     methods: {
@@ -178,8 +164,15 @@ export default {
             return (!item.userInfo.name.indexOf(this.search) || !item.userInfo.cus_id.indexOf(this.search) || !item.baseInfo.email.indexOf(this.search)) && (index>=(this.currentPage-1)*30 && index<this.currentPage*30)
         },
         openUserInfo(index) {
-            this.item = this.items[index];
+          this.UserNum = index;
+          this.modalitem = this.items[this.UserNum];
         },
+        openModify() {
+          this.showModify = !this.showModify;
+        },
+        updateItem(item) {
+          this.items[this.UserNum] = JSON.parse(JSON.stringify(item));
+        }
     }
 }
 
@@ -375,7 +368,7 @@ const tempItems = [
       lesson_dt: "2020-04-07 03:53 PM",
       comment:
         "Joy it has been a plleasure having you as my student. Wonderful reading and pronunciation skills. You did well in this topic and I hope that we have many more classes together.",
-    },
+    }
   ],
 },
 {

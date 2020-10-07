@@ -9,7 +9,7 @@
       <div class="ibox content">
         <div class="ibox-content">
           <div class="subtitle">
-            <h1>{{ bap.idx === 1 ? "남양주 시청" : "한국수력원자력" }}</h1>
+            <h1>{{ sitedata.site.company }}</h1>
             <Dropdown
               :defaultValue="aNoList.length !== 0 ? aNoList[$route.params.aNo - 1] : ''"
               :itemList="aNoList"
@@ -99,6 +99,12 @@ export default {
       list: [],
       aNoList: [],
     };
+  },
+  props: {
+    sitedata: {
+      type: Object,
+      required: true,
+    }
   },
   methods: {
     companyChargePrice(index) {

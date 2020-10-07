@@ -1,29 +1,11 @@
 <template>
-    <div class="modal inmodal fade in"  style="display: block;">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header" style="border-bottom:0px;padding-bottom: 15px;">
-              <button type="button" class="close" data-dismiss="modal">
-                <span aria-hidden="true" @click="$emit('close')">&times;</span>
-                <span class="sr-only">Close</span>
-              </button>
-              <br />
-            </div>
-            <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px">
-              <UserInfo :data="item"/>
-            </div>
-            <div class="modal-footer" style="border-top:0px">
-              <button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;" @click="openModify">학생 수정</button>
-              <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
-            </div>
-
-            <div class="modal inmodal fade in" id="userUpdateModal" style="display: block;" v-show="showModify===true">
+    <div class="modal inmodal fade in" id="userUpdateModal" style="display: block;">
               <div class="modal-dialog modal-sm">
                 <div class="modal-content" style="width:450px;">
                   <!-- locarStorage 사용할 것 -->
                   <div class="modal-header" style="border-bottom:0px;padding-bottom: 25px;">
                     <button type="button" class="close" data-dismiss="modal">
-                      <span aria-hidden="true" @click="openModify">×</span>
+                      <span aria-hidden="true" @click="$emit('close')">×</span> <!-- @click="openModify"-->
                       <span class="sr-only">Close</span>
                     </button>
                     <br />
@@ -72,28 +54,20 @@
                   </div>
 
                   <div class="modal-footer" style="border-top:0px">
-                    <button type="button" class="btn btn-white" data-dismiss="modal" @click="closeModify">닫기</button>
+                    <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button> <!-- @click="closeModify"-->
                     <button type="button" class="btn btn-success" id="userUpdateSubmit" @click="applyModify">변경 완료</button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 </template>
 
 <script>
-import UserInfo from "@/components/atom/UserInfo";
 export default {
     data() {
         return {
-            showModify: false,
             modifyItem: []
         }
-    },
-    components: {
-        UserInfo
     },
     props: {
         item: {
@@ -105,13 +79,6 @@ export default {
         this.modifyItem = JSON.parse(JSON.stringify(this.item));
     },
     methods: {
-        openModify() {
-            this.modifyItem = JSON.parse(JSON.stringify(this.item));
-            this.showModify = !this.showModify;
-        },
-        closeModify() {
-            this.showModify = !this.showModify;
-        },
         applyModify() {
             var self = this;
             this.$swal({
@@ -132,7 +99,15 @@ export default {
                     })
                 }
             });
-        },
+        }
     }
 }
 </script>
+
+<style scoped>
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  z-index: 1;
+}
+</style>
