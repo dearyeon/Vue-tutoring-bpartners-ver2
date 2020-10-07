@@ -234,9 +234,9 @@
                                 item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
                             }}
                           </td>
-                          <td>{{ item.mng_tag ? item.mng_tag : "" }}</td>
+                          <td>{{ item.mng_tag ? item.mng_tag : '' }}</td>
                           <td>
-                            <button class="btn btn-default" @click="$refs.modalTag.open()">수정</button>
+														<button class="btn btn-default" @click="[(isPenaltyCharge=false), (tag=(item.mng_tag?item.mng_tag:'')), $refs.modalTag.open()]">수정</button>
                           </td>
                         </tr>
                       </tbody>
@@ -314,9 +314,9 @@
                                 item.pcharged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
                             }}
                           </td>
-                          <td>{{ item.mng_tag ? item.mng_tag : "" }}</td>
+                          <td>{{ item.pmng_tag ? item.pmng_tag : '' }}</td>
                           <td>
-                            <button class="btn btn-default" @click="$refs.modalTag.open()">수정</button>
+                            <button class="btn btn-default" @click="[(isPenaltyCharge=true), (tag=(item.pmng_tag?item.pmng_tag:'')), $refs.modalTag.open()]">수정</button>
                           </td>
                         </tr>
                       </tbody>
@@ -349,6 +349,7 @@
 				aNoList: [],
 				bNoList: [],
 				tag: '',
+        isPenaltyCharge: false,
 				search: '',
 				newCardInfo: { cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: '' },
 				currentItem: {},
@@ -386,7 +387,6 @@
 				return item => {
 					if (item) {
 						this.currentItem = item
-						this.tag = item.mng_tag
 					}
 				}
 			},
@@ -498,7 +498,10 @@
 					})
 			},
 			editTag: async function () {
-				const res = await api.post('/partners/updateMngTag', { idx: this.currentItem.idx, mngTag: this.tag })
+				const params = { idx: this.currentItem.idx }
+				this.isPenaltyCharge ? params.pmngTag=this.tag : params.mngTag=this.tag;
+
+				const res = await api.post('/partners/updateMngTag', params)
 				if (res) this.refresh()
 			},
 			makePayment: function () {
