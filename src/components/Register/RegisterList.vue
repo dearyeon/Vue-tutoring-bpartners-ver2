@@ -41,14 +41,9 @@
               </td>
               <td>{{ register.applys[currentANo[index]].upd_dt }}</td>
               <td>
-                <router-link
-                  :to="{
-                    name: 'applyDetailsList',
-                    params: { sIdx: register.s_idx, aNo: register.applys[currentANo[index]].a_no },
-                  }"
-                >
-                  <p>link</p>
-                </router-link>
+                <a :href="'http://localhost:8081/'+register.applys[0].hash" target="_blank">
+                  <p>https://apply.tutoring.co.kr/{{register.applys[0].hash}}</p>
+                </a>
               </td>
             </tr>
           </table>
@@ -74,6 +69,7 @@ export default {
       registers: [],
       aNoList: [],
       currentANo: [],
+      applyPageLink:'',
     };
   },
   methods: {

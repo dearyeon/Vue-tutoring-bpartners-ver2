@@ -333,342 +333,414 @@
 </template>
 
 <script>
-import api from "@/common/api";
-import Modal from "../atom/Modal";
-import Dropdown from "../atom/Dropdown";
+	import api from '@/common/api'
+	import Modal from '../atom/Modal'
+	import Dropdown from '../atom/Dropdown'
 
-export default {
-  async created() {
-    this.apiCall(this.$route.params.aNo, this.$route.params.bNo);
-  },
-  data() {
-    return {
-      listInfo: "",
-      bapInfo: 0,
-      tab: 1,
-      aNoList: [],
-      bNoList: [],
-      tag: "",
-      search: "",
-      newCardInfo: { cardNo: "", yy: "", mm: "", pw: "", birthYYMMDD: "" },
-      currentItem: {},
-    };
-  },
-  computed: {
-    filteredList() {
-      return list => {
-        if (list.length !== 0)
-          return list.filter(
-            item =>
-              (item.user_name && item.user_name.includes(this.search.trim())) ||
-              (item.cus_id && item.cus_id.includes(this.search.trim())),
-          );
-      };
-    },
-    chargeBtnStatus() {
-      return status => {
-        if (status === "B") return { class: "btn-primary", text: "결제 대기", click: this.$refs.modalWaitPayment.open };
-        if (status === "P") return { class: "btn-warning", text: "일시 정지", click: this.pausePayment };
-        if (status === "F") return { class: "btn-danger", text: "결제 실패", click: this.paymentFailed };
-        if (status === "S") return { class: "disabled", text: "결제 성공" };
-        if (status === "Q") return { class: "btn-success", text: "환불 요청" };
-        if (status === "N") return { class: "", text: "대상 아님" };
-        if (status === "R") return { class: "btn-info", text: "환불 완료" };
-        return { class: "", text: "" }; //status === "R"
-      };
-    },
-    setCurrentItem() {
-      return item => {
-        if (item) {
-          this.currentItem = item;
-          this.tag = item.mng_tag;
-        }
-      };
-    },
-  },
-	methods: {
-		apiCall: async function (aNo, bNo) {
-			let res
-			if (this.tab === 1) {
-				res = await api.get('/partners/chargeList', {
-					sIdx: this.$route.params.sIdx,
-					aNo: aNo,
-					bNo: bNo,
-				})
-        this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item))
-        this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item))
-			} else {
-				res = await api.get('/partners/pchargeList', {
-					sIdx: this.$route.params.sIdx,
-					aNo: aNo,
-					bNo: bNo,
-				})
-			}
-
-			this.listInfo = res.data.list
-			this.bapInfo = res.data.bap
-
-		},
-		refresh: function () {
+	export default {
+		async created () {
 			this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
 		},
-		chTab: function (index) {
-			this.tab = index
-      this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
+		data () {
+			return {
+				listInfo: '',
+				bapInfo: 0,
+				tab: 1,
+				aNoList: [],
+				bNoList: [],
+				tag: '',
+				search: '',
+				newCardInfo: { cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: '' },
+				currentItem: {},
+				targetCountCheck: false,
+			}
 		},
-		chANo: async function (index) {
-			this.apiCall(index + 1, 1)
-			this.$router.push({
-				name: 'billingDetailsList',
-				params: { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 },
-			})
+		computed: {
+			filteredList () {
+				return list => {
+					if (list.length !== 0)
+						return list.filter(
+							item =>
+								(item.user_name && item.user_name.includes(this.search.trim())) ||
+								(item.cus_id && item.cus_id.includes(this.search.trim())),
+						)
+				}
+			},
+			chargeBtnStatus () {
+				return status => {
+					if (status === 'B') return {
+						class: 'btn-primary',
+						text: '결제 대기',
+						click: this.$refs.modalWaitPayment.open
+					}
+					if (status === 'P') return { class: 'btn-warning', text: '일시 정지', click: this.pausePayment }
+					if (status === 'F') return { class: 'btn-danger', text: '결제 실패', click: this.paymentFailed }
+					if (status === 'S') return { class: 'disabled', text: '결제 성공' }
+					if (status === 'Q') return { class: 'btn-success', text: '환불 요청' }
+					if (status === 'N') return { class: '', text: '대상 아님' }
+					if (status === 'R') return { class: 'btn-info', text: '환불 완료' }
+					return { class: '', text: '' } //status === "R"
+				}
+			},
+			setCurrentItem () {
+				return item => {
+					if (item) {
+						this.currentItem = item
+						this.tag = item.mng_tag
+					}
+				}
+			},
 		},
-		chBNo: async function (index) {
-			this.apiCall(this.$route.params.aNo, index + 1)
-			this.$router.push({
-				name: 'billingDetailsList',
-				params: { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: index + 1 },
-			})
+		watch: {
+			targetCountCheck: function () {
+				this.chargeBatch()
+			}
 		},
-		aNoFormat: function (item) {
-			if (typeof item === 'object' && 'a_no' in item)
-				return `${item.a_no}회차 | ${item.apply_fr_dt.replace(
-					/(\d{4}-\d{2}-\d{2}).*/,
-					'$1',
-				)} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, '$1')}`
-			else return ''
-		},
-    bNoFormat: function(item) {
-      if (typeof item === "object" && "b_no" in item)
-        return `${item.b_no} | ${item.charge_dt.replace(
-          /(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/gi,
-          '$2.$3',
-        )}(정기) / ${item.pcharge_dt.replace(/(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/gi,
-          '$2.$3',)}(추가)`
-    },
-    pausePayment: function() {
-      this.$swal.fire({
-        title: "일시 정지를 해제하시겠습니까?",
-        confirmButtonColor: "#8FD0F5",
-        confirmButtonText: "확인",
-      });
-    },
-    editCardInfo: function(bauIdx) {
-      this.$swal
-        .fire({
-          title: "수정 하시겠습니까?",
-          confirmButtonText: "확인",
-          confirmButtonColor: "#8FD0F5",
-        })
-        .then(async result => {
-          if (result.isConfirmed) {
-            const res = await api.post("/partners/updateBillkey", { bauIdx, ...this.newCardInfo });
-            if (res.result === 2000)
-              this.$swal
-                .fire({
-                  text: "결제 카드 정보가 수정되었습니다",
-                  icon: "success",
-                  confirmButtonText: "확인",
-                  confirmButtonColor: "#8FD0F5",
-                })
-                .then(result => {
-                  if (result.isConfirmed) {
-                    this.$refs.modalCardEdit.close();
-                    this.refresh();
-                  }
-                });
-            else
-              this.$swal({
-                title: "다시 시도 해주세요",
-                text: res.message.errMsg,
-                icon: "error",
-                confirmButtonText: "확인",
-                confirmButtonColor: "#8FD0F5",
-              });
-          }
-        });
-    },
-    editTag: async function() {
-      const res = await api.post("/partners/updateMngTag", { idx: this.currentItem.idx, mngTag: this.tag });
-      if (res) this.refresh();
-    },
-    makePayment: function() {
-      this.$swal
-        .fire({
-          html: `${this.currentItem.user_name}님 <strong>${this.$route.params.aNo}회차(baoidx: ${this.currentItem.idx})</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
-          icon: "warning",
-          showCancelButton: true,
-          cancelButtonColor: "#d8d8d8",
-          cancelButtonText: "취소",
-          confirmButtonColor: "#8FD0F5",
-          confirmButtonText: "확인",
-          showLoaderOnConfirm: true,
-          reverseButtons: true,
-          preConfirm: async () => {
-            const chargeOrder = await api.post("/partners/chargeOrder", {
-              baoIdx: this.currentItem.idx,
-              isPenaltyCharge: this.tab - 1,
-            });
-            if (chargeOrder.result === 1000)
-              this.$swal
-                .fire({
-                  text: "결제 처리에 실패하였습니다",
-                  icon: "error",
-                  confirmButtonText: "확인",
-                  confirmButtonColor: "#8FD0F5",
-                })
-                .then(result => {
-                  if (result.isConfirmed) this.refresh();
-                });
-          },
-        })
-        .then(result => {
-          if (result.isConfirmed)
-            this.$swal
-              .fire({
-                text: "결제 처리 되었습니다",
-                icon: "success",
-                confirmButtonText: "확인",
-                confirmButtonColor: "#8FD0F5",
-              })
-              .then(result => {
-                if (result.isConfirmed) this.refresh();
-              });
-        });
-    },
-    paymentFailed: function() {
-      console.log(this.currentItem);
-      this.$swal
-        .fire({
-          html: `${this.currentItem.charged_bill_dump}`,
-          icon: "error",
-          confirmButtonText: "수동 재결제",
-          confirmButtonColor: "#8FD0F5",
-          showCancelButton: true,
-          cancelButtonColor: "#d8d8d8",
-          cancelButtonText: "취소",
-          reverseButtons: true,
-        })
-        .then(result => {
-          if (result.isConfirmed) this.makePayment();
-        });
-    },
-    chargeBatch: async function() {
-      const res = await api.post('/partners/chargeBatch', {
-        bapIdx: 1,
-        bNo: this.$route.params.bNo
-      })
+		methods: {
+			apiCall: async function (aNo, bNo) {
+				let res
+				if (this.tab === 1) {
+					res = await api.get('/partners/chargeList', {
+						sIdx: this.$route.params.sIdx,
+						aNo: aNo,
+						bNo: bNo,
+					})
+					this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item))
+					this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item))
+				} else {
+					res = await api.get('/partners/pchargeList', {
+						sIdx: this.$route.params.sIdx,
+						aNo: aNo,
+						bNo: bNo,
+					})
+				}
 
-      console.log(res);
-      if(res.result === 2000) {
-        this.$swal.fire({
-          title: "success",
-          confirmButtonText: "확인",
-          confirmButtonColor: "#8FD0F5",
-        }).then( result => {
-          if(result.isConfirmed) {
-            window.location.reload()
-          }
-        })
-      } else {
-        this.$swal
-          .fire({
-            title: res.message,
-            confirmButtonText: "확인",
-            confirmButtonColor: "#8FD0F5",
+				this.listInfo = res.data.list
+				this.bapInfo = res.data.bap
+			},
+			refresh: function () {
+				this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
+			},
+			chTab: function (index) {
+				this.tab = index
+				this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
+			},
+			chANo: async function (index) {
+				this.apiCall(index + 1, 1)
+				this.$router.push({
+					name: 'billingDetailsList',
+					params: { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 },
+				})
+			},
+			chBNo: async function (index) {
+				this.apiCall(this.$route.params.aNo, index + 1)
+				this.$router.push({
+					name: 'billingDetailsList',
+					params: { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: index + 1 },
+				})
+			},
+			aNoFormat: function (item) {
+				if (typeof item === 'object' && 'a_no' in item)
+					return `${item.a_no}회차 | ${item.apply_fr_dt.replace(
+						/(\d{4}-\d{2}-\d{2}).*/,
+						'$1',
+					)} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, '$1')}`
+				else return ''
+			},
+			bNoFormat: function (item) {
+				if (typeof item === 'object' && 'b_no' in item)
+					return `${item.b_no} | ${item.charge_dt.replace(
+						/(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/gi,
+						'$2.$3',
+					)}(정기) / ${item.pcharge_dt.replace(/(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/gi,
+						'$2.$3',)}(추가)`
+			},
+			pausePayment: function () {
+				this.$swal.fire({
+					title: '일시 정지를 해제하시겠습니까?',
+					confirmButtonColor: '#8FD0F5',
+					confirmButtonText: '확인',
+				})
+			},
+			editCardInfo: function (bauIdx) {
+				this.$swal
+					.fire({
+						title: '수정 하시겠습니까?',
+						confirmButtonText: '확인',
+						confirmButtonColor: '#8FD0F5',
+					})
+					.then(async result => {
+						if (result.isConfirmed) {
+							const res = await api.post('/partners/updateBillkey', { bauIdx, ...this.newCardInfo })
+							if (res.result === 2000)
+								this.$swal
+									.fire({
+										text: '결제 카드 정보가 수정되었습니다',
+										icon: 'success',
+										confirmButtonText: '확인',
+										confirmButtonColor: '#8FD0F5',
+									})
+									.then(result => {
+										if (result.isConfirmed) {
+											this.$refs.modalCardEdit.close()
+											this.refresh()
+										}
+									})
+							else
+								this.$swal({
+									title: '다시 시도 해주세요',
+									text: res.message.errMsg,
+									icon: 'error',
+									confirmButtonText: '확인',
+									confirmButtonColor: '#8FD0F5',
+								})
+						}
+					})
+			},
+			editTag: async function () {
+				const res = await api.post('/partners/updateMngTag', { idx: this.currentItem.idx, mngTag: this.tag })
+				if (res) this.refresh()
+			},
+			makePayment: function () {
+				this.$swal
+					.fire({
+						html: `${this.currentItem.user_name}님 <strong>${this.$route.params.aNo}회차(baoidx: ${this.currentItem.idx})</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
+						icon: 'warning',
+						showCancelButton: true,
+						cancelButtonColor: '#d8d8d8',
+						cancelButtonText: '취소',
+						confirmButtonColor: '#8FD0F5',
+						confirmButtonText: '확인',
+						showLoaderOnConfirm: true,
+						reverseButtons: true,
+						preConfirm: async () => {
+							const chargeOrder = await api.post('/partners/chargeOrder', {
+								baoIdx: this.currentItem.idx,
+								isPenaltyCharge: this.tab - 1,
+							})
+							if (chargeOrder.result === 1000)
+								this.$swal
+									.fire({
+										text: '결제 처리에 실패하였습니다',
+										icon: 'error',
+										confirmButtonText: '확인',
+										confirmButtonColor: '#8FD0F5',
+									})
+									.then(result => {
+										if (result.isConfirmed) this.refresh()
+									})
+						},
+					})
+					.then(result => {
+						if (result.isConfirmed)
+							this.$swal
+								.fire({
+									text: '결제 처리 되었습니다',
+									icon: 'success',
+									confirmButtonText: '확인',
+									confirmButtonColor: '#8FD0F5',
+								})
+								.then(result => {
+									if (result.isConfirmed) this.refresh()
+								})
+					})
+			},
+			paymentFailed: function () {
+				console.log(this.currentItem)
+				this.$swal
+					.fire({
+						html: `${this.currentItem.charged_bill_dump}`,
+						icon: 'error',
+						confirmButtonText: '수동 재결제',
+						confirmButtonColor: '#8FD0F5',
+						showCancelButton: true,
+						cancelButtonColor: '#d8d8d8',
+						cancelButtonText: '취소',
+						reverseButtons: true,
+					})
+					.then(result => {
+						if (result.isConfirmed) this.makePayment()
+					})
+			},
+			chargeBatch: async function () {
+				let res
+				if (this.targetCountCheck) {
+					res = await api.post('/partners/chargeBatch', {
+						bapIdx: 1,
+						bNo: this.$route.params.bNo
+					})
+				} else {
+					res = await api.post('/partners/chargeBatch', {
+						bapIdx: 1,
+						bNo: this.$route.params.bNo,
+						check: 1,
+					})
+				}
+
+				if (res.result === 2000) {
+					if (res.data.targetCnt && res.data.targetCnt > 0) {
+						this.$swal.fire({
+							title: '총 ' + res.data.targetCnt + '명의 일괄결제가 진행 됩니다.',
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5',
+							cancelButtonText: '취소',
+							cancelButtonColor: '#ff7674'
+						}).then(result => {
+							if (result.isConfirmed) this.targetCountCheck = true
+						})
+					} else if (res.data.targetCnt && res.data.targetCnt == 0) {
+						this.$swal.fire({
+							title: '결제할 인원이 없습니다.',
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5'
+						})
+					} else {
+						this.$swal.fire({
+							title: '성공건수:' + res.data.successCnt + '<br/>실패건수:' + res.data.failCnt,
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5'
+						}).then(result => {
+							if (result.isConfirmed) {
+								this.targetCountCheck = false
+								this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
+							}
+						})
+					}
+				} else {
+					this.$swal
+						.fire({
+							title: res.message,
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5',
+						})
+				}
+			},
+      pChargeBatch: async function () {
+        let res
+        if (this.targetCountCheck) {
+          res = await api.post('/partners/pchargeBatch', {
+            bapIdx: 1,
+            bNo: this.$route.params.bNo
           })
-      }
-    },
-    pChargeBatch: async function() {
-      const res = await api.post('/partners/pchargeBatch', {
-        bapIdx: 1,
-        bNo: this.$route.params.bNo
-      })
-      console.log(res);
-      if(res.result === 2000) {
-        this.$swal.fire({
-            title: "success",
-            confirmButtonText: "확인",
-            confirmButtonColor: "#8FD0F5",
-        }).then( result => {
-          if(result.isConfirmed) {
-            window.location.reload()
-          }
-        })
-      } else {
-        this.$swal
-        .fire({
-          title: res.message,
-          confirmButtonText: "확인",
-          confirmButtonColor: "#8FD0F5",
-        })
-      }
+        } else {
+          res = await api.post('/partners/pchargeBatch', {
+            bapIdx: 1,
+            bNo: this.$route.params.bNo,
+            check: 1,
+          })
+        }
 
-    },
-    updatePChargeTarget: async function() {
-      const res = await api.post('/partners/updatePChargeTarget', {
-        bapIdx: 1,
-        bNo: this.$route.params.bNo
-      })
-      console.log(res);
-      if(res.result === 2000) {
-        this.$swal.fire({
-          title: "success",
-          confirmButtonText: "확인",
-          confirmButtonColor: "#8FD0F5",
-        }).then( result => {
-          if(result.isConfirmed) {
-            window.location.reload()
+        if (res.result === 2000) {
+          if (res.data.targetCnt && res.data.targetCnt > 0) {
+            this.$swal.fire({
+              title: '총 ' + res.data.targetCnt + '명의 일괄결제가 진행 됩니다.',
+              confirmButtonText: '확인',
+              confirmButtonColor: '#8FD0F5',
+              cancelButtonText: '취소',
+              cancelButtonColor: '#ff7674'
+            }).then(result => {
+              if (result.isConfirmed) this.targetCountCheck = true
+            })
+          } else if (res.data.targetCnt && res.data.targetCnt == 0) {
+            this.$swal.fire({
+              title: '결제할 인원이 없습니다.',
+              confirmButtonText: '확인',
+              confirmButtonColor: '#8FD0F5'
+            })
+          } else {
+            this.$swal.fire({
+              title: '성공건수:' + res.data.successCnt + '<br/>실패건수:' + res.data.failCnt,
+              confirmButtonText: '확인',
+              confirmButtonColor: '#8FD0F5'
+            }).then(result => {
+              if (result.isConfirmed) {
+                this.targetCountCheck = false
+                this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
+              }
+            })
           }
-        })
-      } else {
-        this.$swal
-        .fire({
-          title: res.message,
-          confirmButtonText: "확인",
-          confirmButtonColor: "#8FD0F5",
-        })
-      }
+        } else {
+          this.$swal
+            .fire({
+              title: res.message,
+              confirmButtonText: '확인',
+              confirmButtonColor: '#8FD0F5',
+            })
+        }
 
-    }
-  },
-  components: {
-    Modal,
-    Dropdown,
-  },
-};
+      },
+			updatePChargeTarget: async function () {
+				const res = await api.post('/partners/updatePChargeTarget', {
+					bapIdx: 1,
+					bNo: this.$route.params.bNo
+				})
+				console.log(res)
+				if (res.result === 2000) {
+					this.$swal.fire({
+						title: 'success',
+						confirmButtonText: '확인',
+						confirmButtonColor: '#8FD0F5',
+					}).then(result => {
+						if (result.isConfirmed) {
+							window.location.reload()
+						}
+					})
+				} else {
+					this.$swal
+						.fire({
+							title: res.message,
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5',
+						})
+				}
+
+			}
+		},
+		components: {
+			Modal,
+			Dropdown,
+		},
+	}
 </script>
 
 <style>
-.title {
-  height: 65px;
-}
-.content {
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-}
-.subtitle {
-  display: flex;
-  align-items: center;
-}
-.subtitle h1 {
-  margin-right: 12px;
-}
-.input-group {
-  padding-bottom: 8px;
-}
-td {
-  vertical-align: middle;
-}
-textarea {
-  resize: none;
-  width: 100%;
-}
-.swal2-popup {
-  font-size: 1.3rem !important;
-}
-.swal2-container {
-  z-index: 300000 !important;
-}
+  .title {
+    height: 65px;
+  }
+
+  .content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .subtitle {
+    display: flex;
+    align-items: center;
+  }
+
+  .subtitle h1 {
+    margin-right: 12px;
+  }
+
+  .input-group {
+    padding-bottom: 8px;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+
+  textarea {
+    resize: none;
+    width: 100%;
+  }
+
+  .swal2-popup {
+    font-size: 1.3rem !important;
+  }
+
+  .swal2-container {
+    z-index: 300000 !important;
+  }
 </style>
