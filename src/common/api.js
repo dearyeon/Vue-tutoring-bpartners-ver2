@@ -12,7 +12,7 @@ else if(hostId=='partners-st') {
     server = 'https://bapi-st.tutoring.co.kr';
 }
 //로컬 API 개발자 전용 설정
-else if(config.developer=='ken' && window.location.hostname=='localhost') {
+else if(config.developer=='' && window.location.hostname=='localhost') {
     server = 'https://local.tutoring.co.kr';
 }
 
