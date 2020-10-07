@@ -344,7 +344,7 @@
 		data () {
 			return {
 				listInfo: '',
-				bapInfo: 0,
+				bapInfo: {},
 				tab: 1,
 				aNoList: [],
 				bNoList: [],
@@ -392,8 +392,8 @@
 			},
 		},
 		watch: {
-			targetCountCheck: function () {
-				this.chargeBatch()
+			targetCountCheck: function (value) {
+				value && this.chargeBatch()
 			}
 		},
 		methods: {
@@ -566,29 +566,30 @@
 				let res
 				if (this.targetCountCheck) {
 					res = await api.post('/partners/chargeBatch', {
-						bapIdx: 1,
+						bapIdx: this.bapInfo.idx,
 						bNo: this.$route.params.bNo
 					})
 				} else {
 					res = await api.post('/partners/chargeBatch', {
-						bapIdx: 1,
+						bapIdx: this.bapInfo.idx,
 						bNo: this.$route.params.bNo,
 						check: 1,
 					})
 				}
 
 				if (res.result === 2000) {
-					if (res.data.targetCnt && res.data.targetCnt > 0) {
+					if (res.data.targetCnt !== undefined && res.data.targetCnt > 0) {
 						this.$swal.fire({
 							title: '총 ' + res.data.targetCnt + '명의 일괄결제가 진행 됩니다.',
 							confirmButtonText: '확인',
 							confirmButtonColor: '#8FD0F5',
+							showCancelButton: true,
 							cancelButtonText: '취소',
 							cancelButtonColor: '#ff7674'
 						}).then(result => {
 							if (result.isConfirmed) this.targetCountCheck = true
 						})
-					} else if (res.data.targetCnt && res.data.targetCnt == 0) {
+					} else if (res.data.targetCnt !== undefined && res.data.targetCnt === 0) {
 						this.$swal.fire({
 							title: '결제할 인원이 없습니다.',
 							confirmButtonText: '확인',
@@ -615,60 +616,61 @@
 						})
 				}
 			},
-      pChargeBatch: async function () {
-        let res
-        if (this.targetCountCheck) {
-          res = await api.post('/partners/pchargeBatch', {
-            bapIdx: 1,
-            bNo: this.$route.params.bNo
-          })
-        } else {
-          res = await api.post('/partners/pchargeBatch', {
-            bapIdx: 1,
-            bNo: this.$route.params.bNo,
-            check: 1,
-          })
-        }
+			pChargeBatch: async function () {
+				let res
+				if (this.targetCountCheck) {
+					res = await api.post('/partners/pchargeBatch', {
+						bapIdx: this.bapInfo.idx,
+						bNo: this.$route.params.bNo
+					})
+				} else {
+					res = await api.post('/partners/pchargeBatch', {
+						bapIdx: this.bapInfo.idx,
+						bNo: this.$route.params.bNo,
+						check: 1,
+					})
+				}
 
-        if (res.result === 2000) {
-          if (res.data.targetCnt && res.data.targetCnt > 0) {
-            this.$swal.fire({
-              title: '총 ' + res.data.targetCnt + '명의 일괄결제가 진행 됩니다.',
-              confirmButtonText: '확인',
-              confirmButtonColor: '#8FD0F5',
-              cancelButtonText: '취소',
-              cancelButtonColor: '#ff7674'
-            }).then(result => {
-              if (result.isConfirmed) this.targetCountCheck = true
-            })
-          } else if (res.data.targetCnt && res.data.targetCnt == 0) {
-            this.$swal.fire({
-              title: '결제할 인원이 없습니다.',
-              confirmButtonText: '확인',
-              confirmButtonColor: '#8FD0F5'
-            })
-          } else {
-            this.$swal.fire({
-              title: '성공건수:' + res.data.successCnt + '<br/>실패건수:' + res.data.failCnt,
-              confirmButtonText: '확인',
-              confirmButtonColor: '#8FD0F5'
-            }).then(result => {
-              if (result.isConfirmed) {
-                this.targetCountCheck = false
-                this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
-              }
-            })
-          }
-        } else {
-          this.$swal
-            .fire({
-              title: res.message,
-              confirmButtonText: '확인',
-              confirmButtonColor: '#8FD0F5',
-            })
-        }
+				if (res.result === 2000) {
+					if (res.data.targetCnt !== undefined && res.data.targetCnt > 0) {
+						this.$swal.fire({
+							title: '총 ' + res.data.targetCnt + '명의 일괄결제가 진행 됩니다.',
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5',
+							showCancelButton: true,
+							cancelButtonText: '취소',
+							cancelButtonColor: '#ff7674'
+						}).then(result => {
+							if (result.isConfirmed) this.targetCountCheck = true
+						})
+					} else if (res.data.targetCnt !== undefined && res.data.targetCnt === 0) {
+						this.$swal.fire({
+							title: '결제할 인원이 없습니다.',
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5'
+						})
+					} else {
+						this.$swal.fire({
+							title: '성공건수:' + res.data.successCnt + '<br/>실패건수:' + res.data.failCnt,
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5'
+						}).then(result => {
+							if (result.isConfirmed) {
+								this.targetCountCheck = false
+								this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
+							}
+						})
+					}
+				} else {
+					this.$swal
+						.fire({
+							title: res.message,
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5',
+						})
+				}
 
-      },
+			},
 			updatePChargeTarget: async function () {
 				const res = await api.post('/partners/updatePChargeTarget', {
 					bapIdx: 1,
