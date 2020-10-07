@@ -26,11 +26,11 @@
               </tr>
             </thead>
             <tr v-for="(register, index) in registers" :key="`Register-${index}`">
-              <td>{{ register.applys[0].idx }}</td>
+              <td>{{ register.idx }}</td>
               <td>
-                {{ register.site.company }}
+                {{ register.company }}
               </td>
-              <td>{{ register.site.name }}</td>
+              <td>{{ register.name }}</td>
               <td>
                 <Dropdown :defaultValue="aNoList[index][aNoList[index].length - 1]" :itemList="aNoList[index]" />
               </td>
@@ -39,10 +39,10 @@
                   <button class="btn btn-page-set">페이지 설정</button>
                 </router-link>
               </td>
-              <td>{{ register.applys[currentANo[index]].upd_dt }}</td>
+              <td>{{ register.updDt }}</td>
               <td>
-                <a :href="'http://localhost:8081/'+register.applys[0].hash" target="_blank">
-                  <p>https://apply.tutoring.co.kr/{{register.applys[0].hash}}</p>
+                <a :href="register.url" target="_blank">
+                  <p>{{ register.url }}</p>
                 </a>
               </td>
             </tr>
@@ -58,12 +58,22 @@ import api from "@/common/api";
 import Dropdown from "../atom/Dropdown";
 
 export default {
-  async created() {
-    const res = await api.get("/partners/applyPageList");
-    this.registers = res;
-    this.aNoList = res.map(register => register.applys.map(item => this.aNoFormat(item)));
-    this.currentANo = res.map(() => 0);
-  },
+	async created () {
+		const res = await api.get('/partners/applyPageList')
+		res.forEach( item => {
+			let registeredPage = {}
+			registeredPage.idx = item.applys[0].idx
+			registeredPage.company = item.site.company
+			registeredPage.name = item.site.name
+			registeredPage.updDt = item.applys[0].upd_dt
+			registeredPage.url = 'http://apply.tutoring.co.kr/'+item.applys[0].hash
+
+      this.registers.push(registeredPage)
+
+		})
+		this.aNoList = res.map(register => register.applys.map(item => this.aNoFormat(item)))
+		this.currentANo = res.map(() => 0)
+	},
   data() {
     return {
       registers: [],
