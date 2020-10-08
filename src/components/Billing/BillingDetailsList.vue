@@ -2,11 +2,21 @@
   <div class="row">
     <Modal ref="modalWaitPayment" v-cloak>
       <div slot="body" style="align-items:center">
-        <h1><strong>결제 방법을 선택해주세요.</strong></h1>
+        <h1><strong>작업을 선택해주세요.</strong></h1>
       </div>
       <div slot="footer" style="justify-content: center">
+        <button class="btn btn-default m-r" @click="$refs.modalWaitPayment.close()">취소</button>
         <button class="btn btn-warning" @click="$refs.modalWaitPayment.close()">일시정지</button>
         <button class="btn btn-info" @click="[$refs.modalWaitPayment.close(), makePayment()]">수동결제</button>
+      </div>
+    </Modal>
+    <Modal ref="modalOnSuccess" v-cloak>
+      <div slot="body" style="align-items:center">
+        <h1><strong>작업을 선택해주세요.</strong></h1>
+      </div>
+      <div slot="footer" style="justify-content: center">
+        <button class="btn btn-default m-r" @click="$refs.modalOnSuccess.close()">취소</button>
+        <button class="btn btn-warning" @click="[$refs.modalOnSuccess.close(), refund()]">환불</button>
       </div>
     </Modal>
     <Modal ref="modalCardEdit" v-cloak>
@@ -376,10 +386,9 @@
 					}
 					if (status === 'P') return { class: 'btn-warning', text: '일시 정지', click: this.pausePayment }
 					if (status === 'F') return { class: 'btn-danger', text: '결제 실패', click: this.paymentFailed }
-					if (status === 'S') return { class: 'disabled', text: '결제 성공' }
-					if (status === 'Q') return { class: 'btn-success', text: '환불 요청' }
+					if (status === 'S') return { class: 'btn-default', text: '결제 성공', click: this.$refs.modalOnSuccess.open }
 					if (status === 'N') return { class: '', text: '대상 아님' }
-					if (status === 'R') return { class: 'btn-info', text: '환불 완료' }
+					if (status === 'R') return { class: 'btn-info disabled', text: '환불 완료' }
 					return { class: '', text: '' } //status === "R"
 				}
 			},
@@ -504,10 +513,58 @@
 				const res = await api.post('/partners/updateMngTag', params)
 				if (res) this.refresh()
 			},
+      refund: function () {
+				const isPenaltyCharge = (this.tab!=1)
+        this.$swal
+            .fire({
+              html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user_name}</strong>님<br/>`
+									+ `<strong>${this.currentItem.goods_name}</strong><br/>`
+									+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.charged_amt)}</strong>원이 환불됩니다.<br/>`
+									+ `<br/>환불 처리 하시겠습니까?`,
+              icon: 'warning',
+              showCancelButton: true,
+              cancelButtonColor: '#d8d8d8',
+              cancelButtonText: '취소',
+              confirmButtonColor: '#8FD0F5',
+              confirmButtonText: '확인',
+              showLoaderOnConfirm: true,
+              reverseButtons: true,
+              preConfirm: async () => {
+                const res = await api.post('/partners/refundOrder', {
+                  baoIdx: this.currentItem.idx,
+                  isPenaltyCharge: isPenaltyCharge?1:0,
+                })
+                if (res.result === 1000)
+                  this.$swal
+                      .fire({
+                        html: '환불 처리에 실패하였습니다.<br/>'+res.message,
+                        icon: 'error',
+                        confirmButtonText: '확인',
+                        confirmButtonColor: '#8FD0F5',
+                      })
+                      .then(result => {
+                        if (result.isConfirmed) this.refresh()
+                      })
+              },
+            })
+            .then(result => {
+              if (result.isConfirmed)
+                this.$swal
+                    .fire({
+                      text: '환불 처리 되었습니다',
+                      icon: 'success',
+                      confirmButtonText: '확인',
+                      confirmButtonColor: '#8FD0F5',
+                    })
+                    .then(result => {
+                      if (result.isConfirmed) this.refresh()
+                    })
+            })
+      },
 			makePayment: function () {
 				this.$swal
 					.fire({
-						html: `${this.currentItem.user_name}님 <strong>${this.$route.params.aNo}회차(baoidx: ${this.currentItem.idx})</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
+						html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user_name}</strong>님<br/><strong>${this.currentItem.goods_name}</strong><br/>수강료 <strong>${this.$shared.nf(this.currentItem.charge_price)}</strong>원이 결제됩니다.<br/><br/>결제 하시겠습니까?`,
 						icon: 'warning',
 						showCancelButton: true,
 						cancelButtonColor: '#d8d8d8',
@@ -516,36 +573,38 @@
 						confirmButtonText: '확인',
 						showLoaderOnConfirm: true,
 						reverseButtons: true,
-						preConfirm: async () => {
-							const chargeOrder = await api.post('/partners/chargeOrder', {
+					})
+					.then( async (r) => {
+						if(r.isConfirmed) {
+							const res = await api.post('/partners/chargeOrder', {
 								baoIdx: this.currentItem.idx,
 								isPenaltyCharge: this.tab - 1,
 							})
-							if (chargeOrder.result === 1000)
+							if (res.result === 1000) {
 								this.$swal
-									.fire({
-										text: '결제 처리에 실패하였습니다',
-										icon: 'error',
-										confirmButtonText: '확인',
-										confirmButtonColor: '#8FD0F5',
-									})
-									.then(result => {
-										if (result.isConfirmed) this.refresh()
-									})
-						},
-					})
-					.then(result => {
-						if (result.isConfirmed)
-							this.$swal
-								.fire({
-									text: '결제 처리 되었습니다',
-									icon: 'success',
-									confirmButtonText: '확인',
-									confirmButtonColor: '#8FD0F5',
-								})
-								.then(result => {
-									if (result.isConfirmed) this.refresh()
-								})
+										.fire({
+											html: '결제 처리에 실패하였습니다.<br/>' + res.message,
+											icon: 'error',
+											confirmButtonText: '확인',
+											confirmButtonColor: '#8FD0F5',
+										})
+										.then(result => {
+											if (result.isConfirmed) this.refresh()
+										})
+							}
+							else {
+								this.$swal
+										.fire({
+											text: '결제 처리 되었습니다',
+											icon: 'success',
+											confirmButtonText: '확인',
+											confirmButtonColor: '#8FD0F5',
+										})
+										.then(result => {
+											if (result.isConfirmed) this.refresh()
+										})
+							}
+						}
 					})
 			},
 			paymentFailed: function () {
