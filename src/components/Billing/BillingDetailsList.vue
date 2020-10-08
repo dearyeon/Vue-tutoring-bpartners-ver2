@@ -389,11 +389,6 @@
 				}
 			},
 		},
-		watch: {
-			targetCountCheck: function (value) {
-				value && this.chargeBatch()
-			}
-		},
 		methods: {
 			apiCall: async function (aNo, bNo) {
 				let res
@@ -508,7 +503,7 @@
             .fire({
               html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user_name}</strong>님<br/>`
 									+ `<strong>${this.currentItem.goods_name}</strong><br/>`
-									+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.charged_amt)}</strong>원이 환불됩니다.<br/>`
+									+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem[isPenaltyCharge?'pcharged_amt':'charged_amt'])}</strong>원이 환불됩니다.<br/>`
 									+ `<br/>환불 처리 하시겠습니까?`,
               icon: 'warning',
               showCancelButton: true,
@@ -518,42 +513,47 @@
               confirmButtonText: '확인',
               showLoaderOnConfirm: true,
               reverseButtons: true,
-              preConfirm: async () => {
-                const res = await api.post('/partners/refundOrder', {
-                  baoIdx: this.currentItem.idx,
-                  isPenaltyCharge: isPenaltyCharge?1:0,
-                })
-                if (res.result === 1000)
-                  this.$swal
-                      .fire({
-                        html: '환불 처리에 실패하였습니다.<br/>'+res.message,
-                        icon: 'error',
-                        confirmButtonText: '확인',
-                        confirmButtonColor: '#8FD0F5',
-                      })
-                      .then(result => {
-                        if (result.isConfirmed) this.refresh()
-                      })
-              },
             })
-            .then(result => {
-              if (result.isConfirmed)
-                this.$swal
-                    .fire({
-                      text: '환불 처리 되었습니다',
-                      icon: 'success',
-                      confirmButtonText: '확인',
-                      confirmButtonColor: '#8FD0F5',
-                    })
-                    .then(result => {
-                      if (result.isConfirmed) this.refresh()
-                    })
+            .then( async r => {
+              if (r.isConfirmed) {
+								const res = await api.post('/partners/refundOrder', {
+									baoIdx: this.currentItem.idx,
+									isPenaltyCharge: isPenaltyCharge ? 1 : 0,
+								})
+								if (res.result === 1000) {
+									this.$swal
+											.fire({
+												html: '환불 처리에 실패하였습니다.<br/>' + res.message,
+												icon: 'error',
+												confirmButtonText: '확인',
+												confirmButtonColor: '#8FD0F5',
+											})
+											.then(result => {
+												if (result.isConfirmed) this.refresh()
+											})
+								} else {
+									this.$swal
+											.fire({
+												text: '환불 처리 되었습니다',
+												icon: 'success',
+												confirmButtonText: '확인',
+												confirmButtonColor: '#8FD0F5',
+											})
+											.then(result => {
+												if (result.isConfirmed) this.refresh()
+											})
+								}
+							}
             })
       },
 			makePayment: function () {
+				const isPenaltyCharge = (this.tab!=1)
 				this.$swal
 					.fire({
-						html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user_name}</strong>님<br/><strong>${this.currentItem.goods_name}</strong><br/>수강료 <strong>${this.$shared.nf(this.currentItem.charge_price)}</strong>원이 결제됩니다.<br/><br/>결제 하시겠습니까?`,
+						html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user_name}</strong>님<br/>`
+								+ `<strong>${this.currentItem.goods_name}</strong><br/>`
+								+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.charge_price)}</strong>원이 결제됩니다.<br/>`
+								+ `<br/>결제 진행 하시겠습니까?`,
 						icon: 'warning',
 						showCancelButton: true,
 						cancelButtonColor: '#d8d8d8',
@@ -563,7 +563,7 @@
 						showLoaderOnConfirm: true,
 						reverseButtons: true,
 					})
-					.then( async (r) => {
+					.then( async r => {
 						if(r.isConfirmed) {
 							const res = await api.post('/partners/chargeOrder', {
 								baoIdx: this.currentItem.idx,
@@ -637,7 +637,10 @@
 							cancelButtonText: '취소',
 							cancelButtonColor: '#ff7674'
 						}).then(result => {
-							if (result.isConfirmed) this.targetCountCheck = true
+							if (result.isConfirmed) {
+								this.targetCountCheck = true
+								this.chargeBatch()
+							}
 						})
 					} else if (res.data.targetCnt !== undefined && res.data.targetCnt === 0) {
 						this.$swal.fire({
@@ -691,7 +694,10 @@
 							cancelButtonText: '취소',
 							cancelButtonColor: '#ff7674'
 						}).then(result => {
-							if (result.isConfirmed) this.targetCountCheck = true
+							if (result.isConfirmed) {
+								this.targetCountCheck = true
+								this.pChargeBatch()
+							}
 						})
 					} else if (res.data.targetCnt !== undefined && res.data.targetCnt === 0) {
 						this.$swal.fire({
