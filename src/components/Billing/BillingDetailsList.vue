@@ -201,7 +201,6 @@
                           v-for="(item, index) in listInfo"
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
-                          @click="setCurrentItem(item)"
                         >
                           <td>{{ item.no }}</td>
                           <td>{{ item.user_name }}</td>
@@ -223,18 +222,13 @@
                             <button
                               class="btn"
                               :class="chargeBtnStatus(item.charge_status).class"
-                              @click="
-                                [
-                                  chargeBtnStatus(item.charge_status).click &&
-                                    chargeBtnStatus(item.charge_status).click(),
-                                ]
-                              "
+                              @click="[setCurrentItem(item), chargeBtnStatus(item.charge_status).click && chargeBtnStatus(item.charge_status).click()]"
                             >
                               {{ chargeBtnStatus(item.charge_status).text }}
                             </button>
                           </td>
                           <td>
-                            <button class="btn btn-default" @click="[(newCardInfo = {}), $refs.modalCardEdit.open()]">
+                            <button class="btn btn-default" @click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
                               카드변경
                             </button>
                           </td>
@@ -246,7 +240,7 @@
                           </td>
                           <td>{{ item.mng_tag ? item.mng_tag : '' }}</td>
                           <td>
-														<button class="btn btn-default" @click="[(isPenaltyCharge=false), (tag=(item.mng_tag?item.mng_tag:'')), $refs.modalTag.open()]">수정</button>
+														<button class="btn btn-default" @click="[setCurrentItem(item), (isPenaltyCharge=false), (tag=(item.mng_tag?item.mng_tag:'')), $refs.modalTag.open()]">수정</button>
                           </td>
                         </tr>
                       </tbody>
@@ -279,7 +273,6 @@
                           v-for="(item, index) in listInfo"
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
-                          @click="setCurrentItem(item)"
                         >
                           <td>{{ item.no }}</td>
                           <td>{{ item.user_name }}</td>
@@ -303,18 +296,14 @@
                             <button v-show="item.pcharge_status"
                               class="btn"
                               :class="chargeBtnStatus(item.pcharge_status).class"
-                              @click="
-                                [
-                                  chargeBtnStatus(item.pcharge_status).click &&
-                                    chargeBtnStatus(item.pcharge_status).click(),
-                                ]
+                              @click="[setCurrentItem(item), chargeBtnStatus(item.pcharge_status).click && chargeBtnStatus(item.pcharge_status).click()]
                               "
                             >
                               {{ chargeBtnStatus(item.pcharge_status).text }}
                             </button>
                           </td>
                           <td>
-                            <button class="btn btn-default" @click="[(newCardInfo = {}), $refs.modalCardEdit.open()]">
+                            <button class="btn btn-default" @click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
                               카드변경
                             </button>
                           </td>
@@ -326,7 +315,7 @@
                           </td>
                           <td>{{ item.pmng_tag ? item.pmng_tag : '' }}</td>
                           <td>
-                            <button class="btn btn-default" @click="[(isPenaltyCharge=true), (tag=(item.pmng_tag?item.pmng_tag:'')), $refs.modalTag.open()]">수정</button>
+                            <button class="btn btn-default" @click="[setCurrentItem(item), (isPenaltyCharge=true), (tag=(item.pmng_tag?item.pmng_tag:'')), $refs.modalTag.open()]">수정</button>
                           </td>
                         </tr>
                       </tbody>
@@ -611,8 +600,7 @@
 				console.log(this.currentItem)
 				this.$swal
 					.fire({
-						html: `${this.currentItem.charged_bill_dump}`,
-						icon: 'error',
+						html: `실패이유: ${this.currentItem.charged_bill_dump}`,
 						confirmButtonText: '수동 재결제',
 						confirmButtonColor: '#8FD0F5',
 						showCancelButton: true,
