@@ -105,9 +105,11 @@
                     <div class="ibox" style="height:100%;">
                       <div class="col-sm-12" style="height:100%;">
                         <div class="ibox-content" style="min-height: 900px; overflow:auto; margin:0px -15px;">
+                          <div v-show="UserNum+1">
                           <button class="btn btn-default btn-xs pull-right exportReviewList" @click="openModify">학생 수정</button>
                           <div style="margin:0px -20px">
-                            <UserInfo :data="items[UserNum]" :comp="1"/>
+                            <UserInfo :data="item" :comp="1" />
+                          </div>
                           </div>
                         </div>
                     </div>
@@ -115,7 +117,7 @@
                 </div>
             </div>
         </div>
-        <UserModifyModal v-if="showModify" :item="items[UserNum]" @update="updateItem" @close="openModify"/>
+        <UserModifyModal v-if="showModify" :item="item" @update="updateItem" @close="openModify"/>
     </div>
 </template>
 
@@ -130,6 +132,7 @@ export default {
             baseInfo: [],
             search: '',
             items: [],
+            item: {},
             UserNum: '',
             currentPage: '',
             sortKey: '',
@@ -144,8 +147,9 @@ export default {
     created() {
         this.baseInfo = tempItems[0].baseInfo;
         this.items = tempItems;
-        this.UserNum = 0;
         this.currentPage = 1;
+        this.UserNum = -1;
+        this.item = this.items[0];
     },
     methods: {
         setSearch(input) {
@@ -165,6 +169,7 @@ export default {
         },
         openUserInfo(index) {
           this.UserNum = index;
+          this.item = this.items[index];
           this.modalitem = this.items[this.UserNum];
         },
         openModify() {

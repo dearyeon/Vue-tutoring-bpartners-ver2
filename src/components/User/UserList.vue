@@ -29,7 +29,7 @@
                     <div class="row">
                         <div v-for="(item, index) in items" :key="item.id"
                         @click="routeDetailPage(index,item.orderList[0].c_no)"
-                        v-show="!item.company.indexOf(search) && (index>=(currentPage-1)*30 && index<currentPage*30)">
+                        v-show="calculatePage(index) && !item.company.indexOf(this.search)">
                         <div class="col-sm-6 col-md-3 col-lg-4">
                             <div class="ibox">
                                 <div class="ibox-title">
@@ -151,7 +151,10 @@ export default {
         },
         setCurrentPage(data) {
             this.currentPage = data;
-        }
+        },
+        calculatePage(index) {
+            return (index>=(this.currentPage-1)*30 && index<this.currentPage*30);
+        },
     }
 }
 
