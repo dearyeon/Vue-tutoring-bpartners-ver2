@@ -80,7 +80,7 @@
                                     <div class="vertical-timeline-icon" style="border:0px;">
                                         <img alt="image" class="img-circle s_tutor_image" style="width: 50px;height: 50px;margin-left: -5px;" :src="getImageSrc(item.prof_img)">
                                     </div>
-                                    <div class="vertical-timeline-content" style="background-color:black;" :style="(comp)? 'position:absolute':''">
+                                    <div class="vertical-timeline-content">
                                         <strong class="s_tutor_name">{{ item.name }}</strong>
                                         <span class="small text-muted pull-right s_lesson_dt">{{ item.lesson_dt }}</span>
                                         <hr><p class="s_review">{{ item.comment }}</p>
@@ -142,6 +142,9 @@ export default {
             default: 0
         }
     },
+    mounted () {
+        this.renderChart(this.datasets, this.options)
+    },
     created() {
         const firstTest = this.data.userInfo.firstTest;
         const lastTest = this.data.userInfo.lastTest;
@@ -168,8 +171,5 @@ export default {
 }
 .s_lesson_dt {
     font-size: 85%;
-}
-.vertical-timeline-content {
-    display: inline;
 }
 </style>
