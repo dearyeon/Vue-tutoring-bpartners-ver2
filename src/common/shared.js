@@ -11,6 +11,9 @@ const shared = {
     },
     isLoggedIn() {
         return this.getToken()==null ? false : true;
+    },
+    nf(number) {
+        return new Intl.NumberFormat('ko-KR').format(number)
     }
 }
 

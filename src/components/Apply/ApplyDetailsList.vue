@@ -64,11 +64,11 @@
                 </td>
                 <td class="cel">{{ data.user.cel ? data.user.cel : "[정보 보안]" }}</td>
                 <td class="charge-plan__title">{{ data.__ob__.value.goods.charge_plan.title_plan }}</td>
-                <td class="supply_price">{{ data.__ob__.value.goods.supply_price }}</td>
+                <td class="supply_price">{{ $shared.nf(data.__ob__.value.goods.supply_price) }}</td>
                 <td class="company-charge__price" v-on:cmpprice="companyChargePrice" style="vertical-align: middle;">
-                  {{ companyChargePrice(index) }}
+                  {{ $shared.nf(companyChargePrice(index)) }}
                 </td>
-                <td class="charge_price">{{ data.__ob__.value.goods.charge_price }}</td>
+                <td class="charge_price">{{ $shared.nf(data.__ob__.value.goods.charge_price) }}</td>
                 <td class="apply_dt">{{ data.apply_dt }}</td>
               </tr>
             </tbody>
