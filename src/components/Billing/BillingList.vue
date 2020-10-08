@@ -17,7 +17,7 @@ import CardList from "../atom/CardList";
 
 export default {
   async created() {
-    const res = await api.get("/partners/applySiteList");
+    const res = await api.get("/partners/billingSiteList");
     this.applySite = res.data;
   },
   data() {
