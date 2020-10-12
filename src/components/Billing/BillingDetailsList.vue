@@ -740,7 +740,7 @@
 						confirmButtonColor: '#8FD0F5',
 					}).then(result => {
 						if (result.isConfirmed) {
-							window.location.reload()
+							this.refresh();
 						}
 					})
 				} else {
