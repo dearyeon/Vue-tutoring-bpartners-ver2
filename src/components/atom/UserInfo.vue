@@ -143,24 +143,26 @@ export default {
         }
     },
     created() {
-        let templabels = [...this.labels];
-        let tempdatasets = [...this.datasets[1].data];
+        console.log(this.data,1111);
         const firstTest = this.data.userInfo.firstTest;
         const lastTest = this.data.userInfo.lastTest;
-        console.log(this.data);
-        //this.labels = [firstTest.point_0_title, firstTest.point_1_title, firstTest.point_2_title, firstTest.point_3_title, firstTest.point_4_title];
-        templabels.splice(0, 1, [firstTest.point_0_title, firstTest.point_1_title, firstTest.point_2_title, firstTest.point_3_title, firstTest.point_4_title]);
-        this.labels = templabels;
+        this.labels = [firstTest.point_0_title, firstTest.point_1_title, firstTest.point_2_title, firstTest.point_3_title, firstTest.point_4_title];
+
         if(lastTest) {
-            //this.datasets[1].data = [lastTest.point_0, lastTest.point_1, lastTest.point_2, lastTest.point_3, lastTest.point_4];
-            tempdatasets.splice(0, 1, [lastTest.point_0, lastTest.point_1, lastTest.point_2, lastTest.point_3, lastTest.point_4]);
-            this.datasets[1].data = tempdatasets;
-            console.log(this.datasets[1].data);
+            this.datasets[1].data = [lastTest.point_0, lastTest.point_1, lastTest.point_2, lastTest.point_3, lastTest.point_4];
         } else {
             this.datasets.shift();
             this.datasets[0].label = "처음";
         }
         this.datasets[0].data = [firstTest.point_0, firstTest.point_1, firstTest.point_2, firstTest.point_3, firstTest.point_4];
+    },
+    watch: {
+        data: {
+            deep: true,
+            handle() {
+                console.log("112312344");
+            }
+        }
     },
     methods: {
         getImageSrc(prof_img) {

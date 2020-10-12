@@ -243,7 +243,7 @@
 						  <td>{{ item.charged_t_id }}</td>
                           <td>{{ item.mng_tag ? item.mng_tag : '' }}</td>
                           <td>
-														<button class="btn btn-default" @click="[setCurrentItem(item), (isPenaltyCharge=false), (tag=(item.mng_tag?item.mng_tag:'')), $refs.modalTag.open()]">수정</button>
+							<button class="btn btn-default" @click="[setCurrentItem(item), (isPenaltyCharge=false), (tag=(item.mng_tag?item.mng_tag:'')), $refs.modalTag.open()]">수정</button>
                           </td>
                         </tr>
                       </tbody>
@@ -388,10 +388,9 @@
 				}
 			},
 			setCurrentItem () {
-				return item => {
+				return async item => {
 					if (item) {
 						this.currentItem = item;
-				console.log(this.currentItem);
 					}
 				}
 			},
@@ -413,7 +412,6 @@
 						aNo: aNo,
 						bNo: bNo,
 					})
-					console.log(res,1111);
 				}
 
 				this.listInfo = res.data.list
@@ -457,10 +455,22 @@
 						'$2.$3',)}(추가)`
 			},
 			pausePayment: function () {
-				this.$swal.fire({
+				this.$swal
+				.fire({
 					title: '일시 정지를 해제하시겠습니까?',
 					confirmButtonColor: '#8FD0F5',
 					confirmButtonText: '확인',
+        			showCloseButton: true,
+				})
+				.then(async result => {
+					if (result.isConfirmed) {
+						if (tab === 1){
+							const res = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: 'B' });
+						} else { 
+							const res = await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: 'B' });
+						}
+						this.refresh();
+					}
 				})
 			},
 			editCardInfo: function (bauIdx) {
@@ -605,7 +615,6 @@
 					})
 			},
 			paymentFailed: function () {
-				console.log(this.currentItem)
 				this.$swal
 					.fire({
 						html: `실패이유: ${this.currentItem.charged_bill_dump}`,
@@ -740,7 +749,6 @@
 					bapIdx: 1,
 					bNo: this.$route.params.bNo
 				})
-				console.log(res)
 				if (res.result === 2000) {
 					this.$swal.fire({
 						title: 'success',
@@ -769,12 +777,22 @@
         			showCloseButton: true,
 				}).then(async result => {
 					if (result.isConfirmed) {
-						if (val === '일시정지') {this.$refs.modalWaitPayment.close()}
-						else{
-							console.log(this.currentItem.idx);
-							const res1 = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: this.currentItem.charge_status });
-							console.log(res1,111);
+						if (val === '일시정지') {
+							if (tab === 1){
+								const res = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: 'P' });
+							} else {
+								const res = await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: 'P' });
+							}
 						}
+						else{
+							if (tab === 1){
+								const res = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: 'N' });
+							} else {
+								const res = await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: 'N' });
+							}
+						}
+						this.$refs.modalWaitPayment.close();
+						this.refresh();
 					}
 				})
 			}
