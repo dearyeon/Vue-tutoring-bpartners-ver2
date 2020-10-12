@@ -460,7 +460,9 @@
 					title: '일시 정지를 해제하시겠습니까?',
 					confirmButtonColor: '#8FD0F5',
 					confirmButtonText: '확인',
-        			showCloseButton: true,
+					showCancelButton: true,
+					cancelButtonText: '취소',
+					cancelButtonColor: '#d8d8d8',
 				})
 				.then(async result => {
 					if (result.isConfirmed) {
@@ -776,7 +778,9 @@
 					title: text + ' 하시겠습니까?',
 					confirmButtonText: '확인',
 					confirmButtonColor: '#8FD0F5',
-        			showCloseButton: true,
+					showCancelButton: true,
+					cancelButtonText: '취소',
+					cancelButtonColor: '#d8d8d8',
 				}).then(async result => {
 					if (result.isConfirmed) {
 

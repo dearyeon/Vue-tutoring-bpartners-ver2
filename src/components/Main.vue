@@ -4,17 +4,7 @@
 
     <div id="page-wrapper" class="gray-bg">
       <!-- header begin -->
-      <div class="row border-bottom">
-        <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
-          <ul class="nav navbar-top-links navbar-right">
-            <li>
-              <a href="#" v-on:click="logout">
-                <i class="fa fa-sign-out"></i> Log out
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+
       <!--header end-->
 
 
@@ -46,16 +36,8 @@
 
 <script>
 import Menu from "@/components/Menu.vue";
-import shared from "@/common/shared";
 
 export default {
-  methods: {
-    logout() {
-      shared.setToken(null)
-      this.$router.push('/login')
-    }
-  },
-
   components: {
     Menu
   },
