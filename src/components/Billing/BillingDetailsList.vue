@@ -192,6 +192,7 @@
                           <th class="text-center">결제처리현황</th>
                           <th class="text-center">결제카드변경</th>
                           <th class="text-center">결제처리결과정보</th>
+                          <th class="text-center">트랜잭션 ID</th>
                           <th class="text-center">관리태그</th>
                           <th class="text-center">태그수정</th>
                         </tr>
@@ -239,6 +240,7 @@
                                 item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
                             }}
                           </td>
+						  <td>{{ item.charged_t_id }}</td>
                           <td>{{ item.mng_tag ? item.mng_tag : '' }}</td>
                           <td>
 														<button class="btn btn-default" @click="[setCurrentItem(item), (isPenaltyCharge=false), (tag=(item.mng_tag?item.mng_tag:'')), $refs.modalTag.open()]">수정</button>
@@ -265,6 +267,7 @@
                           <th class="text-center">결제처리현황</th>
                           <th class="text-center">결제카드변경</th>
                           <th class="text-center">결제처리결과정보</th>
+                          <th class="text-center">트랜잭션 ID</th>
                           <th class="text-center">관리태그</th>
                           <th class="text-center">태그수정</th>
                         </tr>
@@ -314,6 +317,8 @@
                                 item.pcharged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
                             }}
                           </td>
+
+						  <td>{{ item.pcharged_t_id }}</td>
                           <td>{{ item.pmng_tag ? item.pmng_tag : '' }}</td>
                           <td>
                             <button class="btn btn-default" @click="[setCurrentItem(item), (isPenaltyCharge=true), (tag=(item.pmng_tag?item.pmng_tag:'')), $refs.modalTag.open()]">수정</button>
@@ -408,6 +413,7 @@
 						aNo: aNo,
 						bNo: bNo,
 					})
+					console.log(res,1111);
 				}
 
 				this.listInfo = res.data.list
@@ -766,7 +772,7 @@
 						if (val === '일시정지') {this.$refs.modalWaitPayment.close()}
 						else{
 							console.log(this.currentItem.idx);
-							const res1 = await api.post('/partners/billingSetPause', { baoIdx: this.currentItem.idx });
+							const res1 = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: this.currentItem.charge_status });
 							console.log(res1,111);
 						}
 					}

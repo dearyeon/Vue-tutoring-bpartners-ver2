@@ -96,37 +96,7 @@
 </template>
 
 <script>
-import { Radar } from 'vue-chartjs'
-
 export default {
-    extends: Radar,
-    mounted () {
-        this.renderChart({
-        labels: ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running'],
-        datasets: [
-            {
-            label: 'My First dataset',
-            backgroundColor: 'rgba(179,181,198,0.2)',
-            borderColor: 'rgba(179,181,198,1)',
-            pointBackgroundColor: 'rgba(179,181,198,1)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgba(179,181,198,1)',
-            data: [65, 59, 90, 81, 56, 55, 40]
-            },
-            {
-            label: 'My Second dataset',
-            backgroundColor: 'rgba(255,99,132,0.2)',
-            borderColor: 'rgba(255,99,132,1)',
-            pointBackgroundColor: 'rgba(255,99,132,1)',
-            pointBorderColor: '#fff',
-            pointHoverBackgroundColor: '#fff',
-            pointHoverBorderColor: 'rgba(255,99,132,1)',
-            data: [28, 48, 40, 19, 96, 27, 100]
-            }
-        ]
-        }, {responsive: true, maintainAspectRatio: false})
-    },
     data() {
           return {
             dataentry: null,
@@ -172,15 +142,20 @@ export default {
             default: 0
         }
     },
-    mounted () {
-        this.renderChart(this.datasets, this.options)
-    },
     created() {
+        let templabels = [...this.labels];
+        let tempdatasets = [...this.datasets[1].data];
         const firstTest = this.data.userInfo.firstTest;
         const lastTest = this.data.userInfo.lastTest;
-        this.labels = [firstTest.point_0_title, firstTest.point_1_title, firstTest.point_2_title, firstTest.point_3_title, firstTest.point_4_title];
+        console.log(this.data);
+        //this.labels = [firstTest.point_0_title, firstTest.point_1_title, firstTest.point_2_title, firstTest.point_3_title, firstTest.point_4_title];
+        templabels.splice(0, 1, [firstTest.point_0_title, firstTest.point_1_title, firstTest.point_2_title, firstTest.point_3_title, firstTest.point_4_title]);
+        this.labels = templabels;
         if(lastTest) {
-            this.datasets[1].data = [lastTest.point_0, lastTest.point_1, lastTest.point_2, lastTest.point_3, lastTest.point_4];
+            //this.datasets[1].data = [lastTest.point_0, lastTest.point_1, lastTest.point_2, lastTest.point_3, lastTest.point_4];
+            tempdatasets.splice(0, 1, [lastTest.point_0, lastTest.point_1, lastTest.point_2, lastTest.point_3, lastTest.point_4]);
+            this.datasets[1].data = tempdatasets;
+            console.log(this.datasets[1].data);
         } else {
             this.datasets.shift();
             this.datasets[0].label = "처음";
