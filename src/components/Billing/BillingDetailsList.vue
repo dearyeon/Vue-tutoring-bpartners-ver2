@@ -6,8 +6,8 @@
       </div>
       <div slot="footer" style="justify-content: center">
         <button class="btn btn-default m-r" @click="$refs.modalWaitPayment.close()">취소</button>
+        <button class="btn" @click="WaitPayment('대상아님')">대상아님</button>
         <button class="btn btn-warning" @click="WaitPayment('일시정지')">일시정지</button>
-        <button class="btn btn-danger" @click="WaitPayment('대상아님')">대상아님</button>
         <button class="btn btn-info" @click="[$refs.modalWaitPayment.close(), makePayment()]">수동결제</button>
       </div>
     </Modal>
@@ -345,6 +345,8 @@
 	export default {
 		async created () {
 			this.apiCall(this.$route.params.aNo, this.$route.params.bNo);
+			//const res = await api.post('/partners/chargeStatus', { baoIdx: 201, status: 'B' });
+
 		},
 		data () {
 			return {
@@ -460,7 +462,9 @@
 					title: '일시 정지를 해제하시겠습니까?',
 					confirmButtonColor: '#8FD0F5',
 					confirmButtonText: '확인',
-        			showCloseButton: true,
+					showCancelButton: true,
+					cancelButtonText: '취소',
+					cancelButtonColor: '#d8d8d8',
 				})
 				.then(async result => {
 					if (result.isConfirmed) {
@@ -771,10 +775,12 @@
 			},
 			WaitPayment (val) {
 				this.$swal.fire({
-					title: val + ' 하시겠습니까?',
+					title: val + ' 처리 하시겠습니까?',
 					confirmButtonText: '확인',
 					confirmButtonColor: '#8FD0F5',
-        			showCloseButton: true,
+					showCancelButton: true,
+					cancelButtonText: '취소',
+					cancelButtonColor: '#d8d8d8',
 				}).then(async result => {
 					if (result.isConfirmed) {
 						if (val === '일시정지') {
