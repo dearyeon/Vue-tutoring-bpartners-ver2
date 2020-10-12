@@ -464,7 +464,7 @@
 				})
 				.then(async result => {
 					if (result.isConfirmed) {
-						if (tab === 1){
+						if (this.tab === 1){
 							const res = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: 'B' });
 						} else { 
 							const res = await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: 'B' });
@@ -778,14 +778,14 @@
 				}).then(async result => {
 					if (result.isConfirmed) {
 						if (val === '일시정지') {
-							if (tab === 1){
+							if (this.tab === 1){
 								const res = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: 'P' });
 							} else {
 								const res = await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: 'P' });
 							}
 						}
 						else{
-							if (tab === 1){
+							if (this.tab === 1){
 								const res = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: 'N' });
 							} else {
 								const res = await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: 'N' });

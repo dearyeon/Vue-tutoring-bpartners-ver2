@@ -157,11 +157,19 @@ export default {
         this.datasets[0].data = [firstTest.point_0, firstTest.point_1, firstTest.point_2, firstTest.point_3, firstTest.point_4];
     },
     watch: {
-        data: {
-            deep: true,
-            handle() {
-                console.log("112312344");
+        data() {
+            console.log("data값 바뀜",this.data);
+            const firstTest = this.data.userInfo.firstTest;
+            const lastTest = this.data.userInfo.lastTest;
+            this.labels = [firstTest.point_0_title, firstTest.point_1_title, firstTest.point_2_title, firstTest.point_3_title, firstTest.point_4_title];
+
+            if(lastTest) {
+                this.datasets[1].data = [lastTest.point_0, lastTest.point_1, lastTest.point_2, lastTest.point_3, lastTest.point_4];
+            } else {
+                this.datasets.shift();
+                this.datasets[0].label = "처음";
             }
+            this.datasets[0].data = [firstTest.point_0, firstTest.point_1, firstTest.point_2, firstTest.point_3, firstTest.point_4];
         }
     },
     methods: {
