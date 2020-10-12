@@ -9,7 +9,7 @@
       <div class="ibox content">
         <div class="ibox-content">
           <div class="subtitle">
-            <h1>{{ sitedata.site.company }}</h1>
+            <h1>{{ company }}</h1>
             <Dropdown
               :defaultValue="aNoList.length !== 0 ? aNoList[$route.params.aNo - 1] : ''"
               :itemList="aNoList"
@@ -84,27 +84,24 @@ import api from "@/common/api";
 import Dropdown from "../atom/Dropdown";
 
 export default {
-  async created() {
-    const res = await api.get("/partners/applyList", {
-      sIdx: this.$route.params.sIdx,
-      aNo: this.$route.params.aNo,
-    });
-    this.list = res.data.list;
-    this.bap = res.data.bap;
-    this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
-  },
   data() {
     return {
       bap: "",
       list: [],
       aNoList: [],
+      company: ''
     };
   },
-  props: {
-    sitedata: {
-      type: Object,
-      required: true,
-    }
+  async created() {
+    const res = await api.get("/partners/applyList", {
+      sIdx: this.$route.params.sIdx,
+      aNo: this.$route.params.aNo,
+    });
+    const res1 = await api.get("/partners/applySiteList");
+    this.list = res.data.list;
+    this.bap = res.data.bap;
+    this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
+    this.company = res1.data.find(el => el.s_idx === this.bap.s_idx).site.company;
   },
   methods: {
     companyChargePrice(index) {
