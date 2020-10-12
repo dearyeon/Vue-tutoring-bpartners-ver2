@@ -23,9 +23,18 @@
             </span>
           </router-link>
         </li>
-
+        
+        <div class="pull-left" style="margin-bottom: 0; position:fixed; bottom:0;">
+          <ul class="nav navbar-top-links">
+            <li>
+              <a href="#" v-on:click="logout">
+                <i class="fa fa-sign-out"></i> Log out
+              </a>
+            </li>
+          </ul>
+        </div>
+        
       </ul>
-
     </div>
   </nav>
 </template>
@@ -33,7 +42,7 @@
 
 
 <script>
-
+import shared from "@/common/shared";
 import menus from "@/menus";
 
 export default {
@@ -57,9 +66,12 @@ export default {
         const m = menus[i]
         m.isActive = (m.id==menuId)
       }
+    },
+    logout() {
+      shared.setToken(null)
+      this.$router.push('/login')
     }
-  },
-
+  }
 }
 </script>
 
