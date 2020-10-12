@@ -145,7 +145,7 @@
           </div>
           <div class="save pull-right">
             <button class="btn btn-blue-line">임시 저장</button>
-            <button class="btn btn-primary">저장</button>
+            <button class="btn btn-primary" @click="sendNum">저장</button>
           </div>
         </div>
       </div>
@@ -164,18 +164,18 @@ export default {
       disclaimer:
         "*신청시 주의 사항을 확인해주세요\n*프로그램은 인당 월 1개에 한해 가능합니다.\n(중복 신청시 마지막 신청 정보로 반영)\n*신청 및 정정은 기한내에만 가능합니다.\n(신청~25일까지, 정정 및 취소 26~말일까지)\n*신청 기한내(~25일) 정정은 재 신청 해주시고, 신청 기한 이후(26일~말일) 정정 및 취소는 하기 메일로 요청 해주시기 바랍니다.(b2b@tutoring.co.kr)\n*신청자에 한해 27일 학습 안내 메일이 발송될 예정입니다.\n*GTP 대상/비대상에 따라 급여공제가 진행되므로 GTP여부를 반드시 확인 후 신청 해주시기 바랍니다.(비용 익월 공제)",
       list: [
-        {value:'소속(회사명)', content:'', placeholder:'회사명을 입력해주세요.', read:1, checked:1},
-        {value:'이름', content:'', placeholder:'이름을 입력해주세요.', read:1, checked:1},
-        {value:'연락처', content:'', placeholder:'연락처를 입력해주세요.', read:1, checked:1},
-        {value:'(사내)이메일', content:'', placeholder:'(사내)이메일을 입력해주세요.', read:1, checked:1},
-        {value:'부서', content:'', placeholder:'부서를 입력해주세요.', checked:0},
-        {value:'직위', content:'', placeholder:'직위를 입력해주세요.', checked:0},
-        {value:'사번', content:'', placeholder:'사번을 입력해주세요.', checked:0},
-        {value:'', content:'', checked:0},
-        {value:'', content:'', checked:0},
-        {value:'', content:'', checked:0},
-        {value:'', content:'', checked:0},
-        {value:'', content:'', checked:0}
+        {num:0, value:'소속(회사명)', content:'', placeholder:'회사명을 입력해주세요.', read:1, checked:1},
+        {num:1, value:'이름', content:'', placeholder:'이름을 입력해주세요.', read:1, checked:1},
+        {num:2, value:'연락처', content:'', placeholder:'연락처를 입력해주세요.', read:1, checked:1},
+        {num:3, value:'(사내)이메일', content:'', placeholder:'(사내)이메일을 입력해주세요.', read:1, checked:1},
+        {num:4, value:'부서', content:'', placeholder:'부서를 입력해주세요.', checked:0},
+        {num:5, value:'직위', content:'', placeholder:'직위를 입력해주세요.', checked:0},
+        {num:6, value:'사번', content:'', placeholder:'사번을 입력해주세요.', checked:0},
+        {num:7, value:'', content:'', checked:0},
+        {num:8, value:'', content:'', checked:0},
+        {num:9, value:'', content:'', checked:0},
+        {num:10, value:'', content:'', checked:0},
+        {num:11, value:'', content:'', checked:0}
       ]
     };
   },
@@ -196,6 +196,11 @@ export default {
       this.preview =
         "https://s3-alpha-sig.figma.com/img/911a/6151/4c7eb8a41cad075d0c95050d0bf9576a?Expires=1601251200&Signature=gGMNkI8zHURCtidWQDFKLvJGqsKcUdIrZUd3JdBrGzBxWndZmZXAoJpK93nZ37edqjSwuD9EG3F18NctLiN7rX-w0oby8mJquoOA8SMJXieOZbVFR7O~Xn3S~N0Ud8a5IX3YXqHrs9Qky3xrPyqXYDW-ro8WpRZaXIC1dE9Ico9Y6fG45PzOUAkhggVNYGhl8YX121Oup9bsGyvGfonKlFRUNtnz4X9cjwe4OjyYh0K0vfq4P40Q0Qklmxg-~uOjNGRiyMW5w9J6SM-LIchcxaXHoxY43qqFgYl5StkwVSTp1UmX-Fv8CNgFyGnJPYA-cKwfLjsH-vqZWV~HyABA3Q__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA";
     },
+    sendNum() {
+      let numlist = [];
+      this.list.forEach(el => numlist.push(el.num));
+      console.log(numlist);
+    }
   },
 };
 </script>

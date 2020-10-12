@@ -6,7 +6,8 @@
       </div>
       <div slot="footer" style="justify-content: center">
         <button class="btn btn-default m-r" @click="$refs.modalWaitPayment.close()">취소</button>
-        <button class="btn btn-warning" @click="$refs.modalWaitPayment.close()">일시정지</button>
+        <button class="btn btn-warning" @click="WaitPayment('일시정지')">일시정지</button>
+        <button class="btn btn-danger" @click="WaitPayment('대상아님')">대상아님</button>
         <button class="btn btn-info" @click="[$refs.modalWaitPayment.close(), makePayment()]">수동결제</button>
       </div>
     </Modal>
@@ -338,7 +339,7 @@
 
 	export default {
 		async created () {
-			this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
+			this.apiCall(this.$route.params.aNo, this.$route.params.bNo);
 		},
 		data () {
 			return {
@@ -348,7 +349,7 @@
 				aNoList: [],
 				bNoList: [],
 				tag: '',
-        isPenaltyCharge: false,
+        		isPenaltyCharge: false,
 				search: '',
 				newCardInfo: { cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: '' },
 				currentItem: {},
@@ -384,7 +385,8 @@
 			setCurrentItem () {
 				return item => {
 					if (item) {
-						this.currentItem = item
+						this.currentItem = item;
+				console.log(this.currentItem);
 					}
 				}
 			},
@@ -752,6 +754,23 @@
 						})
 				}
 
+			},
+			WaitPayment (val) {
+				this.$swal.fire({
+					title: val + ' 하시겠습니까?',
+					confirmButtonText: '확인',
+					confirmButtonColor: '#8FD0F5',
+        			showCloseButton: true,
+				}).then(async result => {
+					if (result.isConfirmed) {
+						if (val === '일시정지') {this.$refs.modalWaitPayment.close()}
+						else{
+							console.log(this.currentItem.idx);
+							const res1 = await api.post('/partners/billingSetPause', { baoIdx: this.currentItem.idx });
+							console.log(res1,111);
+						}
+					}
+				})
 			}
 		},
 		components: {

@@ -3,7 +3,7 @@
     <div class="col-lg-12">
       <div class="ibox-title title">
         <h2 class="pull-left">신청페이지 관리</h2>
-        <router-link :to="{ path: '/createPage' }">
+        <router-link :to="{ path: '/register/createPage' }">
           <button class="btn btn-success pull-right">
             페이지 생성하기
           </button>
@@ -35,7 +35,7 @@
                 <Dropdown :defaultValue="aNoList[index][aNoList[index].length - 1]" :itemList="aNoList[index]" />
               </td>
               <td>
-                <router-link :to="{ path: '/setRegisterForm' }">
+                <router-link :to="{ path: '/register/setRegisterForm' }">
                   <button class="btn btn-page-set">페이지 설정</button>
                 </router-link>
               </td>

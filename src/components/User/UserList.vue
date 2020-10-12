@@ -29,7 +29,7 @@
                     <div class="row">
                         <div v-for="(item, index) in items" :key="item.id"
                         @click="routeDetailPage(index,item.orderList[0].c_no)"
-                        v-show="calculatePage(index) && !item.company.indexOf(this.search)">
+                        v-show="calculatePage(index) && !item.company.indexOf(search)">
                         <div class="col-sm-6 col-md-3 col-lg-4">
                             <div class="ibox">
                                 <div class="ibox-title">
