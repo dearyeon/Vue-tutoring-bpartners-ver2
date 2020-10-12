@@ -60,7 +60,8 @@ export default {
       if(res.result==1000 || !res.data) {
         alert('로그인 실패')
       }else {
-        shared.setToken(res.data)
+        shared.setToken(res.data.bast)
+        shared.setAccount(res.data.account)
         await this.$router.push('/main')
       }
     }
