@@ -61,7 +61,6 @@ import Dropdown from "../atom/Dropdown";
 export default {
 	async created () {
 		const res = await api.get('/partners/applyPageList')
-		if (res.result === 2000) {
 			res.forEach(item => {
 				let registeredPage = {}
 				registeredPage.idx = item.applys[0].idx
@@ -73,13 +72,10 @@ export default {
 
 				this.registers.push(registeredPage)
 
-			})
 			this.aNoList = res.map(register => register.applys.map(item => this.aNoFormat(item)))
 			this.currentANo = res.map(() => 0)
-		} else {
-			console.log(res.message)
-		}
 
+		})
 	},
   data() {
     return {
