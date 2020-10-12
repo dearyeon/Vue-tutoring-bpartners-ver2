@@ -41,9 +41,10 @@
               </td>
               <td>{{ register.updDt }}</td>
               <td>
-                <a :href="register.url" target="_blank">
-                  <p>{{ register.url }}</p>
-                </a>
+                <a @click="copyText($event,register.siteUrl)">{{ register.siteUrl }}</a>
+              </td>
+              <td>
+                <button class="btn btn-primary" @click="goToApplyPage(register.url)">페이지 보러 가기</button>
               </td>
             </tr>
           </table>
@@ -60,19 +61,21 @@ import Dropdown from "../atom/Dropdown";
 export default {
 	async created () {
 		const res = await api.get('/partners/applyPageList')
-		res.forEach( item => {
-			let registeredPage = {}
-			registeredPage.idx = item.applys[0].idx
-			registeredPage.company = item.site.company
-			registeredPage.name = item.site.name
-			registeredPage.updDt = item.applys[0].upd_dt
-			registeredPage.url = 'http://apply.tutoring.co.kr/'+item.applys[0].hash
+			res.forEach(item => {
+				let registeredPage = {}
+				registeredPage.idx = item.applys[0].idx
+				registeredPage.company = item.site.company
+				registeredPage.name = item.site.name
+				registeredPage.updDt = item.applys[0].upd_dt
+				registeredPage.siteUrl = 'https://apply.tutoring.co.kr/' + item.applys[0].hash
+				registeredPage.url = 'https://apply.tutoring.co.kr/' + item.applys[0].hash + '/7788'
 
-      this.registers.push(registeredPage)
+				this.registers.push(registeredPage)
+
+			this.aNoList = res.map(register => register.applys.map(item => this.aNoFormat(item)))
+			this.currentANo = res.map(() => 0)
 
 		})
-		this.aNoList = res.map(register => register.applys.map(item => this.aNoFormat(item)))
-		this.currentANo = res.map(() => 0)
 	},
   data() {
     return {
@@ -94,6 +97,19 @@ export default {
     chANo: function(index, pick) {
       this.currentANo[index] = pick;
     },
+    copyText: function (e,value) {
+
+			let tempElem = document.createElement('textarea')
+			tempElem.value = value
+			document.body.appendChild(tempElem)
+
+			tempElem.select()
+			document.execCommand('copy')
+			document.body.removeChild(tempElem)
+    },
+		goToApplyPage: function (url) {
+			window.open(url, '_blank');
+		}
   },
   components: {
     Dropdown,

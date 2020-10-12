@@ -2,11 +2,21 @@
   <div class="row">
     <Modal ref="modalWaitPayment" v-cloak>
       <div slot="body" style="align-items:center">
-        <h1><strong>결제 방법을 선택해주세요.</strong></h1>
+        <h1><strong>작업을 선택해주세요.</strong></h1>
       </div>
       <div slot="footer" style="justify-content: center">
+        <button class="btn btn-default m-r" @click="$refs.modalWaitPayment.close()">취소</button>
         <button class="btn btn-warning" @click="$refs.modalWaitPayment.close()">일시정지</button>
         <button class="btn btn-info" @click="[$refs.modalWaitPayment.close(), makePayment()]">수동결제</button>
+      </div>
+    </Modal>
+    <Modal ref="modalOnSuccess" v-cloak>
+      <div slot="body" style="align-items:center">
+        <h1><strong>작업을 선택해주세요.</strong></h1>
+      </div>
+      <div slot="footer" style="justify-content: center">
+        <button class="btn btn-default m-r" @click="$refs.modalOnSuccess.close()">취소</button>
+        <button class="btn btn-warning" @click="[$refs.modalOnSuccess.close(), refund()]">환불</button>
       </div>
     </Modal>
     <Modal ref="modalCardEdit" v-cloak>
@@ -191,7 +201,6 @@
                           v-for="(item, index) in listInfo"
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
-                          @click="setCurrentItem(item)"
                         >
                           <td>{{ item.no }}</td>
                           <td>{{ item.user_name }}</td>
@@ -213,18 +222,13 @@
                             <button
                               class="btn"
                               :class="chargeBtnStatus(item.charge_status).class"
-                              @click="
-                                [
-                                  chargeBtnStatus(item.charge_status).click &&
-                                    chargeBtnStatus(item.charge_status).click(),
-                                ]
-                              "
+                              @click="[setCurrentItem(item), chargeBtnStatus(item.charge_status).click && chargeBtnStatus(item.charge_status).click()]"
                             >
                               {{ chargeBtnStatus(item.charge_status).text }}
                             </button>
                           </td>
                           <td>
-                            <button class="btn btn-default" @click="[(newCardInfo = {}), $refs.modalCardEdit.open()]">
+                            <button class="btn btn-default" @click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
                               카드변경
                             </button>
                           </td>
@@ -236,7 +240,7 @@
                           </td>
                           <td>{{ item.mng_tag ? item.mng_tag : '' }}</td>
                           <td>
-														<button class="btn btn-default" @click="[(isPenaltyCharge=false), (tag=(item.mng_tag?item.mng_tag:'')), $refs.modalTag.open()]">수정</button>
+														<button class="btn btn-default" @click="[setCurrentItem(item), (isPenaltyCharge=false), (tag=(item.mng_tag?item.mng_tag:'')), $refs.modalTag.open()]">수정</button>
                           </td>
                         </tr>
                       </tbody>
@@ -269,7 +273,6 @@
                           v-for="(item, index) in listInfo"
                           :key="`biillingDetailItem-${index}`"
                           class="text-center"
-                          @click="setCurrentItem(item)"
                         >
                           <td>{{ item.no }}</td>
                           <td>{{ item.user_name }}</td>
@@ -293,18 +296,14 @@
                             <button v-show="item.pcharge_status"
                               class="btn"
                               :class="chargeBtnStatus(item.pcharge_status).class"
-                              @click="
-                                [
-                                  chargeBtnStatus(item.pcharge_status).click &&
-                                    chargeBtnStatus(item.pcharge_status).click(),
-                                ]
+                              @click="[setCurrentItem(item), chargeBtnStatus(item.pcharge_status).click && chargeBtnStatus(item.pcharge_status).click()]
                               "
                             >
                               {{ chargeBtnStatus(item.pcharge_status).text }}
                             </button>
                           </td>
                           <td>
-                            <button class="btn btn-default" @click="[(newCardInfo = {}), $refs.modalCardEdit.open()]">
+                            <button class="btn btn-default" @click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
                               카드변경
                             </button>
                           </td>
@@ -316,7 +315,7 @@
                           </td>
                           <td>{{ item.pmng_tag ? item.pmng_tag : '' }}</td>
                           <td>
-                            <button class="btn btn-default" @click="[(isPenaltyCharge=true), (tag=(item.pmng_tag?item.pmng_tag:'')), $refs.modalTag.open()]">수정</button>
+                            <button class="btn btn-default" @click="[setCurrentItem(item), (isPenaltyCharge=true), (tag=(item.pmng_tag?item.pmng_tag:'')), $refs.modalTag.open()]">수정</button>
                           </td>
                         </tr>
                       </tbody>
@@ -376,10 +375,9 @@
 					}
 					if (status === 'P') return { class: 'btn-warning', text: '일시 정지', click: this.pausePayment }
 					if (status === 'F') return { class: 'btn-danger', text: '결제 실패', click: this.paymentFailed }
-					if (status === 'S') return { class: 'disabled', text: '결제 성공' }
-					if (status === 'Q') return { class: 'btn-success', text: '환불 요청' }
+					if (status === 'S') return { class: 'btn-default', text: '결제 성공', click: this.$refs.modalOnSuccess.open }
 					if (status === 'N') return { class: '', text: '대상 아님' }
-					if (status === 'R') return { class: 'btn-info', text: '환불 완료' }
+					if (status === 'R') return { class: 'btn-info disabled', text: '환불 완료' }
 					return { class: '', text: '' } //status === "R"
 				}
 			},
@@ -390,11 +388,6 @@
 					}
 				}
 			},
-		},
-		watch: {
-			targetCountCheck: function (value) {
-				value && this.chargeBatch()
-			}
 		},
 		methods: {
 			apiCall: async function (aNo, bNo) {
@@ -504,10 +497,63 @@
 				const res = await api.post('/partners/updateMngTag', params)
 				if (res) this.refresh()
 			},
+      refund: function () {
+				const isPenaltyCharge = (this.tab!=1)
+        this.$swal
+            .fire({
+              html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user_name}</strong>님<br/>`
+									+ `<strong>${this.currentItem.goods_name}</strong><br/>`
+									+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem[isPenaltyCharge?'pcharged_amt':'charged_amt'])}</strong>원이 환불됩니다.<br/>`
+									+ `<br/>환불 처리 하시겠습니까?`,
+              icon: 'warning',
+              showCancelButton: true,
+              cancelButtonColor: '#d8d8d8',
+              cancelButtonText: '취소',
+              confirmButtonColor: '#8FD0F5',
+              confirmButtonText: '확인',
+              showLoaderOnConfirm: true,
+              reverseButtons: true,
+            })
+            .then( async r => {
+              if (r.isConfirmed) {
+								const res = await api.post('/partners/refundOrder', {
+									baoIdx: this.currentItem.idx,
+									isPenaltyCharge: isPenaltyCharge ? 1 : 0,
+								})
+								if (res.result === 1000) {
+									this.$swal
+											.fire({
+												html: '환불 처리에 실패하였습니다.<br/>' + res.message,
+												icon: 'error',
+												confirmButtonText: '확인',
+												confirmButtonColor: '#8FD0F5',
+											})
+											.then(result => {
+												if (result.isConfirmed) this.refresh()
+											})
+								} else {
+									this.$swal
+											.fire({
+												text: '환불 처리 되었습니다',
+												icon: 'success',
+												confirmButtonText: '확인',
+												confirmButtonColor: '#8FD0F5',
+											})
+											.then(result => {
+												if (result.isConfirmed) this.refresh()
+											})
+								}
+							}
+            })
+      },
 			makePayment: function () {
+				const isPenaltyCharge = (this.tab!=1)
 				this.$swal
 					.fire({
-						html: `${this.currentItem.user_name}님 <strong>${this.$route.params.aNo}회차(baoidx: ${this.currentItem.idx})</strong> 수강료가 결제됩니다.<br>결제 하시겠습니까?`,
+						html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user_name}</strong>님<br/>`
+								+ `<strong>${this.currentItem.goods_name}</strong><br/>`
+								+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.charge_price)}</strong>원이 결제됩니다.<br/>`
+								+ `<br/>결제 진행 하시겠습니까?`,
 						icon: 'warning',
 						showCancelButton: true,
 						cancelButtonColor: '#d8d8d8',
@@ -516,44 +562,45 @@
 						confirmButtonText: '확인',
 						showLoaderOnConfirm: true,
 						reverseButtons: true,
-						preConfirm: async () => {
-							const chargeOrder = await api.post('/partners/chargeOrder', {
+					})
+					.then( async r => {
+						if(r.isConfirmed) {
+							const res = await api.post('/partners/chargeOrder', {
 								baoIdx: this.currentItem.idx,
 								isPenaltyCharge: this.tab - 1,
 							})
-							if (chargeOrder.result === 1000)
+							if (res.result === 1000) {
 								this.$swal
-									.fire({
-										text: '결제 처리에 실패하였습니다',
-										icon: 'error',
-										confirmButtonText: '확인',
-										confirmButtonColor: '#8FD0F5',
-									})
-									.then(result => {
-										if (result.isConfirmed) this.refresh()
-									})
-						},
-					})
-					.then(result => {
-						if (result.isConfirmed)
-							this.$swal
-								.fire({
-									text: '결제 처리 되었습니다',
-									icon: 'success',
-									confirmButtonText: '확인',
-									confirmButtonColor: '#8FD0F5',
-								})
-								.then(result => {
-									if (result.isConfirmed) this.refresh()
-								})
+										.fire({
+											html: '결제 처리에 실패하였습니다.<br/>' + res.message,
+											icon: 'error',
+											confirmButtonText: '확인',
+											confirmButtonColor: '#8FD0F5',
+										})
+										.then(result => {
+											if (result.isConfirmed) this.refresh()
+										})
+							}
+							else {
+								this.$swal
+										.fire({
+											text: '결제 처리 되었습니다',
+											icon: 'success',
+											confirmButtonText: '확인',
+											confirmButtonColor: '#8FD0F5',
+										})
+										.then(result => {
+											if (result.isConfirmed) this.refresh()
+										})
+							}
+						}
 					})
 			},
 			paymentFailed: function () {
 				console.log(this.currentItem)
 				this.$swal
 					.fire({
-						html: `${this.currentItem.charged_bill_dump}`,
-						icon: 'error',
+						html: `실패이유: ${this.currentItem.charged_bill_dump}`,
 						confirmButtonText: '수동 재결제',
 						confirmButtonColor: '#8FD0F5',
 						showCancelButton: true,
@@ -590,7 +637,10 @@
 							cancelButtonText: '취소',
 							cancelButtonColor: '#ff7674'
 						}).then(result => {
-							if (result.isConfirmed) this.targetCountCheck = true
+							if (result.isConfirmed) {
+								this.targetCountCheck = true
+								this.chargeBatch()
+							}
 						})
 					} else if (res.data.targetCnt !== undefined && res.data.targetCnt === 0) {
 						this.$swal.fire({
@@ -644,7 +694,10 @@
 							cancelButtonText: '취소',
 							cancelButtonColor: '#ff7674'
 						}).then(result => {
-							if (result.isConfirmed) this.targetCountCheck = true
+							if (result.isConfirmed) {
+								this.targetCountCheck = true
+								this.pChargeBatch()
+							}
 						})
 					} else if (res.data.targetCnt !== undefined && res.data.targetCnt === 0) {
 						this.$swal.fire({
@@ -687,7 +740,7 @@
 						confirmButtonColor: '#8FD0F5',
 					}).then(result => {
 						if (result.isConfirmed) {
-							window.location.reload()
+							this.refresh();
 						}
 					})
 				} else {
