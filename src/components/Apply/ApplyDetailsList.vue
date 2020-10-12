@@ -63,7 +63,7 @@
                   {{ data.user.email_id ? data.user.email_id + "@" + bap.email_domain : "[정보 보안]" }}
                 </td>
                 <td class="cel">{{ data.user.cel ? data.user.cel : "[정보 보안]" }}</td>
-                <td class="charge-plan__title">{{ data.__ob__.value.goods.charge_plan.title_plan }}</td>
+                <td class="charge-plan__title">{{ data.__ob__.value.charge_plan.title }}</td>
                 <td class="supply_price">{{ $shared.nf(data.__ob__.value.goods.supply_price) }}</td>
                 <td class="company-charge__price" v-on:cmpprice="companyChargePrice" style="vertical-align: middle;">
                   {{ $shared.nf(companyChargePrice(index)) }}
