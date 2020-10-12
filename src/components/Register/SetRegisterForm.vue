@@ -164,10 +164,10 @@ export default {
       disclaimer:
         "*신청시 주의 사항을 확인해주세요\n*프로그램은 인당 월 1개에 한해 가능합니다.\n(중복 신청시 마지막 신청 정보로 반영)\n*신청 및 정정은 기한내에만 가능합니다.\n(신청~25일까지, 정정 및 취소 26~말일까지)\n*신청 기한내(~25일) 정정은 재 신청 해주시고, 신청 기한 이후(26일~말일) 정정 및 취소는 하기 메일로 요청 해주시기 바랍니다.(b2b@tutoring.co.kr)\n*신청자에 한해 27일 학습 안내 메일이 발송될 예정입니다.\n*GTP 대상/비대상에 따라 급여공제가 진행되므로 GTP여부를 반드시 확인 후 신청 해주시기 바랍니다.(비용 익월 공제)",
       list: [
-        {value:'소속(회사명)', content:'', placeholder:'회사명을 입력해주세요.', read:1},
-        {value:'이름', content:'', placeholder:'이름을 입력해주세요.', read:1},
-        {value:'연락처', content:'', placeholder:'연락처를 입력해주세요.', read:1},
-        {value:'(사내)이메일', content:'', placeholder:'(사내)이메일을 입력해주세요.', read:1},
+        {value:'소속(회사명)', content:'', placeholder:'회사명을 입력해주세요.', read:1, checked:1},
+        {value:'이름', content:'', placeholder:'이름을 입력해주세요.', read:1, checked:1},
+        {value:'연락처', content:'', placeholder:'연락처를 입력해주세요.', read:1, checked:1},
+        {value:'(사내)이메일', content:'', placeholder:'(사내)이메일을 입력해주세요.', read:1, checked:1},
         {value:'부서', content:'', placeholder:'부서를 입력해주세요.', checked:0},
         {value:'직위', content:'', placeholder:'직위를 입력해주세요.', checked:0},
         {value:'사번', content:'', placeholder:'사번을 입력해주세요.', checked:0},
