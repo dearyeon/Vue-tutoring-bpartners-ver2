@@ -6,8 +6,8 @@
       </div>
       <div slot="footer" style="justify-content: center">
         <button class="btn btn-default m-r" @click="$refs.modalWaitPayment.close()">취소</button>
-        <button class="btn btn-warning" @click="WaitPayment('일시정지')">일시정지</button>
-        <button class="btn btn-danger" @click="WaitPayment('대상아님')">대상아님</button>
+        <button class="btn btn-warning" @click="WaitPayment('P')">일시정지</button>
+        <button class="btn btn-danger" @click="WaitPayment('N')">대상아님</button>
         <button class="btn btn-info" @click="[$refs.modalWaitPayment.close(), makePayment()]">수동결제</button>
       </div>
     </Modal>
@@ -770,29 +770,21 @@
 
 			},
 			WaitPayment (val) {
+				let text = val === 'P' ? '일시정지' : '대상아님'
+
 				this.$swal.fire({
-					title: val + ' 하시겠습니까?',
+					title: text + ' 하시겠습니까?',
 					confirmButtonText: '확인',
 					confirmButtonColor: '#8FD0F5',
         			showCloseButton: true,
 				}).then(async result => {
 					if (result.isConfirmed) {
-						if (val === '일시정지') {
-							if (this.tab === 1){
-								const res = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: 'P' });
-							} else {
-								const res = await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: 'P' });
-							}
-						}
-						else{
-							if (this.tab === 1){
-								const res = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: 'N' });
-							} else {
-								const res = await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: 'N' });
-							}
-						}
-						this.$refs.modalWaitPayment.close();
-						this.refresh();
+
+						if (this.tab === 1) await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: val })
+						else await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: val })
+
+						this.$refs.modalWaitPayment.close()
+						this.refresh()
 					}
 				})
 			}

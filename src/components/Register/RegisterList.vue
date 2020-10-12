@@ -41,7 +41,10 @@
               </td>
               <td>{{ register.updDt }}</td>
               <td>
-                <a @click="copyText($event,register.siteUrl)">{{ register.siteUrl }}</a>
+	              <a type="button" @click="copyText($event,register.siteUrl)">{{ register.siteUrl }}</a>
+	              <div class="alert alert-success no-padding" role="alert" v-show="isCopyUrl">
+		              <a href="#" class="alert-link">클립보드에 복사되었습니다.</a>
+	              </div>
               </td>
               <td>
                 <button class="btn btn-primary" @click="goToApplyPage(register.url)">페이지 보러 가기</button>
@@ -83,8 +86,16 @@ export default {
       aNoList: [],
       currentANo: [],
       applyPageLink:'',
+		  isCopyUrl: false
     };
   },
+	watch: {
+	  isCopyUrl: function(val) {
+			  if(val) {
+		      this.fadeout()
+			  }
+    }
+	},
   methods: {
     aNoFormat: function(item) {
       if (typeof item === "object" && "a_no" in item)
@@ -97,19 +108,31 @@ export default {
     chANo: function(index, pick) {
       this.currentANo[index] = pick;
     },
-    copyText: function (e,value) {
-
-			let tempElem = document.createElement('textarea')
-			tempElem.value = value
-			document.body.appendChild(tempElem)
-
-			tempElem.select()
-			document.execCommand('copy')
-			document.body.removeChild(tempElem)
-    },
-		goToApplyPage: function (url) {
-			window.open(url, '_blank');
-		}
+	  copyText: function (e,value) {
+		  this.$copyText(value).then(function (e) {
+			  alert('Copied')
+				this.isCopyUrl = true
+			  console.log(e)
+		  }, function (e) {
+			  alert('Can not copy')
+			  console.log(e)
+		  })
+	  },
+	  goToApplyPage: function (url) {
+		  window.open(url, '_blank')
+	  },
+	  fadeout: function (element) {
+		  var op = 1  // initial opacity
+		  var timer = setInterval(function () {
+			  if (op <= 0.1) {
+				  clearInterval(timer)
+				  element.style.display = 'none'
+			  }
+			  element.style.opacity = op
+			  element.style.filter = 'alpha(opacity=' + op * 100 + ')'
+			  op -= op * 0.1
+		  }, 50)
+}
   },
   components: {
     Dropdown,
