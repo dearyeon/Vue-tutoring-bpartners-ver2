@@ -9,7 +9,7 @@
       <div class="ibox content">
         <div class="ibox-content">
           <div class="subtitle">
-            <h1>{{ company }}</h1>
+            <h1>{{ bap.site.company }}</h1>
             <Dropdown
               :defaultValue="aNoList.length !== 0 ? aNoList[$route.params.aNo - 1] : ''"
               :itemList="aNoList"
@@ -36,12 +36,7 @@
             </thead>
             <tbody id="applyerList">
               <tr
-                data-toggle=""
-                data-target=""
                 class="userInfo hover-pointer"
-                data-u_idx="2393501"
-                data-bs_idx="58"
-                data-bo_idx="410"
                 v-for="(data, index) in list"
                 v-bind:key="data.id"
               >
@@ -49,16 +44,7 @@
                 <td class="part">{{ data.user.department }}</td>
                 <td class="position">{{ data.user.position }}</td>
                 <td class="emp_no" v-if="bap.idx!==1">{{ data.user.emp_no }}</td>
-                <td
-                  class="hover-pointer name"
-                  data-toggle="modal"
-                  data-target="#applyerInfoModal"
-                  data-name=""
-                  data-cel=""
-                  data-email=""
-                >
-                  {{ data.user.name }}
-                </td>
+                <td class="hover-pointer name">{{ data.user.name }}</td>
                 <td class="email">
                   {{ data.user.email_id ? data.user.email_id + "@" + bap.email_domain : "[정보 보안]" }}
                 </td>
@@ -89,29 +75,17 @@ export default {
       bap: "",
       list: [],
       aNoList: [],
-      company: ''
     };
   },
   async created() {
-    const res = await api.get("/partners/applyList", {
-      sIdx: this.$route.params.sIdx,
-      aNo: this.$route.params.aNo,
-    });
-    const res1 = await api.get("/partners/applySiteList");
-    this.list = res.data.list;
-    this.bap = res.data.bap;
-    this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
-    this.company = res1.data.find(el => el.s_idx === this.bap.s_idx).site.company;
+		this.refreshData(1);
   },
   methods: {
     companyChargePrice(index) {
       return this.list[index].__ob__.value.goods.supply_price - this.list[index].__ob__.value.goods.charge_price;
     },
-    chANo: async function(index) {
-      const res = await api.get("/partners/applyList", { sIdx: this.$route.params.sIdx, aNo: index + 1 });
-      this.list = res.data.list;
-      this.bap = res.data.bap;
-      this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
+    chANo: function(index) {
+      this.refreshData(index + 1)
     },
     aNoFormat: function(item) {
       if (typeof item === "object" && "a_no" in item)
@@ -121,6 +95,17 @@ export default {
         )} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")}`;
       else return "";
     },
+		async refreshData(aNo) {
+			const res = await api.get("/partners/applyList", {
+				sIdx: this.$route.params.sIdx,
+				aNo: aNo,
+			});
+			this.list = res.data.list;
+			this.bap = res.data.bap;
+			if(this.aNoList.length == 0) {
+				this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
+			}
+		}
   },
   components: {
     Dropdown,
