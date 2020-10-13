@@ -21,7 +21,7 @@
           TUTORING All Rights Reserved.
         </div>
         <div>
-          <strong>Copyright</strong> Mycroft &copy; 2018
+          <strong>Copyright</strong> TUTORING &copy; 2020
         </div>
       </div>
       <!-- footer end -->
