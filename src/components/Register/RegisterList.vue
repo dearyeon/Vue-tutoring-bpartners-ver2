@@ -41,8 +41,8 @@
               </td>
               <td>{{ register.updDt }}</td>
               <td>
-	              <a type="button" @click="copyText($event,register.siteUrl)">{{ register.siteUrl }}</a>
-	              <div class="alert alert-success no-padding" role="alert" v-show="isCopyUrl">
+	              <a @click="copyText($event,register.siteUrl,index)">{{ register.siteUrl }}</a>
+	              <div class="alert alert-success no-padding" role="alert" v-show="register.isCopy" :id="'clipBoardAlert'+index">
 		              <a href="#" class="alert-link">클립보드에 복사되었습니다.</a>
 	              </div>
               </td>
@@ -64,7 +64,7 @@ import Dropdown from "../atom/Dropdown";
 export default {
 	async created () {
 		const res = await api.get('/partners/applyPageList')
-			res.forEach(item => {
+			res.forEach( item=> {
 				let registeredPage = {}
 				registeredPage.idx = item.applys[0].idx
 				registeredPage.company = item.site.company
@@ -72,6 +72,7 @@ export default {
 				registeredPage.updDt = item.applys[0].upd_dt
 				registeredPage.siteUrl = 'https://apply.tutoring.co.kr/' + item.applys[0].hash
 				registeredPage.url = 'https://apply.tutoring.co.kr/' + item.applys[0].hash + '/7788'
+		    registeredPage.isCopy = false
 
 				this.registers.push(registeredPage)
 
@@ -85,17 +86,10 @@ export default {
       registers: [],
       aNoList: [],
       currentANo: [],
-      applyPageLink:'',
-		  isCopyUrl: false
+      applyPageLink:''
     };
   },
-	watch: {
-	  isCopyUrl: function(val) {
-			  if(val) {
-		      this.fadeout()
-			  }
-    }
-	},
+
   methods: {
     aNoFormat: function(item) {
       if (typeof item === "object" && "a_no" in item)
@@ -108,25 +102,25 @@ export default {
     chANo: function(index, pick) {
       this.currentANo[index] = pick;
     },
-	  copyText: function (e,value) {
-		  this.$copyText(value).then(function (e) {
-			  alert('Copied')
-				this.isCopyUrl = true
-			  console.log(e)
-		  }, function (e) {
-			  alert('Can not copy')
+	  copyText: function (e,value,index) {
+		  this.$copyText(value).then((e) => {
+		    this.registers[index].isCopy = true
+				let $targetElement = document.getElementById('clipBoardAlert'+index)
+				this.fadeout($targetElement,index)
+				console.log(e)
+		  }, (e) => {
 			  console.log(e)
 		  })
 	  },
 	  goToApplyPage: function (url) {
 		  window.open(url, '_blank')
 	  },
-	  fadeout: function (element) {
+	  fadeout: function (element,index) {
 		  var op = 1  // initial opacity
-		  var timer = setInterval(function () {
+		  var timer = setInterval( () => {
 			  if (op <= 0.1) {
 				  clearInterval(timer)
-				  element.style.display = 'none'
+					this.registers[index].isCopy = false
 			  }
 			  element.style.opacity = op
 			  element.style.filter = 'alpha(opacity=' + op * 100 + ')'
