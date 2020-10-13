@@ -1,5 +1,10 @@
 <template>
-  <nav class="navbar-default navbar-static-side" style="height: 100%;" role="navigation">
+
+  <nav class="navbar-default navbar-toggleable-lg navbar-static-side" style="height: 100%;" role="navigation">
+       <!--<button class="navbar-toggler navbar-toggler-right py-2" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+          <span>X</span>
+       </button>-->
+     
     <div class="sidebar-collapse">
 
       <ul class="nav metismenu" id="side-menu">
@@ -70,6 +75,10 @@ export default {
     logout() {
       shared.setToken(null)
       this.$router.push('/login')
+    },
+    closeMenu() {
+      $('#navbar-default').collapse('hide');
+      //document.getElementById("navbar-default").style.top = "0";
     }
   }
 }

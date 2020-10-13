@@ -14,7 +14,6 @@ Vue.use(shared)
 Vue.use(swal)
 Vue.use(window.VueCharts)
 Vue.use(VueClipboard)
-
 Vue.config.productionTip = false
 
 const router = new VueRouter({routes});

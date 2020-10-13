@@ -20,7 +20,8 @@
     "vue-clipboard2": "^0.3.1",
     "vue-router": "^3.4.3",
     "vue-sweetalert2": "^3.0.8",
-    "vuedraggable": "^2.24.1"
+    "vuedraggable": "^2.24.1",
+    "vuejs-datepicker": "^1.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
