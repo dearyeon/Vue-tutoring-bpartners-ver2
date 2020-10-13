@@ -27,6 +27,7 @@
                 <th class="text-center">이름</th>
                 <th class="text-center">이메일</th>
                 <th class="text-center">연락처</th>
+                <th class="text-center" v-for="col in bap.form">{{ col.title }}</th>
                 <th class="text-center">수강권</th>
                 <th class="text-center">제공가</th>
                 <th class="text-center">회사지원금</th>
@@ -49,6 +50,9 @@
                   {{ data.user.email_id ? data.user.email_id + "@" + bap.email_domain : "[정보 보안]" }}
                 </td>
                 <td class="cel">{{ data.user.cel ? data.user.cel : "[정보 보안]" }}</td>
+
+								<td v-for="col in bap.form">{{ getCustomFieldValue(col, data.user[col.col_id]) }}</td>
+
                 <td class="charge-plan__title">{{ data.__ob__.value.goods.charge_plan.title }}</td>
                 <td class="supply_price">{{ $shared.nf(data.__ob__.value.goods.supply_price) }}</td>
                 <td class="company-charge__price" v-on:cmpprice="companyChargePrice" style="vertical-align: middle;">
@@ -105,7 +109,15 @@ export default {
 			if(this.aNoList.length == 0) {
 				this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
 			}
-		}
+		},
+		getCustomFieldValue(col, val) {
+    	if(col.type=='S') {
+				const i = col.vals.indexOf(val)
+				return col.opts[i]
+			}else {
+    		return val
+			}
+		},
   },
   components: {
     Dropdown,
