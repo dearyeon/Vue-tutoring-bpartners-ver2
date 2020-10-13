@@ -26,7 +26,7 @@
               </tr>
             </thead>
             <tr v-for="(register, index) in registers" :key="`Register-${index}`">
-              <td>{{ register.idx }}</td>
+              <td>{{ register.no }}</td>
               <td>
                 {{ register.company }}
               </td>
@@ -66,6 +66,7 @@ export default {
 		const res = await api.get('/partners/applyPageList')
 			res.forEach( item=> {
 				let registeredPage = {}
+				registeredPage.no = item.no
 				registeredPage.idx = item.applys[0].idx
 				registeredPage.company = item.site.company
 				registeredPage.name = item.site.name
