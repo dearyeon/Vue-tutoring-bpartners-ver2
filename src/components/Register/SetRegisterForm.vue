@@ -241,8 +241,8 @@ export default {
         billNotice: this.billNotice,
         chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct):0,
         penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct):0,
-        applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD'),
-        applyToDt: moment(this.applyToDt).format('YYYY-MM-DD'),
+        applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm:ss'),
+        applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm:ss'),
         openYn: this.openYn ? 1:0
       });
       console.log(res);
