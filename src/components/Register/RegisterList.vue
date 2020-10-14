@@ -32,10 +32,10 @@
               </td>
               <td>{{ register.name }}</td>
               <td>
-                <Dropdown :defaultValue="aNoList[index][aNoList[index].length - 1]" :itemList="aNoList[index]" />
+                <Dropdown :defaultValue="aNoList[index][aNoList[index].length - 1]" :itemList="aNoList[index]" @dropItemClick="setaNo"/>
               </td>
               <td>
-                <button class="btn btn-page-set" @click="routeFormPage(index, register.company)">페이지 설정</button>
+                <button class="btn btn-page-set" @click="routeFormPage(register.s_idx, register.company)">페이지 설정</button>
               </td>
               <td>{{ register.updDt }}</td>
               <td>
@@ -63,7 +63,8 @@ export default {
 	async created () {
 		const res = await api.get('/partners/applyPageList')
 			res.forEach( item=> {
-				let registeredPage = {}
+        let registeredPage = {}
+        registeredPage.s_idx = item.s_idx
 				registeredPage.no = item.no
 				registeredPage.idx = item.applys[0].idx
 				registeredPage.company = item.site.company
@@ -71,14 +72,15 @@ export default {
 				registeredPage.updDt = item.applys[0].upd_dt
 				registeredPage.siteUrl = 'https://apply.tutoring.co.kr/' + item.applys[0].hash
 				registeredPage.url = 'https://apply.tutoring.co.kr/' + item.applys[0].hash + '/7788'
-		    registeredPage.isCopy = false
+        registeredPage.isCopy = false
 
 				this.registers.push(registeredPage)
 
 			this.aNoList = res.map(register => register.applys.map(item => this.aNoFormat(item)))
 			this.currentANo = res.map(() => 0)
-
-		})
+    })
+    
+      console.log(res);
 	},
   data() {
     return {
@@ -132,6 +134,11 @@ export default {
         params: { idx: index+1, company: name }
       })
     },
+    setaNo(index) {
+      console.log(this.aNoList,1111);
+      console.log(index,222);
+      return index;
+    }
   },
   components: {
     Dropdown,
