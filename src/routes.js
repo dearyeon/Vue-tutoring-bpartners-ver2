@@ -30,7 +30,7 @@ const routes = [
       { path: "/billing/DetailsList/:sIdx/:aNo/:bNo", name: "billingDetailsList", component: BillingDetailsList, props: true },
       { path: "/register/List", component: RegisterList },
       { path: "/register/createPage", component: CreatePage },
-      { path: "/register/setRegisterForm", component: SetRegisterForm },
+      { path: "/register/setRegisterForm/:idx", name: "setRegisterForm", component: SetRegisterForm, props:true },
     ],
   },
 ];

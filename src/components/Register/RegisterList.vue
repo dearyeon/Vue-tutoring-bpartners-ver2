@@ -35,9 +35,7 @@
                 <Dropdown :defaultValue="aNoList[index][aNoList[index].length - 1]" :itemList="aNoList[index]" />
               </td>
               <td>
-                <router-link :to="{ path: '/register/setRegisterForm' }">
-                  <button class="btn btn-page-set">페이지 설정</button>
-                </router-link>
+                <button class="btn btn-page-set" @click="routeFormPage(index, register.company)">페이지 설정</button>
               </td>
               <td>{{ register.updDt }}</td>
               <td>
@@ -126,8 +124,14 @@ export default {
 			  element.style.opacity = op
 			  element.style.filter = 'alpha(opacity=' + op * 100 + ')'
 			  op -= op * 0.1
-		  }, 50)
-}
+      }, 50)
+    },
+    routeFormPage(index,name) {
+      this.$router.push({
+        name: 'setRegisterForm' ,
+        params: { idx: index+1, company: name }
+      })
+    },
   },
   components: {
     Dropdown,

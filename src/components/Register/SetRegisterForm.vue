@@ -17,21 +17,15 @@
               <table class="table">
                 <tr>
                   <th>BTB 사이트 선택</th>
-                  <td>
-                    <Dropdown class="form-control" style="right:8px"
-                      :defaultValue="site"
-                      :itemList="siteList"
-                      @dropItemClick="selectSite"
-                    />
-                  </td>
+                  <td><input type="text" class="form-control" :placeholder="$route.params.company" disabled/></td>
                 </tr>
                 <tr>
                   <th>이메일 도메인 지정</th>
-                  <td><input type="text" class="form-control" placeholder="이메일 도메인을 입력해주세요." /></td>
+                  <td><input type="text" class="form-control" placeholder="이메일 도메인을 입력해주세요." v-model="emailDomain"/></td>
                 </tr>
                 <tr>
                   <th>수료기준 출석률</th>
-                  <td><input type="text" class="form-control" placeholder="출석률을 입력해 주세요."/></td>
+                  <td><input type="text" class="form-control" placeholder="출석률을 입력해 주세요." v-model="penaltyAttendPct"/></td>
                 </tr>
               </table>
             </div>
@@ -39,13 +33,13 @@
               <table class="table">
                 <tr>
                   <th>자기 부담금</th>
-                  <td><input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요."/></td>
+                  <td><input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요." v-model="chargeRatePct"/></td>
                 </tr>
                 <tr style="height:50px;">
                   <th>수강신청기간</th>
                   <td>
-                      <datepicker class="col-lg-3" style="right:15px;" v-model="date.start" placeholder="Select Date" />
-                      <datepicker class="col-lg-3" v-model="date.end" placeholder="Select Date"/>
+                      <datepicker class="col-lg-3" :minimumView="'day'" style="right:15px;" v-model="applyToDt" placeholder="Select Date" />
+                      <datepicker class="col-lg-3" v-model="applyFrDt" placeholder="Select Date"/>
                   </td>
                 </tr>
                 <tr style="height:50px;">
@@ -53,7 +47,7 @@
                   <td>
                     <div class="switch">
                       <div class="onoffswitch">
-                        <input class="onoffswitch-checkbox form-control" name="en_i" id="en_i" type="checkbox" v-model="isOpen" />
+                        <input class="onoffswitch-checkbox form-control" name="en_i" id="en_i" type="checkbox" v-model="openYn" />
                         <label class="onoffswitch-label" for="en_i">
                           <span class="onoffswitch-inner"></span>
                           <span class="onoffswitch-switch"></span>
@@ -67,16 +61,13 @@
             </div>
           </div>
 
-
-
-
           <h3 id="step-title">1 step. 액세스 홈</h3>
           <div class="row">
             <div class="col-lg-6">
               <table class="table">
                 <tr>
                   <th>Access code</th>
-                  <td><input type="text" class="form-control" value="namyangjoo_244" readonly /></td>
+                  <td><input type="text" class="form-control" v-model="accessCode" placeholder="Access code를 입력해 주세요." /></td>
                 </tr>
                 <tr>
                   <th>CI/BI 등록</th>
@@ -102,18 +93,9 @@
             <div class="col-lg-6">
               <table class="table">
                 <tr>
-                  <th style="vertical-align: top; padding-top: 12px;">수강신청 문의</th>
+                  <th style="vertical-align: top; padding-top: 12px; width:20%">수강신청 문의</th>
                   <td>
-                    <div id="text-area">
-                      <ul>
-                        <li>
-                          고객센터: 1522-7802(평일 10시 ~ 18시)
-                        </li>
-                        <li>
-                          이메일 문의: b2b@tutoring.co.kr
-                        </li>
-                      </ul>
-                    </div>
+                    <textarea id="disclaimer" class="form-control" v-model="contacts" style="height:250px"></textarea>
                   </td>
                 </tr>
               </table>
@@ -126,7 +108,7 @@
                 <strong class="label-w-checkbox">내용</strong>
               </th>
               <td class="col-lg-10">
-                <textarea id="disclaimer" class="form-control" v-model="disclaimer"></textarea>
+                <textarea id="disclaimer" class="form-control" v-model="notice"></textarea>
               </td>
             </tr>
           </table>
@@ -161,21 +143,12 @@
               <strong class="label-w-checkbox">유의사항</strong>
             </div>
             <div class="col-lg-10">
-              <table class="table">
-                <div id="text-area">
-                  <ul>
-                    <li>입력하신 정보로 정기 결제가 진행됩니다.</li>
-                    <li>미출석시 다음달 1일 수강료가 과금될 수 있으니 주의해주세요.</li>
-                    <li>학습 종료 후 수료 기준에 따라 차액이 자동 결제 됩니다.</li>
-                    <li>수강기간 종료 시 카드 정보는 폐기합니다.</li>
-                  </ul>
-                </div>
-              </table>
+              <textarea id="disclaimer" class="form-control" v-model="billNotice"></textarea>
             </div>
           </div>
           <div class="save pull-right">
             <button class="btn btn-blue-line">임시 저장</button>
-            <button class="btn btn-primary" @click="sendNum">저장</button>
+            <button class="btn btn-primary" @click="[sendNum(), setForm()]">저장</button>
           </div>
         </div>
       </div>
@@ -187,22 +160,23 @@
 <script>
 import draggable from 'vuedraggable'
 import Datepicker from 'vuejs-datepicker';
-import Dropdown from "../atom/Dropdown";
+import api from '@/common/api'
 export default {
   data() {
     return {
       image: "",
       preview:
         "https://s3-alpha-sig.figma.com/img/911a/6151/4c7eb8a41cad075d0c95050d0bf9576a?Expires=1602460800&Signature=YuUFI8EGRfBtnq8MZrlqnwUlUuCdjr20SSE3~yMeXS5x9vjpqOsQrK4CyqtuH9d2v7l1VzqCjVDiOHg53SFGHYG5JcsbKoPwdo78yirNBB5DRQBuNmzLAxikSRwV5sel1K9HkMdG5cbxDxtK54piFZuVQMP30MCF271EJkLajk44AyClnXau-pT~mxR6zov1KxaMpdp7tNJyyZwpZXJfRg53-cVIS2Q9Z8Ml6o0LM4JuV5wok5-7g6q4nLhvbhJBgwefVucy2~ehgCwrzNlJX7jcFX8-2DtRqItU5L~Z-2M56VE4p3AwbJspxnJm~~ACwiqk0VpSuLZtQHB5wkGxgQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA",
-      disclaimer:
-        "*신청시 주의 사항을 확인해주세요\n*프로그램은 인당 월 1개에 한해 가능합니다.\n(중복 신청시 마지막 신청 정보로 반영)\n*신청 및 정정은 기한내에만 가능합니다.\n(신청~25일까지, 정정 및 취소 26~말일까지)\n*신청 기한내(~25일) 정정은 재 신청 해주시고, 신청 기한 이후(26일~말일) 정정 및 취소는 하기 메일로 요청 해주시기 바랍니다.(b2b@tutoring.co.kr)\n*신청자에 한해 27일 학습 안내 메일이 발송될 예정입니다.\n*GTP 대상/비대상에 따라 급여공제가 진행되므로 GTP여부를 반드시 확인 후 신청 해주시기 바랍니다.(비용 익월 공제)",
-      siteList: [],
-      site: '',
-      date: {
-        start: '',
-        end: ''
-      },
-      isOpen: false,
+      accessCode: '',
+      emailDomain: '',
+      contacts: '',
+      notice: '',
+      billNotice: '',
+      chargeRatePct: '',
+      penaltyAttendPct: '',
+      applyFrDt: '',
+      applyToDt: '',
+      openYn: false,
       list: [
         {num:0, value:'소속(회사명)', content:'', placeholder:'회사명을 입력해주세요.', read:1, checked:1},
         {num:1, value:'이름', content:'', placeholder:'이름을 입력해주세요.', read:1, checked:1},
@@ -220,11 +194,21 @@ export default {
     };
   },
   components: {
-    draggable, Datepicker, Dropdown
+    draggable, Datepicker
   },
-  created() {
-    this.siteList = tempDrop;
-    this.site = this.siteList[0];
+  async created() {
+      const res = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
+      console.log(res.data);
+      this.accessCode = res.data.access_code;
+      this.emailDomain = res.data.email_domain;
+      this.contacts = res.data.contacts;
+      this.notice = res.data.notice;
+      this.billNotice = res.data.bill_notice;
+      this.chargeRatePct = res.data.charge_rate_pct;
+      this.penaltyAttendPct = res.data.penalty_attend_pct;
+      this.applyFrDt = res.data.apply_fr_dt;
+      this.applyToDt = res.data.apply_to_dt;
+      this.openYn = res.data.open_yn ? true : false;
   },
   watch: {
     image: function(val) {
@@ -245,13 +229,26 @@ export default {
       this.list.forEach(el => numlist.push(el.num));
       console.log(numlist);
     },
-    selectSite (index) {
-      this.site = this.siteList[index];
+    setForm: async function () {
+			const res = await api.post('/partners/applyPage', { 
+        idx: this.$route.params.idx, 
+        accessCode: this.accessCode,
+        emailDomain: this.emailDomain,
+        contacts: this.contacts,
+        notice: this.notice,
+        billNotice: this.billNotice,
+        chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct):0,
+        penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct):0,
+        applyFrDt: JSON.stringify(this.applyFrDt).substring(1,11)+' '+JSON.stringify(this.applyFrDt).substring(12,20),
+        applyToDt: JSON.stringify(this.applyToDt).substring(1,11)+' '+JSON.stringify(this.applyToDt).substring(12,20),
+        openYn: this.openYn ? 1:0
+      });
+      console.log(res);
+      const test = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
+      console.log(test);
     }
   }
 };
-
-var tempDrop = ['a','b','c'];
 </script>
 
 <style>
