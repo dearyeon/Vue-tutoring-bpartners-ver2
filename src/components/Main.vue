@@ -1,10 +1,10 @@
 <template>
   <div id="wrapper">
-    <Menu></Menu>
+    <Menu v-show="menuToggle"></Menu>
+    <div :id="menuToggle?'page-wrapper':'container'" class="gray-bg">
+    <button class="pull-left" style="background-color: rgb(38, 57, 73);" @click="menuToggle = !menuToggle"><i class="fa fa-bars"/></button>
 
-    <div id="page-wrapper" class="gray-bg">
       <!-- header begin -->
-
       <!--header end-->
 
 
@@ -41,7 +41,10 @@ export default {
   components: {
     Menu
   },
-  created() {
+  data() {
+    return {
+      menuToggle: true,
+    }
   }
 }
 </script>
@@ -51,6 +54,12 @@ export default {
 
 <style>
 #wrapper {
+  height: 100%;
+}
+#page-wrapper {
+  padding: 0;
+}
+#container {
   height: 100%;
 }
 </style>

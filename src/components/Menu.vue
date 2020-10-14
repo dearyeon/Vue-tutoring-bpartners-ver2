@@ -75,10 +75,6 @@ export default {
     logout() {
       shared.setToken(null)
       this.$router.push('/login')
-    },
-    closeMenu() {
-      $('#navbar-default').collapse('hide');
-      //document.getElementById("navbar-default").style.top = "0";
     }
   }
 }
