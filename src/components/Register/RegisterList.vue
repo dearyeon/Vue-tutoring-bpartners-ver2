@@ -25,27 +25,29 @@
                 <th class="text-center">URL</th>
               </tr>
             </thead>
-            <tr v-for="(register, index) in registers" :key="`Register-${index}`">
-              <td>{{ register.no }}</td>
+            <tr v-for="(item, index) in list" :key="`Register-${index}`">
+              <td>{{ item.no }}</td>
               <td>
-                {{ register.company }}
+                {{ item.site.company }}
               </td>
-              <td>{{ register.name }}</td>
+              <td>{{ item.site.name }}</td>
               <td>
-                <Dropdown :defaultValue="aNoList[index][aNoList[index].length - 1]" :itemList="aNoList[index]" @dropItemClick="setaNo"/>
+								<select v-model="item.selectedApplyIdx">
+									<option v-for="apply in apply.applys" :value="apply.idx">{{apply.a_no}}회차 | {{ moment(apply.apply_fr_dt).format('YYYY-MM-DD') }} - {{apply.apply_to_dt}}</option>
+								</select>
               </td>
               <td>
-                <button class="btn btn-page-set" @click="routeFormPage(register.s_idx, register.company)">페이지 설정</button>
+                <button class="btn btn-page-set" @click="routeFormPage(index, item.company)">페이지 설정</button>
               </td>
-              <td>{{ register.updDt }}</td>
+              <td>{{ item.updDt }}</td>
               <td>
-	              <a @click="copyText($event,register.siteUrl,index)">{{ register.siteUrl }}</a>
-	              <div class="alert alert-success no-padding" role="alert" v-show="register.isCopy" :id="'clipBoardAlert'+index">
+	              <a @click="copyText($event,item.siteUrl,index)">https://apply.tutoring.co.kr/{{ item.applys[0].hash }}</a>
+	              <div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+index">
 		              <a href="#" class="alert-link">클립보드에 복사되었습니다.</a>
 	              </div>
               </td>
               <td>
-                <button class="btn btn-primary" @click="goToApplyPage(register.url)">페이지 보러 가기</button>
+                <button class="btn btn-primary" @click="goToApplyPage(item.url)">페이지 보러 가기</button>
               </td>
             </tr>
           </table>
@@ -58,32 +60,21 @@
 <script>
 import api from "@/common/api";
 import Dropdown from "../atom/Dropdown";
+import moment from "moment";
 
 export default {
 	async created () {
 		const res = await api.get('/partners/applyPageList')
-			res.forEach( item=> {
-        let registeredPage = {}
-        registeredPage.s_idx = item.s_idx
-				registeredPage.no = item.no
-				registeredPage.idx = item.applys[0].idx
-				registeredPage.company = item.site.company
-				registeredPage.name = item.site.name
-				registeredPage.updDt = item.applys[0].upd_dt
-				registeredPage.siteUrl = 'https://apply.tutoring.co.kr/' + item.applys[0].hash
-				registeredPage.url = 'https://apply.tutoring.co.kr/' + item.applys[0].hash + '/7788'
-        registeredPage.isCopy = false
+		this.list = res;
+		this.list.forEach( item => {
+			item.selectedApplyIdx = item.applys[0].idx;
+		})
 
-				this.registers.push(registeredPage)
-
-			this.aNoList = res.map(register => register.applys.map(item => this.aNoFormat(item)))
-			this.currentANo = res.map(() => 0)
-    })
-    
-      console.log(res);
 	},
   data() {
     return {
+    	list: [],
+			moment: moment,
       registers: [],
       aNoList: [],
       currentANo: [],
@@ -134,11 +125,6 @@ export default {
         params: { idx: index+1, company: name }
       })
     },
-    setaNo(index) {
-      console.log(this.aNoList,1111);
-      console.log(index,222);
-      return index;
-    }
   },
   components: {
     Dropdown,
