@@ -33,11 +33,11 @@
               <td>{{ item.site.name }}</td>
               <td>
 								<select v-model="item.selectedApplyIdx">
-									<option v-for="apply in apply.applys" :value="apply.idx">{{apply.a_no}}회차 | {{ moment(apply.apply_fr_dt).format('YYYY-MM-DD') }} - {{apply.apply_to_dt}}</option>
-								</select>
+									<option v-for="apply in item.applys" :value="apply.idx" :key="apply.id">{{apply.a_no}}회차 | {{ moment(apply.apply_to_dt).format('YYYY-MM-DD') }} - {{ moment(apply.apply_fr_dt).format('YYYY-MM-DD') }}</option>
+                </select>
               </td>
               <td>
-                <button class="btn btn-page-set" @click="routeFormPage(index, item.company)">페이지 설정</button>
+                <button class="btn btn-page-set" @click="routeFormPage(item.selectedApplyIdx)">페이지 설정</button>
               </td>
               <td>{{ item.updDt }}</td>
               <td>
@@ -69,7 +69,7 @@ export default {
 		this.list.forEach( item => {
 			item.selectedApplyIdx = item.applys[0].idx;
 		})
-
+    console.log(this.list);
 	},
   data() {
     return {
@@ -119,10 +119,10 @@ export default {
 			  op -= op * 0.1
       }, 50)
     },
-    routeFormPage(index,name) {
+    routeFormPage(idx) {
       this.$router.push({
         name: 'setRegisterForm' ,
-        params: { idx: index+1, company: name }
+        params: { idx: idx }
       })
     },
   },

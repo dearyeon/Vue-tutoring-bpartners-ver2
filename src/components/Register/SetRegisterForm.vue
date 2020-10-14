@@ -17,7 +17,7 @@
               <table class="table">
                 <tr>
                   <th>BTB 사이트 선택</th>
-                  <td><input type="text" class="form-control" :placeholder="$route.params.company" disabled/></td>
+                  <td><input type="text" class="form-control" :placeholder="company" disabled/></td>
                 </tr>
                 <tr>
                   <th>이메일 도메인 지정</th>
@@ -146,8 +146,7 @@
               <textarea id="disclaimer" class="form-control" v-model="billNotice"></textarea>
             </div>
           </div>
-          <div class="save pull-right">
-            <button class="btn btn-blue-line">임시 저장</button>
+          <div class="pull-right">
             <button class="btn btn-primary" @click="[sendNum(), setForm()]">저장</button>
           </div>
         </div>
@@ -159,7 +158,8 @@
 
 <script>
 import draggable from 'vuedraggable'
-import Datepicker from 'vuejs-datepicker';
+import Datepicker from 'vuejs-datepicker'
+import moment from "moment"
 import api from '@/common/api'
 export default {
   data() {
@@ -167,6 +167,7 @@ export default {
       image: "",
       preview:
         "https://s3-alpha-sig.figma.com/img/911a/6151/4c7eb8a41cad075d0c95050d0bf9576a?Expires=1602460800&Signature=YuUFI8EGRfBtnq8MZrlqnwUlUuCdjr20SSE3~yMeXS5x9vjpqOsQrK4CyqtuH9d2v7l1VzqCjVDiOHg53SFGHYG5JcsbKoPwdo78yirNBB5DRQBuNmzLAxikSRwV5sel1K9HkMdG5cbxDxtK54piFZuVQMP30MCF271EJkLajk44AyClnXau-pT~mxR6zov1KxaMpdp7tNJyyZwpZXJfRg53-cVIS2Q9Z8Ml6o0LM4JuV5wok5-7g6q4nLhvbhJBgwefVucy2~ehgCwrzNlJX7jcFX8-2DtRqItU5L~Z-2M56VE4p3AwbJspxnJm~~ACwiqk0VpSuLZtQHB5wkGxgQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA",
+      company: '',
       accessCode: '',
       emailDomain: '',
       contacts: '',
@@ -199,6 +200,7 @@ export default {
   async created() {
       const res = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
       console.log(res.data);
+      this.company = res.data.site.company;
       this.accessCode = res.data.access_code;
       this.emailDomain = res.data.email_domain;
       this.contacts = res.data.contacts;
@@ -239,8 +241,8 @@ export default {
         billNotice: this.billNotice,
         chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct):0,
         penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct):0,
-        applyFrDt: JSON.stringify(this.applyFrDt).substring(1,11)+' '+JSON.stringify(this.applyFrDt).substring(12,20),
-        applyToDt: JSON.stringify(this.applyToDt).substring(1,11)+' '+JSON.stringify(this.applyToDt).substring(12,20),
+        applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD'),
+        applyToDt: moment(this.applyToDt).format('YYYY-MM-DD'),
         openYn: this.openYn ? 1:0
       });
       console.log(res);
