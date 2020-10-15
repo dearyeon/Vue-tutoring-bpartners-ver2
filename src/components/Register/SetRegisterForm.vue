@@ -218,7 +218,9 @@ export default {
   methods: {
     imageSelected: function() {
       this.image = this.$refs.image.files[0];
-			this.previewSrc = URL.createObjectURL(this.image);
+      if(this.image) {
+				this.previewSrc = URL.createObjectURL(this.image);
+			}
     },
     imageCancel: function() {
       this.image = null;
