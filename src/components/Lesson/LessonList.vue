@@ -33,7 +33,7 @@
                                         <tr class="hover-pointer LESSON_INFO" 
                                             v-for="(item, index) in items" :key="`Lesson-${index}`"> <!--v-show="perPage(index)"-->
                                             <td><!--<img alt="image" class="img-rounded" src="{{ $item->prof_img?getSiteImage($item->prof_img,'_S'):getProfileImage('') }}" style="width: 20px;" /> --></td>  
-                                            <td @click="routeDetailPage(index,item.c_no)">
+                                            <td @click="routeDetailPage(item.idx,item.c_no)">
                                                 {{ item.site.company }}
                                             </td>
                                             <td class="text-center">
@@ -101,10 +101,10 @@ export default {
         this.items = res.data.data;
     },
     methods: {
-        routeDetailPage(index, c_no) {
+        routeDetailPage(idx, c_no) {
             this.$router.push({
                 name: "lessonDetailsList",
-                params: { id: (this.current_page-1)*this.per_page+index+1, c_no:c_no }
+                params: { id: idx, c_no:c_no }
             })
         },
         perPage(index) {
