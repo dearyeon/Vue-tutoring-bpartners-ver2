@@ -13,7 +13,7 @@ else if(hostId=='partners-st') {
 }
 //로컬 API 개발자 전용 설정
 else if(config.developer=='' && window.location.hostname=='localhost') {
-    server = 'https://local.tutoring.co.kr';
+    server = 'http://localhost';
 }
 
 const api = {
@@ -31,6 +31,19 @@ const api = {
             'BAST': shared.getToken()
         };
         const res = await axios.post(`${server}${endpoint}`, querystring.stringify(params), {headers});
+        return res.data;
+    },
+
+    upload: async function (endpoint, params) {
+        const headers = {
+            'Content-Type':'multipart/form-data',
+            'BAST': shared.getToken()
+        };
+        const formData = new FormData();
+        Object.keys(params).map((key)=>{
+            formData.append(key, params[key])
+        })
+        const res = await axios.post(`${server}${endpoint}`, formData, {headers});
         return res.data;
     }
 }

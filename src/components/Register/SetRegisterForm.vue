@@ -53,10 +53,10 @@
                           <span class="onoffswitch-switch"></span>
                         </label>
                       </div>
-                    </div>  
+                    </div>
                   </td>
                 </tr>
-                
+
               </table>
             </div>
           </div>
@@ -74,16 +74,16 @@
                   <td>
                     <tr>
                       <td colspan="2">
-                        <img :src="preview" alt="업로드 된 이미지" />
+                        <img :src="previewSrc" alt="업로드 된 이미지" />
                       </td>
                     </tr>
                     <tr>
                       <td class="col-lg-6 col-md-6 col-xs-6">
                         <label class="btn btn-success col-lg-12 col-md-12 col-xs-12" for="file">이미지 변경</label>
-                        <input type="file" id="file" accept="image/*" ref="image" @change="imageUpload" />
+                        <input type="file" id="file" accept="image/*" ref="image" @change="imageSelected" />
                       </td>
                       <td class="col-lg-6 col-md-6 col-xs-6">
-                        <button class="btn btn-danger col-lg-12 col-md-12 col-xs-12" @click="imageDelete">삭제</button>
+                        <button class="btn btn-danger col-lg-12 col-md-12 col-xs-12" @click="imageCancel">취소</button>
                       </td>
                     </tr>
                   </td>
@@ -161,12 +161,14 @@ import draggable from 'vuedraggable'
 import Datepicker from 'vuejs-datepicker'
 import moment from "moment"
 import api from '@/common/api'
+
+let bap = null;
+
 export default {
   data() {
     return {
       image: "",
-      preview:
-        "https://s3-alpha-sig.figma.com/img/911a/6151/4c7eb8a41cad075d0c95050d0bf9576a?Expires=1602460800&Signature=YuUFI8EGRfBtnq8MZrlqnwUlUuCdjr20SSE3~yMeXS5x9vjpqOsQrK4CyqtuH9d2v7l1VzqCjVDiOHg53SFGHYG5JcsbKoPwdo78yirNBB5DRQBuNmzLAxikSRwV5sel1K9HkMdG5cbxDxtK54piFZuVQMP30MCF271EJkLajk44AyClnXau-pT~mxR6zov1KxaMpdp7tNJyyZwpZXJfRg53-cVIS2Q9Z8Ml6o0LM4JuV5wok5-7g6q4nLhvbhJBgwefVucy2~ehgCwrzNlJX7jcFX8-2DtRqItU5L~Z-2M56VE4p3AwbJspxnJm~~ACwiqk0VpSuLZtQHB5wkGxgQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA",
+      previewSrc: '',
       company: '',
       accessCode: '',
       emailDomain: '',
@@ -199,55 +201,56 @@ export default {
   },
   async created() {
       const res = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
-      console.log(res.data);
-      this.company = res.data.site.company;
-      this.accessCode = res.data.access_code;
-      this.emailDomain = res.data.email_domain;
-      this.contacts = res.data.contacts;
-      this.notice = res.data.notice;
-      this.billNotice = res.data.bill_notice;
-      this.chargeRatePct = res.data.charge_rate_pct;
-      this.penaltyAttendPct = res.data.penalty_attend_pct;
-      this.applyFrDt = res.data.apply_fr_dt;
-      this.applyToDt = res.data.apply_to_dt;
-      this.openYn = res.data.open_yn ? true : false;
-  },
-  watch: {
-    image: function(val) {
-      this.preview = URL.createObjectURL(val);
-    }
+      bap = res.data;
+      this.company = bap.site.company;
+      this.accessCode = bap.access_code;
+      this.emailDomain =bap.email_domain;
+      this.contacts = bap.contacts;
+      this.notice = bap.notice;
+      this.billNotice = bap.bill_notice;
+      this.chargeRatePct = bap.charge_rate_pct;
+      this.penaltyAttendPct = bap.penalty_attend_pct;
+      this.applyFrDt = bap.apply_fr_dt;
+      this.applyToDt = bap.apply_to_dt;
+      this.openYn = bap.open_yn ? true : false;
+      this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${bap.site.ci_img}`
   },
   methods: {
-    imageUpload: function() {
+    imageSelected: function() {
       this.image = this.$refs.image.files[0];
+			this.previewSrc = URL.createObjectURL(this.image);
     },
-    imageDelete: function() {
-      this.image = "";
-      this.preview =
-        "https://s3-alpha-sig.figma.com/img/911a/6151/4c7eb8a41cad075d0c95050d0bf9576a?Expires=1601251200&Signature=gGMNkI8zHURCtidWQDFKLvJGqsKcUdIrZUd3JdBrGzBxWndZmZXAoJpK93nZ37edqjSwuD9EG3F18NctLiN7rX-w0oby8mJquoOA8SMJXieOZbVFR7O~Xn3S~N0Ud8a5IX3YXqHrs9Qky3xrPyqXYDW-ro8WpRZaXIC1dE9Ico9Y6fG45PzOUAkhggVNYGhl8YX121Oup9bsGyvGfonKlFRUNtnz4X9cjwe4OjyYh0K0vfq4P40Q0Qklmxg-~uOjNGRiyMW5w9J6SM-LIchcxaXHoxY43qqFgYl5StkwVSTp1UmX-Fv8CNgFyGnJPYA-cKwfLjsH-vqZWV~HyABA3Q__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA";
-    },
+    imageCancel: function() {
+      this.image = null;
+      this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${bap.site.ci_img}`
+		},
     sendNum() {
       let numlist = [];
       this.list.forEach(el => numlist.push(el.num));
       console.log(numlist);
     },
     setForm: async function () {
-			const res = await api.post('/partners/applyPage', { 
-        idx: this.$route.params.idx, 
-        accessCode: this.accessCode,
-        emailDomain: this.emailDomain,
-        contacts: this.contacts,
-        notice: this.notice,
-        billNotice: this.billNotice,
-        chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct):0,
-        penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct):0,
-        applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm:ss'),
-        applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm:ss'),
-        openYn: this.openYn ? 1:0
-      });
-      console.log(res);
-      const test = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
-      console.log(test);
+    	const params = {
+				idx: this.$route.params.idx,
+				accessCode: this.accessCode,
+				emailDomain: this.emailDomain,
+				contacts: this.contacts,
+				notice: this.notice,
+				billNotice: this.billNotice,
+				chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct):0,
+				penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct):0,
+				applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm:ss'),
+				applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm:ss'),
+				openYn: this.openYn ? 1:0
+    	}
+    	if(this.image) params.ciImage = this.image
+
+			await api.upload('/partners/applyPage', params);
+
+    	this.$swal('성공')
+      // console.log(res);
+      // const test = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
+      // console.log(test);
     }
   }
 };
