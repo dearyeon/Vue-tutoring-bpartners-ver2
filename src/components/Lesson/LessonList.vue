@@ -31,10 +31,9 @@
 
 
                                         <tr class="hover-pointer LESSON_INFO" 
-                                            v-for="(item, index) in items" :key="`Lesson-${index}`">
-                                        <div/>
-                                            <!-- <td><img alt="image" class="img-rounded" src="{{ $item->prof_img?getSiteImage($item->prof_img,'_S'):getProfileImage('') }}" style="width: 20px;" /></td>   -->
-                                            <td @click="routeDetailPage(index,item.c_no)"><!--v-show="calculatePage(index)"-->
+                                            v-for="(item, index) in items" :key="`Lesson-${index}`"> <!--v-show="perPage(index)"-->
+                                            <td><!--<img alt="image" class="img-rounded" src="{{ $item->prof_img?getSiteImage($item->prof_img,'_S'):getProfileImage('') }}" style="width: 20px;" /> --></td>  
+                                            <td @click="routeDetailPage(index,item.c_no)">
                                                 {{ item.site.company }}
                                             </td>
                                             <td class="text-center">
@@ -43,7 +42,7 @@
                                                 </select>
                                             </td>
                                             <td class="text-center">
-                                                <!--<label :class="getstatus(item.status, 1)" style="width:60px;text-align: center">{{ getstatus(item.status, 0) }}</label>-->
+                                                <label :class="currentStatus(item.fr_dt,item.to_dt,1)" style="width:60px;text-align: center">{{ currentStatus(item.fr_dt,item.to_dt,0) }}</label>
                                             </td>
                                             <td class="text-left">
                                                 <!--<label class="btn-info img-circle text-center no-margins" style="width: 20px;height: 20px" v-if="item.e_cnt>0"><strong>AB</strong></label>
@@ -86,6 +85,7 @@ export default {
             sortKey: '',
             current_page: 1,
             total_page: 1,
+            per_page: '',
 			moment: moment
         };
     },
@@ -97,6 +97,7 @@ export default {
         const res = await api.get("/partners/lessonList");
         this.current_page = res.data.current_page;
         this.total_page = res.data.last_page;
+        this.per_page = res.data.per_page;
         this.items = res.data.data;
     },
     methods: {
@@ -106,23 +107,11 @@ export default {
                 params: { id: index+1, c_no:c_no }
             })
         },
-        /*calculatePage(index) {
-            return index>=(this.currentPage-1)*30 && index<this.currentPage*30;
-        },*/
+        perPage(index) {
+            return index>=(this.current_page-1)*this.per_page && index<this.current_page*this.per_page;
+        },
         getProgressStyle(lesson_rate) {
             return "width:" + (lesson_rate && lesson_rate > 90 ? 100 : lesson_rate) + "%"
-        },
-        getstatus(status,value) {
-            switch(status) {
-            case 1:
-                return value ? "b-r-sm bg-warning": "대기중"
-            case 2:
-                return value ? "b-r-sm bg-primary": "진행중"
-            case 3:
-                return value ? "b-r-sm bg-success": "완료"
-            case 4:
-                return value ? "b-r-sm bg-danger": "취소됨"
-            }
         },
         sortBy(sortKey) {
             (this.sortKey === sortKey) ? this.items.reverse() : ( this.items.sort(function(a, b) {
@@ -130,8 +119,24 @@ export default {
             }))
             this.sortKey = sortKey;
         },
-        setCurrentPage(data) {
-            this.currentPage = data;
+        async setCurrentPage(data) {
+            this.current_page = data;
+            const res = await api.get("/partners/lessonList?page="+this.current_page);
+            this.current_page = res.data.current_page;
+            this.items = res.data.data;
+        },
+        currentStatus(fr_dt, to_dt, val) {
+            const date = moment().format('YYYY-MM-DD');
+            if( date < fr_dt ) {
+                return val ? "b-r-sm bg-warning": "대기중"
+            } else if( date >= fr_dt && date <= to_dt) {
+                return val ? "b-r-sm bg-primary": "진행중"
+            } else if( date > to_dt) {
+                return val ? "b-r-sm bg-success": "완료"
+            } else {
+                return val ? "b-r-sm bg-danger": "취소됨"
+            }
+            
         }
     }
 }

@@ -1,10 +1,12 @@
 <template>
     <ul class="pagination">
-        <li><a rel="prev" @click="setPage(currentPage-1)">&laquo;</a></li>
+    <li><a @click="setPage(1)"><span>&laquo;</span></a></li>
+        <li><a rel="prev" @click="setPage(currentPage-1)">&lt;</a></li>
             <li v-for="pn in totalPage" :key="pn" :class="(currentPage===pn)?'active':''">
                 <a @click="setPage(pn)">{{ pn }}</a>
             </li>
-        <li><a rel="next" @click="setPage(currentPage+1)">&raquo;</a></li>
+        <li><a rel="next" @click="setPage(currentPage+1)">&gt;</a></li>
+        <li><a @click="setPage(totalPage)"><span>&raquo;</span></a></li>
     </ul>
 </template>
 
@@ -23,8 +25,7 @@ export default {
     methods: {
         setPage(page_num) {
             if(page_num > 0 && page_num <= this.totalPage) {
-                this.currentPage = page_num;
-                this.$emit("returnPage", this.currentPage);
+                this.$emit("returnPage", page_num);
             }
         }
     }
