@@ -108,7 +108,7 @@
 
 
 <script>
-import Pagination from "../Pagination";
+import Pagination from "@/components/atom/Pagination";
 export default {
     data() {
         return {

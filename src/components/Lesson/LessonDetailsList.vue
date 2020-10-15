@@ -180,7 +180,7 @@
 //import api from "@/common/api";
 import UserInfo from "@/components/atom/UserInfo";
 import UserModifyModal from "@/components/atom/UserModifyModal";
-import Pagination from "../Pagination";
+import Pagination from "@/components/atom/Pagination";
 export default {
   data() {
     return {

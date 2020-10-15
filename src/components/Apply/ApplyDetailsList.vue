@@ -27,7 +27,7 @@
                 <th class="text-center">이름</th>
                 <th class="text-center">이메일</th>
                 <th class="text-center">연락처</th>
-                <th class="text-center" v-for="col in bap.form">{{ col.title }}</th>
+                <th class="text-center" v-for="col in bap.form" :key="col.id">{{ col.title }}</th>
                 <th class="text-center">수강권</th>
                 <th class="text-center">제공가</th>
                 <th class="text-center">회사지원금</th>
@@ -51,7 +51,7 @@
                 </td>
                 <td class="cel">{{ data.user.cel ? data.user.cel : "[정보 보안]" }}</td>
 
-								<td v-for="col in bap.form">{{ getCustomFieldValue(col, data.user[col.col_id]) }}</td>
+								<td v-for="col in bap.form" :key="col.id">{{ getCustomFieldValue(col, data.user[col.col_id]) }}</td>
 
                 <td class="charge-plan__title">{{ data.__ob__.value.goods.charge_plan.title }}</td>
                 <td class="supply_price">{{ $shared.nf(data.__ob__.value.goods.supply_price) }}</td>

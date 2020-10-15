@@ -38,8 +38,8 @@
                 <tr style="height:50px;">
                   <th>수강신청기간</th>
                   <td>
-                      <datepicker class="col-lg-3" :minimumView="'day'" style="right:15px;" v-model="applyToDt" placeholder="Select Date" />
-                      <datepicker class="col-lg-3" v-model="applyFrDt" placeholder="Select Date"/>
+                      <datepicker class="col-lg-3" :minimumView="'day'" style="right:15px;" v-model="applyFrDt" placeholder="Select Date" />
+                      <datepicker class="col-lg-3" v-model="applyToDt" placeholder="Select Date"/>
                   </td>
                 </tr>
                 <tr style="height:50px;">

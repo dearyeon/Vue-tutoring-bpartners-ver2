@@ -33,7 +33,7 @@
               <td>{{ item.site.name }}</td>
               <td>
 								<select v-model="item.selectedApplyIdx">
-									<option v-for="apply in item.applys" :value="apply.idx" :key="apply.id">{{apply.a_no}}회차 | {{ moment(apply.apply_to_dt).format('YYYY-MM-DD') }} - {{ moment(apply.apply_fr_dt).format('YYYY-MM-DD') }}</option>
+									<option v-for="apply in item.applys" :value="apply.idx" :key="apply.id">{{apply.a_no}}회차 | {{ moment(apply.apply_fr_dt).format('YYYY-MM-DD') }} - {{ moment(apply.apply_to_dt).format('YYYY-MM-DD') }}</option>
                 </select>
               </td>
               <td>

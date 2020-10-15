@@ -1,12 +1,9 @@
 <template>
+  <nav class="navbar-default navbar-toggleable-lg navbar-static-side" style="height: 100%;" role="navigation" v-show="menuToggle">
 
-  <nav class="navbar-default navbar-toggleable-lg navbar-static-side" style="height: 100%;" role="navigation">
-       <!--<button class="navbar-toggler navbar-toggler-right py-2" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-          <span>X</span>
-       </button>-->
-     
     <div class="sidebar-collapse">
 
+      
       <ul class="nav metismenu" id="side-menu">
         <li class="nav-header">
           <div class="dropdown profile-element">
@@ -24,7 +21,7 @@
         <li v-for="m in menus" :key="m.id" :class="{active: m.isActive}" v-on:click="selectMenu(m.id)">
           <router-link :to="m.path">
             <span class="nav-label">
-              <i :class="['fa', 'fa-'+m.icon]"/> {{ m.name }}
+              <i :class="['fa', 'fa-'+m.icon]"/><span>{{ m.name }}</span>
             </span>
           </router-link>
         </li>
@@ -59,10 +56,15 @@ export default {
       const r = this.$route.path.split('/')
       menu.isActive = (m[1]==r[1])
     }
-
     return {
       menus,
 			account: this.$shared.getAccount()
+    }
+  },
+  props: {
+    menuToggle: {
+      type: Boolean,
+      required: true,
     }
   },
   methods: {

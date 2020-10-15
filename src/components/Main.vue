@@ -1,8 +1,8 @@
 <template>
   <div id="wrapper">
-    <Menu v-show="menuToggle"></Menu>
-    <div :id="menuToggle?'page-wrapper':'container'" class="gray-bg">
-    <button class="pull-left" style="background-color: rgb(38, 57, 73);" @click="menuToggle = !menuToggle"><i class="fa fa-bars"/></button>
+    <Menu class="menu" :menuToggle="menuToggle"></Menu>
+    <div :id="menuToggle?'page-wrapper':'container'" class="gray-bg" > <!-- :class="menuToggle?'':'col-lg-11 col-lg-offset-1'"-->
+    <button style="background-color: rgb(38, 57, 73);" @click="menuToggle = !menuToggle"><i class="fa fa-bars"/></button>
 
       <!-- header begin -->
       <!--header end-->

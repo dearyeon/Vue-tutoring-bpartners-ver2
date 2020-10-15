@@ -1,7 +1,7 @@
 <template>
     <ul class="pagination">
         <li><a rel="prev" @click="setPage(currentPage-1)">&laquo;</a></li>
-            <li :class="(currentPage===pn)?'active':''" v-for="pn in totalPage" :key="pn">
+            <li v-for="pn in totalPage" :key="pn" :class="(currentPage===pn)?'active':''">
                 <a @click="setPage(pn)">{{ pn }}</a>
             </li>
         <li><a rel="next" @click="setPage(currentPage+1)">&raquo;</a></li>
@@ -10,12 +10,11 @@
 
 <script>
 export default {
-    data() {
-        return {
-            currentPage: 1,
-        };
-    },
     props: {
+        currentPage: {
+            type: Number,
+            required: true
+        },
         totalPage: {
             type: Number,
             required: true
