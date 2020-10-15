@@ -9,7 +9,7 @@
       <div class="ibox content">
         <div class="ibox-content">
           <div class="subtitle">
-            <h1>{{ bap.site.company }}</h1>
+            <h1 v-if="bap.site">{{ bap.site.company }}</h1>
             <Dropdown
               :defaultValue="aNoList.length !== 0 ? aNoList[$route.params.aNo - 1] : ''"
               :itemList="aNoList"
@@ -76,12 +76,12 @@ import Dropdown from "../atom/Dropdown";
 export default {
   data() {
     return {
-      bap: "",
+      bap: [],
       list: [],
       aNoList: [],
     };
   },
-  async created() {
+  created() {
 		this.refreshData(1);
   },
   methods: {
@@ -108,7 +108,7 @@ export default {
 			this.bap = res.data.bap;
 			if(this.aNoList.length == 0) {
 				this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
-			}
+      }
 		},
 		getCustomFieldValue(col, val) {
     	if(col.type=='S') {
