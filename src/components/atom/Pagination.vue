@@ -19,7 +19,7 @@ export default {
         },
         totalPage: {
             type: Number,
-            required: true
+            default: 1
         }
     },
     methods: {

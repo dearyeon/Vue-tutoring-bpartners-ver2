@@ -1,8 +1,8 @@
 <template>
   <div id="wrapper">
     <Menu class="menu" :menuToggle="menuToggle"></Menu>
-    <div :id="menuToggle?'page-wrapper':'container'" class="gray-bg" > <!-- :class="menuToggle?'':'col-lg-11 col-lg-offset-1'"-->
-    <button style="background-color: rgb(38, 57, 73);" @click="menuToggle = !menuToggle"><i class="fa fa-bars"/></button>
+    <div :id="menuToggle?'page-wrapper':'container'" class="gray-bg animated" > <!-- :class="menuToggle?'':'col-lg-11 col-lg-offset-1'"-->
+    <button @click="menuToggle = !menuToggle"><i class="fa fa-bars"/></button>
 
       <!-- header begin -->
       <!--header end-->
@@ -29,6 +29,20 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-to {
+  transform: translateX(-100px);
+  opacity: 0;
+}
+.slide-fade-enter {
+  transform: translateX(10px);
+  opacity: 0;
+}
+</style>
 
 
 
@@ -61,5 +75,10 @@ export default {
 }
 #container {
   height: 100%;
+}
+button {
+  border: 0;
+  outline: none;
+  background-color: rgb(38, 57, 73);
 }
 </style>

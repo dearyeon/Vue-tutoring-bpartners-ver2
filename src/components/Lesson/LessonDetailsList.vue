@@ -145,7 +145,7 @@
       <div>
         <div class="row">
           <div class="text-center">
-            <Pagination :totalPage="parseInt(items.length/30) + 1" @returnPage="setCurrentPage" />
+            <Pagination :currentPage="parseInt(current_page)" @returnPage="setCurrentPage" />
           </div>
         </div>
       </div>
@@ -188,7 +188,7 @@ export default {
       baseInfo: [],
       items: [],
       d_type: "all",
-      currentPage: "",
+      current_page: 1,
       sortKey: "",
       showModal: false,
       showModify: false,
@@ -204,7 +204,7 @@ export default {
   created() {
     this.baseInfo = baseInfotemp[0].baseInfo;
     this.items = baseInfotemp;
-    this.currentPage = 1;
+    this.current_page = 1;
     this.modalitem = baseInfotemp[0];
   },
   methods: {
@@ -220,11 +220,11 @@ export default {
           });
       this.sortKey = sortKey;
     },
-    setCurrentPage(data) {
-      this.currentPage = data;
+    async setCurrentPage(data) {
+        this.current_page = data;
     },
     getPage(item, index) {
-       return (!item.userInfo.name.indexOf(this.search) || !item.userInfo.cus_id.indexOf(this.search) || !item.baseInfo.email.indexOf(this.search)) && (index>=(this.currentPage-1)*30 && index<this.currentPage*30)
+       return (!item.userInfo.name.indexOf(this.search) || !item.userInfo.cus_id.indexOf(this.search) || !item.baseInfo.email.indexOf(this.search)) && (index>=(this.current_page-1)*30 && index<this.current_page*30)
     },
     openModal() {
       this.$swal({

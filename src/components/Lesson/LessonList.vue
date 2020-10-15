@@ -20,7 +20,7 @@
                                         <th style="width:20px"></th>
                                         <th class="pagesubmit sorting" field="order" value="company" @click="sortBy('company')">고객사명</th>
                                         <th class="pagesubmit sorting text-center" field="order" value="max_c_no" @click="sortBy('c_no')">차수</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="status">현재상태</th> <!--@click="sortBy('status')"-->
+                                        <th class="pagesubmit text-center" value="status">현재상태</th>
                                         <th>과목</th>
                                         <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="sortBy('fr_dt')">시작날짜</th>
                                         <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="sortBy('to_dt')">종료날짜</th>
@@ -104,7 +104,7 @@ export default {
         routeDetailPage(index, c_no) {
             this.$router.push({
                 name: "lessonDetailsList",
-                params: { id: index+1, c_no:c_no }
+                params: { id: (this.current_page-1)*this.per_page+index+1, c_no:c_no }
             })
         },
         perPage(index) {

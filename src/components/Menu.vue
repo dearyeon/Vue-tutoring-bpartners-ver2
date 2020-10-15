@@ -1,4 +1,5 @@
 <template>
+<transition name = "slide-fade">
   <nav class="navbar-default navbar-toggleable-lg navbar-static-side" style="height: 100%;" role="navigation" v-show="menuToggle">
 
     <div class="sidebar-collapse">
@@ -39,6 +40,7 @@
       </ul>
     </div>
   </nav>
+</transition>
 </template>
 
 
@@ -86,5 +88,15 @@ export default {
 
 
 <style scoped>
-
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-to {
+  transform: translateX(-100px);
+  opacity: 0;
+}
+.slide-fade-enter {
+  transform: translateX(10px);
+  opacity: 0;
+}
 </style>
