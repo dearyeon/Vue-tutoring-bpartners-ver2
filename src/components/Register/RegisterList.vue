@@ -33,124 +33,121 @@
               <td>{{ item.site.name }}</td>
               <td>
 								<select v-model="item.selectedApplyIdx">
-									<option v-for="apply in item.applys" :value="apply.idx" :key="apply.id">{{apply.a_no}}회차 | {{ moment(apply.apply_fr_dt).format('YYYY-MM-DD') }} - {{ moment(apply.apply_to_dt).format('YYYY-MM-DD') }}</option>
-                </select>
-              </td>
-              <td>
-                <button class="btn btn-page-set" @click="routeFormPage(item.selectedApplyIdx)">페이지 설정</button>
-              </td>
-              <td>{{ item.updDt }}</td>
-              <td>
-	              <a @click="copyText($event,item.siteUrl,index)">https://apply.tutoring.co.kr/{{ item.applys[0].hash }}</a>
-	              <div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+index">
-		              <a href="#" class="alert-link">클립보드에 복사되었습니다.</a>
-	              </div>
-              </td>
-              <td>
-                <button class="btn btn-primary" @click="goToApplyPage(item.url)">페이지 보러 가기</button>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+									<option v-for="(apply,i) in item.applys" :value="i">
+										{{apply.a_no}}회차 | {{ moment(apply.apply_to_dt).format('YYYY-MM-DD') }} - {{moment(apply.apply_fr_dt).format('YYYY-MM-DD') }}
+									</option>
+								</select>
+							</td>
+							<td>
+								<button class="btn btn-page-set" @click="routeFormPage(item.applys[item.selectedApplyIdx].idx)">페이지 설정</button>
+							</td>
+							<td>{{ moment(item.applys[item.selectedApplyIdx].upd_dt).format('YYYY-MM-DD hh:mm:ss') }}</td>
+							<td>
+								<a @click="copyText($event,index)">https://apply.tutoring.co.kr/{{ item.applys[item.selectedApplyIdx].hash }}</a>
+								<div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+index">
+									<a href="#" class="alert-link">클립보드에 복사되었습니다.</a>
+								</div>
+							</td>
+							<td>
+								<button class="btn btn-primary" @click="goToApplyPage(item.applyAdminUrl)">페이지 보러 가기</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-import api from "@/common/api";
-import Dropdown from "../atom/Dropdown";
-import moment from "moment";
+	import api from '@/common/api'
+	import Dropdown from '../atom/Dropdown'
+	import moment from 'moment'
 
-export default {
-	async created () {
-		const res = await api.get('/partners/applyPageList')
-		this.list = res;
-		this.list.forEach( item => {
-			item.selectedApplyIdx = item.applys[0].idx;
-		})
-    console.log(this.list);
-	},
-  data() {
-    return {
-    	list: [],
-			moment: moment,
-      registers: [],
-      aNoList: [],
-      currentANo: [],
-      applyPageLink:''
-    };
-  },
-
-  methods: {
-    aNoFormat: function(item) {
-      if (typeof item === "object" && "a_no" in item)
-        return `${item.a_no}회차 | ${item.apply_fr_dt.replace(
-          /(\d{4}-\d{2}-\d{2}).*/,
-          "$1",
-        )} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")}`;
-      else return "";
-    },
-    chANo: function(index, pick) {
-      this.currentANo[index] = pick;
-    },
-	  copyText: function (e,value,index) {
-		  this.$copyText(value).then((e) => {
-		    this.registers[index].isCopy = true
-				let $targetElement = document.getElementById('clipBoardAlert'+index)
-				this.fadeout($targetElement,index)
-				console.log(e)
-		  }, (e) => {
-			  console.log(e)
-		  })
-	  },
-	  goToApplyPage: function (url) {
-		  window.open(url, '_blank')
-	  },
-	  fadeout: function (element,index) {
-		  var op = 1  // initial opacity
-		  var timer = setInterval( () => {
-			  if (op <= 0.1) {
-				  clearInterval(timer)
-					this.registers[index].isCopy = false
-			  }
-			  element.style.opacity = op
-			  element.style.filter = 'alpha(opacity=' + op * 100 + ')'
-			  op -= op * 0.1
-      }, 50)
-    },
-    routeFormPage(idx) {
-      this.$router.push({
-        name: 'setRegisterForm' ,
-        params: { idx: idx }
-      })
-    },
-  },
-  components: {
-    Dropdown,
-  },
-};
+	export default {
+		data () {
+			return {
+				list: [],
+				moment: moment,
+				registers: [],
+				currentANo: [],
+				applyPageLink: ''
+			}
+		},
+		async created () {
+			const res = await api.get('/partners/applyPageList')
+			const list = res;
+			list.forEach(item => {
+				item.selectedApplyIdx = 0,
+				item.applyAdminUrl = 'https://apply.tutoring.co.kr/'+item.applys[item.selectedApplyIdx].hash+'/7788'
+			})
+			this.list = list
+		},
+		methods: {
+			chANo: function (index, pick) {
+				this.currentANo[index] = pick
+			},
+			copyText: function (e, index) {
+				this.$copyText(e.target.innerText).then((e) => {
+					this.registers[index].isCopy = true
+					let $targetElement = document.getElementById('clipBoardAlert' + index)
+					this.fadeout($targetElement, index)
+					console.log(e)
+				}, (e) => {
+					console.log(e)
+				})
+			},
+			goToApplyPage: function (url) {
+				window.open(url, '_blank')
+			},
+			fadeout: function (element, index) {
+				var op = 1  // initial opacity
+				var timer = setInterval(() => {
+					if (op <= 0.1) {
+						clearInterval(timer)
+						this.registers[index].isCopy = false
+					}
+					element.style.opacity = op
+					element.style.filter = 'alpha(opacity=' + op * 100 + ')'
+					op -= op * 0.1
+				}, 50)
+			},
+			routeFormPage (idx) {
+				this.$router.push({
+					name: 'setRegisterForm',
+					params: { idx: idx }
+				})
+			},
+		},
+		components: {
+			Dropdown,
+		},
+	}
 </script>
 
 <style scoped>
-.title {
-  height: 65px;
-}
-.content {
-  padding: 15px;
-}
-.table th,
-.table td {
-  padding-bottom: 8px;
-}
-.btn-page-set {
-  color: #1e9ed3;
-  background-color: #fff;
-  border: 1px solid #1e9ed3;
-  border-radius: 0px;
-  width: 100%;
-}
-.table {
-  margin: 0px;
-}
+	.title {
+		height: 65px;
+	}
+
+	.content {
+		padding: 15px;
+	}
+
+	.table th,
+	.table td {
+		padding-bottom: 8px;
+	}
+
+	.btn-page-set {
+		color: #1e9ed3;
+		background-color: #fff;
+		border: 1px solid #1e9ed3;
+		border-radius: 0px;
+		width: 100%;
+	}
+
+	.table {
+		margin: 0px;
+	}
 </style>
