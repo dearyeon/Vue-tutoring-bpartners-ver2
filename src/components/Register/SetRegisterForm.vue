@@ -192,7 +192,7 @@
 		                </div>
 		                <div class="col-xs-8" v-if="item.type === 'T'">
 			                <span class="col-xs-12">
-		                    <input type="text" class="form-control" v-model="item.opts" placeholder="placeholder를 입력해 주세요." />
+		                    <input type="text" class="form-control" placeholder="placeholder를 입력해 주세요." />
 			                </span>
 		                </div>
                     <div class="col-xs-8" v-if="item.type === 'S'">
