@@ -37,9 +37,8 @@
                 </tr>
                 <tr style="height:50px;">
                   <th>수강신청기간</th>
-                  <td>
-                      <datepicker class="col-lg-3" :minimumView="'day'" style="right:15px;" v-model="applyFrDt" placeholder="Select Date" />
-                      <datepicker class="col-lg-3" v-model="applyToDt" placeholder="Select Date"/>
+                  <td class="col-lg-8"> 
+                    <date-picker v-model="applyRange" type="datetime" range placeholder="Select date"></date-picker>
                   </td>
                 </tr>
                 <tr style="height:50px;">
@@ -158,7 +157,8 @@
 
 <script>
 import draggable from 'vuedraggable'
-import Datepicker from 'vuejs-datepicker'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
 import moment from "moment"
 import api from '@/common/api'
 
@@ -197,7 +197,7 @@ export default {
     };
   },
   components: {
-    draggable, Datepicker
+    draggable, DatePicker
   },
   async created() {
       const res = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
@@ -253,6 +253,17 @@ export default {
       // console.log(res);
       // const test = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
       // console.log(test);
+    }
+  },
+  computed: {
+    applyRange: {
+      get() {
+        return [new Date(this.applyFrDt), new Date(this.applyToDt)];
+      },
+      set(value) {
+        this.applyFrDt = moment(value[0]).format('YYYY-MM-DD HH:mm:ss');
+        this.applyToDt = moment(value[1]).format('YYYY-MM-DD HH:mm:ss');
+      }
     }
   }
 };
