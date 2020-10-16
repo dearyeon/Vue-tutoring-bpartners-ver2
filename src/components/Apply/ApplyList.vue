@@ -10,7 +10,7 @@
 			<div class="ibox content">
         <div class="ibox-content">
           <div class="row">
-					  <table class="table text-center">
+						<table class="table text-center">
               <thead>
                 <tr>
                     <th class="text-left">고객사명</th>

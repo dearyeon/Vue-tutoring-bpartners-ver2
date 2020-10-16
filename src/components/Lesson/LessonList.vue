@@ -38,7 +38,7 @@
                                             </td>
                                             <td class="text-center">
                                                 <select @change="routeDetailPage(item.idx,item.c_no,$event)">
-                                                    <option value="none" selected disabled hidden>{{item.c_no}}차</option>   
+                                                    <option value="none" selected disabled hidden>{{item.c_no}}차</option>
                                                     <option v-for="i in item.c_no" :value="i" :key="i.id">{{item.c_no-i+1}}차</option>
                                                 </select>
                                             </td>
