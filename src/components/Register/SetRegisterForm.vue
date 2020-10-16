@@ -27,20 +27,16 @@
                   <th>수료기준 출석률</th>
                   <td><input type="text" class="form-control" placeholder="출석률을 입력해 주세요." v-model="penaltyAttendPct"/></td>
                 </tr>
+                <tr>
+                  <th>자기 부담금</th>
+                  <td>
+                    <input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요." v-model="chargeRatePct"/>
+                  </td>
+                </tr>
               </table>
             </div>
             <div class="col-lg-6">
               <table class="table">
-                <tr>
-	                <table>
-		                <tr>
-			                <th>자기 부담금</th>
-			                <td>
-				                <input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요." v-model="chargeRatePct"/>
-			                </td>
-		                </tr>
-	                </table>
-                </tr>
                 <tr style="height:50px;">
 	                <table>
 		                <tr>
@@ -53,7 +49,7 @@
                 </tr>
                 <tr>
 	                <table>
-		                <tr>
+		                <tr style="height:50px;">
 		                  <th>오픈 여부</th>
 		                  <td>
 		                    <div class="switch">
@@ -71,7 +67,7 @@
                 </tr>
 	              <tr>
 		              <table>
-			              <tr>
+			              <tr style="height:50px;">
 				              <th>결제 여부</th>
 				              <td>
 					              <div class="switch">
@@ -89,15 +85,15 @@
 	              </tr>
 	              <tr>
 		              <table>
-			              <tr>
+			              <tr v-show="useBilling">
 				              <td>
-				                <label for="chargeDay">정기 결제일</label>
-					              <date-picker id="chargeDay" name="chargeDay" v-model="chargeDay" type="datetime" placeholder="Select date"></date-picker>
-				              </td>
+				                <label for="chargeDay">정기 결제일</label><br/>
+					              <date-picker v-for="index in billingCnt" :key="index.id" id="chargeDay" name="chargeDay" v-model="chargeDay[index-1]" type="datetime" placeholder="Select date"></date-picker>
+                      </td>
 				              <td>
-					              <label for="pChargeDay">정기 결제일</label>
-					              <date-picker id="pChargeDay" name="pChargeDay" v-model="pChargeDay" type="datetime" placeholder="Select date"></date-picker>
-				              </td>
+					              <label for="pChargeDay">추가 결제일</label><br/>
+					              <date-picker v-for="index in billingCnt" :key="index.id" id="pChargeDay" name="pChargeDay" v-model="pChargeDay[index-1]" type="datetime" placeholder="Select date"></date-picker>
+                      </td>
 			              </tr>
 
 		              </table>
@@ -190,11 +186,16 @@
 	                  <input type="text" class="form-control" v-model="item.content" placeholder="내용을 입력해주세요." />
                   </td>
 	                <td class="text-center">
-		                <div class="col-xs-12">
-			                <input type="radio" :name="item.col_id+'type'" value="T" :checked="item.type === 'T'" v-model="item.type" :id="item.col_id+'T'"><label :for="item.col_id+'T'">Text</label>
-			                <input type="radio" :name="item.col_id+'type'" value="S" :checked="item.type === 'S'" v-model="item.type" :id="item.col_id+'S'"><label :for="item.col_id+'S'">Select</label>
+		                <div class="col-xs-4">
+			                <input type="radio" :name="item.col_id+'type'" value="T" :checked="item.type === 'T'" v-model="item.type" :id="item.col_id+'T'" style="width:15px;height:15px;"><label :for="item.col_id+'T'">Text</label>
+			                <input type="radio" :name="item.col_id+'type'" value="S" :checked="item.type === 'S'" v-model="item.type" :id="item.col_id+'S'" style="width:15px;height:15px;"><label :for="item.col_id+'S'">Select</label>
 		                </div>
-		                <div class="col-xs-12" v-if="item.type === 'S'">
+		                <div class="col-xs-8" v-if="item.type === 'T'">
+			                <span class="col-xs-12">
+		                    <input type="text" class="form-control" v-model="item.opts" placeholder="placeholder를 입력해 주세요." />
+			                </span>
+		                </div>
+                    <div class="col-xs-8" v-if="item.type === 'S'">
 			                <span class="col-xs-6">
 		                    <input type="text" class="form-control" v-model="item.opts" placeholder="'|' 로 구분해서 작성해 주세요." />
 			                </span>
@@ -252,7 +253,10 @@ export default {
       applyFrDt: '',
       applyToDt: '',
       openYn: false,
-	    useBilling: false,
+      useBilling: false,
+      billingCnt: 3,
+      chargeDay: ['','',''],
+      pChargeDay: ['','',''],
       list: []
     };
   },
