@@ -60,7 +60,7 @@
             </div>
           </div>
 
-          <h3 id="step-title">1 step. 액세스 홈</h3>
+          <h3>1 step. 액세스 홈</h3>
           <div class="row">
             <div class="col-lg-6">
               <table class="table">
@@ -71,20 +71,22 @@
                 <tr>
                   <th>CI/BI 등록</th>
                   <td>
-                    <tr>
-                      <td colspan="2">
-                        <img :src="previewSrc" alt="업로드 된 이미지" />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="col-lg-6 col-md-6 col-xs-6">
-                        <label class="btn btn-success col-lg-12 col-md-12 col-xs-12" for="file">이미지 변경</label>
-                        <input type="file" id="file" accept="image/*" ref="image" @change="imageSelected" />
-                      </td>
-                      <td class="col-lg-6 col-md-6 col-xs-6">
-                        <button class="btn btn-danger col-lg-12 col-md-12 col-xs-12" @click="imageCancel">취소</button>
-                      </td>
-                    </tr>
+	                  <table>
+	                    <tr>
+	                      <td colspan="2">
+	                        <img :src="previewSrc" alt="업로드 된 이미지" />
+	                      </td>
+	                    </tr>
+	                    <tr>
+	                      <td class="col-lg-6 col-md-6 col-xs-6">
+	                        <label class="btn btn-success col-lg-12 col-md-12 col-xs-12" for="file">이미지 변경</label>
+	                        <input type="file" id="file" accept="image/*" ref="image" @change="imageSelected" />
+	                      </td>
+	                      <td class="col-lg-6 col-md-6 col-xs-6">
+	                        <button class="btn btn-danger col-lg-12 col-md-12 col-xs-12" @click="imageCancel">취소</button>
+	                      </td>
+	                    </tr>
+	                  </table>
                   </td>
                 </tr>
               </table>
@@ -94,55 +96,78 @@
                 <tr>
                   <th style="vertical-align: top; padding-top: 12px; width:20%">수강신청 문의</th>
                   <td>
-                    <textarea id="disclaimer" class="form-control" v-model="contacts" style="height:250px"></textarea>
+                    <textarea class="form-control" v-model="contacts" style="height:250px"></textarea>
                   </td>
                 </tr>
               </table>
             </div>
           </div>
-          <h3 id="step-title">2 step. 신청시 주의 사항(수강 신청 브릿지 화면)</h3>
+          <h3>2 step. 신청시 주의 사항(수강 신청 브릿지 화면)</h3>
           <table class="table">
             <tr>
               <th class="col-lg-2">
                 <strong class="label-w-checkbox">내용</strong>
               </th>
               <td class="col-lg-10">
-                <textarea id="disclaimer" class="form-control" v-model="notice"></textarea>
+                <textarea class="form-control" v-model="notice" style="height:250px"></textarea>
               </td>
             </tr>
           </table>
 
-          <h3 id="step-title">3 step. 개인정보 수집</h3>
+          <h3>3 step. 개인정보 수집</h3>
           <div class="drag">
             <table class="table table-bordered">
               <thead>
-                <th class="text-center col-lg-1">노출여부</th>
-                <th class="text-center col-lg-2">항목</th>
-                <th class="text-center col-lg-9">질문 내용</th>
+	              <th class="text-center">순서</th>
+                <th class="text-center">노출여부</th>
+                <th class="text-center">필수입력</th>
+                <th class="text-center ">항목</th>
+                <th class="text-center">질문 내용</th>
+                <th class="text-center">타입</th>
               </thead>
               <draggable :list="list" tag="tbody">
-                <tr v-for="element in list" :key="element.id">
+                <tr v-for="(item,index) in list" :key="item.col_id">
+	                <td class="text-center">
+		                {{sortNumber(item,index)}}
+	                </td>
                   <td class="text-center">
-                    <input v-if="element.read" type="checkbox" disabled/>
-                    <input v-else type="checkbox" v-model="element.check"/>
+                    <input v-model="item.disp_yn" type="checkbox" :checked="item.disp_yn"/>
+                  </td>
+	                <td class="text-center">
+		                <input v-model="item.required" type="checkbox" :checked="item.required"/>
+	                </td>
+                  <td>
+                    <input type="text" class="form-control" v-model="item.title" placeholder="항목을 입력해주세요."/>
                   </td>
                   <td>
-                    <input v-if="element.read" type="text" class="form-control" :value="element.value" readonly />
-                    <input v-else type="text" class="form-control" v-model="element.value" :placeholder="element.value?'':'항목을 입력해주세요.'"/>
+	                  <input type="text" class="form-control" v-model="item.content" placeholder="내용을 입력해주세요." />
                   </td>
-                  <td><input type="text" class="form-control" v-model="element.content" :placeholder="element.placeholder?element.placeholder:'내용을 입력해주세요.'" /></td>
+	                <td class="text-center">
+		                <div class="col-xs-12">
+			                <input type="radio" :name="item.col_id+'type'" value="T" :checked="item.type === 'T'" v-model="item.type" :id="item.col_id+'T'"><label :for="item.col_id+'T'">Text</label>
+			                <input type="radio" :name="item.col_id+'type'" value="S" :checked="item.type === 'S'" v-model="item.type" :id="item.col_id+'S'"><label :for="item.col_id+'S'">Select</label>
+		                </div>
+		                <div class="col-xs-12" v-if="item.type === 'S'">
+			                <span class="col-xs-6">
+		                    <input type="text" class="form-control" v-model="item.opts" placeholder="'|' 로 구분해서 작성해 주세요." />
+			                </span>
+			                <span class="col-xs-6">
+			                  <input type="text" class="form-control" v-model="item.vals" placeholder="'|' 로 구분해서 작성해 주세요." />
+			                </span>
+		                </div>
+	                </td>
                 </tr>
               </draggable>
             </table>
           </div>
 
-          <h3 id="step-title">4 step. 결제시 유의사항</h3>
+          <h3>4 step. 결제시 유의사항</h3>
           <div class="row">
             <div class="col-lg-2">
               <strong class="label-w-checkbox">유의사항</strong>
             </div>
             <div class="col-lg-10">
-              <textarea id="disclaimer" class="form-control" v-model="billNotice"></textarea>
+              <textarea class="form-control" v-model="billNotice"></textarea>
             </div>
           </div>
           <div class="pull-right">
@@ -180,20 +205,7 @@ export default {
       applyFrDt: '',
       applyToDt: '',
       openYn: false,
-      list: [
-        {num:0, value:'소속(회사명)', content:'', placeholder:'회사명을 입력해주세요.', read:1, checked:1},
-        {num:1, value:'이름', content:'', placeholder:'이름을 입력해주세요.', read:1, checked:1},
-        {num:2, value:'연락처', content:'', placeholder:'연락처를 입력해주세요.', read:1, checked:1},
-        {num:3, value:'(사내)이메일', content:'', placeholder:'(사내)이메일을 입력해주세요.', read:1, checked:1},
-        {num:4, value:'부서', content:'', placeholder:'부서를 입력해주세요.', checked:0},
-        {num:5, value:'직위', content:'', placeholder:'직위를 입력해주세요.', checked:0},
-        {num:6, value:'사번', content:'', placeholder:'사번을 입력해주세요.', checked:0},
-        {num:7, value:'', content:'', checked:0},
-        {num:8, value:'', content:'', checked:0},
-        {num:9, value:'', content:'', checked:0},
-        {num:10, value:'', content:'', checked:0},
-        {num:11, value:'', content:'', checked:0}
-      ]
+      list: []
     };
   },
   components: {
@@ -214,8 +226,14 @@ export default {
       this.applyToDt = bap.apply_to_dt;
       this.openYn = bap.open_yn ? true : false;
       this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${bap.site.ci_img}`
+
+		  this.list = bap.form
   },
   methods: {
+	  sortNumber: function (item,index) {
+			  item.sort_no = index + 1
+			  return item.sort_no
+	  },
     imageSelected: function() {
       this.image = this.$refs.image.files[0];
       if(this.image) {
@@ -232,24 +250,24 @@ export default {
       console.log(numlist);
     },
     setForm: async function () {
-    	const params = {
+			const params = {
 				idx: this.$route.params.idx,
 				accessCode: this.accessCode,
 				emailDomain: this.emailDomain,
 				contacts: this.contacts,
 				notice: this.notice,
 				billNotice: this.billNotice,
-				chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct):0,
-				penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct):0,
+				chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct) : 0,
+				penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct) : 0,
 				applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm:ss'),
 				applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm:ss'),
-				openYn: this.openYn ? 1:0
-    	}
-    	if(this.image) params.ciImage = this.image
+				openYn: this.openYn ? 1 : 0
+			}
+			if(this.image) params.ciImage = this.image
 
 			await api.upload('/partners/applyPage', params);
-
-    	this.$swal('성공')
+			//
+			// this.$swal('성공')
       // console.log(res);
       // const test = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
       // console.log(test);
