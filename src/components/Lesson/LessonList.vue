@@ -37,8 +37,9 @@
                                                 {{ item.site.company }}
                                             </td>
                                             <td class="text-center">
-                                                <select>
-									                <option v-for="i in item.c_no" :value="i+1" :key="i.id">{{item.c_no-i+1}}차</option> <!-- click event 추가> -->
+                                                <select @change="routeDetailPage(item.idx,item.c_no,$event)">
+                                                    <option value="none" selected disabled hidden>{{item.c_no}}차</option>   
+                                                    <option v-for="i in item.c_no" :value="i" :key="i.id">{{item.c_no-i+1}}차</option>
                                                 </select>
                                             </td>
                                             <td class="text-center">
@@ -101,10 +102,12 @@ export default {
         this.items = res.data.data;
     },
     methods: {
-        routeDetailPage(idx, c_no) {
+        routeDetailPage(idx, c_no, event) {
+            let cNo;
+            if (event) cNo = c_no - event.target.value + 1;
             this.$router.push({
                 name: "lessonDetailsList",
-                params: { id: idx, c_no:c_no }
+                params: { id: idx, c_no:cNo?cNo:c_no }
             })
         },
         perPage(index) {

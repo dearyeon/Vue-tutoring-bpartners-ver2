@@ -21,8 +21,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in applySite" :key="`billing-${index}`" @click="routeDetailPage(item.s_idx,item.last_a_no)">
-                    <td class="text-left">{{ item.site.company?item.site.company:'-' }}</td>
+                <tr v-for="(item, index) in applySite" :key="`billing-${index}`">
+                    <td class="text-left" @click="routeDetailPage(item.s_idx,item.last_a_no)">{{ item.site.company?item.site.company:'-' }}</td>
+                    <td>
+                      <select @change="routeDetailPage(item.s_idx,item.last_a_no,$event)">
+                        <option value="none" selected disabled hidden>{{item.last_a_no}}차</option>   
+                        <option v-for="i in item.last_a_no" :value="i" :key="i.id">{{item.last_a_no-i+1}}차</option>
+                      </select>
+                    </td>
                     <td class="text-center">{{ item.site.name?item.site.name:'-' }}</td>
                     <td class="text-center">{{ item.site.part?item.site.part:'-' }}</td>
                     <td class="text-center">{{ item.site.tel?item.site.tel:'-' }}</td>
@@ -51,10 +57,12 @@ export default {
     };
   },
   methods: {
-    routeDetailPage(s_idx, aNo) {
+    routeDetailPage(s_idx, aNo, event) {
+      let a_no;
+      if (event) a_no = aNo - event.target.value + 1;
       this.$router.push({
           name: "billingDetailsList",
-          params: { sIdx: s_idx, aNo:aNo, bNo:1 }
+          params: { sIdx: s_idx, aNo:a_no?a_no:aNo, bNo:1 }
       })
     },
   }
