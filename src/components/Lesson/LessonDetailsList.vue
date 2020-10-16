@@ -12,7 +12,7 @@
               class="btn btn-success btn-w-m"
               @click="openModal"
             >학습현황 메일 일괄 발송</a>
-            <a id="exportLessonList" class="btn btn-success btn-w-m">엑셀 다운로드</a>
+            <a id="exportLessonList" class="btn btn-success btn-w-m" @click="exportExcel">엑셀 다운로드</a>
           </div>
         </div>
       </div>
@@ -181,6 +181,7 @@
 import UserInfo from "@/components/atom/UserInfo";
 import UserModifyModal from "@/components/atom/UserModifyModal";
 import Pagination from "@/components/atom/Pagination";
+import XLSX from 'xlsx'
 export default {
   data() {
     return {
@@ -251,6 +252,39 @@ export default {
     updateItem(item) {
       this.items[this.UserNum] = JSON.parse(JSON.stringify(item));
       this.modalitem = this.items[this.UserNum];
+    },
+    exportExcel() {
+      let dataWs = [];
+      this.items.forEach((element,index) => {
+        dataWs.push({
+          '': '',
+          '번호': index+1,
+          '소속': this.baseInfo.company, 
+          '부서': element.userInfo.part,
+          '직급': element.userInfo.position,
+          '성명': element.userInfo.name,
+          '이전 레벨': element.userInfo.firstTest,
+          '이전 레벨(점수)': element.userInfo.firstTest.grade,
+          '마지막 레벨': element.userInfo.lastTest,
+          '마지막 레벨(점수)': element.userInfo.lastTest?element.userInfo.lastTest.grade:'',
+          '회차': this.$route.params.c_no,
+          '학습시작일': element.userInfo.firstTest.l_dt,
+          '학습종료': element.userInfo.lastTest?element.userInfo.lastTest.l_dt:'',
+          '학습언어': '',
+          '학습구분(수강권)': element.userInfo.title,
+          '전체수업수': element.userInfo.total_lesson_cnt,
+          '전체수업시간': element.userInfo.total_min,
+          '수업진행수': element.userInfo.t_cnt,
+          '수업진행시간': element.userInfo.lesson_min,
+          '수업참여율': '',
+          '학습 목표율': this.baseInfo.target_rate,
+          '고객식별ID': element.userInfo.cus_id
+        });
+      });
+      var ws = XLSX.utils.json_to_sheet(dataWs);
+      var wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws,'수업현황');
+      XLSX.writeFile(wb, this.baseInfo.company+' 수업현황 '+this.$route.params.c_no+'주차.xlsx');
     }
   }
 };

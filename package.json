@@ -22,7 +22,8 @@
     "vue-router": "^3.4.3",
     "vue-sweetalert2": "^3.0.8",
     "vuedraggable": "^2.24.1",
-    "vuejs-datepicker": "^1.6.2"
+    "vuejs-datepicker": "^1.6.2",
+    "xlsx": "^0.16.8"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
