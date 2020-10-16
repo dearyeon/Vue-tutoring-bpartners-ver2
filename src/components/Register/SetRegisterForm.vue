@@ -32,42 +32,60 @@
             <div class="col-lg-6">
               <table class="table">
                 <tr>
-                  <td>자기 부담금</td>
-                  <td><input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요." v-model="chargeRatePct"/></td>
+	                <table>
+		                <tr>
+			                <th>자기 부담금</th>
+			                <td>
+				                <input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요." v-model="chargeRatePct"/>
+			                </td>
+		                </tr>
+	                </table>
                 </tr>
                 <tr style="height:50px;">
-                  <th>수강신청기간</th>
-                  <td class="col-lg-8"> 
-                    <date-picker v-model="applyRange" type="datetime" range placeholder="Select date"></date-picker>
-                  </td>
+	                <table>
+		                <tr>
+			                <th>수강신청기간</th>
+			                <td>
+				                <date-picker v-model="applyRange" type="datetime" range placeholder="Select date"></date-picker>
+			                </td>
+		                </tr>
+	                </table>
                 </tr>
                 <tr>
-                  <th>오픈 여부</th>
-                  <td>
-                    <div class="switch">
-                      <div class="onoffswitch">
-                        <input class="onoffswitch-checkbox form-control" name="en_i" id="en_i" type="checkbox" v-model="openYn" />
-                        <label class="onoffswitch-label" for="en_i">
-                          <span class="onoffswitch-inner"></span>
-                          <span class="onoffswitch-switch"></span>
-                        </label>
-                      </div>
-                    </div>
-                  </td>
+	                <table>
+		                <tr>
+		                  <th>오픈 여부</th>
+		                  <td>
+		                    <div class="switch">
+		                      <div class="onoffswitch">
+		                        <input class="onoffswitch-checkbox form-control" name="en_i" id="en_i" type="checkbox" v-model="openYn" />
+		                        <label class="onoffswitch-label" for="en_i">
+		                          <span class="onoffswitch-inner"></span>
+		                          <span class="onoffswitch-switch"></span>
+		                        </label>
+		                      </div>
+		                    </div>
+		                  </td>
+		                </tr>
+	                </table>
                 </tr>
 	              <tr>
-		              <th>결제 여부</th>
-		              <td>
-			              <div class="switch">
-				              <div class="onoffswitch">
-					              <input class="onoffswitch-checkbox form-control" name="use_billing" id="use_billing" type="checkbox" v-model="useBilling" />
-					              <label class="onoffswitch-label" for="use_billing">
-						              <span class="onoffswitch-inner"></span>
-						              <span class="onoffswitch-switch"></span>
-					              </label>
-				              </div>
-			              </div>
-		              </td>
+		              <table>
+			              <tr>
+				              <th>결제 여부</th>
+				              <td>
+					              <div class="switch">
+						              <div class="onoffswitch">
+							              <input class="onoffswitch-checkbox form-control" name="use_billing" id="use_billing" type="checkbox" v-model="useBilling" />
+							              <label class="onoffswitch-label" for="use_billing">
+								              <span class="onoffswitch-inner"></span>
+								              <span class="onoffswitch-switch"></span>
+							              </label>
+						              </div>
+					              </div>
+				              </td>
+			              </tr>
+		              </table>
 	              </tr>
 	              <tr>
 		              <table>
