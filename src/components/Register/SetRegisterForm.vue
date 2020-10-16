@@ -41,8 +41,8 @@
                     <date-picker v-model="applyRange" type="datetime" range placeholder="Select date"></date-picker>
                   </td>
                 </tr>
-                <tr style="height:50px;">
-                <th>오픈 여부</th>
+                <tr>
+                  <th>오픈 여부</th>
                   <td>
                     <div class="switch">
                       <div class="onoffswitch">
@@ -55,12 +55,41 @@
                     </div>
                   </td>
                 </tr>
+	              <tr>
+		              <th>결제 여부</th>
+		              <td>
+			              <div class="switch">
+				              <div class="onoffswitch">
+					              <input class="onoffswitch-checkbox form-control" name="use_billing" id="use_billing" type="checkbox" v-model="useBilling" />
+					              <label class="onoffswitch-label" for="use_billing">
+						              <span class="onoffswitch-inner"></span>
+						              <span class="onoffswitch-switch"></span>
+					              </label>
+				              </div>
+			              </div>
+		              </td>
+	              </tr>
+	              <tr>
+		              <table>
+			              <tr>
+				              <td>
+				                <label for="chargeDay">정기 결제일</label>
+					              <date-picker id="chargeDay" name="chargeDay" v-model="chargeDay" type="datetime" placeholder="Select date"></date-picker>
+				              </td>
+				              <td>
+					              <label for="pChargeDay">정기 결제일</label>
+					              <date-picker id="pChargeDay" name="pChargeDay" v-model="pChargeDay" type="datetime" placeholder="Select date"></date-picker>
+				              </td>
+			              </tr>
+
+		              </table>
+	              </tr>
 
               </table>
             </div>
           </div>
 
-          <h3>1 step. 액세스 홈</h3>
+          <h3 id="step-title">1 step. 액세스 홈</h3>
           <div class="row">
             <div class="col-lg-6">
               <table class="table">
@@ -102,7 +131,7 @@
               </table>
             </div>
           </div>
-          <h3>2 step. 신청시 주의 사항(수강 신청 브릿지 화면)</h3>
+          <h3 id="step-title">2 step. 신청시 주의 사항(수강 신청 브릿지 화면)</h3>
           <table class="table">
             <tr>
               <th class="col-lg-2">
@@ -114,7 +143,7 @@
             </tr>
           </table>
 
-          <h3>3 step. 개인정보 수집</h3>
+          <h3 id="step-title">3 step. 개인정보 수집</h3>
           <div class="drag">
             <table class="table table-bordered">
               <thead>
@@ -161,7 +190,7 @@
             </table>
           </div>
 
-          <h3>4 step. 결제시 유의사항</h3>
+          <h3 id="step-title">4 step. 결제시 유의사항</h3>
           <div class="row">
             <div class="col-lg-2">
               <strong class="label-w-checkbox">유의사항</strong>
@@ -205,6 +234,7 @@ export default {
       applyFrDt: '',
       applyToDt: '',
       openYn: false,
+	    useBilling: false,
       list: []
     };
   },
@@ -226,6 +256,7 @@ export default {
       this.applyToDt = bap.apply_to_dt;
       this.openYn = bap.open_yn ? true : false;
       this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${bap.site.ci_img}`
+		  this.useBilling = bap.bill_notice ? true : false
 
 		  this.list = bap.form
   },
