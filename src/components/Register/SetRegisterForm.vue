@@ -54,8 +54,8 @@
 		                  <td>
 		                    <div class="switch">
 		                      <div class="onoffswitch">
-		                        <input class="onoffswitch-checkbox form-control" name="en_i" id="en_i" type="checkbox" v-model="openYn" />
-		                        <label class="onoffswitch-label" for="en_i">
+		                        <input class="onoffswitch-checkbox form-control" name="open_yn" id="open_yn" type="checkbox" v-model="openYn" />
+		                        <label class="onoffswitch-label" for="open_yn">
 		                          <span class="onoffswitch-inner"></span>
 		                          <span class="onoffswitch-switch"></span>
 		                        </label>
