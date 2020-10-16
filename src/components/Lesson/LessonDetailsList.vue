@@ -7,11 +7,7 @@
             <h2>수업 현황</h2>
           </div>
           <div class="pull-right">
-            <a
-              id="btnSendOrderEmailLessonStatus"
-              class="btn btn-success btn-w-m"
-              @click="openModal"
-            >학습현황 메일 일괄 발송</a>
+            <a id="btnSendOrderEmailLessonStatus" class="btn btn-success btn-w-m" @click="openModal">학습현황 메일 일괄 발송</a>&nbsp;
             <a id="exportLessonList" class="btn btn-success btn-w-m" @click="exportExcel">엑셀 다운로드</a>
           </div>
         </div>

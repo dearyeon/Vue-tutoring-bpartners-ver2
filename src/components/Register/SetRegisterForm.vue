@@ -32,7 +32,7 @@
             <div class="col-lg-6">
               <table class="table">
                 <tr>
-                  <th>자기 부담금</th>
+                  <td>자기 부담금</td>
                   <td><input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요." v-model="chargeRatePct"/></td>
                 </tr>
                 <tr style="height:50px;">
