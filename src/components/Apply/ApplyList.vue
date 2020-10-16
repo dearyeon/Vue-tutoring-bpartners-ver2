@@ -9,7 +9,7 @@
     <div class="row">
 			<div class="ibox content">
         <div class="ibox-content">
-          <div class="row">
+          <div class="row ibox-content">
 						<table class="table text-center">
               <thead>
                 <tr>
@@ -76,7 +76,6 @@ export default {
   height: 65px;
 }
 tr {
-  border-bottom: 1px solid #f2f2f2;
   padding: 10px;
 }
 </style>

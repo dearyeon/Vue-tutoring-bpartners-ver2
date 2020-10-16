@@ -31,7 +31,7 @@
 
 
                                         <tr class="hover-pointer LESSON_INFO" 
-                                            v-for="(item, index) in items" :key="`Lesson-${index}`"> <!--v-show="perPage(index)"-->
+                                            v-for="(item, index) in items" :key="`Lesson-${index}`">
                                             <td><!--<img alt="image" class="img-rounded" src="{{ $item->prof_img?getSiteImage($item->prof_img,'_S'):getProfileImage('') }}" style="width: 20px;" /> --></td>  
                                             <td @click="routeDetailPage(item.idx,item.c_no)">
                                                 {{ item.site.company }}
@@ -75,167 +75,85 @@
 
 
 <script>
-import api from "@/common/api";
-import moment from "moment";
-import Pagination from "@/components/atom/Pagination";
-export default {
-    data() {
-        return {
-            info: [],
-            items: [],
-            sortKey: '',
-            current_page: 1,
-            total_page: 1,
-            per_page: '',
-			moment: moment
-        };
-    },
-    components: {
-        Pagination
-    },
-    async created() {
-        this.info = tempInfo;
-        const res = await api.get("/partners/lessonList");
-        this.current_page = res.data.current_page;
-        this.total_page = res.data.last_page;
-        this.per_page = res.data.per_page;
-        this.items = res.data.data;
-    },
-    methods: {
-        routeDetailPage(idx, c_no, event) {
-            let cNo;
-            if (event) cNo = c_no - event.target.value + 1;
-            this.$router.push({
-                name: "lessonDetailsList",
-                params: { id: idx, c_no:cNo?cNo:c_no }
-            })
-        },
-        perPage(index) {
-            return index>=(this.current_page-1)*this.per_page && index<this.current_page*this.per_page;
-        },
-        getProgressStyle(lesson_rate) {
-            return "width:" + (lesson_rate && lesson_rate > 90 ? 100 : lesson_rate) + "%"
-        },
-        sortBy(sortKey) {
-            (this.sortKey === sortKey) ? this.items.reverse() : ( this.items.sort(function(a, b) {
-                return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0;
-            }))
-            this.sortKey = sortKey;
-        },
-        async setCurrentPage(data) {
-            this.current_page = data;
-            const res = await api.get("/partners/lessonList?page="+this.current_page);
-            this.current_page = res.data.current_page;
-            this.items = res.data.data;
-        },
-        currentStatus(fr_dt, to_dt, val) {
-            const date = moment().format('YYYY-MM-DD');
-            if( date < fr_dt ) {
-                return val ? "b-r-sm bg-warning": "대기중"
-            } else if( date >= fr_dt && date <= to_dt) {
-                return val ? "b-r-sm bg-primary": "진행중"
-            } else if( date > to_dt) {
-                return val ? "b-r-sm bg-success": "완료"
-            } else {
-                return val ? "b-r-sm bg-danger": "취소됨"
-            }
-            
-        }
-    }
-}
+	import api from '@/common/api'
+	import moment from 'moment'
+	import Pagination from '@/components/atom/Pagination'
 
-const tempInfo = {
-        this_month_cnt: 10,
-        last_month_cnt: 5,
-        this_week_cnt: 20,
-        last_week_cnt: 25,
-        this_three_cnt: 30,
-        last_three_cnt: 30,
-        today_cnt: 40,
-        yesterday_cnt: 50
-}
+	export default {
+		data () {
+			return {
+				info: [],
+				items: [],
+				sortKey: '',
+				current_page: 1,
+				total_page: 1,
+				per_page: '',
+				moment: moment
+			}
+		},
+		components: {
+			Pagination
+		},
+		async created () {
+			this.info = tempInfo
+			const res = await api.get('/partners/lessonList')
+			this.current_page = res.data.current_page
+			this.total_page = res.data.last_page
+			this.per_page = res.data.per_page
+			this.items = res.data.data
+		},
+		methods: {
+			routeDetailPage (idx, c_no, event) {
+				let cNo
+				if (event) cNo = c_no - event.target.value + 1
+				this.$router.push({
+					name: 'lessonDetailsList',
+					params: { id: idx, c_no: cNo ? cNo : c_no }
+				})
+			},
+			perPage (index) {
+				return index >= (this.current_page - 1) * this.per_page && index < this.current_page * this.per_page
+			},
+			getProgressStyle (lesson_rate) {
+				return 'width:' + (lesson_rate && lesson_rate > 90 ? 100 : lesson_rate) + '%'
+			},
+			sortBy (sortKey) {
+				(this.sortKey === sortKey) ? this.items.reverse() : (this.items.sort(function (a, b) {
+					return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0
+				}))
+				this.sortKey = sortKey
+			},
+			async setCurrentPage (data) {
+				this.current_page = data
+				const res = await api.get('/partners/lessonList?page=' + this.current_page)
+				this.current_page = res.data.current_page
+				this.items = res.data.data
+			},
+			currentStatus (fr_dt, to_dt, val) {
+				const date = moment().format('YYYY-MM-DD')
+				if (date < fr_dt) {
+					return val ? 'b-r-sm bg-warning' : '대기중'
+				} else if (date >= fr_dt && date <= to_dt) {
+					return val ? 'b-r-sm bg-primary' : '진행중'
+				} else if (date > to_dt) {
+					return val ? 'b-r-sm bg-success' : '완료'
+				} else {
+					return val ? 'b-r-sm bg-danger' : '취소됨'
+				}
 
-/*const tempData = [
-    {
-        company: "튜터링 테스트",
-        orderList: [
-            { c_no: 11 }, { c_no: 10 }, { c_no: 9 }
-        ],
-        status: 2,
-        e_cnt: 1,
-        c_cnt: 1,
-        fr_dt: "2020.09.01",
-        to_dt: "2020.09.03",
-        cnt: 0,
-        lesson_rate: 70
-    },
-    {
-        company: "클레어회사",
-        orderList: [
-            { c_no: 5 }, { c_no: 4 }, { c_no: 3 }
-        ],
-        status: 3,
-        e_cnt: 1,
-        c_cnt: 0,
-        fr_dt: "2020.04.01",
-        to_dt: "2020.06.30",
-        cnt: 0,
-        lesson_rate: 100
-    },
-    {
-         "company": "에스에이치엔엠",
-        "target_rate": 90,
-        "prof_img": null,
-        "u_img": null,
-        "name": "장혜진",
-        "tel": null,
-        "email": "soongsiledu@gmail.com",
-        "part": null,
-        "del_yn": 0,
-        "status": 3,
-        "fr_dt": "2020.04.07",
-        "to_dt": "2020.04.30",
-        "c_no": 1,
-        "bo_idx": 408,
-        "orderList": [
-            {
-            "idx": 551,
-            "c_no": 8
-            },
-            {
-            "idx": 535,
-            "c_no": 7
-            },
-            {
-            "idx": 515,
-            "c_no": 6
-            },
-            {
-            "idx": 493,
-            "c_no": 5
-            },
-            {
-            "idx": 473,
-            "c_no": 4
-            },
-            {
-            "idx": 442,
-            "c_no": 3
-            },
-            {
-            "idx": 441,
-            "c_no": 2
-            },
-            {
-            "idx": 408,
-            "c_no": 1
-            }
-        ],
-        "cnt": 3,
-        "fr": "2020-04-07",
-        "to": "2020-04-30",
-        "dateDiff": 23,
-        "max_cnt": 23
-    }
-]*/
+			}
+		}
+	}
+
+	const tempInfo = {
+		this_month_cnt: 10,
+		last_month_cnt: 5,
+		this_week_cnt: 20,
+		last_week_cnt: 25,
+		this_three_cnt: 30,
+		last_three_cnt: 30,
+		today_cnt: 40,
+		yesterday_cnt: 50
+	}
+
 </script>
