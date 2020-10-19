@@ -84,16 +84,20 @@
 		              </table>
 	              </tr>
 	              <tr>
-		              <table>
+		              <table class="col-xs-12">
 			              <tr v-show="useBilling">
 				              <td>
-				                <label for="chargeDay">정기 결제일</label><br/>
-					              <date-picker v-for="index in billingCnt" :key="index.id" id="chargeDay" name="chargeDay" v-model="chargeDay[index-1]" type="datetime" placeholder="Select date"></date-picker>
-                      </td>
+					              <div v-for="index in billingCnt" :key="index.id" class="p-h-xs">
+					                <label :for="`chargeDay-${index}`" class="m-b-xs">정기 결제일 {{index+1}}</label><br/>
+						              <date-picker :id="`chargeDay-${index}`" :name="`chargeDay-${index}`" v-model="chargeDay[index-1]" type="datetime" placeholder="Select date"></date-picker>
+					              </div>
+				              </td>
 				              <td>
-					              <label for="pChargeDay">추가 결제일</label><br/>
-					              <date-picker v-for="index in billingCnt" :key="index.id" id="pChargeDay" name="pChargeDay" v-model="pChargeDay[index-1]" type="datetime" placeholder="Select date"></date-picker>
-                      </td>
+					              <div v-for="index in billingCnt" :key="index.id" class="p-h-xs">
+						              <label :for="`pChargeDay-${index}`" class="m-b-xs">추가 결제일 {{index+1}}</label><br/>
+						              <date-picker :id="`pChargeDay-${index}`" :name="`pChargeDay-${index}`" v-model="pChargeDay[index-1]" type="datetime" placeholder="Select date"></date-picker>
+					              </div>
+				              </td>
 			              </tr>
 
 		              </table>
@@ -103,7 +107,7 @@
             </div>
           </div>
 
-          <h3 id="step-title">1 step. 액세스 홈</h3>
+          <h3 class="well">1 step. 액세스 홈</h3>
           <div class="row">
             <div class="col-lg-6">
               <table class="table">
@@ -145,7 +149,7 @@
               </table>
             </div>
           </div>
-          <h3 id="step-title">2 step. 신청시 주의 사항(수강 신청 브릿지 화면)</h3>
+          <h3 class="well">2 step. 신청시 주의 사항(수강 신청 브릿지 화면)</h3>
           <table class="table">
             <tr>
               <th class="col-lg-2">
@@ -157,7 +161,7 @@
             </tr>
           </table>
 
-          <h3 id="step-title">3 step. 개인정보 수집</h3>
+          <h3 class="well">3 step. 개인정보 수집</h3>
           <div class="drag">
             <table class="table table-bordered">
               <thead>
@@ -209,7 +213,7 @@
             </table>
           </div>
 
-          <h3 id="step-title">4 step. 결제시 유의사항</h3>
+          <h3 class="well">4 step. 결제시 유의사항</h3>
           <div class="row">
             <div class="col-lg-2">
               <strong class="label-w-checkbox">유의사항</strong>

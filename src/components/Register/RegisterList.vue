@@ -68,27 +68,22 @@
 		data () {
 			return {
 				list: [],
-				moment: moment,
-				registers: [],
-				currentANo: [],
-				applyPageLink: ''
+				moment: moment
 			}
 		},
 		async created () {
 			const res = await api.get('/partners/applyPageList')
 			const list = res;
 			list.forEach(item => {
-				item.selectedApplyIdx = 0
+				item.selectedApplyIdx = 0,
+				item.isCopy = false
 			})
 			this.list = list
 		},
 		methods: {
-			chANo: function (index, pick) {
-				this.currentANo[index] = pick
-			},
 			copyText: function (e, index) {
 				this.$copyText(e.target.innerText).then((e) => {
-					this.registers[index].isCopy = true
+					this.list[index].isCopy = true
 					let $targetElement = document.getElementById('clipBoardAlert' + index)
 					this.fadeout($targetElement, index)
 					console.log(e)
@@ -104,7 +99,7 @@
 				var timer = setInterval(() => {
 					if (op <= 0.1) {
 						clearInterval(timer)
-						this.registers[index].isCopy = false
+						this.list[index].isCopy = false
 					}
 					element.style.opacity = op
 					element.style.filter = 'alpha(opacity=' + op * 100 + ')'
