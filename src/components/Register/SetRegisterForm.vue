@@ -171,6 +171,9 @@
                 <th class="text-center ">항목</th>
                 <th class="text-center">질문 내용</th>
                 <th class="text-center">타입</th>
+	              <th class="text-center">
+		              <button class="btn btn-success" @click="addFormList(cfCnt)">row 추가</button>
+	              </th>
               </thead>
               <draggable :list="list" tag="tbody">
                 <tr v-for="(item,index) in list" :key="item.col_id">
@@ -190,15 +193,13 @@
 	                  <input type="text" class="form-control" v-model="item.content" placeholder="내용을 입력해주세요." />
                   </td>
 	                <td class="text-center">
-		                <div class="col-xs-4">
-			                <input type="radio" :name="item.col_id+'type'" value="T" :checked="item.type === 'T'" v-model="item.type" :id="item.col_id+'T'" style="width:15px;height:15px;"><label :for="item.col_id+'T'">Text</label>
-			                <input type="radio" :name="item.col_id+'type'" value="S" :checked="item.type === 'S'" v-model="item.type" :id="item.col_id+'S'" style="width:15px;height:15px;"><label :for="item.col_id+'S'">Select</label>
+		                <div class="col-xs-2 col-xs-offset-1">
+			                <select v-model="item.type">
+				                <option value="T">Text</option>
+				                <option value="S">Select</option>
+			                </select>
 		                </div>
-		                <div class="col-xs-8" v-if="item.type === 'T'">
-			                <span class="col-xs-12">
-		                    <input type="text" class="form-control" placeholder="placeholder를 입력해 주세요." />
-			                </span>
-		                </div>
+
                     <div class="col-xs-8" v-if="item.type === 'S'">
 			                <span class="col-xs-6">
 		                    <input type="text" class="form-control" v-model="item.opts" placeholder="'|' 로 구분해서 작성해 주세요." />
@@ -207,6 +208,9 @@
 			                  <input type="text" class="form-control" v-model="item.vals" placeholder="'|' 로 구분해서 작성해 주세요." />
 			                </span>
 		                </div>
+	                </td>
+	                <td class="text-center" v-if="item.isCf">
+		                <button class="btn btn-danger" @click="deleteFormList(item.col_id)">삭제</button>
 	                </td>
                 </tr>
               </draggable>
@@ -261,7 +265,8 @@ export default {
       billingCnt: 3,
       chargeDay: ['','',''],
       pChargeDay: ['','',''],
-      list: []
+      list: [],
+	    cfCnt: 0
     };
   },
   components: {
@@ -284,7 +289,17 @@ export default {
       this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${bap.site.ci_img}`
 		  this.useBilling = bap.bill_notice ? true : false
 
-		  this.list = bap.form
+		  let bapForm = bap.form
+		  let cfCount = 0
+		  bapForm.forEach( item => {
+		  	if(item.col_id.slice(0,2) === 'cf') {
+		      item['isCf'] = true
+		      cfCount++
+	      } else {item['isCf'] = false}
+		  })
+
+		  this.cfCnt = cfCount
+		  this.list = bapForm
   },
   methods: {
 	  sortNumber: function (item,index) {
@@ -307,28 +322,69 @@ export default {
       console.log(numlist);
     },
     setForm: async function () {
-			const params = {
-				idx: this.$route.params.idx,
-				accessCode: this.accessCode,
-				emailDomain: this.emailDomain,
-				contacts: this.contacts,
-				notice: this.notice,
-				billNotice: this.billNotice,
-				chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct) : 0,
-				penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct) : 0,
-				applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm:ss'),
-				applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm:ss'),
-				openYn: this.openYn ? 1 : 0
-			}
-			if(this.image) params.ciImage = this.image
+	  	const bapIdx = this.$route.params.idx
+			// const params = {
+			// 	idx: bapIdx,
+			// 	accessCode: this.accessCode,
+			// 	emailDomain: this.emailDomain,
+			// 	contacts: this.contacts,
+			// 	notice: this.notice,
+			// 	billNotice: this.billNotice,
+			// 	chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct) : 0,
+			// 	penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct) : 0,
+			// 	applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm:ss'),
+			// 	applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm:ss'),
+			// 	openYn: this.openYn ? 1 : 0
+			// }
+			// if(this.image) params.ciImage = this.image
 
-			await api.upload('/partners/applyPage', params);
+			// await api.upload('/partners/applyPage', params);
 			//
+
+
+	    // step3 api post
+	    const p = []
+	    p['bap_idx'] = bapIdx
+		  this.list.forEach((col,i) => {
+			  p['cols['+i+'][colId]'] = col.col_id
+			  p['cols['+i+'][title]'] = col.title
+			  p['cols['+i+'][type]'] = col.type
+			  p['cols['+i+'][description]'] = col.description
+			  p['cols['+i+'][dispYn]'] = col.disp_yn
+			  //description,
+		  })
+
+	    let test = await api.post('/partners/applyPageForm', p);
+
+	    console.log(test)
+
 			// this.$swal('성공')
       // console.log(res);
       // const test = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
       // console.log(test);
-    }
+    },
+	  addFormList: function (index) {
+	  	console.log(index)
+	    let row = {
+	      col_id: "cf"+index+1,
+	      description: "",
+	      disp_yn: 0,
+	      isCf: true,
+	      opts: null,
+	      required: 0,
+	      sort_no: '',
+	      title: "",
+	      type: "T",
+	      vals: null
+	    }
+
+	    this.list.push(row)
+    },
+	  deleteFormList: function (colId) {
+		  const itemToFind = this.list.find(function(item) {return item.col_id === colId})
+		  const idx = this.list.indexOf(itemToFind)
+		  if (idx > -1) this.list.splice(idx, 1)
+	  }
   },
   computed: {
     applyRange: {
