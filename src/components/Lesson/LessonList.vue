@@ -32,7 +32,7 @@
 
                                         <tr class="hover-pointer LESSON_INFO" 
                                             v-for="(item, index) in items" :key="`Lesson-${index}`">
-                                            <td><!--<img alt="image" class="img-rounded" src="{{ $item->prof_img?getSiteImage($item->prof_img,'_S'):getProfileImage('') }}" style="width: 20px;" /> --></td>  
+                                            <td><img alt="image" class="img-rounded" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_M" style="width:20px;height:20px;"></td>  
                                             <td @click="routeDetailPage(item.idx,item.c_no)">
                                                 {{ item.site.company }}
                                             </td>
@@ -111,12 +111,6 @@
 					params: { id: idx, c_no: cNo ? cNo : c_no }
 				})
 			},
-			perPage (index) {
-				return index >= (this.current_page - 1) * this.per_page && index < this.current_page * this.per_page
-			},
-			getProgressStyle (lesson_rate) {
-				return 'width:' + (lesson_rate && lesson_rate > 90 ? 100 : lesson_rate) + '%'
-			},
 			sortBy (sortKey) {
 				(this.sortKey === sortKey) ? this.items.reverse() : (this.items.sort(function (a, b) {
 					return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0
@@ -140,7 +134,6 @@
 				} else {
 					return val ? 'b-r-sm bg-danger' : '취소됨'
 				}
-
 			}
 		}
 	}
