@@ -153,7 +153,7 @@
 	                <th class="text-center">질문 내용</th>
 	                <th class="text-center">타입</th>
 		              <th class="text-center">
-			              <button class="btn btn-success" @click="addFormList(cfCnt)">row 추가</button>
+			              <button class="btn btn-success" @click="addFormList">row 추가</button>
 		              </th>
 	              </thead>
 	              <draggable :applyerFormList="applyerFormList" tag="tbody">
@@ -473,10 +473,10 @@ export default {
 	    }
 
     },
-	  addFormList: function (index) {
-	  	let cfNumber = index + 1
+	  addFormList: function () {
+	  	this.cfCnt += 1;
 	    let row = {
-	      col_id: "cf"+cfNumber,
+	      col_id: "cf"+this.cfCnt,
 	      description: "",
 	      disp_yn: 0,
 	      isCf: true,

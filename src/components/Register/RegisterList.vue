@@ -20,8 +20,8 @@
 							<th class="text-center">고객사</th>
 							<th class="text-center">담당자</th>
 							<th class="text-center">신청차수</th>
+							<th class="text-center">차수관리</th>
 							<th class="text-center">신청양식설정</th>
-							<th class="text-center">신청양식수정일자</th>
 							<th class="text-center">URL</th>
 						</tr>
 						</thead>
@@ -38,10 +38,10 @@
 									</option>
 								</select>
 							</td>
+							<td><button class="btn btn-page-set">수정</button></td>
 							<td>
-								<button class="btn btn-page-set" @click="routeFormPage(item.applys[item.selectedApplyIdx].idx)">페이지 설정</button>
+								<button class="btn btn-page-set" @click="routeFormPage(item.applys[item.selectedApplyIdx].idx)">페이지 {{ item.page?'수정':'등록' }}</button>
 							</td>
-							<td>{{ moment(item.applys[item.selectedApplyIdx].upd_dt).format('YYYY-MM-DD hh:mm:ss') }}</td>
 							<td>
 								<a @click="copyText($event,index)">https://apply.tutoring.co.kr/{{ item.applys[item.selectedApplyIdx].hash }}</a>
 								<div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+index">
