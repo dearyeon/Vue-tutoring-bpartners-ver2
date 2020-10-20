@@ -10,7 +10,7 @@
 			<div class="ibox content">
         <div class="ibox-content">
           <div class="row">
-						<table class="table text-center">
+						<table class="table text-center table-hover dataTable">
               <thead>
                 <tr>
 									<th class="text-left">고객사명</th>
@@ -71,8 +71,4 @@ export default {
 </script>
 
 <style scoped>
-tr {
-  border-bottom: 1px solid #f2f2f2;
-  padding: 10px;
-}
 </style>
