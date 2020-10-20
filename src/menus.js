@@ -1,4 +1,5 @@
 const menus = [
+    {name:'고객사 관리', id:'customer', path:'/customer/List', icon:'handshake-o'},
     {name:'수업 현황', id:'lesson', path:'/lesson/List', icon:'pie-chart'},
     {name:'학생 현황', id:'user', path:'/user/List', icon:'list'},
     {name:'수강신청 현황', id:'apply', path:'/apply/List', icon:'star'},
