@@ -9,7 +9,7 @@ import BillingList from "@/components/Billing/BillingList";
 import BillingDetailsList from "@/components/Billing/BillingDetailsList";
 import RegisterList from "@/components/Register/RegisterList";
 import CreatePage from "@/components/Register/CreatePage";
-import SetRegisterForm from "@/components/Register/SetRegisterForm";
+import ApplyForm from "@/components/Register/ApplyForm";
 import Main from "@/components/Main";
 import Login from "@/components/Login";
 
@@ -32,7 +32,7 @@ const routes = [
       { path: "/billing/DetailsList/:sIdx/:aNo/:bNo", name: "billingDetailsList", component: BillingDetailsList, props: true },
       { path: "/register/List", component: RegisterList },
       { path: "/register/createPage", component: CreatePage },
-      { path: "/register/setRegisterForm/:idx", name: "setRegisterForm", component: SetRegisterForm, props:true },
+      { path: "/register/ApplyForm/:idx", name: "applyForm", component: ApplyForm, props:true },
     ],
   },
 ];

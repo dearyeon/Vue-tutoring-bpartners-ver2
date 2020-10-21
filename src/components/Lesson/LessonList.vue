@@ -87,7 +87,6 @@
 				sortKey: '',
 				current_page: 1,
 				total_page: 1,
-				per_page: '',
 				moment: moment
 			}
 		},
@@ -99,7 +98,6 @@
 			const res = await api.get('/partners/lessonList')
 			this.current_page = res.data.current_page
 			this.total_page = res.data.last_page
-			this.per_page = res.data.per_page
 			this.items = res.data.data
 		},
 		methods: {
