@@ -210,8 +210,9 @@
 		        <div class="row">
 			        <div class="col-xs-3">
 				        <strong class="col-xs-12">수강권 선택</strong>
-				        <select class="col-xs-12">
-					        <option v-for="(goods,index) in goodsList" :key="index" @click="addSelectedGoodsList(goods.idx)">{{goods.title}}</option>
+				        <select class="col-xs-12" @change="addSelectedGoods($event)">
+					        <option value="">-- 수강권을 선택하세요. --</option>
+					        <option v-for="(goods,index) in goodsList" :key="index" :value="goods.idx">{{goods.title}}</option>
 				        </select>
 			        </div>
 
@@ -241,8 +242,8 @@
 					        </tr>
 					        </thead>
 					        <tbody>
-					        <tr v-for="(item, index) in selectedGoodsList" :key="`CourseItem-${index}`">
-						        <td>{{ item }}</td>
+					        <tr v-for="(item, index) in selectedGoodsList" :key="index">
+						        <td>{{ item.title }}</td>
 						        <td><input class="form-control" type="text" /></td>
 						        <td>
 							        <div class="input-w-text">
@@ -262,7 +263,7 @@
 								        <p>원</p>
 							        </div>
 						        </td>
-						        <td class="text-center"><button class="btn btn-danger" @click="removeCourse(index)">취소</button></td>
+						        <td class="text-center"><button class="btn btn-danger" @click="deleteSelectedGoods(item.idx)">취소</button></td>
 					        </tr>
 					        </tbody>
 				        </table>
@@ -438,8 +439,8 @@ export default {
 			  applyPageFormParams['cols['+i+'][vals]'] = col.vals
 		  })
 
+	    // applyUserFeild
 	    let applyPageFormRes = await api.post('/partners/applyPageForm', applyPageFormParams);
-
 
 	    if(this.useBilling) {
 		    // billing info api post
@@ -547,13 +548,19 @@ export default {
 
 		  this.goodsList = res.data.chargePlans
 	  },
-	  addSelectedGoodsList: function (goodsIdx) {
-  		if (!this.addSelectedGoodsList.find( item => item.idx === goodsIdx)){
-			  let selectedGoods = this.goodsList.find( item => item.idx === goodsIdx)
-			  this.selectedGoodsList = selectedGoods
+	  addSelectedGoods: function (event) {
+  		if (!this.selectedGoodsList.find( item => item.idx === parseInt(event.target.value))){
+			  let selectedGoods = this.goodsList.find( item => item.idx === parseInt(event.target.value))
+			  console.log(selectedGoods)
+			  this.selectedGoodsList.push(selectedGoods)
 		  } else {
   			this.$swal('이미 추가된 수강권 입니다.')
 		  }
+	  },
+	  deleteSelectedGoods: function (goodsIdx) {
+		  const itemToFind = this.selectedGoodsList.find( item => item.idx === parseInt(goodsIdx) )
+		  const idx = this.selectedGoodsList.indexOf(itemToFind)
+		  if (idx > -1) this.selectedGoodsList.splice(idx, 1)
 	  }
   },
   computed: {
