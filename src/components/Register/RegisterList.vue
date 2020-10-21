@@ -49,14 +49,18 @@
 							<td>{{ item.batches[item.selectedApplyIdx].del_yn?'Y':'-' }}</td>
 							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM:ss'):'-' }}</td>
 							<td>
-									<button class="btn btn-page-set" @click="createBatchPage(item.idx)">추가</button>
-									<button class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
+								<div class="row">
+									<span class="col-xs-6 no-padding">
+										<button class="btn btn-page-set" @click="createBatchPage(item.idx,item.company)">추가</button>
+									</span>
+									<span class="col-xs-6 no-padding">
+										<button v-if="!!item.batches[item.selectedApplyIdx].idx" class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
+									</span>
+								</div>
 							</td>
 							<td>
-								<div style="display:inline;">
 								<button v-if="!!item.batches[item.selectedApplyIdx].apply" class="btn btn-page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 수정</button>
 								<button v-else class="btn btn-page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)">페이지 등록</button>
-								</div>
 							</td>
 							<td>
 								<button class="btn btn-primary" v-if="item.batches[item.selectedApplyIdx].apply" @click="goToApplyPage('https://apply.tutoring.co.kr/'+item.batches[item.selectedApplyIdx].apply.hash+'/7788')">페이지 보러 가기</button>
@@ -152,10 +156,10 @@ export default {
 			this.list = list
 			this.current_page = res.data.current_page
 		},
-		createBatchPage (bsIdx) {
+		createBatchPage (bsIdx,company) {
 			this.$router.push({
 				name: 'batchNew',
-				params: { bsIdx:bsIdx }
+				params: { bsIdx:bsIdx, company:company}
 			})
 		},
 		editBatchPage (bIdx) {

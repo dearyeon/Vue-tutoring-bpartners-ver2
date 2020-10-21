@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="ibox-title title">
-				<h2 class="pull-left">차수 양식 설정</h2>
+				<h2 class="pull-left">차수 설정</h2>
 				<button class="btn btn-blue-line pull-right" @click="$router.go(-1)">
 					뒤로가기
 				</button>
@@ -22,17 +22,13 @@
 										<td><input type="text" class="form-control" :placeholder="company" disabled/></td>
 									</tr>
 									<tr>
-										<th>이메일 도메인 지정</th>
-										<td><input type="text" class="form-control" placeholder="이메일 도메인을 입력해주세요." v-model="emailDomain"/></td>
-									</tr>
-									<tr>
 										<th>수료기준 출석률</th>
-										<td><input type="text" class="form-control" placeholder="출석률을 입력해 주세요." v-model="penaltyAttendPct"/></td>
+										<td><input type="text" class="form-control" placeholder="출석률을 입력해 주세요." v-model="targetRt"/></td>
 									</tr>
 									<tr>
 										<th>자기 부담금</th>
 										<td>
-											<input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요." v-model="chargeRatePct"/>
+											<input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요." v-model="selfChargeRt"/>
 										</td>
 									</tr>
 								</table>
@@ -42,27 +38,9 @@
 									<tr style="height:50px;">
 										<table>
 											<tr>
-												<th>수강신청기간</th>
+												<th>수강기간</th>
 												<td>
-													<date-picker v-model="applyRange" type="datetime" range placeholder="Select date"></date-picker>
-												</td>
-											</tr>
-										</table>
-									</tr>
-									<tr>
-										<table>
-											<tr style="height:50px;">
-												<th>오픈 여부</th>
-												<td>
-													<div class="switch">
-														<div class="onoffswitch">
-															<input class="onoffswitch-checkbox form-control" name="open_yn" id="open_yn" type="checkbox" v-model="openYn" />
-															<label class="onoffswitch-label" for="open_yn">
-																<span class="onoffswitch-inner"></span>
-																<span class="onoffswitch-switch"></span>
-															</label>
-														</div>
-													</div>
+													<date-picker v-model="applyRange" type="date" range placeholder="Select date"></date-picker>
 												</td>
 											</tr>
 										</table>
@@ -72,141 +50,10 @@
 						</div>
 					</div>
 
-
 					<div class="hr-line-dashed"></div>
 
-
-					<div class="form-group">
-						<h3 class="well">1 step. 액세스 홈</h3>
-						<div class="row">
-							<div class="col-lg-6">
-								<table class="table">
-									<tr>
-										<th>Access code</th>
-										<td><input type="text" class="form-control" v-model="accessCode" placeholder="Access code를 입력해 주세요." /></td>
-									</tr>
-									<tr>
-										<th>CI/BI 등록</th>
-										<td>
-											<table>
-												<tr>
-													<td colspan="2">
-														<img :src="previewSrc" alt="업로드 된 이미지" />
-													</td>
-												</tr>
-												<tr>
-													<td class="col-lg-6 col-md-6 col-xs-6">
-														<label class="btn btn-success col-lg-12 col-md-12 col-xs-12" for="file">이미지 변경</label>
-														<input type="file" id="file" accept="image/*" ref="image" @change="imageSelected" />
-													</td>
-													<td class="col-lg-6 col-md-6 col-xs-6">
-														<button class="btn btn-danger col-lg-12 col-md-12 col-xs-12" @click="imageCancel">취소</button>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-							</div>
-							<div class="col-lg-6">
-								<table class="table">
-									<tr>
-										<th style="vertical-align: top; padding-top: 12px; width:20%">수강신청 문의</th>
-										<td>
-											<textarea class="form-control" v-model="contacts" style="height:250px"></textarea>
-										</td>
-									</tr>
-								</table>
-							</div>
-						</div>
-					</div>
-
-					<div class="hr-line-dashed"></div>
-
-					<div class="form-group">
-						<h3 class="well">2 step. 신청시 주의 사항(수강 신청 브릿지 화면)</h3>
-						<table class="table">
-							<tr>
-								<th class="col-lg-2">
-									<strong class="label-w-checkbox">내용</strong>
-								</th>
-								<td class="col-lg-10">
-									<textarea class="form-control" v-model="notice" style="height:250px"></textarea>
-								</td>
-							</tr>
-						</table>
-					</div>
-
-					<div class="hr-line-dashed"></div>
-
-
-					<div class="form-group">
-						<h3 class="well">3 step. 개인정보 수집</h3>
-						<div class="drag">
-							<table class="table table-bordered">
-								<thead>
-								<th class="text-center">순서</th>
-								<th class="text-center">노출여부</th>
-								<th class="text-center">필수입력</th>
-								<th class="text-center">column Name</th>
-								<th class="text-center ">항목</th>
-								<th class="text-center">질문 내용</th>
-								<th class="text-center">타입</th>
-								<th class="text-center">
-									<button class="btn btn-success" @click="addFormList">row 추가</button>
-								</th>
-								</thead>
-								<draggable :applyerFormList="applyerFormList" tag="tbody">
-									<tr v-for="(item,index) in applyerFormList" :key="item.col_id">
-										<td class="text-center">
-											{{sortNumber(item,index)}}
-										</td>
-										<td class="text-center">
-											<input v-model="item.disp_yn" type="checkbox" :checked="item.disp_yn"/>
-										</td>
-										<td class="text-center">
-											<input v-model="item.required" type="checkbox" :checked="item.required"/>
-										</td>
-										<td>
-											<input type="text" class="form-control" v-model="item.col_id" :readonly="!item.isCf" placeholder="항목을 입력해주세요."/>
-										</td>
-										<td>
-											<input type="text" class="form-control" v-model="item.title" placeholder="항목을 입력해주세요."/>
-										</td>
-										<td>
-											<input type="text" class="form-control" v-model="item.content" placeholder="내용을 입력해주세요." />
-										</td>
-										<td class="text-center">
-											<div class="col-xs-2">
-												<select v-model="item.type">
-													<option value="T">Text</option>
-													<option value="S">Select</option>
-												</select>
-											</div>
-
-											<div class="col-xs-8" v-if="item.type === 'S'">
-				                <span class="col-xs-6">
-			                    <input type="text" class="form-control" v-model="item.opts" placeholder="'|' 로 구분해서 작성해 주세요." />
-				                </span>
-												<span class="col-xs-6">
-				                  <input type="text" class="form-control" v-model="item.vals" placeholder="'|' 로 구분해서 작성해 주세요." />
-				                </span>
-											</div>
-										</td>
-										<td class="text-center" v-if="item.isCf">
-											<button class="btn btn-danger" @click="deleteFormList(item.col_id)">삭제</button>
-										</td>
-									</tr>
-								</draggable>
-							</table>
-						</div>
-					</div>
-
-
-					<div class="hr-line-dashed"></div>
-
-					<div class="form-group">
-						<h3 class="well">4 step. 수강권 세팅</h3>
+					<div v-if="!isNew" class="form-group">
+						<h3 class="well">1 step. 수강권 세팅</h3>
 						<div class="row">
 							<div class="col-xs-3">
 								<strong class="col-xs-12">수강권 선택</strong>
@@ -216,69 +63,76 @@
 								</select>
 							</div>
 
-
-
 							<div class="col-xs-8">
 								<table class="table">
 									<thead>
-									<tr>
-										<th>수강권 구분</th>
-										<th>
-											<input type="checkbox" id="og_price" name="og_price" />
-											<label for="og_price">
-												표준 제공가
-											</label>
-										</th>
-										<th>할인율</th>
-										<th>
-											<input type="checkbox" id="company_price" checked />
-											<label for="company_price"> 기업 제공가</label>
-										</th>
-										<th>
-											<input type="checkbox" id="deductible" />
-											<label for="deductible"> 자기 부담금 </label>
-										</th>
-										<th class="text-center">삭제</th>
-									</tr>
+										<tr>
+											<th>idx</th>
+											<th>수강권 구분</th>
+											<th>
+												<input type="checkbox" id="og_price" name="og_price" />
+												<label for="og_price">
+													표준 제공가
+												</label>
+											</th>
+											<th>할인율</th>
+											<th>
+												<input type="checkbox" id="company_price" checked />
+												<label for="company_price"> 기업 제공가</label>
+											</th>
+											<th>
+												<input type="checkbox" id="deductible" />
+												<label for="deductible"> 자기 부담금 </label>
+											</th>
+											<th class="text-center">삭제</th>
+										</tr>
 									</thead>
 									<tbody>
-									<tr v-for="(item, index) in selectedGoodsList" :key="index">
-										<td>{{ item.title }}</td>
-										<td><input class="form-control" type="text" /></td>
-										<td>
-											<div class="input-w-text">
-												<input type="text" class="form-control" />
-												<p>%</p>
-											</div>
-										</td>
-										<td>
-											<div class="input-w-text">
-												<input type="text" class="form-control" />
-												<p>원</p>
-											</div>
-										</td>
-										<td>
-											<div class="input-w-text">
-												<input type="text" class="form-control" />
-												<p>원</p>
-											</div>
-										</td>
-										<td class="text-center"><button class="btn btn-danger" @click="deleteSelectedGoods(item.idx)">취소</button></td>
-									</tr>
+
+										<tr v-for="(item, index) in selectedGoodsList" :key="index">
+											<td>{{ item.new_goods ? item.idx : item.charge_plan.idx }}</td>
+											<td>{{ item.new_goods ? item.title : item.charge_plan.title}}</td>
+											<td>
+												<input class="form-control" type="text" v-model="item.list_price"/>
+											</td>
+											<td>
+												<div class="input-w-text">
+													<input type="text" class="form-control" v-model="item.dc_rt"/>
+													<p>%</p>
+												</div>
+											</td>
+											<td>
+												<div class="input-w-text">
+													<input type="text" class="form-control" v-model="item.supply_price"/>
+													<p>원</p>
+												</div>
+											</td>
+											<td>
+												<div class="input-w-text">
+													<input type="text" class="form-control" v-model="item.charge_price"/>
+													<p>원</p>
+												</div>
+											</td>
+											<td class="text-center">
+												<button v-if="item.new_goods" class="btn btn-danger" @click="deleteSelectedGoods(item.idx)">취소</button>
+												<input v-else type="checkbox" class="btn btn-danger" v-model="item.disp_yn"/>
+											</td>
+										</tr>
 									</tbody>
 								</table>
 							</div>
 						</div>
-					</div>
 
-					<div class="hr-line-dashed"></div>
+						<div class="hr-line-dashed"></div>
+
+					</div>
 
 					<div class="form-group">
 						<h3 class="col-sm-1 control-label">결제 여부</h3>
 						<div class="col-sm-10">
 							<div class="switch">
 								<div class="onoffswitch">
-									<input class="onoffswitch-checkbox form-control" name="use_billing" id="use_billing" type="checkbox" v-model="useBilling" />
+									<input class="onoffswitch-checkbox form-control" name="use_billing" id="use_billing" type="checkbox" v-model="useBilling"/>
 									<label class="onoffswitch-label" for="use_billing">
 										<span class="onoffswitch-inner"></span>
 										<span class="onoffswitch-switch"></span>
@@ -289,47 +143,30 @@
 					</div>
 
 					<div class="form-group" v-if="useBilling">
-						<h3 class="well col-xs-12">5 step. 결제정보 입력</h3>
+						<h3 class="well col-xs-12">2 step. 결제정보 입력</h3>
 						<div class="row">
-							<div class="col-lg-2">
-								<strong class="label-w-checkbox">유의사항</strong>
-							</div>
-							<div class="col-lg-10">
-								<textarea class="form-control" v-model="billNotice"></textarea>
-							</div>
-
-
-							<div class="col-xs-10 col-xs-offset-2 m-t-md no-padding">
-								<div class="col-xs-10 no-padding" v-for="(billingInfo,index) in billingInfos" :key="index">
-								<span class="col-xs-4">
+							<div class="col-xs-6 no-padding">
+								<span class="col-xs-5">
 									<div class="p-h-xs">
-										<label :for="`chargeDay-${billingInfo.b_no}`" class="m-b-xs">정기 결제일 {{billingInfo.b_no}}</label><br/>
-										<date-picker :id="`chargeDay-${billingInfo.b_no}`" :name="`chargeDay-${billingInfo.b_no}`" v-model="billingInfo.charge_dt" type="datetime" value-type="YYYY-MM-DD hh:00:00" format="YYYY-MM-DD hh:00:00" placeholder="Select date"></date-picker>
+										<label for="chargeDt" class="m-b-xs">정기 결제일</label><br/>
+										<date-picker id="chargeDt" name="chargeDt" v-model="chargeDt" type="datetime" value-type="YYYY-MM-DD hh:00:00" format="YYYY-MM-DD hh:00:00" placeholder="Select date"></date-picker>
 									</div>
 								</span>
-									<span class="col-xs-4">
+								<span class="col-xs-5">
 									<div class="p-h-xs">
-										<label :for="`pChargeDay-${billingInfo.b_no}`" class="m-b-xs">추가 결제일 {{billingInfo.b_no}}</label><br/>
-										<date-picker :id="`pChargeDay-${billingInfo.b_no}`" :name="`pChargeDay-${billingInfo.b_no}`" v-model="billingInfo.pcharge_dt" type="datetime" value-type="YYYY-MM-DD hh:00:00" format="YYYY-MM-DD hh:00:00" placeholder="Select date"></date-picker>
+										<label for="pChargeDt" class="m-b-xs">추가 결제일</label><br/>
+										<date-picker id="pChargeDt" name="pChargeDt" v-model="pchargeDt" type="datetime" value-type="YYYY-MM-DD hh:00:00" format="YYYY-MM-DD hh:00:00" placeholder="Select date"></date-picker>
 									</div>
 								</span>
-									<span class="col-xs-2 p-h-md" v-if="index === billingInfos.length - 1">
-										<button class="btn btn-success m-r-xs" @click="addChargeDay(billingInfos.length+1)">추가</button>
-										<button class="btn btn-danger" v-if="index !== 1" @click="deleteChargeDay(billingInfos.length)">삭제</button>
-								</span>
-								</div>
-
 							</div>
+
 						</div>
 					</div>
-
-
-
 
 					<div v-if="useBilling" class="hr-line-dashed"></div>
 
 					<div class="col-xs-4 pull-right p-h-xl">
-						<button class="col-xs-12 btn btn-lg btn-primary" @click="[sendNum(), setForm()]">저장</button>
+						<button class="col-xs-12 btn btn-lg btn-primary" @click="setBatchInfo(isNew)">저장</button>
 					</div>
 
 				</div>
@@ -345,237 +182,166 @@
 	import 'vue2-datepicker/index.css'
 	import moment from "moment"
 	import api from '@/common/api'
-	import Dropdown from '../atom/Dropdown'
-
-	let bap = null;
 
 	export default {
 		data() {
 			return {
-				image: "",
-				previewSrc: '',
-				company: '',
-				accessCode: '',
-				emailDomain: '',
-				contacts: '',
-				notice: '',
-				billNotice: '',
-				chargeRatePct: '',
-				penaltyAttendPct: '',
-				applyFrDt: '',
-				applyToDt: '',
-				openYn: false,
+				isNew: false,
+				batchFrDt: '',
+				batchToDt: '',
+				targetRt:'',
 				useBilling: false,
-				billingCnt: 1,
-				chargeDay: [],
-				pChargeDay: [],
-				applyerFormList: [],
-				cfCnt: 0,
-				billingInfos: [],
+				chargeDt: '',
+				pchargeDt: '',
+				selfChargeRt:'',
+				storedGoodsList: [],
 				goodsList:[],
-				selectedGoodsList: []
+				newGoodsList: [],
+				company: ''
 			};
 		},
+
 		components: {
-			draggable, DatePicker,
-			Dropdown
+			draggable, DatePicker
 		},
-		async created() {
-			this.getApplyPageApi()
+
+		created() {
+			// 수정
+			if(this.$route.params.bIdx) {
+				this.getBacthApi(this.$route.params.bIdx)
+			}
+
+			// 생성
+			if(this.$route.params.bsIdx) {
+				this.isNew = true
+				this.company = this.$route.params.company
+			}
+
 		},
+
 		methods: {
-			refresh: async function() {
-				this.getApplyPageApi()
-			},
-			sortNumber: function (item,index) {
-				item.sort_no = index + 1
-				return item.sort_no
-			},
-			imageSelected: function() {
-				this.image = this.$refs.image.files[0];
-				if(this.image) {
-					this.previewSrc = URL.createObjectURL(this.image);
+			async setBatchInfo(isNew) {
+				let idxParam = ''
+
+				let batchData = {
+					frDt: this.batchFrDt,
+					toDt: this.batchToDt,
+					targetRt: this.targetRt,
+					useBilling: this.useBilling ? 1: 0,
+					chargeDt: this.useBilling ? this.chargeDt : '',
+					pchargeDt: this.useBilling ? this.pchargeDt : '',
+					selfChargeRt: this.selfChargeRt
 				}
-			},
-			imageCancel: function() {
-				this.image = null;
-				this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${bap.site.ci_img}`
-			},
-			sendNum() {
-				let numlist = [];
-				this.applyerFormList.forEach(el => numlist.push(el.num));
-			},
-			setForm: async function () {
-				const bapIdx = this.$route.params.idx
-				// const bapIdx = 77
-				const params = {
-					idx: bapIdx,
-					accessCode: this.accessCode,
-					emailDomain: this.emailDomain,
-					contacts: this.contacts,
-					notice: this.notice,
-					billNotice: this.billNotice,
-					chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct) : 0,
-					penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct) : 0,
-					applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm:ss'),
-					applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm:ss'),
-					openYn: this.openYn ? 1 : 0
+
+				let batchGoodsApiRes = null
+				if(isNew) {
+					idxParam = this.$route.params.bsIdx
+					batchData['bsIdx'] = idxParam
 				}
-				if(this.image) params.ciImage = this.image
+				else {
+					idxParam = this.$route.params.bIdx
+					batchData['idx'] = idxParam
 
-				const applyPageRes =	await api.upload('/partners/applyPage', params);
+					const batchGoodsParams = []
+					batchGoodsParams['bbIdx'] = idxParam
+					this.selectedGoodsList.forEach((col,i) => {
+						if (col.new_goods) batchGoodsParams['goods['+i+'][cpIdx]'] = col.idx
+						else batchGoodsParams['goods['+i+'][idx]'] = col.idx
 
-				// apply info api post
-				const applyPageFormParams = []
-				applyPageFormParams['bapIdx'] = bapIdx
-				this.applyerFormList.forEach((col,i) => {
-					applyPageFormParams['cols['+i+'][colId]'] = col.col_id
-					applyPageFormParams['cols['+i+'][title]'] = col.title
-					applyPageFormParams['cols['+i+'][type]'] = col.type
-					applyPageFormParams['cols['+i+'][description]'] = col.description
-					applyPageFormParams['cols['+i+'][dispYn]'] = col.disp_yn ? 1 : 0
-					applyPageFormParams['cols['+i+'][required]'] = col.required ? 1 : 0
-					applyPageFormParams['cols['+i+'][opts]'] = col.opts
-					applyPageFormParams['cols['+i+'][vals]'] = col.vals
-				})
-
-				// applyUserFeild
-				let applyPageFormRes = await api.post('/partners/applyPageForm', applyPageFormParams);
-
-				if(this.useBilling) {
-					// billing info api post
-					const applyPageBillingParams = []
-					applyPageBillingParams['bapIdx'] = bapIdx
-
-					this.billingInfos.forEach((col, i) => {
-						applyPageBillingParams['billings[' + i + '][bNo]'] = col.b_no
-						applyPageBillingParams['billings[' + i + '][chargeDt]'] = col.charge_dt
-						applyPageBillingParams['billings[' + i + '][pchargeDt]'] = col.pcharge_dt
+						batchGoodsParams['goods['+i+'][listPrice]'] = col.list_price
+						batchGoodsParams['goods['+i+'][supplyPrice]'] = col.supply_price
+						batchGoodsParams['goods['+i+'][chargePrice]'] = col.charge_price
+						batchGoodsParams['goods['+i+'][dcRt]'] = col.dc_rt
+						batchGoodsParams['goods['+i+'][dispYn]'] = col.disp_yn ? 1 : 0
 					})
 
-					let applyPageBillingRes = await api.post('/partners/applyPageBilling', applyPageBillingParams);
-
-
-					if(applyPageRes.result === 2000 && applyPageFormRes.result === 2000 && applyPageBillingRes.result === 2000) {
-						this.$swal('성공').then(result => {
-							if (result.isConfirmed) {
-								this.refresh()
-							}
-						})
-					}
-				} else {
-					if(applyPageRes.result === 2000 && applyPageFormRes.result === 2000) {
-						this.$swal('성공').then(result => {
-							if (result.isConfirmed) {
-								this.refresh()
-							}
-						})
-					}
+					batchGoodsApiRes = await api.post('/partners/batchGoods',batchGoodsParams)
 				}
 
-			},
-			addFormList: function () {
-				this.cfCnt += 1;
-				let row = {
-					col_id: "cf"+this.cfCnt,
-					description: "",
-					disp_yn: 0,
-					isCf: true,
-					opts: null,
-					required: 0,
-					sort_no: '',
-					title: "",
-					type: "T",
-					vals: null
+				const batchApiRes = await api.post('/partners/batch',batchData)
+
+				if(batchGoodsApiRes && batchGoodsApiRes.result===2000 && batchApiRes.result === 2000) {
+					this.refresh(idxParam)
 				}
 
-				this.applyerFormList.push(row)
-			},
-			deleteFormList: function (colId) {
-				const itemToFind = this.applyerFormList.find(function(item) {return item.col_id === colId})
-				const idx = this.applyerFormList.indexOf(itemToFind)
-				if (idx > -1) this.applyerFormList.splice(idx, 1)
-			},
-			addChargeDay: function (bNo) {
-				let billingInfo = {
-					b_no: bNo,
-					bap_idx: 77,
-					charge_dt: "",
-					pcharge_dt: ""
+				if(!batchGoodsApiRes && batchApiRes.result === 2000) {
+					this.$router.push({
+						name: "registerList"
+					})
 				}
-
-				this.billingInfos.push(billingInfo)
-
 			},
-			deleteChargeDay: function (bNo) {
-				const itemToFind = this.billingInfos.find(function(item) {return item.b_no === bNo})
-				const idx = this.billingInfos.indexOf(itemToFind)
-				if (idx > -1) this.billingInfos.splice(idx, 1)
+
+			async refresh(idx) {
+				this.getBacthApi(idx)
+				this.addSelectedGoods()
 			},
-			getApplyPageApi: async function () {
-				const res = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
 
-				bap = res.data.bap;
-				this.company = bap.site.company;
-				this.accessCode = bap.access_code;
-				this.emailDomain =bap.email_domain;
-				this.contacts = bap.contacts;
-				this.notice = bap.notice;
-				this.billNotice = bap.bill_notice;
-				this.chargeRatePct = bap.charge_rate_pct;
-				this.penaltyAttendPct = bap.penalty_attend_pct;
-				this.applyFrDt = bap.apply_fr_dt;
-				this.applyToDt = bap.apply_to_dt;
-				this.openYn = bap.open_yn ? 1 : 0;
-				this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${bap.site.ci_img}`
-				this.useBilling = bap.use_billing
+			async getBacthApi (bIdx) {
+				const res = await api.get('/partners/batch', { idx: bIdx });
+				const goodsList = await api.get('/partners/chargePlanList');
 
-				let bapForm = bap.form
-				let cfCount = 0
-				bapForm.forEach( item => {
-					if(item.col_id.slice(0,2) === 'cf') {
-						item['isCf'] = true
-						cfCount++
-					} else {item['isCf'] = false}
-				})
+				this.company = res.data.site.company
+				this.batchFrDt = moment(res.data.fr_dt).format('YYYY-MM-DD')
+				this.batchToDt = moment(res.data.to_dt).format('YYYY-MM-DD')
+				this.targetRt = res.data.target_rt
+				this.selfChargeRt = res.data.self_charge_rt
+				this.useBilling = res.data.use_billing
+				this.chargeDt = res.data.charge_dt
+				this.pchargeDt = res.data.pcharge_dt
 
-				if(bap.use_billing) {
-					this.billingInfos = bap.billing
-				}
+				this.storedGoodsList = res.data.goods
+				this.newGoodsList = []
 
-				this.cfCnt = cfCount
-				this.applyerFormList = bapForm
-
-				this.goodsList = res.data.chargePlans
+				this.goodsList = goodsList.data
 			},
-			addSelectedGoods: function (event) {
-				if (!this.selectedGoodsList.find( item => item.idx === parseInt(event.target.value))){
+
+			addSelectedGoods (event) {
+				if (!this.newGoodsList.find( item => item.idx === parseInt(event.target.value)) && !this.storedGoodsList.find( item => item.charge_plan.idx === parseInt(event.target.value))){
 					let selectedGoods = this.goodsList.find( item => item.idx === parseInt(event.target.value))
-					console.log(selectedGoods)
-					this.selectedGoodsList.push(selectedGoods)
+					selectedGoods['list_price'] = 0
+					selectedGoods['supply_price'] = 0
+					selectedGoods['charge_price'] = 0
+					selectedGoods['dc_rt'] = 0
+					selectedGoods['disp_yn'] = 1
+					selectedGoods['new_goods'] = true
+
+					this.newGoodsList.push(selectedGoods)
 				} else {
 					this.$swal('이미 추가된 수강권 입니다.')
 				}
 			},
-			deleteSelectedGoods: function (goodsIdx) {
-				const itemToFind = this.selectedGoodsList.find( item => item.idx === parseInt(goodsIdx) )
-				const idx = this.selectedGoodsList.indexOf(itemToFind)
-				if (idx > -1) this.selectedGoodsList.splice(idx, 1)
+
+			deleteSelectedGoods (goodsIdx) {
+				const itemToFind = this.newGoodsList.find( item => item.idx === parseInt(goodsIdx) )
+				const idx = this.newGoodsList.indexOf(itemToFind)
+				if (idx > -1) this.newGoodsList.splice(idx, 1)
 			}
 		},
+
 		computed: {
 			applyRange: {
 				get() {
-					return [new Date(this.applyFrDt), new Date(this.applyToDt)];
+					let frDtInfoArray =	this.batchFrDt.split(' ')[0].split('-')
+					let toDtInfoArray =	this.batchToDt.split(' ')[0].split('-')
+
+					return [new Date(frDtInfoArray[0], frDtInfoArray[1], frDtInfoArray[2]), new Date(toDtInfoArray[0], toDtInfoArray[1], toDtInfoArray[2])];
 				},
 				set(value) {
-					this.applyFrDt = moment(value[0]).format('YYYY-MM-DD HH:mm:ss');
-					this.applyToDt = moment(value[1]).format('YYYY-MM-DD HH:mm:ss');
+					this.batchFrDt = moment(value[0]).format('YYYY-MM-DD');
+					this.batchToDt = moment(value[1]).format('YYYY-MM-DD');
 				}
+			},
+
+			selectedGoodsList: function () {
+				return this.storedGoodsList.concat(this.newGoodsList)
 			}
 		}
-	};
+	}
 </script>
+
+
+
+
 
 <style>
 	.title {
