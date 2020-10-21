@@ -53,7 +53,8 @@
 								<button class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
 							</td>
 							<td>
-								<button class="btn btn-page-set" @click="routeFormPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 {{ item.batches[item.selectedApplyIdx].apply?'수정':'등록' }}</button>
+								<button v-if="!!item.batches[item.selectedApplyIdx].apply" class="btn btn-page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 수정</button>
+								<button v-else class="btn btn-page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)">페이지 등록</button>
 							</td>
 							<td>
 								<button class="btn btn-primary" v-if="item.batches[item.selectedApplyIdx].apply" @click="goToApplyPage('https://apply.tutoring.co.kr/'+item.batches[item.selectedApplyIdx].apply.hash+'/7788')">페이지 보러 가기</button>
@@ -162,6 +163,18 @@ export default {
 				params: { idx:idx }
 			})
 		},
+		editApplyPage(bapIdx) {
+			this.$router.push({
+				name: 'applyEdit',
+				params: { bapIdx: bapIdx }
+			})
+		},
+		createApplyPage(bIdx) {
+			this.$router.push({
+				name: 'applyNew',
+				params: { bIdx: bIdx }
+			})
+		}
 	}
 }
 </script>

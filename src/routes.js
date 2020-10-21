@@ -33,6 +33,8 @@ const routes = [
       { path: "/billing/DetailsList/:sIdx/:aNo/:bNo", name: "billingDetailsList", component: BillingDetailsList, props: true },
       { path: "/register/List", component: RegisterList },
       { path: "/register/createPage", component: CreatePage },
+	    { path: "/register/applyNew/:bIdx", name: "applyNew", component: ApplyForm, props:true },
+	    { path: "/register/applyEdit/:bapIdx", name: "applyEdit", component: ApplyForm, props:true },
       { path: "/register/ApplyForm/:idx", name: "applyForm", component: ApplyForm, props:true },
       { path: "/register/batchNew/:bsIdx", name: "batchNew", component: batch, props:true },
       { path: "/register/batchEdit/:idx", name: "batchEdit", component: batch, props:true },
