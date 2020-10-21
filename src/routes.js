@@ -10,6 +10,7 @@ import BillingDetailsList from "@/components/Billing/BillingDetailsList";
 import RegisterList from "@/components/Register/RegisterList";
 import CreatePage from "@/components/Register/CreatePage";
 import ApplyForm from "@/components/Register/ApplyForm";
+import batch from "@/components/Register/batch";
 import Main from "@/components/Main";
 import Login from "@/components/Login";
 
@@ -33,6 +34,8 @@ const routes = [
       { path: "/register/List", component: RegisterList },
       { path: "/register/createPage", component: CreatePage },
       { path: "/register/ApplyForm/:idx", name: "applyForm", component: ApplyForm, props:true },
+      { path: "/register/batchNew/:bsIdx", name: "batchNew", component: batch, props:true },
+      { path: "/register/batchEdit/:idx", name: "batchEdit", component: batch, props:true },
     ],
   },
 ];

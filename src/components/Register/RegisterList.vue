@@ -4,9 +4,6 @@
 			<div class="ibox-title title">
 				<h2 class="pull-left">차수 관리</h2>
 				<router-link :to="{ path: '/register/createPage' }">
-					<button class="btn btn-success pull-right">
-						차수 생성
-					</button>
 				</router-link>
 			</div>
 		</div>
@@ -52,8 +49,8 @@
 							<td>{{ item.batches[item.selectedApplyIdx].del_yn?'Y':'-' }}</td>
 							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM:ss'):'-' }}</td>
 							<td>
-								<button class="btn btn-page-set">추가</button>
-								<button class="btn btn-page-set">수정</button>
+								<button class="btn btn-page-set" @click="createBatchPage(item.idx)">추가</button>
+								<button class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
 							</td>
 							<td>
 								<button class="btn btn-page-set" @click="routeFormPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 {{ item.batches[item.selectedApplyIdx].apply?'수정':'등록' }}</button>
@@ -152,6 +149,18 @@ export default {
 			})
 			this.list = list
 			this.current_page = res.data.current_page
+		},
+		createBatchPage (bsIdx) {
+			this.$router.push({
+				name: 'batchNew',
+				params: { bsIdx:bsIdx }
+			})
+		},
+		editBatchPage (idx) {
+			this.$router.push({
+				name: 'batchEdit',
+				params: { idx:idx }
+			})
 		},
 	}
 }
