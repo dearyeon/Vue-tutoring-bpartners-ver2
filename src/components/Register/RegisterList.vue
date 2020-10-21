@@ -157,10 +157,10 @@ export default {
 				params: { bsIdx:bsIdx }
 			})
 		},
-		editBatchPage (idx) {
+		editBatchPage (bIdx) {
 			this.$router.push({
 				name: 'batchEdit',
-				params: { idx:idx }
+				params: { bIdx:bIdx }
 			})
 		},
 		editApplyPage(bapIdx) {

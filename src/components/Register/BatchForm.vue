@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="ibox-title title">
-				<h2 class="pull-left">차수 정보 설정</h2>
+				<h2 class="pull-left">차수 양식 설정</h2>
 				<button class="btn btn-blue-line pull-right" @click="$router.go(-1)">
 					뒤로가기
 				</button>
