@@ -11,71 +11,7 @@
     <div class="row">
       <div class="ibox content">
         <div class="ibox-content">
-
-	        <div class="form-group">
-	          <h3 class="well">기본 정보</h3>
-	          <div class="row">
-	            <div class="col-lg-6">
-	              <table class="table">
-	                <tr>
-	                  <th>BTB 사이트 선택</th>
-	                  <td><input type="text" class="form-control" :placeholder="company" disabled/></td>
-	                </tr>
-	                <tr>
-	                  <th>이메일 도메인 지정</th>
-	                  <td><input type="text" class="form-control" placeholder="이메일 도메인을 입력해주세요." v-model="emailDomain"/></td>
-	                </tr>
-	                <tr>
-	                  <th>수료기준 출석률</th>
-	                  <td><input type="text" class="form-control" placeholder="출석률을 입력해 주세요." v-model="penaltyAttendPct"/></td>
-	                </tr>
-	                <tr>
-	                  <th>자기 부담금</th>
-	                  <td>
-	                    <input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요." v-model="chargeRatePct"/>
-	                  </td>
-	                </tr>
-	              </table>
-	            </div>
-	            <div class="col-lg-6">
-	              <table class="table">
-	                <tr style="height:50px;">
-		                <table>
-			                <tr>
-				                <th>수강신청기간</th>
-				                <td>
-					                <date-picker v-model="applyRange" type="datetime" range placeholder="Select date"></date-picker>
-				                </td>
-			                </tr>
-		                </table>
-	                </tr>
-	                <tr>
-		                <table>
-			                <tr style="height:50px;">
-			                  <th>오픈 여부</th>
-			                  <td>
-			                    <div class="switch">
-			                      <div class="onoffswitch">
-			                        <input class="onoffswitch-checkbox form-control" name="open_yn" id="open_yn" type="checkbox" v-model="openYn" />
-			                        <label class="onoffswitch-label" for="open_yn">
-			                          <span class="onoffswitch-inner"></span>
-			                          <span class="onoffswitch-switch"></span>
-			                        </label>
-			                      </div>
-			                    </div>
-			                  </td>
-			                </tr>
-		                </table>
-	                </tr>
-	              </table>
-	            </div>
-	          </div>
-	        </div>
-
-
 	        <div class="hr-line-dashed"></div>
-
-
 	        <div class="form-group">
 	          <h3 class="well">1 step. 액세스 홈</h3>
 	          <div class="row">
@@ -110,20 +46,29 @@
 	            </div>
 	            <div class="col-lg-6">
 	              <table class="table">
+					<tr>
+						<th>이메일 도메인 지정</th>
+						<td><input type="text" class="form-control" placeholder="이메일 도메인을 입력해주세요." v-model="emailDomain"/></td>
+					</tr>
 	                <tr>
 	                  <th style="vertical-align: top; padding-top: 12px; width:20%">수강신청 문의</th>
 	                  <td>
 	                    <textarea class="form-control" v-model="contacts" style="height:250px"></textarea>
 	                  </td>
 	                </tr>
+					<tr>
+						<th>수강신청기간</th>
+						<td>
+							<date-picker v-model="applyRange" type="datetime" range placeholder="Select date"></date-picker>
+						</td>
+					</tr>
 	              </table>
 	            </div>
 	          </div>
 	        </div>
 
 	        <div class="hr-line-dashed"></div>
-
-					<div class="form-group">
+			<div class="form-group">
 		        <h3 class="well">2 step. 신청시 주의 사항(수강 신청 브릿지 화면)</h3>
 		        <table class="table">
 			        <tr>
@@ -137,24 +82,22 @@
 		        </table>
 					</div>
 
-	        <div class="hr-line-dashed"></div>
-
-
-	        <div class="form-group">
+	        <div class="form-group" v-if="this.$route.params.bapIdx">
+	        	<div class="hr-line-dashed"></div>
 	          <h3 class="well">3 step. 개인정보 수집</h3>
 	          <div class="drag">
 	            <table class="table table-bordered">
 	              <thead>
-		              <th class="text-center">순서</th>
+		            <th class="text-center">순서</th>
 	                <th class="text-center">노출여부</th>
 	                <th class="text-center">필수입력</th>
-		              <th class="text-center">column Name</th>
+		            <th class="text-center">column Name</th>
 	                <th class="text-center ">항목</th>
 	                <th class="text-center">질문 내용</th>
 	                <th class="text-center">타입</th>
-		              <th class="text-center">
-			              <button class="btn btn-success" @click="addFormList">row 추가</button>
-		              </th>
+		            <th class="text-center">
+			            <button class="btn btn-success" @click="addFormList">row 추가</button>
+		            </th>
 	              </thead>
 	              <draggable :applyerFormList="applyerFormList" tag="tbody">
 	                <tr v-for="(item,index) in applyerFormList" :key="item.col_id">
@@ -168,7 +111,7 @@
 			                <input v-model="item.required" type="checkbox" :checked="item.required"/>
 		                </td>
 		                <td>
-			                <input type="text" class="form-control" v-model="item.col_id" :readonly="!item.isCf" placeholder="항목을 입력해주세요."/>
+			                <input type="text" class="form-control" v-model="item.col_id" :readonly="!item.isCf" placeholder="column Name을 입력해주세요."/>
 		                </td>
 	                  <td>
 	                    <input type="text" class="form-control" v-model="item.title" placeholder="항목을 입력해주세요."/>
@@ -202,136 +145,22 @@
 	          </div>
 	        </div>
 
-
 	        <div class="hr-line-dashed"></div>
-
-	        <div class="form-group">
-		        <h3 class="well">4 step. 수강권 세팅</h3>
-		        <div class="row">
-			        <div class="col-xs-3">
-				        <strong class="col-xs-12">수강권 선택</strong>
-				        <select class="col-xs-12" @change="addSelectedGoods($event)">
-					        <option value="">-- 수강권을 선택하세요. --</option>
-					        <option v-for="(goods,index) in goodsList" :key="index" :value="goods.idx">{{goods.title}}</option>
-				        </select>
-			        </div>
-
-
-
-			        <div class="col-xs-8">
-				        <table class="table">
-					        <thead>
-					        <tr>
-						        <th>수강권 구분</th>
-						        <th>
-							        <input type="checkbox" id="og_price" name="og_price" />
-							        <label for="og_price">
-								        표준 제공가
-							        </label>
-						        </th>
-						        <th>할인율</th>
-						        <th>
-							        <input type="checkbox" id="company_price" checked />
-							        <label for="company_price"> 기업 제공가</label>
-						        </th>
-						        <th>
-							        <input type="checkbox" id="deductible" />
-							        <label for="deductible"> 자기 부담금 </label>
-						        </th>
-						        <th class="text-center">삭제</th>
-					        </tr>
-					        </thead>
-					        <tbody>
-					        <tr v-for="(item, index) in selectedGoodsList" :key="index">
-						        <td>{{ item.title }}</td>
-						        <td><input class="form-control" type="text" /></td>
-						        <td>
-							        <div class="input-w-text">
-								        <input type="text" class="form-control" />
-								        <p>%</p>
-							        </div>
-						        </td>
-						        <td>
-							        <div class="input-w-text">
-								        <input type="text" class="form-control" />
-								        <p>원</p>
-							        </div>
-						        </td>
-						        <td>
-							        <div class="input-w-text">
-								        <input type="text" class="form-control" />
-								        <p>원</p>
-							        </div>
-						        </td>
-						        <td class="text-center"><button class="btn btn-danger" @click="deleteSelectedGoods(item.idx)">취소</button></td>
-					        </tr>
-					        </tbody>
-				        </table>
-			        </div>
-		        </div>
-	        </div>
-
-	        <div class="hr-line-dashed"></div>
-
-	        <div class="form-group">
-		        <h3 class="col-sm-1 control-label">결제 여부</h3>
-		        <div class="col-sm-10">
-			        <div class="switch">
-				        <div class="onoffswitch">
-					        <input class="onoffswitch-checkbox form-control" name="use_billing" id="use_billing" type="checkbox" v-model="useBilling" />
-					        <label class="onoffswitch-label" for="use_billing">
-						        <span class="onoffswitch-inner"></span>
-						        <span class="onoffswitch-switch"></span>
-					        </label>
-				        </div>
-			        </div>
-		        </div>
-	        </div>
-
-					<div class="form-group" v-if="useBilling">
-	          <h3 class="well col-xs-12">5 step. 결제정보 입력</h3>
-	          <div class="row">
-	            <div class="col-lg-2">
-	              <strong class="label-w-checkbox">유의사항</strong>
-	            </div>
-	            <div class="col-lg-10">
-	              <textarea class="form-control" v-model="billNotice"></textarea>
-	            </div>
-
-
-		          <div class="col-xs-10 col-xs-offset-2 m-t-md no-padding">
-			          <div class="col-xs-10 no-padding" v-for="(billingInfo,index) in billingInfos" :key="index">
-								<span class="col-xs-4">
-									<div class="p-h-xs">
-										<label :for="`chargeDay-${billingInfo.b_no}`" class="m-b-xs">정기 결제일 {{billingInfo.b_no}}</label><br/>
-										<date-picker :id="`chargeDay-${billingInfo.b_no}`" :name="`chargeDay-${billingInfo.b_no}`" v-model="billingInfo.charge_dt" type="datetime" value-type="YYYY-MM-DD hh:00:00" format="YYYY-MM-DD hh:00:00" placeholder="Select date"></date-picker>
-									</div>
-								</span>
-				          <span class="col-xs-4">
-									<div class="p-h-xs">
-										<label :for="`pChargeDay-${billingInfo.b_no}`" class="m-b-xs">추가 결제일 {{billingInfo.b_no}}</label><br/>
-										<date-picker :id="`pChargeDay-${billingInfo.b_no}`" :name="`pChargeDay-${billingInfo.b_no}`" v-model="billingInfo.pcharge_dt" type="datetime" value-type="YYYY-MM-DD hh:00:00" format="YYYY-MM-DD hh:00:00" placeholder="Select date"></date-picker>
-									</div>
-								</span>
-				          <span class="col-xs-2 p-h-md" v-if="index === billingInfos.length - 1">
-										<button class="btn btn-success m-r-xs" @click="addChargeDay(billingInfos.length+1)">추가</button>
-										<button class="btn btn-danger" v-if="index !== 1" @click="deleteChargeDay(billingInfos.length)">삭제</button>
-								</span>
-			          </div>
-
-		          </div>
-	          </div>
+			<div class="form-group">
+				<h3 class="well col-xs-12">4 step. 결제정보 입력</h3>
+				<div class="row">
+					<div class="col-lg-2">
+						<strong class="label-w-checkbox">유의사항</strong>
 					</div>
+					<div class="col-lg-10">
+						<textarea class="form-control" v-model="billNotice"></textarea>
+					</div>
+				</div>
+			</div>
 
-
-
-
-	        <div v-if="useBilling" class="hr-line-dashed"></div>
-
-          <div class="col-xs-4 pull-right p-h-xl">
-            <button class="col-xs-12 btn btn-lg btn-primary" @click="[sendNum(), setForm()]">저장</button>
-          </div>
-
+			<div class="col-xs-4 pull-right p-h-xl">
+				<button class="col-xs-12 btn btn-lg btn-primary" @click="[sendNum(), setForm()]">저장</button>
+			</div>
         </div>
       </div>
     </div>
@@ -345,40 +174,28 @@ import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 import moment from "moment"
 import api from '@/common/api'
-import Dropdown from '../atom/Dropdown'
 
 let bap = null;
 
 export default {
   data() {
     return {
-      image: "",
-      previewSrc: '',
-      company: '',
-      accessCode: '',
-      emailDomain: '',
-      contacts: '',
-      notice: '',
-      billNotice: '',
-      chargeRatePct: '',
-      penaltyAttendPct: '',
-      applyFrDt: '',
-      applyToDt: '',
-      openYn: false,
-      useBilling: false,
-      billingCnt: 1,
-      chargeDay: [],
-      pChargeDay: [],
-      applyerFormList: [],
-	    cfCnt: 0,
-	    billingInfos: [],
-	    goodsList:[],
-	    selectedGoodsList: []
+		image: "",
+		previewSrc: '',
+		accessCode: '',
+		emailDomain: '',
+		contacts: '',
+		notice: '',
+		billNotice: '',
+		applyFrDt: '',
+		applyToDt: '',
+		openYn: false,
+		applyerFormList: [],
+		cfCnt: 0
     };
   },
   components: {
-    draggable, DatePicker,
-	  Dropdown
+    draggable,DatePicker
   },
   async created() {
 	  this.getApplyPageApi()
@@ -386,95 +203,129 @@ export default {
   methods: {
   	refresh: async function() {
 		  this.getApplyPageApi()
-	  },
-	  sortNumber: function (item,index) {
-			  item.sort_no = index + 1
-			  return item.sort_no
-	  },
-    imageSelected: function() {
-      this.image = this.$refs.image.files[0];
-      if(this.image) {
-				this.previewSrc = URL.createObjectURL(this.image);
+	},
+	getApplyPageApi: async function () {
+		if(this.$route.params.bapIdx) {
+			const res = await api.get('/partners/apply', { idx: this.$route.params.bapIdx });
+			const data = res.data;
+			this.accessCode = data.access_code;
+			this.emailDomain = data.email_domain;
+			this.contacts = data.contacts;
+			this.notice = data.notice;
+			this.billNotice = data.bill_notice;
+			this.applyFrDt = data.apply_fr_dt;
+			this.applyToDt = data.apply_to_dt;
+			this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)];
+			this.openYn = data.open_yn ? 1 : 0;
+			//this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${data.site.ci_img}`
+
+			let cfCount = 0
+			let userFields = data.user_fields
+			if(userFields.length === 0) {
+				const applyPageFormParams = []
+				applyPageFormParams['baIdx'] = this.$route.params.bIdx?this.$route.params.bIdx:this.$route.params.bapIdx
+				const col = [
+					{ col_id:"company", title:"소속(회사명)", description: "회사명을 입력해주세요."},
+					{ col_id:"department", title:"부서", description: "정확한 부서명을 기재해주시기 바랍니다."},
+					{ col_id:"position", title:"직급", description: "정확한 직급을 기재해주시기 바랍니다."},
+					{ col_id:"emp_no", title:"사번", description: "8자리 사번을 정확하게 기재해주시기 바랍니다."},
+					{ col_id:"name", title:"이름(한글 성명)", description: "이름을 입력해주세요."},
+					{ col_id:"cel", title:"전화번호", description: "핸드폰 번호를 입력해주세요."},
+				]
+				col.forEach((col,i) => {
+					applyPageFormParams['cols['+i+'][dispYn]'] = 1
+					applyPageFormParams['cols['+i+'][colId]'] = col.col_id
+					applyPageFormParams['cols['+i+'][title]'] = col.title
+					applyPageFormParams['cols['+i+'][description]'] = col.description
+					applyPageFormParams['cols['+i+'][required]'] = 1
+					applyPageFormParams['cols['+i+'][type]'] = "T"
+					applyPageFormParams['cols['+i+'][opts]'] = null
+					applyPageFormParams['cols['+i+'][vals]'] = null
+				})
+				const res = await api.post('/partners/applyUserField', applyPageFormParams);
+				this.refresh();
 			}
+			userFields.forEach( item => {
+				if(item.col_id.slice(0,2) === 'cf') {
+					item['isCf'] = true
+					cfCount=item.col_id.charAt(2);
+				} else {item['isCf'] = false}
+			})
+			this.cfCnt = parseInt(cfCount);
+			this.applyerFormList = userFields
+		}
+	},
+	sortNumber: function (item,index) {
+		item.sort_no = index + 1
+		return item.sort_no
+	},
+    imageSelected: function() {
+		this.image = this.$refs.image.files[0];
+		if(this.image) {
+			this.previewSrc = URL.createObjectURL(this.image);
+		}
     },
     imageCancel: function() {
       this.image = null;
       this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${bap.site.ci_img}`
-		},
+	},
     sendNum() {
       let numlist = [];
       this.applyerFormList.forEach(el => numlist.push(el.num));
     },
     setForm: async function () {
-	  	const bapIdx = this.$route.params.idx
-	    // const bapIdx = 77
-			const params = {
-				idx: bapIdx,
-				accessCode: this.accessCode,
-				emailDomain: this.emailDomain,
-				contacts: this.contacts,
-				notice: this.notice,
-				billNotice: this.billNotice,
-				chargeRatePct: this.chargeRatePct ? parseInt(this.chargeRatePct) : 0,
-				penaltyAttendPct: this.penaltyAttendPct ? parseInt(this.penaltyAttendPct) : 0,
-				applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm:ss'),
-				applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm:ss'),
-				openYn: this.openYn ? 1 : 0
+		const idx = this.$route.params.bIdx?this.$route.params.bIdx:this.$route.params.bapIdx
+		const params = {
+			applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm:ss'),
+			applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm:ss'),
+			openYn: this.openYn ? 1 : 0,
+			accessCode: this.accessCode,
+			emailDomain: this.emailDomain,
+			contacts: this.contacts,
+			notice: this.notice,
+			billNotice: this.billNotice
+		}
+		if(this.$route.params.bIdx) params.bbIdx=idx
+		else params.idx=idx
+
+		let res;
+		if( this.applyFrDt === "Invalid date" ||  this.applyToDt === "Invalid date" ) {
+			this.$swal('수강신청 기간을 설정해주세요.');
+			return;
+		} else {res = await api.post('/partners/apply', params);}
+		//if(this.image) params.ciImage = this.image
+		//const applyPageRes = await api.upload('/partners/applyPage', params);
+		//console.log(applyPageRes);
+
+		let applyPageFormRes;
+		if(this.$route.params.bapIdx) {
+			const applyPageFormParams = []
+			applyPageFormParams['baIdx'] = idx
+			for (const [i, col] of this.applyerFormList.entries()) {
+				if(col.col_id==='' || col.title==='') {this.$swal('column Name과 항목을 모두 채워주세요.');return;}
+				applyPageFormParams['cols['+i+'][dispYn]'] = col.disp_yn ? 1 : 0
+				applyPageFormParams['cols['+i+'][colId]'] = col.col_id
+				applyPageFormParams['cols['+i+'][title]'] = col.title
+				applyPageFormParams['cols['+i+'][description]'] = col.description
+				applyPageFormParams['cols['+i+'][required]'] = col.required ? 1 : 0
+				applyPageFormParams['cols['+i+'][type]'] = col.type
+				applyPageFormParams['cols['+i+'][opts]'] = col.opts
+				applyPageFormParams['cols['+i+'][vals]'] = col.vals
 			}
-			if(this.image) params.ciImage = this.image
-
-			const applyPageRes =	await api.upload('/partners/applyPage', params);
-
-	    // apply info api post
-	    const applyPageFormParams = []
-	    applyPageFormParams['bapIdx'] = bapIdx
-		  this.applyerFormList.forEach((col,i) => {
-			  applyPageFormParams['cols['+i+'][colId]'] = col.col_id
-			  applyPageFormParams['cols['+i+'][title]'] = col.title
-			  applyPageFormParams['cols['+i+'][type]'] = col.type
-			  applyPageFormParams['cols['+i+'][description]'] = col.description
-			  applyPageFormParams['cols['+i+'][dispYn]'] = col.disp_yn ? 1 : 0
-			  applyPageFormParams['cols['+i+'][required]'] = col.required ? 1 : 0
-			  applyPageFormParams['cols['+i+'][opts]'] = col.opts
-			  applyPageFormParams['cols['+i+'][vals]'] = col.vals
-		  })
-
-	    // applyUserFeild
-	    let applyPageFormRes = await api.post('/partners/applyPageForm', applyPageFormParams);
-
-	    if(this.useBilling) {
-		    // billing info api post
-		    const applyPageBillingParams = []
-		    applyPageBillingParams['bapIdx'] = bapIdx
-
-		    this.billingInfos.forEach((col, i) => {
-			    applyPageBillingParams['billings[' + i + '][bNo]'] = col.b_no
-			    applyPageBillingParams['billings[' + i + '][chargeDt]'] = col.charge_dt
-			    applyPageBillingParams['billings[' + i + '][pchargeDt]'] = col.pcharge_dt
-		    })
-
-		    let applyPageBillingRes = await api.post('/partners/applyPageBilling', applyPageBillingParams);
-
-
-		    if(applyPageRes.result === 2000 && applyPageFormRes.result === 2000 && applyPageBillingRes.result === 2000) {
-			    this.$swal('성공').then(result => {
-				    if (result.isConfirmed) {
-					    this.refresh()
-				    }
-			    })
-		    }
-	    } else {
-		    if(applyPageRes.result === 2000 && applyPageFormRes.result === 2000) {
-			    this.$swal('성공').then(result => {
-				    if (result.isConfirmed) {
-					    this.refresh()
-				    }
-			    })
-		    }
-	    }
-
+			applyPageFormRes = await api.post('/partners/applyUserField', applyPageFormParams);
+		}
+		
+		if(res.result === 2000 && applyPageFormRes.result === 2000) {
+			this.$swal('성공').then(result => {
+				if (result.isConfirmed) {
+					this.refresh()
+				}
+			})
+		} else {
+			this.$swal('실패');
+		}
     },
-	  addFormList: function () {
+	addFormList: function () {
 	  	this.cfCnt += 1;
 	    let row = {
 	      col_id: "cf"+this.cfCnt,
@@ -488,80 +339,13 @@ export default {
 	      type: "T",
 	      vals: null
 	    }
-
 	    this.applyerFormList.push(row)
     },
-	  deleteFormList: function (colId) {
-		  const itemToFind = this.applyerFormList.find(function(item) {return item.col_id === colId})
-		  const idx = this.applyerFormList.indexOf(itemToFind)
-		  if (idx > -1) this.applyerFormList.splice(idx, 1)
-	  },
-	  addChargeDay: function (bNo) {
-		  let billingInfo = {
-			  b_no: bNo,
-			  bap_idx: 77,
-			  charge_dt: "",
-			  pcharge_dt: ""
-		  }
-
-		  this.billingInfos.push(billingInfo)
-
-	  },
-	  deleteChargeDay: function (bNo) {
-		  const itemToFind = this.billingInfos.find(function(item) {return item.b_no === bNo})
-		  const idx = this.billingInfos.indexOf(itemToFind)
-		  if (idx > -1) this.billingInfos.splice(idx, 1)
-	  },
-	  getApplyPageApi: async function () {
-		  const res = await api.get('/partners/applyPage', { idx: this.$route.params.idx });
-
-		  bap = res.data.bap;
-		  this.company = bap.site.company;
-		  this.accessCode = bap.access_code;
-		  this.emailDomain =bap.email_domain;
-		  this.contacts = bap.contacts;
-		  this.notice = bap.notice;
-		  this.billNotice = bap.bill_notice;
-		  this.chargeRatePct = bap.charge_rate_pct;
-		  this.penaltyAttendPct = bap.penalty_attend_pct;
-		  this.applyFrDt = bap.apply_fr_dt;
-		  this.applyToDt = bap.apply_to_dt;
-		  this.openYn = bap.open_yn ? 1 : 0;
-		  this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${bap.site.ci_img}`
-		  this.useBilling = bap.use_billing
-
-		  let bapForm = bap.form
-		  let cfCount = 0
-		  bapForm.forEach( item => {
-			  if(item.col_id.slice(0,2) === 'cf') {
-				  item['isCf'] = true
-				  cfCount++
-			  } else {item['isCf'] = false}
-		  })
-
-		  if(bap.use_billing) {
-				this.billingInfos = bap.billing
-		  }
-
-		  this.cfCnt = cfCount
-		  this.applyerFormList = bapForm
-
-		  this.goodsList = res.data.chargePlans
-	  },
-	  addSelectedGoods: function (event) {
-  		if (!this.selectedGoodsList.find( item => item.idx === parseInt(event.target.value))){
-			  let selectedGoods = this.goodsList.find( item => item.idx === parseInt(event.target.value))
-			  console.log(selectedGoods)
-			  this.selectedGoodsList.push(selectedGoods)
-		  } else {
-  			this.$swal('이미 추가된 수강권 입니다.')
-		  }
-	  },
-	  deleteSelectedGoods: function (goodsIdx) {
-		  const itemToFind = this.selectedGoodsList.find( item => item.idx === parseInt(goodsIdx) )
-		  const idx = this.selectedGoodsList.indexOf(itemToFind)
-		  if (idx > -1) this.selectedGoodsList.splice(idx, 1)
-	  }
+	deleteFormList: function (colId) {
+		const itemToFind = this.applyerFormList.find(function(item) {return item.col_id === colId})
+		const idx = this.applyerFormList.indexOf(itemToFind)
+		if (idx > -1) this.applyerFormList.splice(idx, 1)
+	}
   },
   computed: {
     applyRange: {
@@ -570,7 +354,7 @@ export default {
       },
       set(value) {
         this.applyFrDt = moment(value[0]).format('YYYY-MM-DD HH:mm:ss');
-        this.applyToDt = moment(value[1]).format('YYYY-MM-DD HH:mm:ss');
+		this.applyToDt = moment(value[1]).format('YYYY-MM-DD HH:mm:ss');
       }
     }
   }

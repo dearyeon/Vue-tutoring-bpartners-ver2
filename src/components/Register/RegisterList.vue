@@ -49,12 +49,14 @@
 							<td>{{ item.batches[item.selectedApplyIdx].del_yn?'Y':'-' }}</td>
 							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM:ss'):'-' }}</td>
 							<td>
-								<button class="btn btn-page-set" @click="createBatchPage(item.idx)">추가</button>
-								<button class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
+									<button class="btn btn-page-set" @click="createBatchPage(item.idx)">추가</button>
+									<button class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
 							</td>
 							<td>
+								<div style="display:inline;">
 								<button v-if="!!item.batches[item.selectedApplyIdx].apply" class="btn btn-page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 수정</button>
 								<button v-else class="btn btn-page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)">페이지 등록</button>
+								</div>
 							</td>
 							<td>
 								<button class="btn btn-primary" v-if="item.batches[item.selectedApplyIdx].apply" @click="goToApplyPage('https://apply.tutoring.co.kr/'+item.batches[item.selectedApplyIdx].apply.hash+'/7788')">페이지 보러 가기</button>
@@ -141,7 +143,6 @@ export default {
 		},
 		async setCurrentPage (data) {
 			this.current_page = data
-			console.log(this.current_page);
 			const res = await api.get('/partners/siteBatchList?page=' + this.current_page)
 			let list = res.data.data;
 			list.forEach(item => {
@@ -198,7 +199,6 @@ export default {
 	background-color: #fff;
 	border: 1px solid #1e9ed3;
 	border-radius: 0px;
-	width: 100%;
 }
 
 .table {
