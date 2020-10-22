@@ -2,23 +2,21 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
-                <div class="ibox-title" style="height:65px">
+                <div class="ibox-title">
                     <div class="pull-left">
-                        <h2>고객사 관리</h2>
+                        <h2 class="text-center" style="margin-top:12px">고객사 관리</h2>
                     </div>
-                    <div class="pull-right">
-                        <a class="btn btn-success" @click="openModal"><i class="fa fa-plus"></i> 고객사 등록</a>
-                    </div>
-                </div>
-                <div class="ibox-content m-b-sm border-bottom">
                     <form id="listform">
                         <div class="row">
                             <div class="col-sm-3">
                                 <label class="control-label" for="customer_name">검색어</label>
-                                <input type="text" placeholder="Search Word" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
+                                <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
                             </div>
-                            <div class="col-sm-1" style="margin-top:23px">
-                                <button class="btn btn-primary" v-on:click="setSearch(search)">검색</button>
+                            <div class="col-sm-1" style="margin-top:18px">
+                                <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
+                            </div>
+                            <div class="pull-right" style="margin-top:12px">
+                                <a class="btn btn-success" @click="openModal"><i class="fa fa-plus"></i> 고객사 등록</a>
                             </div>
                         </div>
                     </form>
@@ -32,24 +30,30 @@
                                     <thead>
                                     <tr>
                                         <th style="width:20px"></th>
-                                        <th class="pagesubmit sorting" field="order" value="company" @click="sortBy('company')">고객사명</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="max_c_no" @click="sortBy('c_no')">차수</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="sortBy('fr_dt')">시작날짜</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="sortBy('to_dt')">종료날짜</th>
+                                        <th class="pagesubmit sorting" field="order" value="company" @click="sortBy('company')">고객사 명</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="name" @click="sortBy('name')">담당자 이름</th>
+                                        <th class="pagesubmit text-center" value="part">부서</th>
+                                        <th class="pagesubmit text-center" value="tel">전화번호</th>
+                                        <th class="pagesubmit text-center" value="email">이메일</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="sortBy('fr_dt')">등록일자</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="sortBy('to_dt')">수정일자</th>
+                                        <th class="pagesubmit text-center">고객사수정</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="hover-pointer LESSON_INFO" v-for="(item, index) in items" :key="`Customer-${index}`" v-show="showSearch(item)">
-                                            <td><img alt="image" class="img-rounded" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_M" style="width:20px;height:20px;"></td>
-                                            <td>{{ item.site.company }}</td><!--@click="routeDetailPage(item.idx,item.c_no)"-->
-                                            <td class="text-center">
-                                                <select> <!--@change="routeDetailPage(item.idx,item.c_no,$event)"-->
-                                                    <option value="none" selected disabled hidden>{{item.c_no}}차</option>
-                                                    <option v-for="i in item.c_no" :value="i" :key="i.id">{{item.c_no-i+1}}차</option>
-                                                </select>
+                                        <tr class="hover-pointer LESSON_INFO" v-for="(item, index) in items" :key="`Customer-${index}`">
+                                            <td>
+                                                <img alt="image" v-if="item.ci_img" class="img-rounded" :src="'https://cdn.tutoring.co.kr/uploads/b2b/site/'+item.ci_img" style="width:20px;height:20px;">
+                                                <img alt="image" v-else class="img-rounded" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_M" style="width:20px;height:20px;">
                                             </td>
-                                            <td class="text-center">{{ moment(item.fr_dt).format('YYYY-MM-DD') }}</td>
-                                            <td class="text-center">{{ moment(item.to_dt).format('YYYY-MM-DD') }}</td>
+                                            <td>{{ item.company }}</td>
+                                            <td class="text-center">{{ item.name }}</td>
+                                            <td class="text-center">{{ item.part }}</td>
+                                            <td class="text-center">{{ item.tel }}</td>
+                                            <td class="text-center">{{ item.email }}</td>
+                                            <td class="text-center">{{ item.reg_dt?moment(item.reg_dt).format('YYYY-MM-DD'):'' }}</td>
+                                            <td class="text-center">{{ item.upd_dt?moment(item.upd_dt).format('YYYY-MM-DD'):'' }}</td>
+                                            <td class="text-center"><button class="btn btn-edit">수정</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -93,7 +97,7 @@ export default {
         Pagination, AddCustomerModal
     },
     async created() {
-        const res = await api.get('/partners/lessonList')
+        const res = await api.get('/partners/siteList')
         this.current_page = res.data.current_page
         this.total_page = res.data.last_page
         this.per_page = res.data.per_page
@@ -112,11 +116,12 @@ export default {
             }))
             this.sortKey = sortKey
         },
-        setSearch(input) {
-            this.search = input;
-        },
-        showSearch(item) {
-            return !item.site.company.indexOf(this.searchKey)
+        async setSearch(input) {
+            const res = await api.get('/partners/siteList', { sk:input })
+            this.current_page = res.data.current_page
+            this.total_page = res.data.last_page
+            this.per_page = res.data.per_page
+            this.items = res.data.data
         },
         async setCurrentPage (data) {
             this.current_page = data
@@ -133,3 +138,12 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.btn-edit {
+	color: #1e9ed3;
+	background-color: #fff;
+	border: 1px solid #1e9ed3;
+	border-radius: 0px;
+}
+</style>
