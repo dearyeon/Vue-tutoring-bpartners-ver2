@@ -20,6 +20,14 @@ const shared = {
     },
     nf(number) {
         return new Intl.NumberFormat('ko-KR').format(number)
+    },
+    getSiteImgUrl(imgFileNm) {
+        if(!imgFileNm) imgFileNm = 'default.png'
+        return 'https://cdn.tutoring.co.kr/uploads/b2b/site/'+imgFileNm
+    },
+    getSiteImgThumbnailUrl(imgFileNm) {
+        if(!imgFileNm) imgFileNm = 'default.png'
+        return 'https://cdn.tutoring.co.kr/uploads/b2b/site/tmb/'+imgFileNm
     }
 }
 

@@ -86,7 +86,8 @@ export default {
             tel: '',
             email: '',
             previewSrc: '',
-            image: ''
+            image: '',
+						ciImg: ''
         }
     },
     async created() {
@@ -99,9 +100,8 @@ export default {
             this.tel = site.tel;
             this.email = site.email;
             this.ciImg = site.ci_img;
-            this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${this.ciImg}`
+            this.previewSrc = this.$shared.getSiteImgUrl(this.ciImg)
         }
-
     },
     methods: {
         imageSelected: function() {
@@ -112,7 +112,7 @@ export default {
         },
         imageCancel: function() {
             this.image = null;
-            this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${this.ciImg}`
+            this.previewSrc = this.$shared.getSiteImgUrl(this.ciImg)
         },
         async setForm() {
             const params = {
