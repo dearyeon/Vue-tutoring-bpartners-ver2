@@ -26,9 +26,9 @@
 						<thead>
 						<tr>
 							<th class="text-center">No</th>
-							<th class="text-center">고객사</th>
-							<th class="text-center">담당자</th>
-							<th class="text-center">회차</th>
+							<th class="text-left">고객사</th>
+							<th class="text-left">담당자</th>
+							<th class="text-left">회차</th>
 							<th class="text-center">달성률</th>
 							<th class="text-center">빌링</th>
 							<th class="text-center">정기결제일</th>
@@ -43,11 +43,9 @@
 						<tbody>
 						<tr v-for="(item, index) in list" :key="`Register-${index}`">
 							<td>{{ index+1 }}</td>
-							<td>
-								{{ item.company }}
-							</td>
-							<td>{{ item.name }}</td>
-							<td>
+							<td class="text-left">{{ item.company }}</td>
+							<td class="text-left">{{ item.name }}</td>
+							<td class="text-left">
 								<select v-model="item.selectedApplyIdx" v-if="item.batches.length">
 									<option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
 										{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY-MM-DD') }} - {{moment(apply.to_dt).format('YY-MM-DD') }}{{item.batches[item.selectedApplyIdx].del_yn?'(취소)':''}}
@@ -60,9 +58,8 @@
 							<td>{{ item.batches.length?item.batches[item.selectedApplyIdx].pcharge_dt:'' }}</td>
 							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM:ss'):'' }}</td>
 							<td style='white-space: nowrap'>
-								<button class="btn btn-page-set" @click="createBatchPage(item.idx,item.company)">추가</button>
+								<button class="btn btn-page-set pull-left" @click="createBatchPage(item.idx,item.company)">추가</button>
 								<button v-if="item.batches.length?(!!item.batches[item.selectedApplyIdx].idx):0" class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
-						
 							</td>
 							<td style='white-space: nowrap'>
 								<div v-if="item.batches.length">
