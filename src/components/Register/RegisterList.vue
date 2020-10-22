@@ -54,25 +54,27 @@
 									</option>
 								</select>
 							</td>
-							<td>{{ item.batches[item.selectedApplyIdx].target_rt }}%</td>
-							<td>{{ item.batches[item.selectedApplyIdx].use_billing?'빌링':'' }}</td>
-							<td>{{ item.batches[item.selectedApplyIdx].charge_dt }}</td>
-							<td>{{ item.batches[item.selectedApplyIdx].pcharge_dt }}</td>
+							<td>{{ item.batches.length?item.batches[item.selectedApplyIdx].target_rt+'%':'' }}</td>
+							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].use_billing?'빌링':''):'' }}</td>
+							<td>{{ item.batches.length?item.batches[item.selectedApplyIdx].charge_dt:'' }}</td>
+							<td>{{ item.batches.length?item.batches[item.selectedApplyIdx].pcharge_dt:'' }}</td>
 							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM:ss'):'' }}</td>
 							<td style='white-space: nowrap'>
 								<button class="btn btn-page-set" @click="createBatchPage(item.idx,item.company)">추가</button>
-								<button v-if="!!item.batches[item.selectedApplyIdx].idx" class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
+								<button v-if="item.batches.length?(!!item.batches[item.selectedApplyIdx].idx):0" class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
 						
 							</td>
 							<td style='white-space: nowrap'>
+								<div v-if="item.batches.length">
 								<button v-if="!!item.batches[item.selectedApplyIdx].apply" class="btn btn-page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 수정</button>
 								<button v-else class="btn btn-page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)">페이지 등록</button>
+								</div>
 							</td>
 							<td>
-								<button class="btn btn-primary" v-if="item.batches[item.selectedApplyIdx].apply" @click="goToApplyPage('https://apply.tutoring.co.kr/'+item.batches[item.selectedApplyIdx].apply.hash+'/7788')">신청 페이지</button>
+								<button class="btn btn-primary" v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="goToApplyPage('https://apply.tutoring.co.kr/'+item.batches[item.selectedApplyIdx].apply.hash+'/7788')">신청 페이지</button>
 							</td>
 							<td>
-								<a v-if="item.batches[item.selectedApplyIdx].apply" @click="copyText($event,index)">https://apply.tutoring.co.kr/{{ item.batches[item.selectedApplyIdx].apply.hash }}</a>
+								<a v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="copyText($event,index)">https://apply.tutoring.co.kr/{{ item.batches[item.selectedApplyIdx].apply.hash }}</a>
 								<div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+index">
 									<a href="#" class="alert-link">클립보드에 복사되었습니다.</a>
 								</div>
