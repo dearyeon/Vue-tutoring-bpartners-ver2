@@ -21,7 +21,6 @@
 							<th class="text-center">빌링</th>
 							<th class="text-center">정기결제일</th>
 							<th class="text-center">추가결제일</th>
-							<th class="text-center">취소됨</th>
 							<th class="text-center">수정일시</th>
 							<th class="text-center">차수관리</th>
 							<th class="text-center">신청양식설정</th>
@@ -38,32 +37,26 @@
 							<td>
 								<select v-model="item.selectedApplyIdx">
 									<option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
-										{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY-MM-DD') }} - {{moment(apply.to_dt).format('YY-MM-DD') }}
+										{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY-MM-DD') }} - {{moment(apply.to_dt).format('YY-MM-DD') }}{{item.batches[item.selectedApplyIdx].del_yn?'(취소)':''}}
 									</option>
 								</select>
 							</td>
 							<td>{{ item.batches[item.selectedApplyIdx].target_rt }}%</td>
-							<td>{{ item.batches[item.selectedApplyIdx].use_billing?'Y':'-' }}</td>
+							<td>{{ item.batches[item.selectedApplyIdx].use_billing?'빌링':'' }}</td>
 							<td>{{ item.batches[item.selectedApplyIdx].charge_dt }}</td>
 							<td>{{ item.batches[item.selectedApplyIdx].pcharge_dt }}</td>
-							<td>{{ item.batches[item.selectedApplyIdx].del_yn?'Y':'-' }}</td>
-							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM:ss'):'-' }}</td>
-							<td>
-								<div class="row">
-									<span class="col-xs-6 no-padding">
-										<button class="btn btn-page-set" @click="createBatchPage(item.idx,item.company)">추가</button>
-									</span>
-									<span class="col-xs-6 no-padding">
-										<button v-if="!!item.batches[item.selectedApplyIdx].idx" class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
-									</span>
-								</div>
+							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM:ss'):'' }}</td>
+							<td class="row col-lg-12">
+								<button class="btn btn-page-set col-xs-auto" @click="createBatchPage(item.idx,item.company)">추가</button>
+								<button v-if="!!item.batches[item.selectedApplyIdx].idx" class="btn btn-page-set col-xs-auto" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
+
 							</td>
 							<td>
 								<button v-if="!!item.batches[item.selectedApplyIdx].apply" class="btn btn-page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 수정</button>
 								<button v-else class="btn btn-page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)">페이지 등록</button>
 							</td>
 							<td>
-								<button class="btn btn-primary" v-if="item.batches[item.selectedApplyIdx].apply" @click="goToApplyPage('https://apply.tutoring.co.kr/'+item.batches[item.selectedApplyIdx].apply.hash+'/7788')">페이지 보러 가기</button>
+								<button class="btn btn-primary" v-if="item.batches[item.selectedApplyIdx].apply" @click="goToApplyPage('https://apply.tutoring.co.kr/'+item.batches[item.selectedApplyIdx].apply.hash+'/7788')">신청 페이지</button>
 							</td>
 							<td>
 								<a v-if="item.batches[item.selectedApplyIdx].apply" @click="copyText($event,index)">https://apply.tutoring.co.kr/{{ item.batches[item.selectedApplyIdx].apply.hash }}</a>
