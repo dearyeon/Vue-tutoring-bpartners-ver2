@@ -1,8 +1,20 @@
 <template>
 	<div class="row">
 		<div class="col-lg-12">
-			<div class="ibox-title title">
-				<h2 class="pull-left">차수 관리</h2>
+			<div class="ibox-title">
+				    <div class="pull-left col-lg-2">
+                        <h2>차수 관리</h2>
+                    </div>
+                    <form id="listform">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
+                            </div>
+                            <div class="col-sm-1">
+                                <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
+                            </div>
+                        </div>
+                    </form>
 				<router-link :to="{ path: '/register/createPage' }">
 				</router-link>
 			</div>
@@ -46,12 +58,12 @@
 							<td>{{ item.batches[item.selectedApplyIdx].charge_dt }}</td>
 							<td>{{ item.batches[item.selectedApplyIdx].pcharge_dt }}</td>
 							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM:ss'):'' }}</td>
-							<td class="row col-lg-12">
-								<button class="btn btn-page-set col-xs-auto" @click="createBatchPage(item.idx,item.company)">추가</button>
-								<button v-if="!!item.batches[item.selectedApplyIdx].idx" class="btn btn-page-set col-xs-auto" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
-
+							<td style='white-space: nowrap'>
+								<button class="btn btn-page-set" @click="createBatchPage(item.idx,item.company)">추가</button>
+								<button v-if="!!item.batches[item.selectedApplyIdx].idx" class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
+						
 							</td>
-							<td>
+							<td style='white-space: nowrap'>
 								<button v-if="!!item.batches[item.selectedApplyIdx].apply" class="btn btn-page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 수정</button>
 								<button v-else class="btn btn-page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)">페이지 등록</button>
 							</td>
@@ -89,6 +101,7 @@ export default {
 			list: [],
 			current_page: 1,
 			total_page: 1,
+			searchKey: '',
 			moment: moment
 		}
 	},
@@ -172,7 +185,18 @@ export default {
 				name: 'applyNew',
 				params: { bIdx: bIdx }
 			})
-		}
+		},
+		async setSearch(input) {
+            const res = await api.get('/partners/siteBatchList', { sk:input })
+			let list = res.data.data;
+			list.forEach(item => {
+				item.selectedApplyIdx = 0,
+				item.isCopy = false
+			})
+			this.list = list
+			this.current_page = res.data.current_page
+			this.total_page = res.data.last_page
+        },
 	}
 }
 </script>

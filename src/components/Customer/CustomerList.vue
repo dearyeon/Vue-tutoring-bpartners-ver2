@@ -3,19 +3,18 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <div class="pull-left">
-                        <h2 class="text-center" style="margin-top:12px">고객사 관리</h2>
+                    <div class="pull-left col-lg-2">
+                        <h2>고객사 관리</h2>
                     </div>
                     <form id="listform">
                         <div class="row">
                             <div class="col-sm-3">
-                                <label class="control-label" for="customer_name">검색어</label>
                                 <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
                             </div>
-                            <div class="col-sm-1" style="margin-top:18px">
+                            <div class="col-sm-1">
                                 <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
                             </div>
-                            <div class="pull-right" style="margin-top:12px">
+                            <div class="pull-right">
                                 <a class="btn btn-success" @click="openModal"><i class="fa fa-plus"></i> 고객사 등록</a>
                             </div>
                         </div>
