@@ -295,9 +295,9 @@ export default {
 
 		if(res.result === 2000 && applyPageFormRes.result === 2000) {
 			this.$swal('성공').then(result => {
-				if (result.isConfirmed) {
-					this.refresh()
-				}
+				this.$router.push({
+					name: "registerList"
+				})
 			})
 		} else {
 			this.$swal('실패');

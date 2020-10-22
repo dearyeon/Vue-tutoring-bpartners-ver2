@@ -30,7 +30,7 @@
 		                  <table>
 		                    <tr>
 		                      <td colspan="2">
-		                        <img :src="image" alt="업로드 된 이미지" />
+		                        <img :src="previewSrc" alt="업로드 된 이미지" />
 		                      </td>
 		                    </tr>
 		                    <tr>
@@ -92,13 +92,14 @@ export default {
     async created() {
         if (this.$route.params.idx) {
             const res = await api.get('/partners/site', { idx : this.$route.params.idx })
-            this.company = res.data.company;
-            this.name = res.data.name;
-            this.part = res.data.part;
-            this.tel = res.data.tel;
-            this.email = res.data.email;
-            this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${res.data.ci_img}`
-            this.image = this.previewSrc;
+            const site = res.data;
+            this.company = site.company;
+            this.name = site.name;
+            this.part = site.part;
+            this.tel = site.tel;
+            this.email = site.email;
+            this.ciImg = site.ci_img;
+            this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${this.ciImg}`
         }
 
     },
@@ -106,24 +107,23 @@ export default {
         imageSelected: function() {
             this.image = this.$refs.image.files[0];
             if(this.image) {
-                this.image = URL.createObjectURL(this.image);
-                console.log(this.image);
+                this.previewSrc = URL.createObjectURL(this.image);
             }
         },
         imageCancel: function() {
-            this.image = this.previewSrc;
+            this.image = null;
+            this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${this.ciImg}`
         },
         async setForm() {
             const params = {
-                company: this.company,
-                name: this.name,
-                part: this.part,
-                tel: this.tel,
-                email: this.email,
-                ciImg: this.image
+                company: this.company?this.company:'',
+                name: this.name?this.name:'',
+                part: this.part?this.part:'',
+                tel: this.tel?this.tel:'',
+                email: this.email?this.email:'',
+                ciImg: this.image?this.image:''
             }
             if(this.$route.params.idx) params['idx'] = this.$route.params.idx
-            console.log(params,111);
             let res;
             if(this.company) {
                 res = await api.upload('/partners/site', params);
@@ -132,7 +132,9 @@ export default {
                 return;
             }
             if( res.result === 2000 ) {
-                this.$swal('성공!');
+                this.$swal('성공').then(result => {
+				    this.$router.push({name: "customerList"})
+		    	})
             } else {
                 this.$swal('실패!');
             }
