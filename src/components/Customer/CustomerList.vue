@@ -29,13 +29,13 @@
                                     <thead>
                                     <tr>
                                         <th style="width:20px"></th>
-                                        <th class="pagesubmit sorting" field="order" value="company" @click="sortBy('company')">고객사 명</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="name" @click="sortBy('name')">담당자 이름</th>
+                                        <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy('company')">고객사 명</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="name" @click="$shared.sortBy('name')">담당자 이름</th>
                                         <th class="pagesubmit text-center" value="part">부서</th>
                                         <th class="pagesubmit text-center" value="tel">전화번호</th>
                                         <th class="pagesubmit text-center" value="email">이메일</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="sortBy('fr_dt')">등록일자</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="sortBy('to_dt')">수정일자</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('fr_dt')">등록일자</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('to_dt')">수정일자</th>
                                         <th class="pagesubmit text-center">고객사수정</th>
                                     </tr>
                                     </thead>
@@ -107,12 +107,6 @@ export default {
                 name: '',
                 params: { }
             })
-        },
-        sortBy (sortKey) {
-            (this.sortKey === sortKey) ? this.items.reverse() : (this.items.sort(function (a, b) {
-                return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0
-            }))
-            this.sortKey = sortKey
         },
         async setSearch(input) {
             const res = await api.get('/partners/siteList', { sk:input })

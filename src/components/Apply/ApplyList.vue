@@ -13,27 +13,39 @@
 						<table class="table text-center table-hover dataTable">
               <thead>
                 <tr>
-                    <th class="text-left">고객사명</th>
-                    <th class="text-center">차수</th>
-                    <th class="text-center">담당자</th>
-                    <th class="text-center">부서</th>
-                    <th class="text-center">연락처</th>
-                    <th class="text-center">이메일</th>
+                  <th style="width:20px"></th>
+                  <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy('company')">고객사명</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="max_c_no">차수</th>
+                  <th class="pagesubmit text-center" value="status">현재상태</th>
+                  <th>과목</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('fr_dt')">수업시작일</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('to_dt')">수업종료일</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('apply.apply_fr_dt')">신청시작일시</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('apply.apply_to_dt')">신청종료일시</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="$shared.sortBy('applyCnt')">인원수</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(item, index) in applySite" :key="`apply-${index}`">
-                    <td class="text-left" @click="routeDetailPage(item.s_idx,item.last_a_no)">{{ item.site.company?item.site.company:'-' }}</td>
+                    <td></td>
+                    <td class="text-left" @click="routeDetailPage(item.idx,item.batches)">{{ item.company }}</td>
                     <td>
-                      <select @change="routeDetailPage(item.s_idx,item.last_a_no,$event)">
-                        <option value="none" selected disabled hidden>{{item.last_a_no}}차</option>   
-                        <option v-for="i in item.last_a_no" :value="i" :key="i.id">{{item.last_a_no-i+1}}차</option>
+                      <select v-model="item.selectedApplyIdx" v-if="item.batches.length" @change="routeDetailPage(item.idx,item.batches,$event)">
+                        <option value="none" selected disabled hidden>{{item.batches[0].b_no}}차</option>
+                        <option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
+                          {{apply.b_no}}차
+                        </option>
                       </select>
                     </td>
-                    <td class="text-center">{{ item.site.name?item.site.name:'-' }}</td>
-                    <td class="text-center">{{ item.site.part?item.site.part:'-' }}</td>
-                    <td class="text-center">{{ item.site.tel?item.site.tel:'-' }}</td>
-                    <td class="text-center">{{ item.site.email?item.site.email:'-' }}</td>
+                    <td class="text-center">
+                      <label v-if="item.batches.length" :class="currentStatus(item.batches[item.selectedApplyIdx].fr_dt,item.batches[item.selectedApplyIdx].to_dt,1)" style="width:60px;text-align: center">{{ currentStatus(item.batches[item.selectedApplyIdx].fr_dt,item.batches[item.selectedApplyIdx].to_dt,0) }}</label>
+                    </td>
+                    <td></td>
+                    <td class="text-center">{{ item.apply?moment(item.apply.apply_fr_dt).format('YYYY-MM-DD'):'' }}</td>
+                    <td class="text-center">{{ item.apply?moment(item.apply.apply_to_dt).format('YYYY-MM-DD'):'' }}</td>
+                    <td class="text-center">{{ item.batches.length?item.batches[item.selectedApplyIdx].fr_dt:'' }}</td>
+                    <td class="text-center">{{ item.batches.length?item.batches[item.selectedApplyIdx].to_dt:'' }}</td>
+                    <td class="text-center">{{ item.applyCnt }}명</td>
                 </tr>
               </tbody>
             </table>
@@ -41,31 +53,80 @@
         </div>
       </div>
     </div>
+    <div>
+      <div class="row">
+        <div class="text-center">
+            <Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import api from "@/common/api";
-
+import api from "@/common/api"
+import moment from 'moment'
+import Pagination from '@/components/atom/Pagination'
 export default {
-  async created() {
-    const res = await api.get("/partners/applySiteList");
-    this.applySite = res.data;
-  },
   data() {
     return {
       applySite: [],
-      selectaNo: ''
+      selectaNo: '',
+      searchKey: '',
+			sortKey: '',
+      current_page: 1,
+      total_page: 1,
+      moment: moment
     };
+  },
+  components: {
+		Pagination
+	},
+  async created() {
+    const res = await api.get("/partners/applySiteList");
+    let list = res.data.data;
+		list.forEach(item => {
+		  item.selectedApplyIdx = 0
+		})
+    this.applySite = list
+    this.current_page = res.data.current_page
+		this.total_page = res.data.last_page
   },
   methods: {
     routeDetailPage(s_idx, aNo, event) {
       let a_no;
-      if (event) a_no = aNo - event.target.value + 1;
+      if (event) a_no = aNo[0].b_no - event.target.value + 1;
       this.$router.push({
           name: "applyDetailsList",
           params: { sIdx: s_idx, aNo:a_no?a_no:aNo }
       })
+    },
+    currentStatus (fr_dt, to_dt, val) {
+      const date = moment().format('YYYY-MM-DD')
+      if (date < fr_dt) {
+        return val ? 'b-r-sm bg-warning' : '대기중'
+      } else if (date >= fr_dt && date <= to_dt) {
+        return val ? 'b-r-sm bg-primary' : '진행중'
+      } else if (date > to_dt) {
+        return val ? 'b-r-sm bg-success' : '완료'
+      } else {
+        return val ? 'b-r-sm bg-danger' : '취소됨'
+      }
+    },
+    async setCurrentPage (data) {
+			this.current_page = data
+			const res = await api.get('/partners/applySiteList?page=' + this.current_page)
+      let list = res.data.data;
+      list.forEach(item => {
+        item.selectedApplyIdx = 0
+      })
+      this.applySite = list
+		},
+    async setSearch(input) {
+      const res = await api.get('/partners/applySiteList', { sk:input })
+      this.current_page = res.data.current_page
+      this.total_page = res.data.last_page
+      this.applySite = res.data.data
     },
   }
 };

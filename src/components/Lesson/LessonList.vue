@@ -18,13 +18,13 @@
                                     <thead>
                                     <tr>
                                         <th style="width:20px"></th>
-                                        <th class="pagesubmit sorting" field="order" value="company" @click="sortBy('company')">고객사명</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="max_c_no" @click="sortBy('c_no')">차수</th>
+                                        <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy('company')">고객사명</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="max_c_no">차수</th>
                                         <th class="pagesubmit text-center" value="status">현재상태</th>
                                         <th>과목</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="sortBy('fr_dt')">시작날짜</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="sortBy('to_dt')">종료날짜</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="sortBy('usersCnt')">인원수</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('fr_dt')">시작날짜</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('to_dt')">종료날짜</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="$shared.sortBy('usersCnt')">인원수</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -75,76 +75,58 @@
 
 
 <script>
-	import api from '@/common/api'
-	import moment from 'moment'
-	import Pagination from '@/components/atom/Pagination'
+import api from '@/common/api'
+import moment from 'moment'
+import Pagination from '@/components/atom/Pagination'
 
-	export default {
-		data () {
-			return {
-				info: [],
-				items: [],
-				sortKey: '',
-				current_page: 1,
-				total_page: 1,
-				moment: moment
-			}
+export default {
+	data () {
+		return {
+			info: [],
+			items: [],
+			sortKey: '',
+			current_page: 1,
+			total_page: 1,
+			moment: moment
+		}
+	},
+	components: {
+		Pagination
+	},
+	async created () {
+		this.info = tempInfo
+		const res = await api.get('/partners/lessonList')
+		this.current_page = res.data.current_page
+		this.total_page = res.data.last_page
+		this.items = res.data.data
+	},
+	methods: {
+		routeDetailPage (idx, c_no, event) {
+			let cNo
+			if (event) cNo = c_no - event.target.value + 1
+			this.$router.push({
+				name: 'lessonDetailsList',
+				params: { id: idx, c_no: cNo ? cNo : c_no }
+			})
 		},
-		components: {
-			Pagination
-		},
-		async created () {
-			this.info = tempInfo
-			const res = await api.get('/partners/lessonList')
+		async setCurrentPage (data) {
+			this.current_page = data
+			const res = await api.get('/partners/lessonList?page=' + this.current_page)
 			this.current_page = res.data.current_page
-			this.total_page = res.data.last_page
 			this.items = res.data.data
 		},
-		methods: {
-			routeDetailPage (idx, c_no, event) {
-				let cNo
-				if (event) cNo = c_no - event.target.value + 1
-				this.$router.push({
-					name: 'lessonDetailsList',
-					params: { id: idx, c_no: cNo ? cNo : c_no }
-				})
-			},
-			sortBy (sortKey) {
-				(this.sortKey === sortKey) ? this.items.reverse() : (this.items.sort(function (a, b) {
-					return a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0
-				}))
-				this.sortKey = sortKey
-			},
-			async setCurrentPage (data) {
-				this.current_page = data
-				const res = await api.get('/partners/lessonList?page=' + this.current_page)
-				this.current_page = res.data.current_page
-				this.items = res.data.data
-			},
-			currentStatus (fr_dt, to_dt, val) {
-				const date = moment().format('YYYY-MM-DD')
-				if (date < fr_dt) {
-					return val ? 'b-r-sm bg-warning' : '대기중'
-				} else if (date >= fr_dt && date <= to_dt) {
-					return val ? 'b-r-sm bg-primary' : '진행중'
-				} else if (date > to_dt) {
-					return val ? 'b-r-sm bg-success' : '완료'
-				} else {
-					return val ? 'b-r-sm bg-danger' : '취소됨'
-				}
+		currentStatus (fr_dt, to_dt, val) {
+			const date = moment().format('YYYY-MM-DD')
+			if (date < fr_dt) {
+				return val ? 'b-r-sm bg-warning' : '대기중'
+			} else if (date >= fr_dt && date <= to_dt) {
+				return val ? 'b-r-sm bg-primary' : '진행중'
+			} else if (date > to_dt) {
+				return val ? 'b-r-sm bg-success' : '완료'
+			} else {
+				return val ? 'b-r-sm bg-danger' : '취소됨'
 			}
 		}
 	}
-
-	const tempInfo = {
-		this_month_cnt: 10,
-		last_month_cnt: 5,
-		this_week_cnt: 20,
-		last_week_cnt: 25,
-		this_three_cnt: 30,
-		last_three_cnt: 30,
-		today_cnt: 40,
-		yesterday_cnt: 50
-	}
-
+}
 </script>
