@@ -22,7 +22,7 @@
 		<div class="row">
 			<div class="ibox content">
 				<div class="ibox-content">
-					<table class="table text-center">
+					<table class="table text-center table-hover dataTable">
 						<thead>
 						<tr>
 							<th class="text-center">No</th>
@@ -40,6 +40,7 @@
 							<th class="text-center">URL</th>
 						</tr>
 						</thead>
+						<tbody>
 						<tr v-for="(item, index) in list" :key="`Register-${index}`">
 							<td>{{ index+1 }}</td>
 							<td>
@@ -77,6 +78,7 @@
 								</div>
 							</td>
 						</tr>
+						</tbody>
 					</table>
 				</div>
 				<div class="row">

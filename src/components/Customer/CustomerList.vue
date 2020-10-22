@@ -15,7 +15,7 @@
                                 <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
                             </div>
                             <div class="pull-right">
-                                <a class="btn btn-success" @click="openModal"><i class="fa fa-plus"></i> 고객사 등록</a>
+                                <a class="btn btn-success" @click="createCustomerPage"><i class="fa fa-plus"></i> 고객사 등록</a>
                             </div>
                         </div>
                     </form>
@@ -52,7 +52,7 @@
                                             <td class="text-center">{{ item.email }}</td>
                                             <td class="text-center">{{ item.reg_dt?moment(item.reg_dt).format('YYYY-MM-DD'):'' }}</td>
                                             <td class="text-center">{{ item.upd_dt?moment(item.upd_dt).format('YYYY-MM-DD'):'' }}</td>
-                                            <td class="text-center"><button class="btn btn-edit">수정</button></td>
+                                            <td class="text-center"><button class="btn btn-edit" @click="editCustomerPage(item.idx)">수정</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -122,12 +122,21 @@ export default {
             this.per_page = res.data.per_page
             this.items = res.data.data
         },
-        async setCurrentPage (data) {
+        async setCurrentPage(data) {
             this.current_page = data
-            const res = await api.get('/partners/lessonList?page=' + this.current_page)
+            const res = await api.get('/partners/siteList?page=' + this.current_page)
             this.current_page = res.data.current_page
             this.items = res.data.data
         },
+        createCustomerPage() {
+			this.$router.push({ name: 'customerNew' })
+		},
+        editCustomerPage(idx) {
+			this.$router.push({
+				name: 'customerEdit',
+				params: { idx:idx }
+			})
+		},
         openModal() {
           this.showModal = !this.showModal;
         },

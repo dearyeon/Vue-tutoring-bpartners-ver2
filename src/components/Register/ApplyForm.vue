@@ -11,7 +11,6 @@
     <div class="row">
       <div class="ibox content">
         <div class="ibox-content">
-	        <div class="hr-line-dashed"></div>
 	        <div class="form-group">
 	          <h3 class="well">1 step. 액세스 홈</h3>
 	          <div class="row">
@@ -22,34 +21,13 @@
 	                  <td><input type="text" class="form-control" v-model="accessCode" placeholder="Access code를 입력해 주세요." /></td>
 	                </tr>
 	                <tr>
-	                  <th>CI/BI 등록</th>
-	                  <td>
-		                  <table>
-		                    <tr>
-		                      <td colspan="2">
-		                        <img :src="previewSrc" alt="업로드 된 이미지" />
-		                      </td>
-		                    </tr>
-		                    <tr>
-		                      <td class="col-lg-6 col-md-6 col-xs-6">
-		                        <label class="btn btn-success col-lg-12 col-md-12 col-xs-12" for="file">이미지 변경</label>
-		                        <input type="file" id="file" accept="image/*" ref="image" @change="imageSelected" />
-		                      </td>
-		                      <td class="col-lg-6 col-md-6 col-xs-6">
-		                        <button class="btn btn-danger col-lg-12 col-md-12 col-xs-12" @click="imageCancel">취소</button>
-		                      </td>
-		                    </tr>
-		                  </table>
-	                  </td>
-	                </tr>
+						<th>이메일 도메인 지정</th>
+						<td><input type="text" class="form-control" placeholder="이메일 도메인을 입력해주세요." v-model="emailDomain"/></td>
+					</tr>
 	              </table>
 	            </div>
 	            <div class="col-lg-6">
 	              <table class="table">
-					<tr>
-						<th>이메일 도메인 지정</th>
-						<td><input type="text" class="form-control" placeholder="이메일 도메인을 입력해주세요." v-model="emailDomain"/></td>
-					</tr>
 	                <tr>
 	                  <th style="vertical-align: top; padding-top: 12px; width:20%">수강신청 문의</th>
 	                  <td>
@@ -80,7 +58,7 @@
 				        </td>
 			        </tr>
 		        </table>
-					</div>
+			</div>
 
 	        <div class="form-group" v-if="this.$route.params.bapIdx">
 	        	<div class="hr-line-dashed"></div>

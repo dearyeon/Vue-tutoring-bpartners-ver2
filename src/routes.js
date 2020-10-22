@@ -1,4 +1,3 @@
-import CustomerList from "@/components/Customer/CustomerList";
 import LessonList from "@/components/Lesson/LessonList";
 import LessonDetailsList from "@/components/Lesson/LessonDetailsList";
 import UserList from "@/components/User/UserList";
@@ -11,6 +10,8 @@ import RegisterList from "@/components/Register/RegisterList";
 import CreatePage from "@/components/Register/CreatePage";
 import ApplyForm from "@/components/Register/ApplyForm";
 import BatchForm from "@/components/Register/BatchForm";
+import CustomerList from "@/components/Customer/CustomerList";
+import CustomerForm from "@/components/Customer/CustomerForm";
 import Main from "@/components/Main";
 import Login from "@/components/Login";
 
@@ -22,7 +23,6 @@ const routes = [
     component: Main,
     children: [
       { path: "/", redirect: "/lesson/List" },
-      { path: '/customer/List', component: CustomerList },
       { path: '/lesson/List', component: LessonList },
       { path: '/lesson/DetailsList/:id/:c_no', name: "lessonDetailsList", component: LessonDetailsList, props: true },
       { path: '/user/List', component: UserList },
@@ -37,6 +37,9 @@ const routes = [
 	    { path: "/register/applyEdit/:bapIdx", name: "applyEdit", component: ApplyForm, props:true },
       { path: "/register/batchNew/:bsIdx/:company", name: "batchNew", component: BatchForm, props:true },
       { path: "/register/batchEdit/:bIdx", name: "batchEdit", component: BatchForm, props:true },
+      { path: '/customer/List', component: CustomerList },
+      { path: "/customer/customerNew", name: "customerNew", component: CustomerForm, props:true },
+      { path: "/customer/customerEdit/:idx", name: "customerEdit", component: CustomerForm, props:true },
     ],
   },
 ];
