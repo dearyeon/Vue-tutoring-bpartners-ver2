@@ -48,7 +48,7 @@
 							</td>
 							<td>{{ item.name }}</td>
 							<td>
-								<select v-model="item.selectedApplyIdx">
+								<select v-model="item.selectedApplyIdx" v-if="item.batches.length">
 									<option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
 										{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY-MM-DD') }} - {{moment(apply.to_dt).format('YY-MM-DD') }}{{item.batches[item.selectedApplyIdx].del_yn?'(취소)':''}}
 									</option>
