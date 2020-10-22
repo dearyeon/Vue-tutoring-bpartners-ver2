@@ -42,8 +42,7 @@
                                     <tbody>
                                         <tr class="hover-pointer LESSON_INFO" v-for="(item, index) in items" :key="`Customer-${index}`">
                                             <td>
-                                                <img alt="image" v-if="item.ci_img" class="img-rounded" :src="'https://cdn.tutoring.co.kr/uploads/b2b/site/'+item.ci_img" style="width:20px;height:20px;">
-                                                <img alt="image" v-else class="img-rounded" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_M" style="width:20px;height:20px;">
+                                                <img alt="image" class="img-rounded" :src="this.$shared.getSiteImgThumbnailUrl(item.ci_img)" style="width:20px;height:20px;">
                                             </td>
                                             <td>{{ item.company }}</td>
                                             <td class="text-center">{{ item.name }}</td>
