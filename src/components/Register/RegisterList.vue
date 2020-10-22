@@ -57,8 +57,8 @@
 							<td>{{ item.batches.length?item.batches[item.selectedApplyIdx].charge_dt:'' }}</td>
 							<td>{{ item.batches.length?item.batches[item.selectedApplyIdx].pcharge_dt:'' }}</td>
 							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM:ss'):'' }}</td>
-							<td style='white-space: nowrap'>
-								<button class="btn btn-page-set pull-left" @click="createBatchPage(item.idx,item.company)">추가</button>
+							<td class="text-left" style='white-space: nowrap;'>
+								<button class="btn btn-page-set" @click="createBatchPage(item.idx,item.company)">추가</button>
 								<button v-if="item.batches.length?(!!item.batches[item.selectedApplyIdx].idx):0" class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
 							</td>
 							<td style='white-space: nowrap'>

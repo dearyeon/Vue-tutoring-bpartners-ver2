@@ -42,7 +42,7 @@
                                     <tbody>
                                         <tr class="hover-pointer LESSON_INFO" v-for="(item, index) in items" :key="`Customer-${index}`">
                                             <td>
-                                                <img alt="image" class="img-rounded" :src="this.$shared.getSiteImgThumbnailUrl(item.ci_img)" style="width:20px;height:20px;">
+                                                <img alt="image" class="img-rounded" :src="$shared.getSiteImgThumbnailUrl(item.ci_img)" style="width:20px;height:20px;">
                                             </td>
                                             <td>{{ item.company }}</td>
                                             <td class="text-center">{{ item.name }}</td>
