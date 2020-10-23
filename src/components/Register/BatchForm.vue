@@ -13,7 +13,23 @@
 				<div class="ibox-content">
 
 					<div class="form-group">
-						<h3 class="well">기본 정보</h3>
+						<div class="well col-xs-12">
+							<h3 class="col-xs-2 no-margins">기본 정보</h3>
+							<div class="col-xs-3 pull-right">
+								<h3 class="col-xs-6 no-margins">결제 여부</h3>
+								<div class="col-xs-6">
+									<div class="switch">
+										<div class="onoffswitch">
+											<input class="onoffswitch-checkbox form-control" name="cancel_bach" id="cancel_bach" type="checkbox" v-model="isCancel"/>
+											<label class="onoffswitch-label" for="cancel_bach">
+												<span class="onoffswitch-inner"></span>
+												<span class="onoffswitch-switch"></span>
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="row">
 							<div class="col-lg-6">
 								<table class="table">
@@ -52,14 +68,21 @@
 
 					<div class="hr-line-dashed"></div>
 
-					<div v-if="!isNew" class="form-group">
+					<div class="form-group">
 						<h3 class="well">1 step. 수강권 세팅</h3>
 						<div class="row">
 							<div class="col-xs-3">
+								<div class="col-xs-12 no-padding m-b-md">
+									<strong class="col-xs-10 control-label">수강권 검색</strong>
+									<div class="col-xs-12 no-padding">
+										<input type="text" class="form-control" v-model="planTitle">
+									</div>
+								</div>
+
 								<strong class="col-xs-12">수강권 선택</strong>
 								<select class="col-xs-12" @change="addSelectedGoods($event)">
-									<option value="">-- 수강권을 선택하세요. --</option>
-									<option v-for="(goods,index) in goodsList" :key="index" :value="goods.idx">{{goods.title}}</option>
+									<option v-if="!planTitle" value="">-- 수강권을 선택하세요. --</option>
+									<option v-for="(goods,index) in filterdGoodsList(goodsList)" :key="index" :value="goods.idx">{{goods.title}}</option>
 								</select>
 							</div>
 
@@ -70,19 +93,14 @@
 											<th>idx</th>
 											<th>수강권 구분</th>
 											<th>
-												<input type="checkbox" id="og_price" name="og_price" />
-												<label for="og_price">
-													표준 제공가
-												</label>
+												표준 제공가
 											</th>
 											<th>할인율</th>
 											<th>
-												<input type="checkbox" id="company_price" checked />
-												<label for="company_price"> 기업 제공가</label>
+												기업 제공가
 											</th>
 											<th>
-												<input type="checkbox" id="deductible" />
-												<label for="deductible"> 자기 부담금 </label>
+												자기 부담금
 											</th>
 											<th class="text-center">삭제</th>
 										</tr>
@@ -165,8 +183,8 @@
 
 					<div v-if="useBilling" class="hr-line-dashed"></div>
 
-					<div class="col-xs-4 pull-right p-h-xl">
-						<button class="col-xs-12 btn btn-lg btn-primary" @click="setBatchInfo(isNew)">저장</button>
+					<div class="col-xs-6 pull-right p-h-xl">
+						<button class="col-xs-8 col-xs-offset-1 btn btn-lg btn-primary" @click="setBatchInfo(isNew)">저장</button>
 					</div>
 
 				</div>
@@ -197,7 +215,9 @@
 				storedGoodsList: [],
 				goodsList:[],
 				newGoodsList: [],
-				company: ''
+				company: '',
+				planTitle:'',
+				isCancel: 0
 			};
 		},
 
@@ -215,82 +235,91 @@
 			if(this.$route.params.bsIdx) {
 				this.isNew = true
 				this.company = this.$route.params.company
+				this.getBacthApi()
 			}
 
 		},
 
 		methods: {
 			async setBatchInfo(isNew) {
-				let idxParam = ''
+				if (!this.batchFrDt || !this.batchToDt) {
+					this.$swal('수강 기간을 선택 해주세요.')
+				} else {
+					let idxParam = ''
+					let batchData = {
+						frDt: this.batchFrDt,
+						toDt: this.batchToDt,
+						targetRt: this.targetRt,
+						useBilling: this.useBilling ? 1: 0,
+						chargeDt: this.useBilling ? this.chargeDt : '',
+						pchargeDt: this.useBilling ? this.pchargeDt : '',
+						selfChargeRt: this.selfChargeRt,
+						delYn: this.isCancel ? 1 : 0
+					}
 
-				let batchData = {
-					frDt: this.batchFrDt,
-					toDt: this.batchToDt,
-					targetRt: this.targetRt,
-					useBilling: this.useBilling ? 1: 0,
-					chargeDt: this.useBilling ? this.chargeDt : '',
-					pchargeDt: this.useBilling ? this.pchargeDt : '',
-					selfChargeRt: this.selfChargeRt
-				}
+					let batchGoodsApiRes = null
+					if(isNew) {
+						idxParam = this.$route.params.bsIdx
+						batchData['bsIdx'] = idxParam
+					} else {
+						idxParam = this.$route.params.bIdx
+						batchData['idx'] = idxParam
+					}
 
-				let batchGoodsApiRes = null
-				if(isNew) {
-					idxParam = this.$route.params.bsIdx
-					batchData['bsIdx'] = idxParam
-				}
-				else {
-					idxParam = this.$route.params.bIdx
-					batchData['idx'] = idxParam
+					if(this.selectedGoodsList.length !== 0) {
+						const batchGoodsParams = []
+						batchGoodsParams['bbIdx'] = idxParam
+						this.selectedGoodsList.forEach((col, i) => {
+							if (col.new_goods) batchGoodsParams['goods[' + i + '][cpIdx]'] = col.idx
+							else batchGoodsParams['goods[' + i + '][idx]'] = col.idx
 
-					const batchGoodsParams = []
-					batchGoodsParams['bbIdx'] = idxParam
-					this.selectedGoodsList.forEach((col,i) => {
-						if (col.new_goods) batchGoodsParams['goods['+i+'][cpIdx]'] = col.idx
-						else batchGoodsParams['goods['+i+'][idx]'] = col.idx
+							batchGoodsParams['goods[' + i + '][listPrice]'] = col.list_price
+							batchGoodsParams['goods[' + i + '][supplyPrice]'] = col.supply_price
+							batchGoodsParams['goods[' + i + '][chargePrice]'] = col.charge_price
+							batchGoodsParams['goods[' + i + '][dcRt]'] = col.dc_rt
+							batchGoodsParams['goods[' + i + '][dispYn]'] = col.disp_yn ? 1 : 0
+						})
 
-						batchGoodsParams['goods['+i+'][listPrice]'] = col.list_price
-						batchGoodsParams['goods['+i+'][supplyPrice]'] = col.supply_price
-						batchGoodsParams['goods['+i+'][chargePrice]'] = col.charge_price
-						batchGoodsParams['goods['+i+'][dcRt]'] = col.dc_rt
-						batchGoodsParams['goods['+i+'][dispYn]'] = col.disp_yn ? 1 : 0
-					})
+						batchGoodsApiRes = await api.post('/partners/batchGoods', batchGoodsParams)
+					}
 
-					batchGoodsApiRes = await api.post('/partners/batchGoods',batchGoodsParams)
-				}
+					const batchApiRes = await api.post('/partners/batch',batchData)
 
-				const batchApiRes = await api.post('/partners/batch',batchData)
+					if(batchGoodsApiRes && batchGoodsApiRes.result===2000 && batchApiRes.result === 2000) {
+						this.refresh(idxParam)
+					}
 
-				if(batchGoodsApiRes && batchGoodsApiRes.result===2000 && batchApiRes.result === 2000) {
-					this.refresh(idxParam)
-				}
-
-				if(!batchGoodsApiRes && batchApiRes.result === 2000) {
-					this.$router.push({
-						name: "registerList"
-					})
+					if(!batchGoodsApiRes && batchApiRes.result === 2000) {
+						this.$router.push({
+							name: "registerList"
+						})
+					}
 				}
 			},
 
-			async refresh(idx) {
+			refresh(idx) {
 				this.getBacthApi(idx)
 				this.addSelectedGoods()
 			},
 
 			async getBacthApi (bIdx) {
-				const res = await api.get('/partners/batch', { idx: bIdx });
 				const goodsList = await api.get('/partners/chargePlanList');
 
-				this.company = res.data.site.company
-				this.batchFrDt = moment(res.data.fr_dt).format('YYYY-MM-DD')
-				this.batchToDt = moment(res.data.to_dt).format('YYYY-MM-DD')
-				this.targetRt = res.data.target_rt
-				this.selfChargeRt = res.data.self_charge_rt
-				this.useBilling = res.data.use_billing
-				this.chargeDt = res.data.charge_dt
-				this.pchargeDt = res.data.pcharge_dt
+				if(bIdx) {
+					const res = await api.get('/partners/batch', { idx: bIdx })
+					this.company = res.data.site.company
+					this.batchFrDt = moment(res.data.fr_dt).format('YYYY-MM-DD')
+					this.batchToDt = moment(res.data.to_dt).format('YYYY-MM-DD')
+					this.targetRt = res.data.target_rt
+					this.selfChargeRt = res.data.self_charge_rt
+					this.useBilling = res.data.use_billing
+					this.chargeDt = res.data.charge_dt
+					this.pchargeDt = res.data.pcharge_dt
 
-				this.storedGoodsList = res.data.goods
-				this.newGoodsList = []
+					this.storedGoodsList = res.data.goods
+					this.newGoodsList = []
+					this.isCancel = res.data.del_yn
+				}
 
 				this.goodsList = goodsList.data
 			},
@@ -334,6 +363,16 @@
 
 			selectedGoodsList: function () {
 				return this.storedGoodsList.concat(this.newGoodsList)
+			},
+			filterdGoodsList: function () {
+				return (goodsList) => {
+
+					let filterdList = []
+					if(this.planTitle) filterdList = goodsList.filter(goods => goods.title.indexOf(this.planTitle) >= 0)
+					else filterdList = goodsList
+
+					return filterdList
+				}
 			}
 		}
 	}
