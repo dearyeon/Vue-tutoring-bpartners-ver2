@@ -37,7 +37,7 @@
 					<tr>
 						<th>수강신청기간</th>
 						<td>
-							<date-picker v-model="applyRange" type="datetime" range placeholder="Select date"></date-picker>
+							<date-picker v-model="applyRange" type="datetime"  format="HH:mm" range placeholder="Select date"></date-picker>
 						</td>
 					</tr>
 	              </table>
@@ -254,8 +254,8 @@ export default {
     setForm: async function () {
 		const idx = this.$route.params.bIdx?this.$route.params.bIdx:this.$route.params.bapIdx
 		const params = {
-			applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm:ss'),
-			applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm:ss'),
+			applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm'),
+			applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm'),
 			openYn: this.openYn ? 1 : 0,
 			accessCode: this.accessCode,
 			emailDomain: this.emailDomain,
@@ -331,8 +331,8 @@ export default {
         return [new Date(this.applyFrDt), new Date(this.applyToDt)];
       },
       set(value) {
-        this.applyFrDt = moment(value[0]).format('YYYY-MM-DD HH:mm:ss');
-		this.applyToDt = moment(value[1]).format('YYYY-MM-DD HH:mm:ss');
+        this.applyFrDt = moment(value[0]).format('YYYY-MM-DD HH:mm');
+		this.applyToDt = moment(value[1]).format('YYYY-MM-DD HH:mm');
       }
     }
   }

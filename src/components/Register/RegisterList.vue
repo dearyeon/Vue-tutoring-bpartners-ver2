@@ -48,15 +48,15 @@
 							<td class="text-left">
 								<select v-model="item.selectedApplyIdx" v-if="item.batches.length">
 									<option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
-										{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY-MM-DD') }} - {{moment(apply.to_dt).format('YY-MM-DD') }}{{item.batches[item.selectedApplyIdx].del_yn?'(취소)':''}}
+										{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY.MM.DD') }} - {{moment(apply.to_dt).format('YY.MM.DD') }}{{item.batches[item.selectedApplyIdx].del_yn?'(취소)':''}}
 									</option>
 								</select>
 							</td>
 							<td>{{ item.batches.length?item.batches[item.selectedApplyIdx].target_rt+'%':'' }}</td>
 							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].use_billing?'빌링':''):'' }}</td>
-							<td>{{ item.batches.length?item.batches[item.selectedApplyIdx].charge_dt:'' }}</td>
-							<td>{{ item.batches.length?item.batches[item.selectedApplyIdx].pcharge_dt:'' }}</td>
-							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM:ss'):'' }}</td>
+							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].charge_dt?moment(item.batches[item.selectedApplyIdx].charge_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
+							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].pcharge_dt?moment(item.batches[item.selectedApplyIdx].pcharge_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
+							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM'):'' }}</td>
 							<td class="text-left" style='white-space: nowrap;'>
 								<button class="btn btn-page-set" @click="createBatchPage(item.idx,item.company)">추가</button>
 								<button v-if="item.batches.length?(!!item.batches[item.selectedApplyIdx].idx):0" class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>

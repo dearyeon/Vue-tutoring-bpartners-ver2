@@ -18,10 +18,10 @@
                   <th class="pagesubmit sorting text-center" field="order" value="max_c_no">차수</th>
                   <th class="pagesubmit text-center" value="status">현재상태</th>
                   <th>과목</th>
-                  <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('fr_dt')">수업시작일</th>
-                  <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('to_dt')">수업종료일</th>
                   <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('apply.apply_fr_dt')">신청시작일시</th>
                   <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('apply.apply_to_dt')">신청종료일시</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('fr_dt')">수업시작일</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('to_dt')">수업종료일</th>
                   <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="$shared.sortBy('applyCnt')">인원수</th>
                 </tr>
               </thead>
@@ -30,21 +30,19 @@
                     <td></td>
                     <td class="text-left" @click="routeDetailPage(item.idx,item.batches)">{{ item.company }}</td>
                     <td>
-                      <select v-model="item.selectedApplyIdx" v-if="item.batches.length" @change="routeDetailPage(item.idx,item.batches,$event)">
+                      <select v-if="item.batches.length" @change="routeDetailPage(item.idx,item.batches,$event)">
                         <option value="none" selected disabled hidden>{{item.batches[0].b_no}}차</option>
-                        <option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
-                          {{apply.b_no}}차
-                        </option>
+                        <option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">{{apply.b_no}}차</option>
                       </select>
                     </td>
                     <td class="text-center">
-                      <label v-if="item.batches.length" :class="currentStatus(item.batches[item.selectedApplyIdx].fr_dt,item.batches[item.selectedApplyIdx].to_dt,1)" style="width:60px;text-align: center">{{ currentStatus(item.batches[item.selectedApplyIdx].fr_dt,item.batches[item.selectedApplyIdx].to_dt,0) }}</label>
+                      <label v-if="item.batches.length" :class="currentStatus(item.batches[0].fr_dt,item.batches[0].to_dt,1)" style="width:60px;text-align: center">{{ currentStatus(item.batches[0].fr_dt,item.batches[0].to_dt,0) }}</label>
                     </td>
                     <td></td>
-                    <td class="text-center">{{ item.apply?moment(item.apply.apply_fr_dt).format('YYYY-MM-DD'):'' }}</td>
-                    <td class="text-center">{{ item.apply?moment(item.apply.apply_to_dt).format('YYYY-MM-DD'):'' }}</td>
-                    <td class="text-center">{{ item.batches.length?item.batches[item.selectedApplyIdx].fr_dt:'' }}</td>
-                    <td class="text-center">{{ item.batches.length?item.batches[item.selectedApplyIdx].to_dt:'' }}</td>
+                    <td class="text-center">{{ item.apply?moment(item.apply.apply_fr_dt).format('YYYY-MM-DD HH:mm'):''  }}</td>
+                    <td class="text-center">{{ item.apply?moment(item.apply.apply_to_dt).format('YYYY-MM-DD HH:mm'):'' }}</td>
+                    <td class="text-center">{{ item.batches.length?moment(item.batches[0].fr_dt).format('YYYY-MM-DD'):'' }}</td>
+                    <td class="text-center">{{ item.batches.length?moment(item.batches[0].to_dt).format('YYYY-MM-DD'):'' }}</td>
                     <td class="text-center">{{ item.applyCnt }}명</td>
                 </tr>
               </tbody>
@@ -71,7 +69,6 @@ export default {
   data() {
     return {
       applySite: [],
-      selectaNo: '',
       searchKey: '',
 			sortKey: '',
       current_page: 1,
@@ -84,18 +81,14 @@ export default {
 	},
   async created() {
     const res = await api.get("/partners/applySiteList");
-    let list = res.data.data;
-		list.forEach(item => {
-		  item.selectedApplyIdx = 0
-		})
-    this.applySite = list
+    this.applySite = res.data.data;
     this.current_page = res.data.current_page
 		this.total_page = res.data.last_page
   },
   methods: {
     routeDetailPage(s_idx, aNo, event) {
       let a_no;
-      if (event) a_no = aNo[0].b_no - event.target.value + 1;
+      if (event) a_no = aNo[0].b_no - event.target.value;
       this.$router.push({
           name: "applyDetailsList",
           params: { sIdx: s_idx, aNo:a_no?a_no:aNo }
@@ -116,11 +109,7 @@ export default {
     async setCurrentPage (data) {
 			this.current_page = data
 			const res = await api.get('/partners/applySiteList?page=' + this.current_page)
-      let list = res.data.data;
-      list.forEach(item => {
-        item.selectedApplyIdx = 0
-      })
-      this.applySite = list
+      this.applySite = res.data.data
 		},
     async setSearch(input) {
       const res = await api.get('/partners/applySiteList', { sk:input })

@@ -17,7 +17,6 @@
                                 <table class="table table-hover dataTable">
                                     <thead>
                                     <tr>
-                                        <th style="width:20px"></th>
                                         <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy('company')">고객사명</th>
                                         <th class="pagesubmit sorting text-center" field="order" value="max_c_no">차수</th>
                                         <th class="pagesubmit text-center" value="status">현재상태</th>
@@ -32,7 +31,6 @@
 
                                         <tr class="hover-pointer LESSON_INFO" 
                                             v-for="(item, index) in items" :key="`Lesson-${index}`">
-                                            <td><img alt="image" class="img-rounded" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_M" style="width:20px;height:20px;"></td>  
                                             <td @click="routeDetailPage(item.idx,item.c_no)">
                                                 {{ item.site.company }}
                                             </td>
@@ -82,7 +80,6 @@ import Pagination from '@/components/atom/Pagination'
 export default {
 	data () {
 		return {
-			info: [],
 			items: [],
 			sortKey: '',
 			current_page: 1,
@@ -94,7 +91,6 @@ export default {
 		Pagination
 	},
 	async created () {
-		this.info = tempInfo
 		const res = await api.get('/partners/lessonList')
 		this.current_page = res.data.current_page
 		this.total_page = res.data.last_page
