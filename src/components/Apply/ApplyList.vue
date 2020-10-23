@@ -2,10 +2,21 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="ibox-title">
-        <h2>수강신청 현황</h2>
+        <div class="pull-left col-lg-3">
+          <h2>신청/입과 관리</h2>
+        </div>
+        <form id="listform">
+            <div class="row">
+                <div class="col-sm-3">
+                    <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
+                </div>
+            </div>
+        </form>
       </div>
     </div>
-    <!--<CardList :data="applySite" detailView="applyDetailsList" />-->
     <div class="row">
 			<div class="ibox content">
         <div class="ibox-content">
@@ -13,7 +24,6 @@
 						<table class="table text-center table-hover dataTable">
               <thead>
                 <tr>
-                  <th style="width:20px"></th>
                   <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy('company')">고객사명</th>
                   <th class="pagesubmit sorting text-center" field="order" value="max_c_no">차수</th>
                   <th class="pagesubmit text-center" value="status">현재상태</th>
@@ -27,7 +37,6 @@
               </thead>
               <tbody>
                 <tr v-for="(item, index) in applySite" :key="`apply-${index}`">
-                    <td></td>
                     <td class="text-left" @click="routeDetailPage(item.idx,item.batches)">{{ item.company }}</td>
                     <td>
                       <select v-if="item.batches.length" @change="routeDetailPage(item.idx,item.batches,$event)">
@@ -86,13 +95,13 @@ export default {
 		this.total_page = res.data.last_page
   },
   methods: {
-    routeDetailPage(s_idx, aNo, event) {
-      let a_no;
-      if (event) a_no = aNo[0].b_no - event.target.value;
-      this.$router.push({
+    routeDetailPage(s_idx, batches, event) {
+      if(batches.length) {
+        this.$router.push({
           name: "applyDetailsList",
-          params: { sIdx: s_idx, aNo:a_no?a_no:aNo }
-      })
+          params: { sIdx: s_idx, bbIdx:event?batches[event.target.value].idx:batches[0].idx }
+        })
+      }
     },
     currentStatus (fr_dt, to_dt, val) {
       const date = moment().format('YYYY-MM-DD')

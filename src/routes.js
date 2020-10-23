@@ -28,7 +28,7 @@ const routes = [
       { path: '/user/List', component: UserList },
       { path: '/user/DetailsList/:id/:c_no', name: "userDetailsList", component: UserDetailsList, props: true },
       { path: '/apply/List', component: ApplyList },
-      { path: '/apply/DetailsList/:sIdx/:aNo', name: 'applyDetailsList', component: ApplyDetailsList, props: true },
+      { path: '/apply/DetailsList/:sIdx/:bbIdx', name: 'applyDetailsList', component: ApplyDetailsList, props: true },
       { path: "/billing/List", component: BillingList },
       { path: "/billing/DetailsList/:sIdx/:aNo/:bNo", name: "billingDetailsList", component: BillingDetailsList, props: true },
       { path: "/register/List", name: "registerList", component: RegisterList },

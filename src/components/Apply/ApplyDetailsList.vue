@@ -2,64 +2,57 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="ibox-title">
-        <h2>수강신청 현황</h2>
+        <h2>신청현황 리스트</h2>
       </div>
     </div>
     <div class="row">
       <div class="ibox content">
         <div class="ibox-content">
           <div class="subtitle">
-            <h1 v-if="bap.site">{{ bap.site.company }}</h1>
-            <Dropdown
+            <h1>{{ company }}</h1>
+            <select v-if="batches.length" @change="routeDetailPage($event)">
+              <option value="none" selected disabled hidden>{{tempbatch.b_no}}회차 | {{ moment(tempbatch.fr_dt).format('YY.MM.DD') }} - {{moment(tempbatch.to_dt).format('YY.MM.DD') }}</option>
+              <option v-for="(apply,i) in batches" :value="i" :key="apply.id">{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY.MM.DD') }} - {{moment(apply.to_dt).format('YY.MM.DD') }}</option>
+            </select>
+            <!--<Dropdown
               :defaultValue="aNoList.length !== 0 ? aNoList[$route.params.aNo - 1] : ''"
               :itemList="aNoList"
               @dropItemClick="chANo"
-            />
+            />-->
           </div>
 
-          <table class="table table-striped table-hover text-center dataTable">
+          <table class="table table-striped table-hover dataTable">
             <thead>
               <tr>
-                <th class="text-center">No</th>
-                <th class="text-center">부서</th>
-                <th class="text-center">직위</th>
-                <th class="text-center" v-if="bap.idx!==1">사번</th>
-                <th class="text-center">이름</th>
-                <th class="text-center">이메일</th>
-                <th class="text-center">연락처</th>
-                <th class="text-center" v-for="col in bap.form" :key="col.id">{{ col.title }}</th>
-                <th class="text-center">수강권</th>
-                <th class="text-center">제공가</th>
-                <th class="text-center">회사지원금</th>
-                <th class="text-center">자기부담금</th>
-                <th class="text-center">접수일시</th>
+                <th>No</th>
+                <th>이름</th>
+                <th>고객사 명</th>
+                <th>부서</th>
+                <th>직위</th>
+                <th>사번</th>
+                <th v-for="col in cfs" :key="col.id">{{ col.title }}</th>
+                <th>수강권</th>
+                <th>제공가</th>
+                <th>회사지원금</th> <!-- 제공가 - 자기부담금 -->
+                <th>자기부담금</th>
+                <th>접수일시</th>
               </tr>
             </thead>
             <tbody id="applyerList">
-              <tr
-                class="userInfo hover-pointer"
-                v-for="(data, index) in list"
-                v-bind:key="data.id"
-              >
-                <td class="number" style="vertical-align: middle;">{{ index + 1 }}</td>
-                <td class="part">{{ data.user.department }}</td>
-                <td class="position">{{ data.user.position }}</td>
-                <td class="emp_no" v-if="bap.idx!==1">{{ data.user.emp_no }}</td>
-                <td class="hover-pointer name">{{ data.user.name }}</td>
-                <td class="email">
-                  {{ data.user.email_id ? data.user.email_id + "@" + bap.email_domain : "[정보 보안]" }}
-                </td>
-                <td class="cel">{{ data.user.cel ? data.user.cel : "[정보 보안]" }}</td>
-
-								<td v-for="col in bap.form" :key="col.id">{{ getCustomFieldValue(col, data.user[col.col_id]) }}</td>
-
-                <td class="charge-plan__title">{{ data.__ob__.value.goods.charge_plan.title }}</td>
-                <td class="supply_price">{{ $shared.nf(data.__ob__.value.goods.supply_price) }}</td>
-                <td class="company-charge__price" v-on:cmpprice="companyChargePrice" style="vertical-align: middle;">
-                  {{ $shared.nf(companyChargePrice(index)) }}
-                </td>
-                <td class="charge_price">{{ $shared.nf(data.__ob__.value.goods.charge_price) }}</td>
-                <td class="apply_dt">{{ data.apply_dt }}</td>
+              <tr class="userInfo hover-pointer" v-for="(order, index) in orders" v-bind:key="order.id">
+                <td class="number" style="vertical-align: middle;">{{ index+1 }}</td>
+                <td class="part">{{ order.user.name }}</td>
+                <td class="company">{{ order.user.company }}</td>
+                <td class="department">{{ order.user.department }}</td>
+                <td class="position">{{ order.user.position }}</td>
+                <td class="emp_no">{{ order.user.emp_no }}</td>
+                <td v-if="order.user.cf1">{{ getGTP('T',order.user.cf2) }}</td>
+                <td v-if="order.user.cf2">{{ getGTP('S',order.user.cf1) }}</td>
+                <td class="charge-plan__title text-left">{{ order.goods.charge_plan.title }}</td>
+                <td class="supply_price">{{ $shared.nf(order.goods.supply_price) }}</td>
+                <td>{{ $shared.nf(order.goods.supply_price - order.goods.charge_price) }}</td>
+                <td class="company-charge__price">{{ $shared.nf(order.goods.charge_price) }}</td>
+                <td class="apply_dt">{{ moment(order.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
               </tr>
             </tbody>
           </table>
@@ -71,22 +64,51 @@
 
 <script>
 import api from "@/common/api";
-import Dropdown from "../atom/Dropdown";
-
+import moment from 'moment'
 export default {
   data() {
     return {
-      bap: [],
-      list: [],
+      company: '',
+      batches: [],
+      tempbatch: null,
+      cfs: [],
+      orders: [],
       aNoList: [],
+      moment: moment
     };
   },
   created() {
-		this.refreshData(1);
+    this.refreshData();
   },
   methods: {
-    companyChargePrice(index) {
-      return this.list[index].__ob__.value.goods.supply_price - this.list[index].__ob__.value.goods.charge_price;
+    async refreshData() {
+			const res = await api.get("/partners/applyOrderList", {
+				bbIdx: this.$route.params.bbIdx
+      });
+      const data = res.data;
+			this.company = data.company;
+      this.batches = data.batches;
+			this.tempbatch = data.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
+			this.cfs = data.cfs;
+			this.orders = data.orders;
+		},
+    getGTP(type, val) {
+    	if(type=='S') {
+				return val ? this.cfs[1].opts[1] : this.cfs[1].opts[0]
+			}else {
+    		return val
+			}
+    },
+    routeDetailPage(event) {
+      if(this.batches.length) {
+        if(parseInt(this.$route.params.bbIdx) !== this.batches[event.target.value].idx) {
+          this.$router.push({
+            name: "applyDetailsList",
+            params: { sIdx: this.$route.params.sIdx, bbIdx:this.batches[event.target.value].idx }
+          })
+          this.refreshData();
+        }
+      }
     },
     chANo: function(index) {
       this.refreshData(index + 1)
@@ -98,30 +120,8 @@ export default {
           "$1",
         )} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")}`;
       else return "";
-    },
-		async refreshData(aNo) {
-			const res = await api.get("/partners/applyList", {
-				sIdx: this.$route.params.sIdx,
-				aNo: aNo,
-			});
-			this.list = res.data.list;
-			this.bap = res.data.bap;
-			if(this.aNoList.length == 0) {
-				this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item));
-      }
-		},
-		getCustomFieldValue(col, val) {
-    	if(col.type=='S') {
-				const i = col.vals.indexOf(val)
-				return col.opts[i]
-			}else {
-    		return val
-			}
-		},
-  },
-  components: {
-    Dropdown,
-  },
+    }
+  }
 };
 </script>
 
