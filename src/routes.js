@@ -34,7 +34,7 @@ const routes = [
       { path: "/register/List", name: "registerList", component: RegisterList },
       { path: "/register/createPage", component: CreatePage },
 	    { path: "/register/applyNew/:bIdx", name: "applyNew", component: ApplyForm, props:true },
-	    { path: "/register/applyEdit/:bapIdx", name: "applyEdit", component: ApplyForm, props:true },
+	    { path: "/register/applyEdit/:baIdx", name: "applyEdit", component: ApplyForm, props:true },
       { path: "/register/batchNew/:bsIdx/:company", name: "batchNew", component: BatchForm, props:true },
       { path: "/register/batchEdit/:bIdx", name: "batchEdit", component: BatchForm, props:true },
       { path: '/customer/List', name: "customerList", component: CustomerList },

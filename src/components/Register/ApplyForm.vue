@@ -184,9 +184,9 @@ export default {
 	},
 	getApplyPageApi: async function () {
 		const applyPageFormParams = []
-		applyPageFormParams['baIdx'] = this.$route.params.bIdx?this.$route.params.bIdx:this.$route.params.bapIdx
-		if(this.$route.params.bapIdx) {
-			const res = await api.get('/partners/apply', { idx: this.$route.params.bapIdx });
+		applyPageFormParams['baIdx'] = this.$route.params.bIdx?this.$route.params.bIdx:this.$route.params.baIdx
+		if(this.$route.params.baIdx) {
+			const res = await api.get('/partners/apply', { idx: this.$route.params.baIdx });
 			const data = res.data;
 			this.accessCode = data.access_code;
 			this.emailDomain = data.email_domain;
@@ -239,7 +239,7 @@ export default {
       this.applyerFormList.forEach(el => numlist.push(el.num));
     },
     setForm: async function () {
-		const idx = this.$route.params.bIdx?this.$route.params.bIdx:this.$route.params.bapIdx
+		const idx = this.$route.params.bIdx?this.$route.params.bIdx:this.$route.params.baIdx
 		const params = {
 			applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm'),
 			applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm'),
@@ -274,6 +274,7 @@ export default {
 			applyPageFormParams['cols['+i+'][vals]'] = col.vals
 		}
 		let res = await api.post('/partners/apply', params);
+		console.log(res);
 		let applyPageFormRes = await api.post('/partners/applyUserField', applyPageFormParams);
 
 		if(res.result === 2000 && applyPageFormRes.result === 2000) {
