@@ -17,13 +17,13 @@
                                 <table class="table table-hover dataTable">
                                     <thead>
                                     <tr>
-                                        <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy('company')">고객사명</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="max_c_no">차수</th>
+                                        <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy(items,'site','company')">고객사명</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="c_no" @click="$shared.sortBy(items,'c_no')">차수</th>
                                         <th class="pagesubmit text-center" value="status">현재상태</th>
                                         <th>과목</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('fr_dt')">시작날짜</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('to_dt')">종료날짜</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="$shared.sortBy('usersCnt')">인원수</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy(items,'fr_dt')">시작날짜</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy(items,'to_dt')">종료날짜</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="$shared.sortBy(items,'usersCnt')">인원수</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -81,7 +81,6 @@ export default {
 	data () {
 		return {
 			items: [],
-			sortKey: '',
 			current_page: 1,
 			total_page: 1,
 			moment: moment

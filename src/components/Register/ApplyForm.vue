@@ -77,7 +77,7 @@
 			            <button class="btn btn-success" @click="addFormList">row 추가</button>
 		            </th>
 	              </thead>
-	              <draggable :applyerFormList="applyerFormList" tag="tbody">
+	              <draggable :list="applyerFormList" tag="tbody">
 	                <tr v-for="(item,index) in applyerFormList" :key="item.col_id">
 		                <td class="text-center">
 			                {{sortNumber(item,index)}}
@@ -295,12 +295,12 @@ export default {
 	      isCf: true,
 	      opts: null,
 	      required: 0,
-	      sort_no: '',
 	      title: "",
 	      type: "T",
 	      vals: null
 	    }
 	    this.applyerFormList.push(row)
+	    console.log(this.applyerFormList);
     },
 	deleteFormList: function (colId) {
 		const itemToFind = this.applyerFormList.find(function(item) {return item.col_id === colId})

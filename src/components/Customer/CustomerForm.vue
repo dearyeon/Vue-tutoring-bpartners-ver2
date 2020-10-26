@@ -101,6 +101,8 @@ export default {
             this.email = site.email;
             this.ciImg = site.ci_img;
             this.previewSrc = this.$shared.getSiteImgUrl(this.ciImg)
+        } else {
+            this.previewSrc = this.$shared.getSiteImgUrl(this.ciImg)
         }
     },
     methods: {

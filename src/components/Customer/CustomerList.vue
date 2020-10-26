@@ -29,13 +29,13 @@
                                     <thead>
                                     <tr>
                                         <th style="width:20px"></th>
-                                        <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy('company')">고객사 명</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="name" @click="$shared.sortBy('name')">담당자 이름</th>
+                                        <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy(items, 'company')">고객사 명</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="name" @click="$shared.sortBy(items, 'name')">담당자 이름</th>
                                         <th class="pagesubmit text-center" value="part">부서</th>
                                         <th class="pagesubmit text-center" value="tel">전화번호</th>
                                         <th class="pagesubmit text-center" value="email">이메일</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('fr_dt')">등록일자</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('to_dt')">수정일자</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy(items, 'reg_dt')">등록일자</th>
+                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy(items, 'upd_dt')">수정일자</th>
                                         <th class="pagesubmit text-center">고객사수정</th>
                                     </tr>
                                     </thead>

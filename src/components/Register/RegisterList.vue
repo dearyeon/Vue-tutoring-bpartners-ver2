@@ -52,7 +52,7 @@
 									</option>
 								</select>
 							</td>
-							<td>{{ item.batches.length?item.batches[item.selectedApplyIdx].target_rt+'%':'' }}</td>
+							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].target_rt?item.batches[item.selectedApplyIdx].target_rt+'%':''):'' }}</td>
 							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].use_billing?'빌링':''):'' }}</td>
 							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].charge_dt?moment(item.batches[item.selectedApplyIdx].charge_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
 							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].pcharge_dt?moment(item.batches[item.selectedApplyIdx].pcharge_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>

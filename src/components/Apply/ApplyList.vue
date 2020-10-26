@@ -24,15 +24,15 @@
 						<table class="table text-center table-hover dataTable">
               <thead>
                 <tr>
-                  <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy('company')">고객사명</th>
-                  <th class="pagesubmit sorting text-center" field="order" value="max_c_no">차수</th>
+                  <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy(applySite,'company')">고객사명</th>
+                  <th class="pagesubmit text-center" value="b_no">차수</th>
                   <th class="pagesubmit text-center" value="status">현재상태</th>
                   <th>과목</th>
-                  <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('apply.apply_fr_dt')">신청시작일시</th>
-                  <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('apply.apply_to_dt')">신청종료일시</th>
-                  <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy('fr_dt')">수업시작일</th>
-                  <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy('to_dt')">수업종료일</th>
-                  <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="$shared.sortBy('applyCnt')">인원수</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy(applySite,'apply','apply_fr_dt')">신청시작일시</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy(applySite,'apply','apply_to_dt')">신청종료일시</th>
+                  <th class="pagesubmit text-center" value="fr_dt">수업시작일</th>
+                  <th class="pagesubmit text-center" value="to_dt">수업종료일</th>
+                  <th class="pagesubmit sorting text-center" field="order" value="cnt" @click="$shared.sortBy(applySite,'applyCnt')">인원수</th>
                 </tr>
               </thead>
               <tbody>
@@ -79,7 +79,6 @@ export default {
     return {
       applySite: [],
       searchKey: '',
-			sortKey: '',
       current_page: 1,
       total_page: 1,
       moment: moment
@@ -92,7 +91,8 @@ export default {
     const res = await api.get("/partners/applySiteList");
     this.applySite = res.data.data;
     this.current_page = res.data.current_page
-		this.total_page = res.data.last_page
+    this.total_page = res.data.last_page
+    console.log(this.applySite[13]['batches'][0]['fr_dt']);
   },
   methods: {
     routeDetailPage(s_idx, batches, event) {
