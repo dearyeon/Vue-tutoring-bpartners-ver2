@@ -274,7 +274,7 @@ export default {
 			applyPageFormParams['cols['+i+'][vals]'] = col.vals
 		}
 		let res = await api.post('/partners/apply', params);
-	  applyPageFormParams['baIdx'] = res.data.idx
+		applyPageFormParams['baIdx'] = this.$route.params.baIdx? this.$route.params.baIdx:res.data.idx
 
 		let applyPageFormRes = await api.post('/partners/applyUserField', applyPageFormParams);
 
@@ -302,7 +302,6 @@ export default {
 	      vals: null
 	    }
 	    this.applyerFormList.push(row)
-	    console.log(this.applyerFormList);
     },
 	deleteFormList: function (colId) {
 		const itemToFind = this.applyerFormList.find(function(item) {return item.col_id === colId})
