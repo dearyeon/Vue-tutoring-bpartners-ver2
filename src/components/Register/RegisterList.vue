@@ -175,10 +175,10 @@ export default {
 				params: { bIdx:bIdx }
 			})
 		},
-		editApplyPage(bapIdx) {
+		editApplyPage(baIdx) {
 			this.$router.push({
 				name: 'applyEdit',
-				params: { bapIdx: bapIdx }
+				params: { baIdx: baIdx }
 			})
 		},
 		createApplyPage(bIdx) {
