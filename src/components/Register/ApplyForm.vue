@@ -261,7 +261,7 @@ export default {
 		//console.log(applyPageRes);
 
 		const applyPageFormParams = []
-		applyPageFormParams['baIdx'] = idx
+
 		for (const [i, col] of this.applyerFormList.entries()) {
 			if(col.col_id==='' || col.title==='') {this.$swal('column Name과 항목을 모두 채워주세요.');return;}
 			applyPageFormParams['cols['+i+'][dispYn]'] = col.disp_yn ? 1 : 0
@@ -274,7 +274,8 @@ export default {
 			applyPageFormParams['cols['+i+'][vals]'] = col.vals
 		}
 		let res = await api.post('/partners/apply', params);
-		console.log(res);
+	  applyPageFormParams['baIdx'] = res.data.idx
+
 		let applyPageFormRes = await api.post('/partners/applyUserField', applyPageFormParams);
 
 		if(res.result === 2000 && applyPageFormRes.result === 2000) {
