@@ -28,7 +28,7 @@
 							<th class="text-center">No</th>
 							<th class="text-left">고객사</th>
 							<th class="text-left">담당자</th>
-							<th class="text-left">회차</th>
+							<th class="text-center" style="width:226px">회차</th>
 							<th class="text-center">달성률</th>
 							<th class="text-center">빌링</th>
 							<th class="text-center">정기결제일</th>
@@ -45,8 +45,8 @@
 							<td>{{ index+1 }}</td>
 							<td class="text-left">{{ item.company }}</td>
 							<td class="text-left">{{ item.name }}</td>
-							<td class="text-left">
-								<select v-model="item.selectedApplyIdx" v-if="item.batches.length">
+							<td>
+								<select v-model="item.selectedApplyIdx" v-if="item.batches.length" style="width:100%">
 									<option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
 										{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY.MM.DD') }} - {{moment(apply.to_dt).format('YY.MM.DD') }}{{item.batches[item.selectedApplyIdx].del_yn?'(취소)':''}}
 									</option>
@@ -63,8 +63,8 @@
 							</td>
 							<td style='white-space: nowrap'>
 								<div v-if="item.batches.length">
-								<button v-if="!!item.batches[item.selectedApplyIdx].apply" class="btn btn-page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 수정</button>
-								<button v-else class="btn btn-page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)">페이지 등록</button>
+									<button v-if="!!item.batches[item.selectedApplyIdx].apply" class="btn btn-page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 수정</button>
+									<button v-else class="btn btn-page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)">페이지 등록</button>
 								</div>
 							</td>
 							<td>

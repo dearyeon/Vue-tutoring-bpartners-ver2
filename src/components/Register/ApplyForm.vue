@@ -37,7 +37,7 @@
 					<tr>
 						<th>수강신청기간</th>
 						<td>
-							<date-picker v-model="applyRange" type="datetime"  format="HH:mm" range placeholder="Select date"></date-picker>
+							<date-picker v-model="applyRange" type="datetime"  format="YYYY-MM-DD HH:mm" range placeholder="Select date"></date-picker>
 						</td>
 					</tr>
 	              </table>
@@ -60,7 +60,7 @@
 		        </table>
 			</div>
 
-	        <div class="form-group" v-if="this.$route.params.bapIdx">
+	        <div class="form-group">
 	        	<div class="hr-line-dashed"></div>
 	          <h3 class="well">3 step. 개인정보 수집</h3>
 	          <div class="drag">
@@ -95,7 +95,7 @@
 	                    <input type="text" class="form-control" v-model="item.title" placeholder="항목을 입력해주세요."/>
 	                  </td>
 	                  <td>
-		                  <input type="text" class="form-control" v-model="item.content" placeholder="내용을 입력해주세요." />
+		                  <input type="text" class="form-control" v-model="item.description" placeholder="내용을 입력해주세요." />
 	                  </td>
 		                <td class="text-center">
 			                <div class="col-xs-2">
@@ -183,6 +183,8 @@ export default {
 		  this.getApplyPageApi()
 	},
 	getApplyPageApi: async function () {
+		const applyPageFormParams = []
+		applyPageFormParams['baIdx'] = this.$route.params.bIdx?this.$route.params.bIdx:this.$route.params.bapIdx
 		if(this.$route.params.bapIdx) {
 			const res = await api.get('/partners/apply', { idx: this.$route.params.bapIdx });
 			const data = res.data;
@@ -195,43 +197,28 @@ export default {
 			this.applyToDt = data.apply_to_dt;
 			this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)];
 			this.openYn = data.open_yn ? 1 : 0;
+			this.applyerFormList = data.user_fields;
 			//this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${data.site.ci_img}`
-
-			let cfCount = 0
-			let userFields = data.user_fields
-			if(userFields.length === 0) {
-				const applyPageFormParams = []
-				applyPageFormParams['baIdx'] = this.$route.params.bIdx?this.$route.params.bIdx:this.$route.params.bapIdx
-				const col = [
-					{ col_id:"company", title:"소속(회사명)", description: "회사명을 입력해주세요."},
-					{ col_id:"department", title:"부서", description: "정확한 부서명을 기재해주시기 바랍니다."},
-					{ col_id:"position", title:"직급", description: "정확한 직급을 기재해주시기 바랍니다."},
-					{ col_id:"emp_no", title:"사번", description: "8자리 사번을 정확하게 기재해주시기 바랍니다."},
-					{ col_id:"name", title:"이름(한글 성명)", description: "이름을 입력해주세요."},
-					{ col_id:"cel", title:"전화번호", description: "핸드폰 번호를 입력해주세요."},
-				]
-				col.forEach((col,i) => {
-					applyPageFormParams['cols['+i+'][dispYn]'] = 1
-					applyPageFormParams['cols['+i+'][colId]'] = col.col_id
-					applyPageFormParams['cols['+i+'][title]'] = col.title
-					applyPageFormParams['cols['+i+'][description]'] = col.description
-					applyPageFormParams['cols['+i+'][required]'] = 1
-					applyPageFormParams['cols['+i+'][type]'] = "T"
-					applyPageFormParams['cols['+i+'][opts]'] = null
-					applyPageFormParams['cols['+i+'][vals]'] = null
-				})
-				const res = await api.post('/partners/applyUserField', applyPageFormParams);
-				this.refresh();
-			}
-			userFields.forEach( item => {
-				if(item.col_id.slice(0,2) === 'cf') {
-					item['isCf'] = true
-					cfCount=item.col_id.charAt(2);
-				} else {item['isCf'] = false}
-			})
-			this.cfCnt = parseInt(cfCount);
-			this.applyerFormList = userFields
 		}
+		let cfCount = 0
+		if(this.applyerFormList.length === 0) {
+			const col = [
+				{ disp_yn:1, required:1, col_id:"company", title:"소속(회사명)", description:"회사명을 입력해주세요.", type:"T", opts:null, vals:null },
+				{ disp_yn:1, required:1, col_id:"department", title:"부서", description: "정확한 부서명을 기재해주시기 바랍니다.", type:"T", opts:null, vals:null },
+				{ disp_yn:1, required:1, col_id:"position", title:"직급", description: "정확한 직급을 기재해주시기 바랍니다.", type:"T", opts:null, vals:null },
+				{ disp_yn:1, required:1, col_id:"emp_no", title:"사번", description: "8자리 사번을 정확하게 기재해주시기 바랍니다.", type:"T", opts:null, vals:null },
+				{ disp_yn:1, required:1, col_id:"name", title:"이름(한글 성명)", description: "이름을 입력해주세요.", type:"T", opts:null, vals:null },
+				{ disp_yn:1, required:1, col_id:"cel", title:"전화번호", description: "핸드폰 번호를 입력해주세요.", type:"T", opts:null, vals:null },
+			]
+			this.applyerFormList = col;
+		}
+		this.applyerFormList.forEach( item => {
+			if(item.col_id.slice(0,2) === 'cf') {
+				item['isCf'] = true
+				cfCount=item.col_id.charAt(2);
+			} else {item['isCf'] = false}
+		})
+		this.cfCnt = parseInt(cfCount);
 	},
 	sortNumber: function (item,index) {
 		item.sort_no = index + 1
@@ -265,33 +252,29 @@ export default {
 		}
 		if(this.$route.params.bIdx) params.bbIdx=idx
 		else params.idx=idx
-
-		let res;
-		if( this.applyFrDt === "Invalid date" ||  this.applyToDt === "Invalid date" ) {
+		if( this.applyFrDt === "Invalid date" || !this.applyFrDt || this.applyToDt === "Invalid date" || !this.applyToDt ) {
 			this.$swal('수강신청 기간을 설정해주세요.');
 			return;
-		} else {res = await api.post('/partners/apply', params);}
+		}
 		//if(this.image) params.ciImage = this.image
 		//const applyPageRes = await api.upload('/partners/applyPage', params);
 		//console.log(applyPageRes);
 
-		let applyPageFormRes;
-		if(this.$route.params.bapIdx) {
-			const applyPageFormParams = []
-			applyPageFormParams['baIdx'] = idx
-			for (const [i, col] of this.applyerFormList.entries()) {
-				if(col.col_id==='' || col.title==='') {this.$swal('column Name과 항목을 모두 채워주세요.');return;}
-				applyPageFormParams['cols['+i+'][dispYn]'] = col.disp_yn ? 1 : 0
-				applyPageFormParams['cols['+i+'][colId]'] = col.col_id
-				applyPageFormParams['cols['+i+'][title]'] = col.title
-				applyPageFormParams['cols['+i+'][description]'] = col.description
-				applyPageFormParams['cols['+i+'][required]'] = col.required ? 1 : 0
-				applyPageFormParams['cols['+i+'][type]'] = col.type
-				applyPageFormParams['cols['+i+'][opts]'] = col.opts
-				applyPageFormParams['cols['+i+'][vals]'] = col.vals
-			}
-			applyPageFormRes = await api.post('/partners/applyUserField', applyPageFormParams);
+		const applyPageFormParams = []
+		applyPageFormParams['baIdx'] = idx
+		for (const [i, col] of this.applyerFormList.entries()) {
+			if(col.col_id==='' || col.title==='') {this.$swal('column Name과 항목을 모두 채워주세요.');return;}
+			applyPageFormParams['cols['+i+'][dispYn]'] = col.disp_yn ? 1 : 0
+			applyPageFormParams['cols['+i+'][colId]'] = col.col_id
+			applyPageFormParams['cols['+i+'][title]'] = col.title
+			applyPageFormParams['cols['+i+'][description]'] = col.description
+			applyPageFormParams['cols['+i+'][required]'] = col.required ? 1 : 0
+			applyPageFormParams['cols['+i+'][type]'] = col.type
+			applyPageFormParams['cols['+i+'][opts]'] = col.opts
+			applyPageFormParams['cols['+i+'][vals]'] = col.vals
 		}
+		let res = await api.post('/partners/apply', params);
+		let applyPageFormRes = await api.post('/partners/applyUserField', applyPageFormParams);
 
 		if(res.result === 2000 && applyPageFormRes.result === 2000) {
 			this.$swal('성공').then(result => {

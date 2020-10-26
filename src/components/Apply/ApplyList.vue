@@ -45,7 +45,7 @@
                       </select>
                     </td>
                     <td class="text-center">
-                      <label v-if="item.batches.length" :class="currentStatus(item.batches[0].fr_dt,item.batches[0].to_dt,1)" style="width:60px;text-align: center">{{ currentStatus(item.batches[0].fr_dt,item.batches[0].to_dt,0) }}</label>
+                      <label :class="currentStatus(item,1)" style="width:60px;text-align: center">{{ currentStatus(item,0) }}</label>
                     </td>
                     <td></td>
                     <td class="text-center">{{ item.apply?moment(item.apply.apply_fr_dt).format('YYYY-MM-DD HH:mm'):''  }}</td>
@@ -103,16 +103,16 @@ export default {
         })
       }
     },
-    currentStatus (fr_dt, to_dt, val) {
+    currentStatus (item, val) {
       const date = moment().format('YYYY-MM-DD')
-      if (date < fr_dt) {
+      if (item.batches.length && date < item.batches[0].fr_dt) {
         return val ? 'b-r-sm bg-warning' : '대기중'
-      } else if (date >= fr_dt && date <= to_dt) {
+      } else if (item.apply && date >= item.apply.apply_fr_dt && date <= item.apply.apply_to_dt) {
+        return val ? 'b-r-sm btn-apply' : '신청중'
+      } else if (item.batches.length && date >= item.batches[0].fr_dt && date <= item.batches[0].to_dt) {
         return val ? 'b-r-sm bg-primary' : '진행중'
-      } else if (date > to_dt) {
+      } else if (item.batches.length && date > item.batches[0].to_dt) {
         return val ? 'b-r-sm bg-success' : '완료'
-      } else {
-        return val ? 'b-r-sm bg-danger' : '취소됨'
       }
     },
     async setCurrentPage (data) {
@@ -136,5 +136,11 @@ export default {
 }
 tr {
   padding: 10px;
+}
+.btn-apply {
+	color: #1e9ed3;
+	background-color: #fff;
+	border: 1px solid #1e9ed3;
+	border-radius: 0px;
 }
 </style>
