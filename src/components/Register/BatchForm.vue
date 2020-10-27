@@ -242,8 +242,12 @@
 
 		methods: {
 			async setBatchInfo(isNew) {
-				if (!this.batchFrDt || !this.batchToDt) {
+				if (this.batchFrDt === "Invalid date" || this.batchToDt === "Invalid date" || !this.batchFrDt || !this.batchToDt) {
 					this.$swal('수강 기간을 선택 해주세요.')
+					return;
+				} if(!this.targetRt) {
+					this.$swal('수료기준 출석률을 입력해주세요.')
+					return;
 				} else {
 					let idxParam = ''
 					let batchData = {

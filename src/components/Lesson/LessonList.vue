@@ -2,11 +2,28 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
-                <div class="ibox-title" style="height: 65px">
+                <!--<div class="ibox-title" style="height: 65px">
                     <div class="pull-left">
                         <h2>수업 현황</h2>
                     </div>
+                </div>-->
+
+
+                      <div class="ibox-title">
+        <div class="pull-left col-lg-3">
+          <h2>수업 현황</h2>
+        </div>
+        <form id="listform">
+            <div class="row">
+                <div class="col-sm-3">
+                    <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
                 </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
+                </div>
+            </div>
+        </form>
+      </div>
             </div>
             
             <div class="row">
@@ -82,7 +99,8 @@ export default {
 		return {
 			items: [],
 			current_page: 1,
-			total_page: 1,
+            total_page: 1,
+            searchKey: '',
 			moment: moment
 		}
 	},
@@ -121,7 +139,13 @@ export default {
 			} else {
 				return val ? 'b-r-sm bg-danger' : '취소됨'
 			}
-		}
+        },
+        async setSearch(input) {
+            const res = await api.get('/partners/lessonList', { sk:input })
+            this.current_page = res.data.current_page
+            this.total_page = res.data.last_page
+            this.applySite = res.data.data
+        },
 	}
 }
 </script>

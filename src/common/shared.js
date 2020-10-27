@@ -3,6 +3,7 @@ import Vue from 'vue'
 const shared = {
     bast: null,
     sortKey: '',
+    items: [],
     setToken(token) {
         sessionStorage.setItem('bat', token)
         this.bast = token
@@ -31,6 +32,7 @@ const shared = {
         return 'https://cdn.tutoring.co.kr/uploads/b2b/site/tmb/'+imgFileNm
     },
     sortBy (items, sortKey1, sortKey2) {
+        if(this.items !== items) this.sortKey = '', this.items=items
         if(sortKey2) {
             (this.sortKey === sortKey1) ? items.reverse() : (items.sort(function (a, b) {
                 return a[sortKey1]===null ? -1 : b[sortKey1]===null ? 1 : a[sortKey1][sortKey2] < b[sortKey1][sortKey2] ? -1 : a[sortKey1][sortKey2] > b[sortKey1][sortKey2] ? 1 : 0

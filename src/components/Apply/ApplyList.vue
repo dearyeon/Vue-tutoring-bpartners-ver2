@@ -92,7 +92,6 @@ export default {
     this.applySite = res.data.data;
     this.current_page = res.data.current_page
     this.total_page = res.data.last_page
-    console.log(this.applySite[13]['batches'][0]['fr_dt']);
   },
   methods: {
     routeDetailPage(s_idx, batches, event) {

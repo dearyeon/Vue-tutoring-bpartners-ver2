@@ -12,8 +12,24 @@
       <div class="ibox content">
         <div class="ibox-content">
 	        <div class="form-group">
-	          <h3 class="well">1 step. 액세스 홈</h3>
-	          <div class="row">
+				<div class="well col-xs-12">
+					<h3 class="col-xs-2 no-margins">1 step. 액세스 홈</h3>
+					<div class="col-xs-3 pull-right">
+						<h3 class="col-xs-6 no-margins">오픈 여부</h3>
+						<div class="col-xs-6">
+							<div class="switch">
+								<div class="onoffswitch">
+									<input class="onoffswitch-checkbox form-control" name="cancel_bach" id="cancel_bach" type="checkbox" v-model="openYn"/>
+									<label class="onoffswitch-label" for="cancel_bach">
+										<span class="onoffswitch-inner"></span>
+										<span class="onoffswitch-switch"></span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+	        <div class="row">
 	            <div class="col-lg-6">
 	              <table class="table">
 	                <tr>
@@ -78,25 +94,25 @@
 		            </th>
 	              </thead>
 	              <draggable :list="applyerFormList" tag="tbody">
-	                <tr v-for="(item,index) in applyerFormList" :key="item.col_id">
-		                <td class="text-center">
+	                <tr v-for="(item,index) in applyerFormList" :key="item.id">
+		            	<td class="text-center">
 			                {{sortNumber(item,index)}}
 		                </td>
-	                  <td class="text-center">
-	                    <input v-model="item.disp_yn" type="checkbox" :checked="item.disp_yn"/>
-	                  </td>
+						<td class="text-center">
+							<input v-model="item.disp_yn" type="checkbox" :checked="item.disp_yn"/>
+						</td>
 		                <td class="text-center">
 			                <input v-model="item.required" type="checkbox" :checked="item.required"/>
 		                </td>
 		                <td>
 			                <input type="text" class="form-control" v-model="item.col_id" :readonly="!item.isCf" placeholder="column Name을 입력해주세요."/>
-		                </td>
-	                  <td>
-	                    <input type="text" class="form-control" v-model="item.title" placeholder="항목을 입력해주세요."/>
-	                  </td>
-	                  <td>
-		                  <input type="text" class="form-control" v-model="item.description" placeholder="내용을 입력해주세요." />
-	                  </td>
+						</td>
+						<td>
+							<input type="text" class="form-control" v-model="item.title" placeholder="항목을 입력해주세요."/>
+						</td>
+						<td>
+							<input type="text" class="form-control" v-model="item.description" placeholder="내용을 입력해주세요." />
+						</td>
 		                <td class="text-center">
 			                <div class="col-xs-2">
 				                <select v-model="item.type">
@@ -137,7 +153,7 @@
 			</div>
 
 			<div class="col-xs-4 pull-right p-h-xl">
-				<button class="col-xs-12 btn btn-lg btn-primary" @click="[sendNum(), setForm()]">저장</button>
+				<button class="col-xs-12 btn btn-lg btn-primary" @click="[sendNum(),setForm()]">저장</button>
 			</div>
         </div>
       </div>
@@ -152,6 +168,7 @@ import DatePicker from 'vue2-datepicker'
 import 'vue2-datepicker/index.css'
 import moment from "moment"
 import api from '@/common/api'
+import _ from 'lodash'
 
 let bap = null;
 
@@ -169,7 +186,8 @@ export default {
 		applyToDt: '',
 		openYn: false,
 		applyerFormList: [],
-		cfCnt: 0
+		cfCnt: 0,
+		request: 1
     };
   },
   components: {
@@ -196,7 +214,7 @@ export default {
 			this.applyFrDt = data.apply_fr_dt;
 			this.applyToDt = data.apply_to_dt;
 			this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)];
-			this.openYn = data.open_yn ? 1 : 0;
+			this.openYn = data.open_yn ? true : false;
 			this.applyerFormList = data.user_fields;
 			//this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${data.site.ci_img}`
 		}
@@ -236,9 +254,10 @@ export default {
 	},
     sendNum() {
       let numlist = [];
-      this.applyerFormList.forEach(el => numlist.push(el.num));
+	  this.applyerFormList.forEach(el => numlist.push(el.num));
+	  console.log(this.applyerFormList);
     },
-    setForm: async function () {
+    setForm: _.debounce(async function () {
 		const idx = this.$route.params.bIdx?this.$route.params.bIdx:this.$route.params.baIdx
 		const params = {
 			applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm'),
@@ -287,7 +306,7 @@ export default {
 		} else {
 			this.$swal('실패');
 		}
-    },
+	},500),
 	addFormList: function () {
 	  	this.cfCnt += 1;
 	    let row = {
