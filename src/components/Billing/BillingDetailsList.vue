@@ -116,12 +116,7 @@
             </div>
 
             <div class="input-group col-lg-3 col-md-12 col-xs-12 pull-left">
-              <input
-                type="text"
-                v-model="search"
-                placeholder="성명 or 고객식별ID"
-                class="form-control"
-              />
+              <input type="text" v-model="search" placeholder="성명 or 고객식별ID" class="form-control" />
             </div>
             <div class="col-lg-5 col-md-12 col-xs-12">
               <div class="col-lg-6 col-md-6 col-xs-6">
@@ -199,11 +194,7 @@
                       </thead>
                       <tbody id="chargeInfoList">
                         <!--정기 결제 -->
-                        <tr
-                          v-for="(item, index) in listInfo"
-                          :key="`biillingDetailItem-${index}`"
-                          class="text-center"
-                        >
+                        <tr class="text-center" v-for="(item, index) in listInfo" :key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
                           <td>{{ item.no }}</td>
                           <td>{{ item.user_name }}</td>
                           <td>{{ item.cus_id }}</td>
@@ -273,11 +264,7 @@
                         </tr>
                       </thead>
                       <tbody id="pchargeInfoList">
-                        <tr
-                          v-for="(item, index) in listInfo"
-                          :key="`biillingDetailItem-${index}`"
-                          class="text-center"
-                        >
+                        <tr v-for="(item, index) in listInfo" :key="`biillingDetailItem-${index}`" class="text-center" v-show="setSearch(item)">
                           <td>{{ item.no }}</td>
                           <td>{{ item.user_name }}</td>
                           <td>{{ item.cus_id }}</td>
@@ -791,7 +778,11 @@
 						this.refresh()
 					}
 				})
-			}
+			},
+			setSearch(item) {
+				if(item.cus_id) return !item.user_name.indexOf(this.search) || !item.cus_id.indexOf(this.search)
+				else return !item.user_name.indexOf(this.search)
+    		},
 		},
 		components: {
 			Modal,

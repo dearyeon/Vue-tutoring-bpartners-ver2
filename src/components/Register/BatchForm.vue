@@ -16,7 +16,7 @@
 						<div class="well col-xs-12">
 							<h3 class="col-xs-2 no-margins">기본 정보</h3>
 							<div class="col-xs-3 pull-right">
-								<h3 class="col-xs-6 no-margins">결제 여부</h3>
+								<h3 class="col-xs-6 no-margins">취소 여부</h3>
 								<div class="col-xs-6">
 									<div class="switch">
 										<div class="onoffswitch">
@@ -39,7 +39,7 @@
 									</tr>
 									<tr>
 										<th>수료기준 출석률</th>
-										<td><input type="text" class="form-control" placeholder="출석률을 입력해 주세요." v-model="targetRt"/></td>
+										<td><input type="number" class="form-control" placeholder="출석률을 입력해 주세요." v-model="targetRt"/></td>
 									</tr>
 									<tr>
 										<th>자기 부담금</th>
@@ -111,23 +111,23 @@
 											<td>{{ item.new_goods ? item.idx : item.charge_plan.idx }}</td>
 											<td>{{ item.new_goods ? item.title : item.charge_plan.title}}</td>
 											<td>
-												<input class="form-control" type="text" v-model="item.list_price"/>
+												<input class="form-control" type="text" v-model="item.list_price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
 											</td>
 											<td>
 												<div class="input-w-text">
-													<input type="text" class="form-control" v-model="item.dc_rt"/>
+													<input class="form-control" type="text" v-model="item.dc_rt" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
 													<p>%</p>
 												</div>
 											</td>
 											<td>
 												<div class="input-w-text">
-													<input type="text" class="form-control" v-model="item.supply_price"/>
+													<input class="form-control" type="text" v-model="item.supply_price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
 													<p>원</p>
 												</div>
 											</td>
 											<td>
 												<div class="input-w-text">
-													<input type="text" class="form-control" v-model="item.charge_price"/>
+													<input class="form-control" type="text" v-model="item.charge_price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
 													<p>원</p>
 												</div>
 											</td>
@@ -245,8 +245,8 @@
 				if (this.batchFrDt === "Invalid date" || this.batchToDt === "Invalid date" || !this.batchFrDt || !this.batchToDt) {
 					this.$swal('수강 기간을 선택 해주세요.')
 					return;
-				} if(!this.targetRt) {
-					this.$swal('수료기준 출석률을 입력해주세요.')
+				} if(!this.targetRt || parseInt(this.targetRt) > 100) {
+					this.$swal('수료기준 출석률을 100% 이하로 입력해주세요.')
 					return;
 				} else {
 					let idxParam = ''
@@ -274,9 +274,9 @@
 						const batchGoodsParams = []
 						batchGoodsParams['bbIdx'] = idxParam
 						this.selectedGoodsList.forEach((col, i) => {
+							if (parseInt(col.dc_rt) > 100) {this.$swal('할인율의 최대 수치는 100%입니다.'); return;}
 							if (col.new_goods) batchGoodsParams['goods[' + i + '][cpIdx]'] = col.idx
 							else batchGoodsParams['goods[' + i + '][idx]'] = col.idx
-
 							batchGoodsParams['goods[' + i + '][listPrice]'] = col.list_price
 							batchGoodsParams['goods[' + i + '][supplyPrice]'] = col.supply_price
 							batchGoodsParams['goods[' + i + '][chargePrice]'] = col.charge_price
@@ -290,6 +290,7 @@
 					const batchApiRes = await api.post('/partners/batch',batchData)
 
 					if(batchGoodsApiRes && batchGoodsApiRes.result===2000 && batchApiRes.result === 2000) {
+						this.$swal('성공')
 						this.refresh(idxParam)
 					}
 
@@ -329,6 +330,7 @@
 			},
 
 			addSelectedGoods (event) {
+				console.log(event);
 				if (!this.newGoodsList.find( item => item.idx === parseInt(event.target.value)) && !this.storedGoodsList.find( item => item.charge_plan.idx === parseInt(event.target.value))){
 					let selectedGoods = this.goodsList.find( item => item.idx === parseInt(event.target.value))
 					selectedGoods['list_price'] = 0
