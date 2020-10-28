@@ -54,9 +54,6 @@ export default {
 #page-wrapper {
   padding: 0;
 }
-#container {
-  height: 100%;
-}
 button {
   border: 0;
   outline: none;
