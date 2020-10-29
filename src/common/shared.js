@@ -35,11 +35,11 @@ const shared = {
         if(this.items !== items) this.sortKey = '', this.items=items
         if(sortKey2) {
             (this.sortKey === sortKey1) ? items.reverse() : (items.sort(function (a, b) {
-                return a[sortKey1]===null ? -1 : b[sortKey1]===null ? 1 : a[sortKey1][sortKey2] < b[sortKey1][sortKey2] ? -1 : a[sortKey1][sortKey2] > b[sortKey1][sortKey2] ? 1 : 0
+                return !a[sortKey1] ? -1 : !b[sortKey1] ? 1 : a[sortKey1][sortKey2] < b[sortKey1][sortKey2] ? -1 : a[sortKey1][sortKey2] > b[sortKey1][sortKey2] ? 1 : 0
             }))
         } else {
             (this.sortKey === sortKey1) ? items.reverse() : (items.sort(function (a, b) {
-                return a[sortKey1]===null ? -1 : b[sortKey1]===null ? 1 : a[sortKey1] < b[sortKey1] ? -1 : a[sortKey1] > b[sortKey1] ? 1 : 0
+                return !a[sortKey1] ? -1 : !b[sortKey1] ? 1 : a[sortKey1] < b[sortKey1] ? -1 : a[sortKey1] > b[sortKey1] ? 1 : 0
             }))
         }
         this.sortKey = sortKey1
