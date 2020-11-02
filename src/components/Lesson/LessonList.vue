@@ -49,7 +49,7 @@
                                         <tr class="hover-pointer LESSON_INFO" 
                                             v-for="(item, index) in items" :key="`Lesson-${index}`">
                                             <td @click="routeDetailPage(item.idx,item.c_no)">
-                                                {{ item.site.company }}
+                                                {{ item.company }}
                                             </td>
                                             <td class="text-center">
                                                 <select @change="routeDetailPage(item.idx,item.c_no,$event)">
