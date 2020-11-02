@@ -88,7 +88,7 @@ export default {
       if(batches.length) {
         this.$router.push({
             name: "billingDetailsList",
-            params: { sIdx: idx, aNo:event?batches[event.target.value].b_no:batches[0].b_no, bNo:1 }
+            params: { sIdx: idx, bbIdx:event?batches[event.target.value].idx:batches[0].idx }
         
         })
       }

@@ -102,21 +102,15 @@
         <div class="ibox-content">
           <div id="listform">
             <div class="subtitle">
-              <h1>{{ bapInfo.site_name }}</h1>
-              <Dropdown
-                :defaultValue="aNoList.length !== 0 ? aNoList[$route.params.aNo - 1] : ''"
-                :itemList="aNoList"
-                @dropItemClick="chANo"
-              />
-              <Dropdown
-                :defaultValue="bNoList.length !== 0 ? bNoList[$route.params.bNo - 1] : ''"
-                :itemList="bNoList"
-                @dropItemClick="chBNo"
-              />
+              <h1>{{ company }}</h1>
+				<select v-if="batches.length" @change="routeBatch(batches, $event)">
+					<option value="none" selected disabled hidden>{{ getTempBatch() }}</option>   
+					<option v-for="(batch,i) in batches" :value="i" :key="i.id">{{batch.b_no}}회차 | {{ moment(batch.fr_dt).format('YY.MM.DD') }} - {{moment(batch.to_dt).format('YY.MM.DD') }}</option>
+				</select>
             </div>
 
             <div class="input-group col-lg-3 col-md-12 col-xs-12 pull-left">
-              <input type="text" v-model="search" placeholder="성명 or 고객식별ID" class="form-control" />
+              <input type="text" v-model="search" placeholder="성명을 입력하세요." class="form-control" />
             </div>
             <div class="col-lg-5 col-md-12 col-xs-12">
               <div class="col-lg-6 col-md-6 col-xs-6">
@@ -179,9 +173,7 @@
                         <tr>
                           <th class="text-center">No</th>
                           <th class="text-center">학생</th>
-                          <th class="text-center">고객식별 ID</th>
                           <th class="text-center">수강권</th>
-                          <th class="text-center">결제회차</th>
                           <th class="text-center">정기결제일시</th>
                           <th class="text-center">실결제일시</th>
                           <th class="text-center">결제처리현황</th>
@@ -194,25 +186,14 @@
                       </thead>
                       <tbody id="chargeInfoList">
                         <!--정기 결제 -->
-                        <tr class="text-center" v-for="(item, index) in listInfo" :key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
-                          <td>{{ item.no }}</td>
-                          <td>{{ item.user_name }}</td>
-                          <td>{{ item.cus_id }}</td>
-                          <td>{{ item.goods_name }}</td>
-                          <td>{{ item.b_no }}</td>
+                        <tr class="text-center" v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
+                          <td>{{ item.idx }}</td>
+                          <td>{{ item.user.name }}</td>
+                          <td>{{ item.goods.charge_plan.title }}</td>
+                          <td>{{ item.charged_dt }}</td>
+                          <td>{{ }}</td>
                           <td>
-                            {{
-                              item.charge_dt &&
-                                item.charge_dt.replace(/(\d{4})-(\d{2})-(\d{2})\s(\d{2}).*/gi, "$1년 $2월 $3일 $4시")
-                            }}
-                          </td>
-                          <td>
-                            {{
-                              item.charged_dt && item.charged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1")
-                            }}
-                          </td>
-                          <td>
-                            <button
+                            <button v-if="item.charge_status"
                               class="btn"
                               :class="chargeBtnStatus(item.charge_status).class"
                               @click="[setCurrentItem(item), chargeBtnStatus(item.charge_status).click && chargeBtnStatus(item.charge_status).click()]"
@@ -226,8 +207,7 @@
                             </button>
                           </td>
                           <td>
-                            {{
-                              item.charged_info &&
+                            {{ item.charged_info &&
                                 item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
                             }}
                           </td>
@@ -248,11 +228,9 @@
                         <tr>
                           <th class="text-center">No</th>
                           <th class="text-center">학생</th>
-                          <th class="text-center">고객식별ID</th>
                           <th class="text-center">수강권</th>
                           <th class="text-center">기준출석률</th>
                           <th class="text-center">달성률</th>
-                          <th class="text-center">추가결제회차</th>
                           <th class="text-center">정기결제일시</th>
                           <th class="text-center">실결제일시</th>
                           <th class="text-center">결제처리현황</th>
@@ -264,27 +242,20 @@
                         </tr>
                       </thead>
                       <tbody id="pchargeInfoList">
-                        <tr v-for="(item, index) in listInfo" :key="`biillingDetailItem-${index}`" class="text-center" v-show="setSearch(item)">
-                          <td>{{ item.no }}</td>
-                          <td>{{ item.user_name }}</td>
-                          <td>{{ item.cus_id }}</td>
-                          <td>{{ item.goods_name }}</td>
+                        <tr v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" class="text-center" v-show="setSearch(item)">
+                          <td>{{ item.idx }}</td>
+                          <td>{{ item.user.name }}</td>
+                          <td>{{ item.goods.charge_plan.title }}</td>
                           <td>{{ item.penalty_attend_pct }}%</td>
                           <td>{{ item.attend_pct }}%</td>
-                          <td>{{ item.b_no }}</td>
-                          <td>
-                            {{
-                              item.pcharge_dt &&
-                                item.pcharge_dt.replace(/(\d{4})-(\d{2})-(\d{2})\s(\d{2}).*/gi, "$1년 $2월 $3일 $4시")
-                            }}
-                          </td>
+                          <td>{{ item.pcharge_dt }}</td>
                           <td>
                             {{
                               item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1")
                             }}
                           </td>
                           <td>
-                            <button v-show="item.pcharge_status"
+                            <button v-if="item.pcharge_status"
                               class="btn"
                               :class="chargeBtnStatus(item.pcharge_status).class"
                               @click="[setCurrentItem(item), chargeBtnStatus(item.pcharge_status).click && chargeBtnStatus(item.pcharge_status).click()]
@@ -328,77 +299,45 @@
 	import api from '@/common/api'
 	import Modal from '../atom/Modal'
 	import Dropdown from '../atom/Dropdown'
+	import moment from 'moment'
 
 	export default {
 		async created () {
-			this.apiCall(this.$route.params.aNo, this.$route.params.bNo);
+			this.apiCall();
 		},
 		data () {
 			return {
-				listInfo: '',
-				bapInfo: {},
-				tab: 1,
-				aNoList: [],
-				bNoList: [],
-				tag: '',
+				orders: [],
         		isPenaltyCharge: false,
 				search: '',
-				newCardInfo: { cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: '' },
 				currentItem: {},
+				batches: [],
+				company: '',
+				tab: 1,
+				tag: '',
+				moment: moment,
+
+				listInfo: '',
+				bapInfo: {},
+				aNoList: [],
+				bNoList: [],
+				newCardInfo: { cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: '' },
 				targetCountCheck: false,
 			}
 		},
-		computed: {
-			filteredList () {
-				return list => {
-					if (list.length !== 0)
-						return list.filter(
-							item =>
-								(item.user_name && item.user_name.includes(this.search.trim())) ||
-								(item.cus_id && item.cus_id.includes(this.search.trim())),
-						)
-				}
-			},
-			chargeBtnStatus () {
-				return status => {
-					if (status === 'B') return {
-						class: 'btn-primary',
-						text: '결제 대기',
-						click: this.$refs.modalWaitPayment.open
-					}
-					if (status === 'P') return { class: 'btn-warning', text: '일시 정지', click: this.pausePayment }
-					if (status === 'F') return { class: 'btn-danger', text: '결제 실패', click: this.paymentFailed }
-					if (status === 'S') return { class: 'btn-default', text: '결제 성공', click: this.$refs.modalOnSuccess.open }
-					if (status === 'N') return { class: '', text: '대상 아님' }
-					if (status === 'R') return { class: 'btn-info disabled', text: '환불 완료' }
-					return { class: '', text: '' } //status === "R"
-				}
-			},
-			setCurrentItem () {
-				return async item => {
-					if (item) {
-						this.currentItem = item;
-					}
-				}
-			},
-		},
 		methods: {
-			apiCall: async function (aNo, bNo) {
+			apiCall: async function () {
 				let res
 				if (this.tab === 1) {
-					res = await api.get('/partners/chargeList', {
-						sIdx: this.$route.params.sIdx,
-						aNo: aNo,
-						bNo: bNo,
-					})
-					this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item))
-					this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item))
+					res = await api.get('/partners/chargeOrderList', { bbIdx: this.$route.params.bbIdx })
+					this.orders = res.data.orders;
+					this.batches = res.data.batches;
+					this.company = res.data.company;
+					//this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item))
+					//this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item))
 				} else {
-					res = await api.get('/partners/pchargeList', {
-						sIdx: this.$route.params.sIdx,
-						aNo: aNo,
-						bNo: bNo,
-					})
+					res = await api.get('/partners/pchargeOrderList', { bbIdx: this.$route.params.bbIdx })
+					this.orders = res.data.orders;
 				}
 
 				this.listInfo = res.data.list
@@ -504,13 +443,13 @@
 				const res = await api.post('/partners/updateMngTag', params)
 				if (res) this.refresh()
 			},
-      refund: function () {
+      		refund: function () {
 				const isPenaltyCharge = (this.tab!=1)
-        this.$swal
+        		this.$swal
             .fire({
-              html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user_name}</strong>님<br/>`
-									+ `<strong>${this.currentItem.goods_name}</strong><br/>`
-									+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem[isPenaltyCharge?'pcharged_amt':'charged_amt'])}</strong>원이 환불됩니다.<br/>`
+              html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user.name}</strong>님<br/>`
+									+ `<strong>${this.currentItem.goods.charge_plan.title}</strong><br/>`
+									+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.goods[isPenaltyCharge?'pcharge_price':'charge_price'])}</strong>원이 환불됩니다.<br/>`
 									+ `<br/>환불 처리 하시겠습니까?`,
               icon: 'warning',
               showCancelButton: true,
@@ -552,7 +491,7 @@
 								}
 							}
             })
-      },
+      	},
 			makePayment: function () {
 				const isPenaltyCharge = (this.tab!=1)
 				this.$swal
@@ -780,9 +719,54 @@
 				})
 			},
 			setSearch(item) {
-				if(item.cus_id) return !item.user_name.indexOf(this.search) || !item.cus_id.indexOf(this.search)
-				else return !item.user_name.indexOf(this.search)
-    		},
+				return !item.user.name.indexOf(this.search)
+			},
+			routeBatch(batches, event) {
+				if(batches.length && batches[event.target.value].idx !== parseInt(this.$route.params.bbIdx)) {
+					this.$router.push({
+						name: "billingDetailsList",
+						params: { sIdx: this.$route.params.sIdx, bbIdx:batches[event.target.value].idx }
+					})
+				}
+			},
+			getTempBatch() {
+				const temp = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
+				return temp.b_no+"회차 | "+moment(temp.fr_dt).format('YY.MM.DD')+" - "+moment(temp.to_dt).format('YY.MM.DD')
+			}
+		},
+		computed: {
+			filteredList () {
+				return list => {
+					if (list.length !== 0)
+						return list.filter(
+							item =>
+								(item.user_name && item.user_name.includes(this.search.trim())) ||
+								(item.cus_id && item.cus_id.includes(this.search.trim())),
+						)
+				}
+			},
+			chargeBtnStatus () {
+				return status => {
+					if (status === 'B') return {
+						class: 'btn-primary',
+						text: '결제 대기',
+						click: this.$refs.modalWaitPayment.open
+					}
+					if (status === 'P') return { class: 'btn-warning', text: '일시 정지', click: this.pausePayment }
+					if (status === 'F') return { class: 'btn-danger', text: '결제 실패', click: this.paymentFailed }
+					if (status === 'S') return { class: 'btn-default', text: '결제 성공', click: this.$refs.modalOnSuccess.open }
+					if (status === 'N') return { class: '', text: '대상 아님' }
+					if (status === 'R') return { class: 'btn-info disabled', text: '환불 완료' }
+					return { class: '', text: '' } //status === "R"
+				}
+			},
+			setCurrentItem () {
+				return async item => {
+					if (item) {
+						this.currentItem = item;
+					}
+				}
+			},
 		},
 		components: {
 			Modal,
