@@ -108,7 +108,7 @@ export default {
 		Pagination
 	},
 	async created () {
-		const res = await api.get('/partners/lessonList')
+		const res = await api.get('/partners/reportSiteList')
 		this.current_page = res.data.current_page
 		this.total_page = res.data.last_page
 		this.items = res.data.data
@@ -124,7 +124,7 @@ export default {
 		},
 		async setCurrentPage (data) {
 			this.current_page = data
-			const res = await api.get('/partners/lessonList?page=' + this.current_page)
+			const res = await api.get('/partners/reportSiteList?page=' + this.current_page)
 			this.current_page = res.data.current_page
 			this.items = res.data.data
 		},
@@ -141,7 +141,7 @@ export default {
 			}
         },
         async setSearch(input) {
-            const res = await api.get('/partners/lessonList', { sk:input })
+            const res = await api.get('/partners/reportSiteList', { sk:input })
             this.current_page = res.data.current_page
             this.total_page = res.data.last_page
             this.applySite = res.data.data

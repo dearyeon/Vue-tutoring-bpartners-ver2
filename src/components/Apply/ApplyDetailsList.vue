@@ -14,11 +14,6 @@
               <option value="none" selected disabled hidden>{{tempbatch.b_no}}회차 | {{ moment(tempbatch.fr_dt).format('YY.MM.DD') }} - {{moment(tempbatch.to_dt).format('YY.MM.DD') }}</option>
               <option v-for="(apply,i) in batches" :value="i" :key="apply.id">{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY.MM.DD') }} - {{moment(apply.to_dt).format('YY.MM.DD') }}</option>
             </select>
-            <!--<Dropdown
-              :defaultValue="aNoList.length !== 0 ? aNoList[$route.params.aNo - 1] : ''"
-              :itemList="aNoList"
-              @dropItemClick="chANo"
-            />-->
           </div>
 
           <table class="table table-striped table-hover dataTable">
@@ -33,7 +28,7 @@
                 <th v-for="col in cfs" :key="col.id">{{ col.title }}</th>
                 <th>수강권</th>
                 <th>제공가</th>
-                <th>회사지원금</th> <!-- 제공가 - 자기부담금 -->
+                <th>회사지원금</th>
                 <th>자기부담금</th>
                 <th>접수일시</th>
               </tr>
@@ -109,17 +104,6 @@ export default {
           this.refreshData();
         }
       }
-    },
-    chANo: function(index) {
-      this.refreshData(index + 1)
-    },
-    aNoFormat: function(item) {
-      if (typeof item === "object" && "a_no" in item)
-        return `${item.a_no}회차 | ${item.apply_fr_dt.replace(
-          /(\d{4}-\d{2}-\d{2}).*/,
-          "$1",
-        )} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, "$1")}`;
-      else return "";
     }
   }
 };
