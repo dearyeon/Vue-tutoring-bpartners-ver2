@@ -20,13 +20,13 @@
                 <div class="col-lg-12">
                   <div class="col-sm-4">
                     <h1>
-                      {{ baseInfo ? baseInfo.company : ''}}
+                      {{ company }}
                       <div class="btn-group p-w-xs" style="vertical-align: bottom;">
                         <button
                           data-toggle="dropdown"
                           class="btn btn-default btn-sm dropdown-toggle"
                         >
-                          <strong>{{ baseInfo.c_no }}차</strong>
+                          <strong v-if="batches.length">{{ batches[0].b_no }}차</strong> <!-- TODO::수정-->
                           <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
@@ -61,16 +61,15 @@
                 <thead>
                   <tr>
                     <th>No</th>
-                    <th style="width:20px"></th>
-                    <th class="pagesubmit sorting" field="order" value="name" @click="sortBy('name')">성명</th>
-                    <th class="pagesubmit sorting" field="order" value="lesson_rate" @click="sortBy('target_rate')">달성률</th> <!-- lesson_rate? -->
-                    <th class="pagesubmit sorting" field="order" value="lesson_min" @click="sortBy('lesson_min')">수업</th>
-                    <th class="pagesubmit sorting" field="order" value="total_min" @click="sortBy('total_min')">전체</th>
-                    <th class="pagesubmit sorting" field="order" value="email" @click="sortBy('cus_id')">고객식별ID</th>
+                    <th class="pagesubmit sorting" field="order" value="name" >성명</th> <!--@click="sortBy('name')"-->
+                    <th class="pagesubmit sorting" field="order" value="lesson_rate">달성률</th> <!-- lesson_rate? -->
+                    <th class="pagesubmit sorting" field="order" value="lesson_min">수업</th>
+                    <th class="pagesubmit sorting" field="order" value="total_min">전체</th>
+                    <th class="pagesubmit sorting" field="order" value="email">고객식별ID</th>
                     <th>이전 레벨</th>
                     <th>마지막 레벨</th>
-                    <th class="pagesubmit sorting" field="order" value="part" @click="sortBy('part')">부서<br />(학과)</th>
-                    <th class="pagesubmit sorting" field="order" value="position" @click="sortBy('position')">직급<br />(직책)</th>
+                    <th class="pagesubmit sorting" field="order" value="part">부서<br />(학과)</th>
+                    <th class="pagesubmit sorting" field="order" value="position">직급<br />(직책)</th>
                     <th style="width:35%">
                       수업 히스토리(횟수)
                       <div class="pull-right">
@@ -84,35 +83,28 @@
                 </thead>
 
                 <tbody>
-                  <tr
-                    v-for="(item, index) in items"
-                    :key="item.id"
-                    v-show="getPage(item, index)"
-                  >
-                    <td>{{ index + 1 }}</td>
-                    <td>사</td>
-                    <!-- <td><img alt="image" class="img-circle" src="{{getProfileImage($item->prof_img,'_S')}}" style="width: 20px;height:20px;" /></td>-->
-                    <td class="userInfo hover-pointer" @click="openUserInfo(index)">{{ item.userInfo.name }}</td>
-                    <td>
-                      <!--<span class="pie-chart-label">{{ item.lesson_min? item.lesson_min:0 }}/{{ item.total_min? item.total_min:1 }}</span>-->
-                      <span class="lesson-rate">{{ item.baseInfo.target_rate? item.baseInfo.target_rate+'%':'' }}</span> <!-- lesson_rate? -->
+                  <tr v-for="(item, index) in items" :key="item.id">
+                    <td>{{ item.user.idx }}</td>
+                    <td class="userInfo hover-pointer" @click="openUserInfo(index)">{{ item.user.name }}</td>
+                    <!--<td>
+                      <span class="lesson-rate">{{ item.baseInfo.target_rate? item.baseInfo.target_rate+'%':'' }}</span>
                     </td>
                     <td>{{ item.userInfo.lesson_min? item.userInfo.lesson_min+'분':'-'}} / {{ item.userInfo.total_lesson_cnt? item.userInfo.total_lesson_cnt+'회':'-'}}</td>
-                    <td>{{ item.userInfo.total_min? item.userInfo.total_min+'분':''}} / {{ item.userInfo.total_lesson_cnt? item.userInfo.total_lesson_cnt+'회':'-'}}</td> <!-- ticket_cnt? -->
+                    <td>{{ item.userInfo.total_min? item.userInfo.total_min+'분':''}} / {{ item.userInfo.total_lesson_cnt? item.userInfo.total_lesson_cnt+'회':'-'}}</td>
                     <td>{{ item.userInfo.cus_id }}</td>
                     <td>{{ item.userInfo.firstTest.grade }}</td>
-                    <td><div v-if="item.userInfo.lastTest">{{ item.userInfo.lastTest.grade }}</div></td>
-                    <td>{{ item.userInfo.part }}</td>
-                    <td>{{ item.userInfo.position }}</td>
+                    <td><div v-if="item.userInfo.lastTest">{{ item.userInfo.lastTest.grade }}</div></td>-->
+                    <td>{{ item.user.department }}</td>
+                    <td>{{ item.user.position }}</td>
                     <td>
-                      
+                      <!--
                       <div v-if="d_type==='all'">
                         <div v-for="i in item.baseInfo.max_cnt" :key="i.id">
                           <div class="square square-pull" v-if="item.lesson['lesson_cnt_'+i]"></div>
                           <div class="square square-empty" v-else></div>
                         </div>
                       </div>
-                      <div v-if="d_type==='month'">  <!-- api에서 받아오는 데이터 보고 바꾸기-->
+                      <div v-if="d_type==='month'">
                         <div v-for="i in 31" :key="i.id"> 
                           <div class="square square-pull" style="width:9px" v-if="item.lesson['lesson_cnt_'+i]"></div>
                           <div class="square square-empty" style="width:9px" v-else></div>
@@ -129,7 +121,7 @@
                           <div class="square square-pull" style="margin:0; width:13px" v-if="item.lesson['lesson_cnt_'+i]"></div>
                           <div class="square square-empty" style="margin:0; width:13px" v-else>{{ i==0 || i==12 || i==24?(i==0?'00':i)+'H':''}}</div>
                         </div>
-                      </div>
+                      </div>-->
                     </td>
                   </tr>
                 </tbody>
@@ -173,7 +165,7 @@
 </template>
 
 <script>
-//import api from "@/common/api";
+import api from "@/common/api";
 import UserInfo from "@/components/atom/UserInfo";
 import UserModifyModal from "@/components/atom/UserModifyModal";
 import Pagination from "@/components/atom/Pagination";
@@ -183,7 +175,8 @@ export default {
     return {
       search: '',
       company: '',
-      orders: [],
+      batches: [],
+      items: [],
       current_page: 1,
       total_page: 1,
 
@@ -203,8 +196,10 @@ export default {
 		const res = await api.get('/partners/reportList', { bbIdx: this.$route.params.bbIdx })
 		this.current_page = res.data.orders.current_page
 		this.total_page = res.data.orders.last_page
-    this.orders = res.data.orders
+    this.items = res.data.orders.data
     this.company = res.data.company
+    this.batches = res.data.batches
+    console.log(this.items);
   },
   methods: {
     setCycle(type) {
@@ -221,9 +216,6 @@ export default {
     },
     async setCurrentPage(data) {
         this.current_page = data;
-    },
-    getPage(item, index) {
-       return (!item.userInfo.name.indexOf(this.search) || !item.userInfo.cus_id.indexOf(this.search) && (index>=(this.current_page-1)*30 && index<this.current_page*30))
     },
     openModal() {
       this.$swal({

@@ -95,6 +95,17 @@
     <div class="col-lg-12">
       <div class="ibox-title title">
         <h2 class="pull-left">결제정보 관리</h2>
+		<div class="col-lg-4 col-md-12 col-xs-12 pull-right" >
+			<!-- 정기결제 -->
+			<div class="col-lg-12 col-md-6 col-xs-6 pull-right" v-if="tab === 1">
+				<button class="col-lg-5 col-lg-offset-7 btn btn-primary" @click="chargeBatch">결제 대기건 일괄 결제</button>
+			</div>
+			<!--추가결제-->
+			<div class="col-lg-12 col-md-6 col-xs-6 pull-right" v-if="tab === 2">
+				<button class="btn btn-success col-lg-5" @click="updatePChargeTarget">결재대상 판정</button>
+				<button class="btn btn-primary col-lg-5 col-lg-offset-1" @click="pChargeBatch">결제 대기건 일괄 결제</button>
+			</div>
+		</div>
       </div>
     </div>
     <div class="row">
@@ -102,9 +113,9 @@
         <div class="ibox-content">
           <div id="listform">
             <div class="subtitle">
-              <h1>{{ company }}</h1>
+				<h1>{{ company }}</h1>
 				<select v-if="batches.length" @change="routeBatch(batches, $event)">
-					<option value="none" selected disabled hidden>{{ getTempBatch() }}</option>   
+					<option value="none" selected disabled hidden>{{ getTempBatch(1) }}</option>   
 					<option v-for="(batch,i) in batches" :value="i" :key="i.id">{{batch.b_no}}회차 | {{ moment(batch.fr_dt).format('YY.MM.DD') }} - {{moment(batch.to_dt).format('YY.MM.DD') }}</option>
 				</select>
             </div>
@@ -112,45 +123,7 @@
             <div class="input-group col-lg-3 col-md-12 col-xs-12 pull-left">
               <input type="text" v-model="search" placeholder="성명을 입력하세요." class="form-control" />
             </div>
-            <div class="col-lg-5 col-md-12 col-xs-12">
-              <div class="col-lg-6 col-md-6 col-xs-6">
-                <label class="control-label" for="en_i">결제 실패건 모아보기</label>
-                <div class="switch">
-                  <div class="onoffswitch">
-                    <!-- FIXME: filter 기능 -->
-                    <input class="onoffswitch-checkbox form-control" name="en_i" id="en_i" type="checkbox" value="" />
-                    <label class="onoffswitch-label" for="en_i">
-                      <span class="onoffswitch-inner"></span>
-                      <span class="onoffswitch-switch"></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-6 col-md-6 col-xs-6">
-                <label class="control-label" for="en_p">결제 일시정지건 모아보기</label>
-                <div class="switch">
-                  <div class="onoffswitch">
-                    <input class="onoffswitch-checkbox form-control" name="en_p" id="en_p" type="checkbox" value="" />
-                    <label class="onoffswitch-label" for="en_p">
-                      <span class="onoffswitch-inner"></span>
-                      <span class="onoffswitch-switch"></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-12 col-xs-12">
-              <!-- 정기결제 -->
-              <div class="col-lg-12 col-md-6 col-xs-6" v-if="tab === 1">
-                <button class="col-lg-5 col-lg-offset-7 btn btn-primary" @click="chargeBatch">결제 대기건 일괄 결제</button>
-              </div>
-              <!--추가결제-->
-              <div class="col-lg-12 col-md-6 col-xs-6" v-if="tab === 2">
-                <button class="btn btn-success col-lg-5" @click="updatePChargeTarget">결재대상 판정</button>
-                <button class="btn btn-primary col-lg-5 col-lg-offset-1" @click="pChargeBatch">결제 대기건 일괄 결제</button>
-              </div>
-            </div>
+            
           </div>
 
           <div class="col-lg-12">
@@ -190,8 +163,8 @@
                           <td>{{ item.idx }}</td>
                           <td>{{ item.user.name }}</td>
                           <td>{{ item.goods.charge_plan.title }}</td>
+                          <td>{{ getTempBatch().charge_dt }}</td>
                           <td>{{ item.charged_dt }}</td>
-                          <td>{{ }}</td>
                           <td>
                             <button v-if="item.charge_status"
                               class="btn"
@@ -231,7 +204,7 @@
                           <th class="text-center">수강권</th>
                           <th class="text-center">기준출석률</th>
                           <th class="text-center">달성률</th>
-                          <th class="text-center">정기결제일시</th>
+                          <th class="text-center">추가결제일시</th>
                           <th class="text-center">실결제일시</th>
                           <th class="text-center">결제처리현황</th>
                           <th class="text-center">결제카드변경</th>
@@ -246,14 +219,10 @@
                           <td>{{ item.idx }}</td>
                           <td>{{ item.user.name }}</td>
                           <td>{{ item.goods.charge_plan.title }}</td>
-                          <td>{{ item.penalty_attend_pct }}%</td>
+                          <td>{{ getTempBatch().target_rt }}%</td>
                           <td>{{ item.attend_pct }}%</td>
-                          <td>{{ item.pcharge_dt }}</td>
-                          <td>
-                            {{
-                              item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1")
-                            }}
-                          </td>
+                          <td>{{ getTempBatch().pcharge_dt }}</td>
+                          <td>{{ item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1") }}</td>
                           <td>
                             <button v-if="item.pcharge_status"
                               class="btn"
@@ -729,9 +698,9 @@
 					})
 				}
 			},
-			getTempBatch() {
+			getTempBatch(val) {
 				const temp = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
-				return temp.b_no+"회차 | "+moment(temp.fr_dt).format('YY.MM.DD')+" - "+moment(temp.to_dt).format('YY.MM.DD')
+				return val? temp.b_no+"회차 | "+moment(temp.fr_dt).format('YY.MM.DD')+" - "+moment(temp.to_dt).format('YY.MM.DD') : temp
 			}
 		},
 		computed: {
