@@ -42,7 +42,7 @@
 										<td><input type="number" class="form-control" placeholder="출석률을 입력해 주세요." v-model="targetRt"/></td>
 									</tr>
 									<tr>
-										<th>자기 부담금</th>
+										<th>자기 부담요율</th>
 										<td>
 											<input type="text" class="form-control" placeholder="자기 부담금을 입력해 주세요." v-model="selfChargeRt"/>
 										</td>
@@ -100,7 +100,7 @@
 												기업 제공가
 											</th>
 											<th>
-												자기 부담요율
+												자기 부담금
 											</th>
 											<th class="text-center">삭제</th>
 										</tr>
