@@ -51,7 +51,7 @@
                                             <td class="text-center">{{ item.email }}</td>
                                             <td class="text-center">{{ item.reg_dt?moment(item.reg_dt).format('YYYY-MM-DD'):'' }}</td>
                                             <td class="text-center">{{ item.upd_dt?moment(item.upd_dt).format('YYYY-MM-DD'):'' }}</td>
-                                            <td class="text-center"><button class="btn btn-edit" @click="editCustomerPage(item.idx)">수정</button></td>
+                                            <td class="text-center"><button class="btn btn-edit">수정</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
