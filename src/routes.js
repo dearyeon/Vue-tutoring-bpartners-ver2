@@ -24,7 +24,7 @@ const routes = [
     children: [
       { path: "/", redirect: "/lesson/List" },
       { path: '/lesson/List', component: LessonList },
-      { path: '/lesson/DetailsList/:id/:c_no', name: "lessonDetailsList", component: LessonDetailsList, props: true },
+      { path: '/lesson/DetailsList/:bbIdx', name: "lessonDetailsList", component: LessonDetailsList, props: true },
       { path: '/user/List', component: UserList },
       { path: '/user/DetailsList/:id/:c_no', name: "userDetailsList", component: UserDetailsList, props: true },
       { path: '/apply/List', component: ApplyList },

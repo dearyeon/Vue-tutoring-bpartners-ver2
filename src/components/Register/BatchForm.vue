@@ -100,7 +100,7 @@
 												기업 제공가
 											</th>
 											<th>
-												자기 부담금
+												자기 부담요율
 											</th>
 											<th class="text-center">삭제</th>
 										</tr>

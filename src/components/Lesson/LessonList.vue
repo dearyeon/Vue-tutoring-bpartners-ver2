@@ -48,17 +48,17 @@
 
                                         <tr class="hover-pointer LESSON_INFO" 
                                             v-for="(item, index) in items" :key="`Lesson-${index}`">
-                                            <td @click="routeDetailPage(item.idx,item.c_no)">
+                                            <td @click="routeDetailPage(item)">
                                                 {{ item.company }}
                                             </td>
                                             <td class="text-center">
-                                                <select @change="routeDetailPage(item.idx,item.c_no,$event)">
-                                                    <option value="none" selected disabled hidden>{{item.c_no}}차</option>
-                                                    <option v-for="i in item.c_no" :value="i" :key="i.id">{{item.c_no-i+1}}차</option>
+                                                <select v-if="item.batches.length" @change="routeDetailPage(item,$event)">
+                                                    <option value="none" selected disabled hidden>{{item.batches[0].b_no}}차</option>
+                                                    <option v-for="(batch,i) in item.batches" :value="i" :key="batch.id">{{batch.b_no}}차</option>
                                                 </select>
                                             </td>
                                             <td class="text-center">
-                                                <label :class="currentStatus(item.fr_dt,item.to_dt,1)" style="width:60px;text-align: center">{{ currentStatus(item.fr_dt,item.to_dt,0) }}</label>
+                                                <label :class="currentStatus(item.batches[0].fr_dt,item.batches[0].to_dt,1)" style="width:60px;text-align: center">{{ currentStatus(item.batches[0].fr_dt,item.batches[0].to_dt,0) }}</label>
                                             </td>
                                             <td class="text-left">
                                                 <!--<label class="btn-info img-circle text-center no-margins" style="width: 20px;height: 20px" v-if="item.e_cnt>0"><strong>AB</strong></label>
@@ -114,13 +114,14 @@ export default {
 		this.items = res.data.data
 	},
 	methods: {
-		routeDetailPage (idx, c_no, event) {
-			let cNo
-			if (event) cNo = c_no - event.target.value + 1
-			this.$router.push({
-				name: 'lessonDetailsList',
-				params: { id: idx, c_no: cNo ? cNo : c_no }
-			})
+		routeDetailPage (item, event) {
+            let bbIdx;
+            if (event) bbIdx = item.batches[event.target.value].idx;
+            else bbIdx = item.batches[0].idx;
+            this.$router.push({
+                name: 'lessonDetailsList',
+                params: { bbIdx:bbIdx }
+            })
 		},
 		async setCurrentPage (data) {
 			this.current_page = data
@@ -144,7 +145,7 @@ export default {
             const res = await api.get('/partners/reportSiteList', { sk:input })
             this.current_page = res.data.current_page
             this.total_page = res.data.last_page
-            this.applySite = res.data.data
+            this.items = res.data.data
         },
 	}
 }

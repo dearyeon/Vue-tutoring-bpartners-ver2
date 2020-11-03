@@ -105,7 +105,7 @@
 			                <input v-model="item.required" type="checkbox" :checked="item.required"/>
 		                </td>
 		                <td>
-			                <input type="text" class="form-control" v-model="item.col_id" :readonly="!item.isCf" placeholder="column Name을 입력해주세요."/>
+			                <input type="text" class="form-control" v-model="item.col_id" readonly placeholder="column Name을 입력해주세요."/>
 						</td>
 						<td>
 							<input type="text" class="form-control" v-model="item.title" placeholder="항목을 입력해주세요."/>
@@ -121,12 +121,12 @@
 				                </select>
 			                </div>
 
-	                    <div class="col-xs-8" v-if="item.type === 'S'">
+	                    	<div class="col-xs-10" v-if="item.type === 'S'">
 				                <span class="col-xs-6">
-			                    <input type="text" class="form-control" v-model="item.opts" placeholder="'|' 로 구분해서 작성해 주세요." />
+			                    <input type="text" class="form-control" v-model="item.opts" placeholder="option을 '|' 로 구분해서 작성해 주세요." />
 				                </span>
 				                <span class="col-xs-6">
-				                  <input type="text" class="form-control" v-model="item.vals" placeholder="'|' 로 구분해서 작성해 주세요." />
+				                  <input type="text" class="form-control" v-model="item.vals" placeholder="value를 '|' 로 구분해서 작성해 주세요." />
 				                </span>
 			                </div>
 		                </td>
@@ -216,6 +216,13 @@ export default {
 			this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)];
 			this.openYn = data.open_yn ? true : false;
 			this.applyerFormList = data.user_fields;
+
+			let cfCount = this.cfCnt;
+			this.applyerFormList.forEach(function(item) {
+				item['isCf'] = false;
+				if(item.col_id.slice(0,2) === 'cf' && cfCount<item.col_id.charAt(2)) cfCount=item.col_id.charAt(2);
+			})
+			this.cfCnt = parseInt(cfCount);
 			//this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${data.site.ci_img}`
 		}
 		let cfCount = 0
@@ -231,12 +238,12 @@ export default {
 			this.applyerFormList = col;
 		}
 		this.applyerFormList.forEach( item => {
-			if(item.col_id.slice(0,2) === 'cf') {
+			if( (item['isCf'] === undefined || item['isCf'] !== false) && item.col_id.slice(0,2) === 'cf') {
 				item['isCf'] = true
 				cfCount=item.col_id.charAt(2);
 			} else {item['isCf'] = false}
 		})
-		this.cfCnt = parseInt(cfCount);
+		this.cfCnt = this.cfCnt+parseInt(cfCount);
 	},
 	sortNumber: function (item,index) {
 		item.sort_no = index + 1
