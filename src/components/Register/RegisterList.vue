@@ -68,10 +68,10 @@
 								</div>
 							</td>
 							<td>
-								<button class="btn btn-primary" v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="goToApplyPage('https://apply.tutoring.co.kr/'+item.batches[item.selectedApplyIdx].apply.hash+'/7788')">신청 페이지</button>
+								<button class="btn btn-primary" v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="goToApplyPage(applyPageUrl(item,item.selectedApplyIdx)+'/7788')">신청 페이지</button>
 							</td>
 							<td>
-								<a v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="copyText($event,index)">https://apply.tutoring.co.kr/{{ item.batches[item.selectedApplyIdx].apply.hash }}</a>
+								<a v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="copyText($event,index)">{{applyPageUrl(item,item.selectedApplyIdx)}}</a>
 								<div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+index">
 									<a href="#" class="alert-link">클립보드에 복사되었습니다.</a>
 								</div>
@@ -96,6 +96,13 @@ import Dropdown from '../atom/Dropdown'
 import moment from 'moment'
 import Pagination from '@/components/atom/Pagination'
 
+	const hostId = window.location.hostname.split('.')[0];
+	let applyPageServer;
+	if(hostId=='partners2') applyPageServer = 'apply';
+	else applyPageServer = 'apply-dev';
+
+	const applyPageDomain = 'https://' + applyPageServer + '.tutoring.co.kr/';
+
 export default {
 	data () {
 		return {
@@ -106,16 +113,26 @@ export default {
 			moment: moment
 		}
 	},
+	computed: {
+		applyPageUrl() {
+			return (item, index) => {
+				return applyPageDomain + item.batches[index].apply.hash
+			}
+		}
+	},
 	components: {
 		Dropdown, Pagination
 	},
 	async created () {
+
 		const res = await api.get('/partners/siteBatchList');
 		let list = res.data.data;
 		list.forEach(item => {
-			item.selectedApplyIdx = 0,
+			console.log(item);
+			item.selectedApplyIdx = 0
 			item.isCopy = false
 		})
+
 		this.list = list
 		this.current_page = res.data.current_page
 		this.total_page = res.data.last_page
