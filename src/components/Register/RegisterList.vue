@@ -128,7 +128,6 @@ export default {
 		const res = await api.get('/partners/siteBatchList');
 		let list = res.data.data;
 		list.forEach(item => {
-			console.log(item);
 			item.selectedApplyIdx = 0
 			item.isCopy = false
 		})
