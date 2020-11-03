@@ -24,7 +24,7 @@ async function deploy() {
 
 
 function upload() {
-	const destPath = `/www/${proj}`;
+	const destPath = `/www/${proj}-${env}`;
 	const cmd =	`rsync -rupz --chmod=Fug=rw,Dug=rwx --delete ./dist/ ${user}@${getHost()}:${destPath}/`;
 
 	return new Promise((resolve, reject) => {

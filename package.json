@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "doploy_ST": "npm run build && node deploy.js TEST",
+    "doploy_DEV": "npm run build && node deploy.js DEV",
+    "doploy_ST": "npm run build && node deploy.js ST",
     "doploy_REAL": "npm run build && node deploy.js REAL"
   },
   "dependencies": {
