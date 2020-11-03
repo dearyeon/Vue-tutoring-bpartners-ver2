@@ -96,12 +96,16 @@ import Dropdown from '../atom/Dropdown'
 import moment from 'moment'
 import Pagination from '@/components/atom/Pagination'
 
-	const hostId = window.location.hostname.split('.')[0];
-	let applyPageServer;
-	if(hostId=='partners2') applyPageServer = 'apply';
-	else applyPageServer = 'apply-dev';
+	const hostId = window.location.hostname.split('.')[0].split('-')[1];
 
-	const applyPageDomain = 'https://' + applyPageServer + '.tutoring.co.kr/';
+	let server;
+	if(hostId !== undefined) {
+		server = '-' + hostId;
+	} else {
+		window.location.hostname.split('.')[0] === 'partners2' ? server='' : server = '-dev'
+	}
+
+	const applyPageDomain = 'https://apply' + server + '.tutoring.co.kr/';
 
 export default {
 	data () {
