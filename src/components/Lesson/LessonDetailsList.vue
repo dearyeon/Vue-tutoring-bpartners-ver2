@@ -66,10 +66,12 @@
                     <th class="pagesubmit sorting" field="order" value="lesson_min">수업</th>
                     <th class="pagesubmit sorting" field="order" value="total_min">전체</th>
                     <th class="pagesubmit sorting" field="order" value="email">고객식별ID</th>
-                    <th>이전 레벨</th>
-                    <th>마지막 레벨</th>
-                    <th class="pagesubmit sorting" field="order" value="part">부서<br />(학과)</th>
-                    <th class="pagesubmit sorting" field="order" value="position">직급<br />(직책)</th>
+                    <th>학습 레벨</th>
+                    <th class="pagesubmit sorting" field="order" value="part">부서</th>
+                    <th class="pagesubmit sorting" field="order" value="position">직위<br/>(직책)</th>
+                    <th class="pagesubmit sorting" field="order" value="position">사번<br/>(고유값)</th>
+                    <th>메모1</th>
+                    <th>메모2</th>
                     <th style="width:35%">
                       수업 히스토리(횟수)
                       <div class="pull-right">
