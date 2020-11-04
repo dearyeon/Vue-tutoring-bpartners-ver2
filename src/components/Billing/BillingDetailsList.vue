@@ -102,7 +102,7 @@
 			</div>
 			<!--추가결제-->
 			<div class="col-lg-12 col-md-6 col-xs-6 pull-right" v-if="tab === 2">
-				<button class="btn btn-success col-lg-5" @click="updatePChargeTarget">결재대상 판정</button>
+				<button class="btn btn-success col-lg-5" @click="updatePChargeTarget">결제대상 판정</button>
 				<button class="btn btn-primary col-lg-6 col-lg-offset-1" @click="pChargeBatch">결제 대기건 일괄 결제</button>
 			</div>
 		</div>
@@ -118,6 +118,20 @@
 					<option value="none" selected disabled hidden>{{ getTempBatch(1) }}</option>   
 					<option v-for="(batch,i) in batches" :value="i" :key="i.id">{{batch.b_no}}회차 | {{ moment(batch.fr_dt).format('YY.MM.DD') }} - {{moment(batch.to_dt).format('YY.MM.DD') }}</option>
 				</select>
+				<div v-if="tab===1" class="text-left col-lg-5" style="margin-left:40px;">
+					<h3 class="col-lg-4">정기결제일시</h3>
+					<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().charge_dt }}</h4>
+				</div>
+				<div v-if="tab===2" class="text-left col-lg-5" style="margin-left:40px;">
+					<div class="col-lg-12">
+						<h3 class="col-lg-4">추가결제일시</h3>
+						<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().pcharge_dt }}</h4>
+					</div>
+					<div class="col-lg-12">
+						<h3 class="col-lg-4">기준출석률</h3>
+						<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().target_rt }}%</h4>
+					</div>
+				</div>
             </div>
 
             <div class="input-group col-lg-3 col-md-12 col-xs-12 pull-left">
@@ -147,7 +161,6 @@
                           <th class="text-center">No</th>
                           <th class="text-center">학생</th>
                           <th class="text-center">수강권</th>
-                          <th class="text-center">정기결제일시</th>
                           <th class="text-center">실결제일시</th>
                           <th class="text-center">결제처리현황</th>
                           <th class="text-center">결제카드변경</th>
@@ -163,7 +176,6 @@
                           <td>{{ item.idx }}</td>
                           <td>{{ item.user.name }}</td>
                           <td>{{ item.goods.charge_plan.title }}</td>
-                          <td>{{ getTempBatch().charge_dt }}</td>
                           <td>{{ item.charged_dt }}</td>
                           <td>
                             <button v-if="item.charge_status"
@@ -202,9 +214,7 @@
                           <th class="text-center">No</th>
                           <th class="text-center">학생</th>
                           <th class="text-center">수강권</th>
-                          <th class="text-center">기준출석률</th>
                           <th class="text-center">달성률</th>
-                          <th class="text-center">추가결제일시</th>
                           <th class="text-center">실결제일시</th>
                           <th class="text-center">결제처리현황</th>
                           <th class="text-center">결제카드변경</th>
@@ -219,9 +229,7 @@
                           <td>{{ item.idx }}</td>
                           <td>{{ item.user.name }}</td>
                           <td>{{ item.goods.charge_plan.title }}</td>
-                          <td>{{ getTempBatch().target_rt }}%</td>
                           <td>{{ item.attend_pct }}%</td>
-                          <td>{{ getTempBatch().pcharge_dt }}</td>
                           <td>{{ item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1") }}</td>
                           <td>
                             <button v-if="item.pcharge_status"
