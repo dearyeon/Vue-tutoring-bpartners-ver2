@@ -98,12 +98,12 @@
 		<div class="col-lg-4 col-md-12 col-xs-12 pull-right" >
 			<!-- 정기결제 -->
 			<div class="col-lg-12 col-md-6 col-xs-6 pull-right" v-if="tab === 1">
-				<button class="col-lg-5 col-lg-offset-7 btn btn-primary" @click="chargeBatch">결제 대기건 일괄 결제</button>
+				<button class="col-lg-6 col-lg-offset-7 btn btn-primary" @click="chargeBatch">결제 대기건 일괄 결제</button>
 			</div>
 			<!--추가결제-->
 			<div class="col-lg-12 col-md-6 col-xs-6 pull-right" v-if="tab === 2">
 				<button class="btn btn-success col-lg-5" @click="updatePChargeTarget">결재대상 판정</button>
-				<button class="btn btn-primary col-lg-5 col-lg-offset-1" @click="pChargeBatch">결제 대기건 일괄 결제</button>
+				<button class="btn btn-primary col-lg-6 col-lg-offset-1" @click="pChargeBatch">결제 대기건 일괄 결제</button>
 			</div>
 		</div>
       </div>
