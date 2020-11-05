@@ -174,7 +174,7 @@
                         <!--정기 결제 -->
                         <tr class="text-center" v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
                           <td>{{ item.idx }}</td>
-                          <td>{{ item.user.name }}</td>
+                          <td>{{ item.b2b_user.name }}</td>
                           <td>{{ item.goods.charge_plan.title }}</td>
                           <td>{{ item.charged_dt }}</td>
                           <td>
@@ -227,7 +227,7 @@
                       <tbody id="pchargeInfoList">
                         <tr v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" class="text-center" v-show="setSearch(item)">
                           <td>{{ item.idx }}</td>
-                          <td>{{ item.user.name }}</td>
+                          <td>{{ item.b2b_user.name }}</td>
                           <td>{{ item.goods.charge_plan.title }}</td>
                           <td>{{ item.attend_pct }}%</td>
                           <td>{{ item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1") }}</td>
@@ -426,7 +426,7 @@
 				const isPenaltyCharge = (this.tab!=1)
         		this.$swal
             .fire({
-              html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user.name}</strong>님<br/>`
+              html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.b2b_user.name}</strong>님<br/>`
 									+ `<strong>${this.currentItem.goods.charge_plan.title}</strong><br/>`
 									+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.goods[isPenaltyCharge?'pcharge_price':'charge_price'])}</strong>원이 환불됩니다.<br/>`
 									+ `<br/>환불 처리 하시겠습니까?`,
@@ -475,9 +475,9 @@
 				const isPenaltyCharge = (this.tab!=1)
 				this.$swal
 					.fire({
-						html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user_name}</strong>님<br/>`
+						html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.b2b_user.name}</strong>님<br/>`
 								+ `<strong>${this.currentItem.goods_name}</strong><br/>`
-								+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.charge_price)}</strong>원이 결제됩니다.<br/>`
+								+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.goods.charge_price)}</strong>원이 결제됩니다.<br/>`
 								+ `<br/>결제 진행 하시겠습니까?`,
 						icon: 'warning',
 						showCancelButton: true,
@@ -698,7 +698,7 @@
 				})
 			},
 			setSearch(item) {
-				return !item.user.name.indexOf(this.search)
+				return !item.b2b_user.name.indexOf(this.search)
 			},
 			routeBatch(batches, event) {
 				if(batches.length && batches[event.target.value].idx !== parseInt(this.$route.params.bbIdx)) {
@@ -719,7 +719,7 @@
 					if (list.length !== 0)
 						return list.filter(
 							item =>
-								(item.user_name && item.user_name.includes(this.search.trim())) ||
+								(item.b2b_user.name && item.b2b_user.name.includes(this.search.trim())) ||
 								(item.cus_id && item.cus_id.includes(this.search.trim())),
 						)
 				}

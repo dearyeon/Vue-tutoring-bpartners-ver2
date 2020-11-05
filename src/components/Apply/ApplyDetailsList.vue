@@ -36,13 +36,13 @@
             <tbody id="applyerList">
               <tr class="userInfo hover-pointer" v-for="(order, index) in orders" v-bind:key="order.id">
                 <td class="number" style="vertical-align: middle;">{{ index+1 }}</td>
-                <td class="part">{{ order.user.name }}</td>
-                <td class="company">{{ order.user.company }}</td>
-                <td class="department">{{ order.user.department }}</td>
-                <td class="position">{{ order.user.position }}</td>
-                <td class="emp_no">{{ order.user.emp_no }}</td>
-                <td v-if="order.user.cf1">{{ getGTP('T',order.user.cf2) }}</td>
-                <td v-if="order.user.cf2">{{ getGTP('S',order.user.cf1) }}</td>
+                <td class="part">{{ order.b2b_user.name }}</td>
+                <td class="company">{{ order.b2b_user.company }}</td>
+                <td class="department">{{ order.b2b_user.department }}</td>
+                <td class="position">{{ order.b2b_user.position }}</td>
+                <td class="emp_no">{{ order.b2b_user.emp_no }}</td>
+                <td v-if="order.b2b_user.cf1">{{ getGTP('T',order.b2b_user.cf2) }}</td>
+                <td v-if="order.b2b_user.cf2">{{ getGTP('S',order.b2b_user.cf1) }}</td>
                 <td class="charge-plan__title text-left">{{ order.goods.charge_plan.title }}</td>
                 <td class="supply_price">{{ $shared.nf(order.goods.supply_price) }}</td>
                 <td>{{ $shared.nf(order.goods.supply_price - order.goods.charge_price) }}</td>
