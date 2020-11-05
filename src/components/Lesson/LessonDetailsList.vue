@@ -77,9 +77,9 @@
                 </thead>
 
                 <tbody>
-                  <tr class="text-center" v-for="(item, index) in items" :key="item.id" v-show="!item.user.name.indexOf(search)">
-                    <td>{{ item.user.idx }}</td>
-                    <td class="userInfo hover-pointer" @click="openUserInfo(index)">{{ item.user.name }}</td>
+                  <tr class="text-center" v-for="(item, index) in items" :key="item.id" v-show="!item.b2b_user.name.indexOf(search)">
+                    <td>{{ item.b2b_user.idx }}</td>
+                    <td class="userInfo hover-pointer" @click="openUserInfo(index)">{{ item.b2b_user.name }}</td>
                     <td>
                       <span class="lesson-rate">{{ item.attend_pct }}%</span>
                     </td>
@@ -91,16 +91,16 @@
                       {{ item.ticket_summary ? item.ticket_summary.ticket_cnt*item.goods.charge_plan.secs_per_day/60:'-'}}분/
                       {{ item.ticket_summary ? item.ticket_summary.ticket_cnt:'-'}}회
                     </td>
-                    <td></td>
-                    <td></td>
-                    <td>{{ item.user.department }}</td>
-                    <td>{{ item.user.position }}</td>
-                    <td>{{ item.user.emp_no }}</td>
+                    <td>{{ item.b2b_user.user? item.b2b_user.user.cus_id:''}} </td>
+                    <td>{{ item.b2b_user.user? item.b2b_user.user.level:'' }}</td>
+                    <td>{{ item.b2b_user.department }}</td>
+                    <td>{{ item.b2b_user.position }}</td>
+                    <td>{{ item.b2b_user.emp_no }}</td>
                     <td></td>
                     <td></td>
                     <td>
                       <div v-for="i in calBatchDate()" :key="i.id">
-                        <div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)"></div>
+                        <div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)" :data-tooltip="useDtTooltip(i-1,item)"></div>
                         <div class="square square-empty" v-else></div>
                       </div>
 
@@ -242,12 +242,30 @@ export default {
     isUseDt(i,use_ticket_info) {
       if(use_ticket_info.length) {
         for(var element of use_ticket_info) {
+          //this.batch.fr_dt
           if(moment('2020-11-01').add(i, "days").isSame(element.use_dt,'day')) {
             return true;
           }
         }
         return false;
       } else return false;
+    },
+    useDtTooltip(i,item) {
+      if(item.use_ticket_info.length) {
+        let str = moment(this.batch.fr_dt).add(i, "days").format('YYYY-MM-DD')
+        let count=0, total = 0, min, secs;
+        for(var element of item.use_ticket_info) {
+          //this.batch.fr_dt
+          if(moment('2020-11-01').add(i, "days").isSame(element.use_dt,'day')) {
+            total += item.goods.charge_plan.secs_per_day - element.remain_secs
+            count++
+          }
+        }
+        min = parseInt(total/60)
+        secs = total - min*60
+        str+='\n'+count+'회 - '+min+'분 '+secs+'초'
+        return str;
+      }
     },
     async setCurrentPage(data) {
         this.current_page = data;
