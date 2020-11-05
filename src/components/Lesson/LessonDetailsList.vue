@@ -96,8 +96,8 @@
                     <td>{{ item.b2b_user.department }}</td>
                     <td>{{ item.b2b_user.position }}</td>
                     <td>{{ item.b2b_user.emp_no }}</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ item.b2b_user.memo1 }}</td>
+                    <td>{{ item.b2b_user.memo2 }}</td>
                     <td>
                       <div v-for="i in calBatchDate()" :key="i.id">
                         <div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)" :data-tooltip="useDtTooltip(i-1,item)"></div>
