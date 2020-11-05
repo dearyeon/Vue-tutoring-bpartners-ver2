@@ -120,16 +120,16 @@
 				</select>
 				<div v-if="tab===1" class="text-left col-lg-5" style="margin-left:40px;">
 					<h3 class="col-lg-4">정기결제일시</h3>
-					<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().charge_dt }}</h4>
+					<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().charge_dt?getTempBatch().charge_dt:'-' }}</h4>
 				</div>
 				<div v-if="tab===2" class="text-left col-lg-5" style="margin-left:40px;">
 					<div class="col-lg-12">
 						<h3 class="col-lg-4">추가결제일시</h3>
-						<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().pcharge_dt }}</h4>
+						<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().pcharge_dt?getTempBatch().pcharge_dt:'-' }}</h4>
 					</div>
 					<div class="col-lg-12">
 						<h3 class="col-lg-4">기준출석률</h3>
-						<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().target_rt }}%</h4>
+						<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().target_rt?getTempBatch().target_rt+'%':'-' }}</h4>
 					</div>
 				</div>
             </div>
