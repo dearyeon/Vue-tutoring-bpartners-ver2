@@ -96,7 +96,10 @@
                     <td>{{ item.b2b_user.department }}</td>
                     <td>{{ item.b2b_user.position }}</td>
                     <td>{{ item.b2b_user.emp_no }}</td>
-                    <td>{{ item.b2b_user.memo1 }}</td>
+                    <td>
+                      <div v-if="item.b2b_user.memo1">{{ item.b2b_user.memo1 }}</div>
+                      <div else><button class="btn-xs btn-default">등록</button></div>
+                    </td>
                     <td>{{ item.b2b_user.memo2 }}</td>
                     <td>
                       <div v-for="i in calBatchDate()" :key="i.id">

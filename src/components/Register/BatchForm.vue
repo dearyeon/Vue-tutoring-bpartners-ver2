@@ -356,10 +356,7 @@
 		computed: {
 			applyRange: {
 				get() {
-					let frDtInfoArray =	this.batchFrDt.split(' ')[0].split('-')
-					let toDtInfoArray =	this.batchToDt.split(' ')[0].split('-')
-
-					return [new Date(frDtInfoArray[0], frDtInfoArray[1], frDtInfoArray[2]), new Date(toDtInfoArray[0], toDtInfoArray[1], toDtInfoArray[2])];
+					return [new Date(this.batchFrDt), new Date(this.batchToDt)];
 				},
 				set(value) {
 					this.batchFrDt = moment(value[0]).format('YYYY-MM-DD');
