@@ -96,11 +96,14 @@
                     <td>{{ item.b2b_user.department }}</td>
                     <td>{{ item.b2b_user.position }}</td>
                     <td>{{ item.b2b_user.emp_no }}</td>
-                    <td>
-                      <div v-if="item.b2b_user.memo1">{{ item.b2b_user.memo1 }}</div>
-                      <div else><button class="btn-xs btn-default">등록</button></div>
+                    <td @click="[memoNum=true,setMemo(item.b2b_user)]">
+                      <div class="memo" v-if="item.b2b_user.memo1">{{ item.b2b_user.memo1 }}</div>
+                      <div v-else><button class="btn-xs btn-default">등록</button></div>
                     </td>
-                    <td>{{ item.b2b_user.memo2 }}</td>
+                    <td @click="[memoNum=false,setMemo(item.b2b_user)]">
+                      <div class="memo" v-if="item.b2b_user.memo2">{{ item.b2b_user.memo2 }}</div>
+                      <div v-else><button class="btn-xs btn-default">등록</button></div>
+                    </td>
                     <td>
                       <div v-for="i in calBatchDate()" :key="i.id">
                         <div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)" :data-tooltip="useDtTooltip(i-1,item)"></div>
@@ -171,6 +174,24 @@
       </div>
     </div>
 
+    <div class="modal inmodal fade in" id="addSiteModal" style="display: block;" v-show="showMemo">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content" style="width:350px;">
+                <div class="modal-header" style="border-bottom:0px;padding-bottom: 15px;">
+                    <h5 class="modal-title">메모 입력</h5>
+                    <small>메모를 입력해 주세요.</small>
+                </div>
+                <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
+                  <textarea class="form-control" v-model="memo" style="height:150px"></textarea>
+                </div>
+                <div class="modal-footer" style="border-top:0px">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" @click="showMemo = false">닫기</button>
+                    <button type="button" class="btn btn-success" id="addSiteSubmit" @click="applyMemo">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
   </div>
 </template>
 
@@ -191,7 +212,11 @@ export default {
       items: [],
       current_page: 1,
       total_page: 1,
-			moment: moment,
+      moment: moment,
+      memoNum: null,
+      showMemo: false,
+      memo: '',
+      presentIdx: '',
 
       d_type: "all",
       showModal: false,
@@ -206,15 +231,18 @@ export default {
     Pagination,
   },
   async created() {
-		const res = await api.get('/partners/reportList', { bbIdx: this.$route.params.bbIdx })
-		this.current_page = res.data.orders.current_page
-		this.total_page = res.data.orders.last_page
-    this.items = res.data.orders.data
-    this.company = res.data.company
-    this.batches = res.data.batches
-    this.batch = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
+    this.refresh()
   },
   methods: {
+    async refresh() {
+      const res = await api.get('/partners/reportList', { bbIdx: this.$route.params.bbIdx })
+      this.current_page = res.data.orders.current_page
+      this.total_page = res.data.orders.last_page
+      this.items = res.data.orders.data
+      this.company = res.data.company
+      this.batches = res.data.batches
+      this.batch = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
+    },
     routeDetailPage (event) {
       if(this.batches.length){
         let bbIdx;
@@ -334,6 +362,18 @@ export default {
     updateItem(item) {
       this.items[this.UserNum] = JSON.parse(JSON.stringify(item));
       this.modalitem = this.items[this.UserNum];
+    },
+    setMemo(b2b_user) {
+      if(this.memoNum) this.memo = b2b_user.memo1;
+      else this.memo = b2b_user.memo2;
+      this.presentIdx = b2b_user.idx;
+      this.showMemo = true;
+    },
+    async applyMemo() {
+      if(this.memoNum) await api.post('/partners/setMemo', {buIdx:this.presentIdx, memo1:this.memo})
+      else await api.post('/partners/setMemo', {buIdx:this.presentIdx, memo2:this.memo})
+      this.showMemo = false;
+      this.refresh();
     }
   }
 };
@@ -358,5 +398,10 @@ export default {
 }
 .swal2-container {
   z-index: 300000 !important;
+}
+
+.memo:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 </style>
