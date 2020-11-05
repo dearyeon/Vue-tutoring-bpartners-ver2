@@ -19,23 +19,15 @@
               <form id="listform">
                 <div class="col-lg-12">
                   <div class="col-sm-4">
-                    <h1>
-                      {{ company }}
-                      <div class="btn-group p-w-xs" style="vertical-align: bottom;">
-                        <button
-                          data-toggle="dropdown"
-                          class="btn btn-default btn-sm dropdown-toggle"
-                        >
-                          <strong v-if="batches.length">{{ batches[0].b_no }}차</strong> <!-- TODO::수정-->
-                          <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                          <!--
-                            api이후 구현 필요  
-                            -->
-                        </ul>
-                      </div>
-                    </h1>
+                    <ul class="list-inline">
+                      <li><h1>{{ company }}</h1></li>
+                      <li>
+                        <select v-if="batches.length" @change="routeDetailPage($event)">
+                            <option value="none" selected disabled hidden>{{ batch.b_no }}차</option>
+                            <option v-for="(batch,i) in batches" :value="i" :key="batch.id">{{batch.b_no}}차</option>
+                        </select>
+                      </li>
+                    </ul>
                   </div>
                   <div class="col-sm-4">
                     <div data-toggle="buttons" class="btn-group btn-radio">
@@ -63,7 +55,7 @@
                     <th>No</th>
                     <th class="pagesubmit sorting" field="order" value="name" >성명</th> <!--@click="sortBy('name')"-->
                     <th class="pagesubmit sorting" field="order" value="lesson_rate">달성률</th> <!-- lesson_rate? -->
-                    <th class="pagesubmit sorting" field="order" value="lesson_min">수업</th>
+                    <th class="pagesubmit sorting text-center" field="order" value="lesson_min">수업</th>
                     <th class="pagesubmit sorting" field="order" value="total_min">전체</th>
                     <th class="pagesubmit sorting" field="order" value="email">고객식별ID</th>
                     <th>학습 레벨</th>
@@ -85,20 +77,33 @@
                 </thead>
 
                 <tbody>
-                  <tr v-for="(item, index) in items" :key="item.id">
+                  <tr class="text-center" v-for="(item, index) in items" :key="item.id" v-show="!item.user.name.indexOf(search)">
                     <td>{{ item.user.idx }}</td>
                     <td class="userInfo hover-pointer" @click="openUserInfo(index)">{{ item.user.name }}</td>
-                    <!--<td>
-                      <span class="lesson-rate">{{ item.baseInfo.target_rate? item.baseInfo.target_rate+'%':'' }}</span>
+                    <td>
+                      <span class="lesson-rate">{{ item.attend_pct }}%</span>
                     </td>
-                    <td>{{ item.userInfo.lesson_min? item.userInfo.lesson_min+'분':'-'}} / {{ item.userInfo.total_lesson_cnt? item.userInfo.total_lesson_cnt+'회':'-'}}</td>
-                    <td>{{ item.userInfo.total_min? item.userInfo.total_min+'분':''}} / {{ item.userInfo.total_lesson_cnt? item.userInfo.total_lesson_cnt+'회':'-'}}</td>
-                    <td>{{ item.userInfo.cus_id }}</td>
-                    <td>{{ item.userInfo.firstTest.grade }}</td>
-                    <td><div v-if="item.userInfo.lastTest">{{ item.userInfo.lastTest.grade }}</div></td>-->
+                    <td>
+                      {{ item.use_ticket_info && item.ticket_summary ? item.goods.charge_plan.secs_per_day*(item.use_ticket_info.length+1) - item.ticket_summary.sum_remain_secs/60 :'-' }}분/
+                      {{ item.ticket_summary?item.ticket_summary.use_ticket_cnt:'-'}}회
+                    </td>
+                    <td>
+                      {{ item.ticket_summary ? item.ticket_summary.ticket_cnt*item.goods.charge_plan.secs_per_day/60:'-'}}분/
+                      {{ item.ticket_summary ? item.ticket_summary.ticket_cnt:'-'}}회
+                    </td>
+                    <td></td>
+                    <td></td>
                     <td>{{ item.user.department }}</td>
                     <td>{{ item.user.position }}</td>
+                    <td>{{ item.user.emp_no }}</td>
+                    <td></td>
+                    <td></td>
                     <td>
+                      <div v-for="i in calBatchDate()" :key="i.id">
+                        <div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)"></div>
+                        <div class="square square-empty" v-else></div>
+                      </div>
+
                       <!--
                       <div v-if="d_type==='all'">
                         <div v-for="i in item.baseInfo.max_cnt" :key="i.id">
@@ -135,7 +140,7 @@
       <div>
         <div class="row">
           <div class="text-center">
-            <Pagination :currentPage="parseInt(current_page)" @returnPage="setCurrentPage" />
+            <Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage" />
           </div>
         </div>
       </div>
@@ -171,6 +176,7 @@ import api from "@/common/api";
 import UserInfo from "@/components/atom/UserInfo";
 import UserModifyModal from "@/components/atom/UserModifyModal";
 import Pagination from "@/components/atom/Pagination";
+import moment from 'moment'
 import XLSX from 'xlsx'
 export default {
   data() {
@@ -178,9 +184,11 @@ export default {
       search: '',
       company: '',
       batches: [],
+      batch: null,
       items: [],
       current_page: 1,
       total_page: 1,
+			moment: moment,
 
       d_type: "all",
       showModal: false,
@@ -201,12 +209,22 @@ export default {
     this.items = res.data.orders.data
     this.company = res.data.company
     this.batches = res.data.batches
-    console.log(this.items);
+    this.batch = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
   },
   methods: {
-    setCycle(type) {
-      this.d_type = type;
-    },
+    routeDetailPage (event) {
+      if(this.batches.length){
+        let bbIdx;
+        if (event) bbIdx = this.batches[event.target.value].idx;
+        else bbIdx = this.batches[0].idx;
+        if(bbIdx !== parseInt(this.$route.params.bbIdx)){
+          this.$router.push({
+              name: 'lessonDetailsList',
+              params: { bbIdx:bbIdx }
+          })
+        }
+      }
+		},
     setSearch(input) {
       this.search = input;
     },
@@ -216,34 +234,23 @@ export default {
           });
       this.sortKey = sortKey;
     },
+    calBatchDate() {
+      const a = moment(this.batch.fr_dt);
+      const b = moment(this.batch.to_dt);
+      return b.diff(a, 'days')+1;
+    },
+    isUseDt(i,use_ticket_info) {
+      if(use_ticket_info.length) {
+        for(var element of use_ticket_info) {
+          if(moment('2020-11-01').add(i, "days").isSame(element.use_dt,'day')) {
+            return true;
+          }
+        }
+        return false;
+      } else return false;
+    },
     async setCurrentPage(data) {
         this.current_page = data;
-    },
-    openModal() {
-      this.$swal({
-        title: "학습현황 메일 일괄 발송",
-        text: "발송 하시겠습니까? (한번만 누르고 기다려 주세요)",
-        icon: "warning",
-        showCancelButton: true,
-        showCloseButton: true,
-        confirmButtonText: "OK",
-        cancelButtonText: "Cancel",
-      });
-    },
-    openUserInfo(index) {
-      this.UserNum = index;
-      this.modalitem = this.items[this.UserNum];
-      this.showModal = !this.showModal;
-    },
-    closeModal() {
-      this.showModal = !this.showModal;
-    },
-    openModify() {
-      this.showModify = !this.showModify;
-    },
-    updateItem(item) {
-      this.items[this.UserNum] = JSON.parse(JSON.stringify(item));
-      this.modalitem = this.items[this.UserNum];
     },
     exportExcel() {
       let dataWs = [];
@@ -277,6 +284,35 @@ export default {
       var wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws,'수업현황');
       XLSX.writeFile(wb, this.company+' 수업현황 '+this.$route.params.c_no+'주차.xlsx');
+    },
+    setCycle(type) {
+      this.d_type = type;
+    },
+    openModal() {
+      this.$swal({
+        title: "학습현황 메일 일괄 발송",
+        text: "발송 하시겠습니까? (한번만 누르고 기다려 주세요)",
+        icon: "warning",
+        showCancelButton: true,
+        showCloseButton: true,
+        confirmButtonText: "OK",
+        cancelButtonText: "Cancel",
+      });
+    },
+    openUserInfo(index) {
+      this.UserNum = index;
+      this.modalitem = this.items[this.UserNum];
+      this.showModal = !this.showModal;
+    },
+    closeModal() {
+      this.showModal = !this.showModal;
+    },
+    openModify() {
+      this.showModify = !this.showModify;
+    },
+    updateItem(item) {
+      this.items[this.UserNum] = JSON.parse(JSON.stringify(item));
+      this.modalitem = this.items[this.UserNum];
     }
   }
 };

@@ -115,21 +115,21 @@
             <div class="subtitle">
 				<h1>{{ company }}</h1>
 				<select v-if="batches.length" @change="routeBatch(batches, $event)">
-					<option value="none" selected disabled hidden>{{ getTempBatch(1) }}</option>   
+					<option value="none" selected disabled hidden>{{ getTempBatch() }}</option>   
 					<option v-for="(batch,i) in batches" :value="i" :key="i.id">{{batch.b_no}}회차 | {{ moment(batch.fr_dt).format('YY.MM.DD') }} - {{moment(batch.to_dt).format('YY.MM.DD') }}</option>
 				</select>
 				<div v-if="tab===1" class="text-left col-lg-5" style="margin-left:40px;">
 					<h3 class="col-lg-4">정기결제일시</h3>
-					<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().charge_dt?getTempBatch().charge_dt:'-' }}</h4>
+					<h4 v-if="batches.length" class="col-lg-8">{{ batch.charge_dt?batch.charge_dt:'-' }}</h4>
 				</div>
 				<div v-if="tab===2" class="text-left col-lg-5" style="margin-left:40px;">
 					<div class="col-lg-12">
 						<h3 class="col-lg-4">추가결제일시</h3>
-						<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().pcharge_dt?getTempBatch().pcharge_dt:'-' }}</h4>
+						<h4 v-if="batches.length" class="col-lg-8">{{ batch.pcharge_dt?batch.pcharge_dt:'-' }}</h4>
 					</div>
 					<div class="col-lg-12">
 						<h3 class="col-lg-4">기준출석률</h3>
-						<h4 v-if="batches.length" class="col-lg-8">{{ getTempBatch().target_rt?getTempBatch().target_rt+'%':'-' }}</h4>
+						<h4 v-if="batches.length" class="col-lg-8">{{ batch.target_rt?batch.target_rt+'%':'-' }}</h4>
 					</div>
 				</div>
             </div>
@@ -289,6 +289,7 @@
 				search: '',
 				currentItem: {},
 				batches: [],
+				batch: null,
 				company: '',
 				tab: 1,
 				tag: '',
@@ -309,6 +310,7 @@
 					res = await api.get('/partners/chargeOrderList', { bbIdx: this.$route.params.bbIdx })
 					this.orders = res.data.orders;
 					this.batches = res.data.batches;
+					this.batch = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
 					this.company = res.data.company;
 					//this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item))
 					//this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item))
@@ -706,9 +708,9 @@
 					})
 				}
 			},
-			getTempBatch(val) {
+			getTempBatch() {
 				const temp = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
-				return val? temp.b_no+"회차 | "+moment(temp.fr_dt).format('YY.MM.DD')+" - "+moment(temp.to_dt).format('YY.MM.DD') : temp
+				return temp.b_no+"회차 | "+moment(temp.fr_dt).format('YY.MM.DD')+" - "+moment(temp.to_dt).format('YY.MM.DD')
 			}
 		},
 		computed: {
