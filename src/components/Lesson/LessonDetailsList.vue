@@ -62,8 +62,8 @@
                     <th class="pagesubmit sorting" field="order" value="part">부서</th>
                     <th class="pagesubmit sorting" field="order" value="position">직위<br/>(직책)</th>
                     <th class="pagesubmit sorting" field="order" value="position">사번<br/>(고유값)</th>
-                    <th>메모1</th>
-                    <th>메모2</th>
+                    <th class="text-center">메모1</th>
+                    <th class="text-center">메모2</th>
                     <th style="width:35%">
                       수업 히스토리(횟수)
                       <div class="pull-right">
