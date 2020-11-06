@@ -88,8 +88,8 @@
                       {{ item.ticket_summary?item.ticket_summary.use_ticket_cnt:'-'}}회
                     </td>
                     <td>
-                      {{ item.ticket_summary ? item.ticket_summary.ticket_cnt*item.goods.charge_plan.secs_per_day/60:'-'}}분/
-                      {{ item.ticket_summary ? item.ticket_summary.ticket_cnt:'-'}}회
+                      {{ item.goods? item.goods.charge_plan.ticket_cnt * item.goods.charge_plan.secs_per_day /60:'' }}분/
+                      {{ item.goods? item.goods.charge_plan.ticket_cnt:'' }}회
                     </td>
                     <td>{{ item.b2b_user.user? item.b2b_user.user.cus_id:''}} </td>
                     <td>{{ item.b2b_user.user? item.b2b_user.user.level:'' }}</td>
@@ -97,11 +97,11 @@
                     <td>{{ item.b2b_user.position }}</td>
                     <td>{{ item.b2b_user.emp_no }}</td>
                     <td @click="[memoNum=true,setMemo(item.b2b_user)]">
-                      <div class="memo" v-if="item.b2b_user.memo1">{{ item.b2b_user.memo1 }}</div>
+                      <div class="memo" v-if="item.b2b_user.memo1">{{ item.b2b_user.memo1.length > 6 ? item.b2b_user.memo1.substring(0,6)+'...':item.b2b_user.memo1 }}</div>
                       <div v-else><button class="btn-xs btn-default">등록</button></div>
                     </td>
                     <td @click="[memoNum=false,setMemo(item.b2b_user)]">
-                      <div class="memo" v-if="item.b2b_user.memo2">{{ item.b2b_user.memo2 }}</div>
+                      <div class="memo" v-if="item.b2b_user.memo2">{{ item.b2b_user.memo2.length > 6 ? item.b2b_user.memo2.substring(0,6)+'...' :item.b2b_user.memo2 }}</div>
                       <div v-else><button class="btn-xs btn-default">등록</button></div>
                     </td>
                     <td>
@@ -302,12 +302,12 @@ export default {
           '차수': batch.b_no, 
           '학습시작일': batch.fr_dt,
           '학습종료일': batch.to_dt,
-          '학습언어': order.goods.charge_plan.mode==='C'?'중국어':'영어',
-          '학습구분(수강권)': order.goods.charge_plan.title,
-          '전체수업수': order.ticket_summary ? order.ticket_summary.ticket_cnt+'회':'',
-          '전체수업시간': order.ticket_summary ? order.ticket_summary.ticket_cnt*order.goods.charge_plan.secs_per_day/60+'분':'',
+          '학습언어': order.goods?order.goods.charge_plan.mode==='C'?'중국어':'영어':'',
+          '학습구분(수강권)': order.goods?order.goods.charge_plan.title:'',
+          '전체수업수': order.goods?order.goods.charge_plan.ticket_cnt+'회':'',
+          '전체수업시간': order.goods?order.goods.charge_plan.ticket_cnt * order.goods.charge_plan.secs_per_day /60+'분':'',
           '학습 횟수': order.ticket_summary?order.ticket_summary.use_ticket_cnt+'회':'',
-          '학습 시간': order.use_ticket_info && order.ticket_summary ? order.goods.charge_plan.secs_per_day*(order.use_ticket_info.length+1) - order.ticket_summary.sum_remain_secs/60+'분' :'',
+          '학습 시간': order.use_ticket_info && order.ticket_summary && order.goods ? order.goods.charge_plan.secs_per_day*(order.use_ticket_info.length+1) - order.ticket_summary.sum_remain_secs/60+'분' :'',
           '학습률': order.attend_pct,
           '학습 목표율': batch.target_rt,
           '메모1': order.b2b_user.memo1,
