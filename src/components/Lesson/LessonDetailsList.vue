@@ -29,14 +29,14 @@
                       </li>
                     </ul>
                   </div>
-                  <div class="col-sm-4">
+                  <!--<div class="col-sm-4">
                     <div data-toggle="buttons" class="btn-group btn-radio">
                       <button class="btn btn-white" v-on:click="setCycle('today')" style="width:50px;" data-type="today">오늘</button>
                       <button class="btn btn-white" v-on:click="setCycle('week')" style="width:50px;" data-type="week">주</button>
                       <button class="btn btn-white" v-on:click="setCycle('month')" style="width:50px;" data-type="month">월</button>
                       <button class="btn btn-white" v-on:click="setCycle('all')" style="width:55px;" data-type="all">전체</button>
                     </div>
-                  </div>
+                  </div>-->
                   <div class="col-sm-4 pull-right">
                     <div class="input-group">
                       <input type="text" placeholder="성명 or 이메일 or 고객식별ID" v-model="search" v-on:keypress.enter="setSearch(search)" class="form-control"/>
@@ -109,32 +109,6 @@
                         <div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)" :data-tooltip="useDtTooltip(i-1,item)"></div>
                         <div class="square square-empty" v-else></div>
                       </div>
-
-                      <!--
-                      <div v-if="d_type==='all'">
-                        <div v-for="i in item.baseInfo.max_cnt" :key="i.id">
-                          <div class="square square-pull" v-if="item.lesson['lesson_cnt_'+i]"></div>
-                          <div class="square square-empty" v-else></div>
-                        </div>
-                      </div>
-                      <div v-if="d_type==='month'">
-                        <div v-for="i in 31" :key="i.id"> 
-                          <div class="square square-pull" style="width:9px" v-if="item.lesson['lesson_cnt_'+i]"></div>
-                          <div class="square square-empty" style="width:9px" v-else></div>
-                        </div>
-                      </div>
-                      <div v-if="d_type==='week'" style="width:100%">
-                        <div v-for="i in 7" :key="i.id">
-                          <div class="square square-pull" style="width:40px" v-if="item.lesson['lesson_cnt_'+i]"></div>
-                          <div class="square square-empty" style="width:40px" v-else></div>
-                        </div>
-                      </div>
-                      <div v-if="d_type==='today'">
-                        <div v-for="i in 24" :key="i.id">
-                          <div class="square square-pull" style="margin:0; width:13px" v-if="item.lesson['lesson_cnt_'+i]"></div>
-                          <div class="square square-empty" style="margin:0; width:13px" v-else>{{ i==0 || i==12 || i==24?(i==0?'00':i)+'H':''}}</div>
-                        </div>
-                      </div>-->
                     </td>
                   </tr>
                 </tbody>
@@ -301,38 +275,54 @@ export default {
     async setCurrentPage(data) {
         this.current_page = data;
     },
-    exportExcel() {
-      let dataWs = [];
-      this.items.forEach((element,index) => {
-        dataWs.push({
-          '': '',
+    async exportExcel() {
+      const res = await api.get('/partners/exportReportToExcel', { bbIdx: this.$route.params.bbIdx })
+      const calendar = res.data.calendar
+      const batch = res.data.batch
+      const orders = res.data.orders
+
+      let dataWs = []        
+      orders.forEach((order,index) => {
+
+        let dateInfo = {}
+        calendar.forEach(date => {
+        if(order.use_ticket_info)
+          dateInfo[date] = order.use_ticket_info? order.use_ticket_info.find(element =>  date.substring(0,2)+'-'+date.substring(3,5) === element.use_dt.substring(5,10))?'O':'' : ''
+        })
+
+        dataWs.push(Object.assign(
+          {
           '번호': index+1,
-          '소속': this.company, 
-          '부서': element.userInfo.part,
-          '직급': element.userInfo.position,
-          '성명': element.userInfo.name,
-          '이전 레벨': element.userInfo.firstTest,
-          '이전 레벨(점수)': element.userInfo.firstTest.grade,
-          '마지막 레벨': element.userInfo.lastTest,
-          '마지막 레벨(점수)': element.userInfo.lastTest?element.userInfo.lastTest.grade:'',
-          '회차': this.$route.params.c_no,
-          '학습시작일': element.userInfo.firstTest.l_dt,
-          '학습종료': element.userInfo.lastTest?element.userInfo.lastTest.l_dt:'',
-          '학습언어': '',
-          '학습구분(수강권)': element.userInfo.title,
-          '전체수업수': element.userInfo.total_lesson_cnt,
-          '전체수업시간': element.userInfo.total_min,
-          '수업진행수': element.userInfo.t_cnt,
-          '수업진행시간': element.userInfo.lesson_min,
-          '수업참여율': '',
-          '학습 목표율': '',//this.baseInfo.target_rate,
-          '고객식별ID': element.userInfo.cus_id
-        });
+          '소속': order.b2b_user.company, 
+          '부서': order.b2b_user.part,
+          '직위(직책)': order.b2b_user.position,
+          '사번(고유값)': order.b2b_user.emp_no,
+          '성명': order.b2b_user.name,
+          '학습 레벨': order.b2b_user.user? order.b2b_user.user.level:'',
+          '차수': batch.b_no, 
+          '학습시작일': batch.fr_dt,
+          '학습종료일': batch.to_dt,
+          '학습언어': order.goods.charge_plan.mode==='C'?'중국어':'영어',
+          '학습구분(수강권)': order.goods.charge_plan.title,
+          '전체수업수': order.ticket_summary ? order.ticket_summary.ticket_cnt+'회':'',
+          '전체수업시간': order.ticket_summary ? order.ticket_summary.ticket_cnt*order.goods.charge_plan.secs_per_day/60+'분':'',
+          '학습 횟수': order.ticket_summary?order.ticket_summary.use_ticket_cnt+'회':'',
+          '학습 시간': order.use_ticket_info && order.ticket_summary ? order.goods.charge_plan.secs_per_day*(order.use_ticket_info.length+1) - order.ticket_summary.sum_remain_secs/60+'분' :'',
+          '학습률': order.attend_pct,
+          '학습 목표율': batch.target_rt,
+          '메모1': order.b2b_user.memo1,
+          '메모2': order.b2b_user.memo2,
+          '고객식별ID': order.b2b_user.user? order.b2b_user.user.cus_id:'',
+          '코멘트_1': '',
+          '코멘트_2': '',
+          }, 
+          dateInfo
+        ));
       });
       var ws = XLSX.utils.json_to_sheet(dataWs);
       var wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws,'수업현황');
-      XLSX.writeFile(wb, this.company+' 수업현황 '+this.$route.params.c_no+'주차.xlsx');
+      XLSX.writeFile(wb, this.company+' 수업현황 '+batch.b_no+'주차.xlsx');
     },
     setCycle(type) {
       this.d_type = type;
