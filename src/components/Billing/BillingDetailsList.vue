@@ -223,7 +223,7 @@
                           <th class="text-center">관리태그</th>
                           <th class="text-center">태그수정</th>
                         </tr>
-                      </thead>//
+                      </thead>
                       <tbody id="pchargeInfoList">
                         <tr v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" class="text-center" v-show="setSearch(item)">
                           <td>{{ item.idx }}</td>
