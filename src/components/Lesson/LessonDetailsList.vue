@@ -247,8 +247,7 @@ export default {
     isUseDt(i,use_ticket_info) {
       if(use_ticket_info.length) {
         for(var element of use_ticket_info) {
-          //this.batch.fr_dt
-          if(moment('2020-11-01').add(i, "days").isSame(element.use_dt,'day')) {
+          if(moment(this.batch.fr_dt).add(i, "days").isSame(element.use_dt,'day')) {
             return true;
           }
         }
@@ -260,8 +259,7 @@ export default {
         let str = moment(this.batch.fr_dt).add(i, "days").format('YYYY-MM-DD')
         let count=0, total = 0, min, secs;
         for(var element of item.use_ticket_info) {
-          //this.batch.fr_dt
-          if(moment('2020-11-01').add(i, "days").isSame(element.use_dt,'day')) {
+          if(moment(this.batch.fr_dt).add(i, "days").isSame(element.use_dt,'day')) {
             total += item.goods.charge_plan.secs_per_day - element.remain_secs
             count++
           }
