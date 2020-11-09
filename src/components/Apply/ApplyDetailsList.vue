@@ -43,10 +43,10 @@
                 <td class="emp_no">{{ order.b2b_user.emp_no }}</td>
                 <td v-if="order.b2b_user.cf1">{{ getGTP('T',order.b2b_user.cf2) }}</td>
                 <td v-if="order.b2b_user.cf2">{{ getGTP('S',order.b2b_user.cf1) }}</td>
-                <td class="charge-plan__title text-left">{{ order.goods.charge_plan.title }}</td>
-                <td class="supply_price">{{ $shared.nf(order.goods.supply_price) }}</td>
-                <td>{{ $shared.nf(order.goods.supply_price - order.goods.charge_price) }}</td>
-                <td class="company-charge__price">{{ $shared.nf(order.goods.charge_price) }}</td>
+                <td class="charge-plan__title text-left">{{ order.goods?order.goods.charge_plan.title:'' }}</td>
+                <td class="supply_price">{{ order.goods?$shared.nf(order.goods.supply_price):'' }}</td>
+                <td>{{ order.goods?$shared.nf(order.goods.supply_price - order.goods.charge_price):'' }}</td>
+                <td class="company-charge__price">{{ order.goods?$shared.nf(order.goods.charge_price):'' }}</td>
                 <td class="apply_dt">{{ moment(order.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
               </tr>
             </tbody>
