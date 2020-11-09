@@ -175,7 +175,7 @@
                         <tr class="text-center" v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
                           <td>{{ item.idx }}</td>
                           <td>{{ item.b2b_user.name }}</td>
-                          <td>{{ item.goods.charge_plan.title }}</td>
+                          <td>{{ item.goods? item.goods.charge_plan.title:'' }}</td>
                           <td>{{ item.charged_dt }}</td>
                           <td>
                             <button v-if="item.charge_status"
@@ -223,12 +223,12 @@
                           <th class="text-center">관리태그</th>
                           <th class="text-center">태그수정</th>
                         </tr>
-                      </thead>
+                      </thead>//
                       <tbody id="pchargeInfoList">
                         <tr v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" class="text-center" v-show="setSearch(item)">
                           <td>{{ item.idx }}</td>
                           <td>{{ item.b2b_user.name }}</td>
-                          <td>{{ item.goods.charge_plan.title }}</td>
+                          <td>{{ item.goods? item.goods.charge_plan.title:''}}</td>
                           <td>{{ item.attend_pct }}%</td>
                           <td>{{ item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1") }}</td>
                           <td>
