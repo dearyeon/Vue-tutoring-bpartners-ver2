@@ -313,7 +313,7 @@ export default {
           '고객식별ID': order.b2b_user.user? order.b2b_user.user.cus_id:'',
           '코멘트_1': order.first_lesson_review?order.first_lesson_review.comment:'',
           '코멘트_2': order.last_lesson_review?order.last_lesson_review.comment:'',
-          }, 
+          }, //
           dateInfo
         ));
       });

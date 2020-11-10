@@ -294,11 +294,8 @@
 				tab: 1,
 				tag: '',
 				moment: moment,
-
-				listInfo: '',
+				listInfo: '',	
 				bapInfo: {},
-				aNoList: [],
-				bNoList: [],
 				newCardInfo: { cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: '' },
 				targetCountCheck: false,
 			}
@@ -312,8 +309,6 @@
 					this.batches = res.data.batches;
 					this.batch = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
 					this.company = res.data.company;
-					//this.aNoList = res.data.aNoList.map(item => this.aNoFormat(item))
-					//this.bNoList = res.data.bNoList.map(item => this.bNoFormat(item))
 				} else {
 					res = await api.get('/partners/pchargeOrderList', { bbIdx: this.$route.params.bbIdx })
 					this.orders = res.data.orders;
@@ -328,36 +323,6 @@
 			chTab: function (index) {
 				this.tab = index
 				this.apiCall(this.$route.params.aNo, this.$route.params.bNo)
-			},
-			chANo: async function (index) {
-				this.apiCall(index + 1, 1)
-				this.$router.push({
-					name: 'billingDetailsList',
-					params: { sIdx: this.$route.params.sIdx, aNo: index + 1, bNo: 1 },
-				})
-			},
-			chBNo: async function (index) {
-				this.apiCall(this.$route.params.aNo, index + 1)
-				this.$router.push({
-					name: 'billingDetailsList',
-					params: { sIdx: this.$route.params.sIdx, aNo: this.$route.params.aNo, bNo: index + 1 },
-				})
-			},
-			aNoFormat: function (item) {
-				if (typeof item === 'object' && 'a_no' in item)
-					return `${item.a_no}회차 | ${item.apply_fr_dt.replace(
-						/(\d{4}-\d{2}-\d{2}).*/,
-						'$1',
-					)} ~ ${item.apply_to_dt.replace(/(\d{4}-\d{2}-\d{2}).*/, '$1')}`
-				else return ''
-			},
-			bNoFormat: function (item) {
-				if (typeof item === 'object' && 'b_no' in item)
-					return `${item.b_no} | ${item.charge_dt.replace(
-						/(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/gi,
-						'$2.$3',
-					)}(정기) / ${item.pcharge_dt.replace(/(\d{4})-(\d{2})-(\d{2})\s(\d{2}):(\d{2}):(\d{2})/gi,
-						'$2.$3',)}(추가)`
 			},
 			pausePayment: function () {
 				this.$swal
