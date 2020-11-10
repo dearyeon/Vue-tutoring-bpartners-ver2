@@ -276,10 +276,13 @@
 						batchData['idx'] = idxParam
 					}
 
-					if(this.selectedGoodsList.length !== 0) {
+					const batchApiRes = await api.post('/partners/batch',batchData)
+
+
+					if(this.selectedGoodsList.length !== 0 && batchApiRes.result === 2000) {
 						const batchGoodsParams = []
 						let i=0;
-						batchGoodsParams['bbIdx'] = idxParam
+						batchGoodsParams['bbIdx'] = batchApiRes.data.idx
 						for (var col of this.selectedGoodsList) {
 							if (parseInt(col.dc_rt) > 100) {this.$swal('할인율의 최대 수치는 100%입니다.'); return;}
 							if (col.new_goods) batchGoodsParams['goods[' + i + '][cpIdx]'] = col.idx
@@ -295,11 +298,10 @@
 						batchGoodsApiRes = await api.post('/partners/batchGoods', batchGoodsParams)
 					}
 
-					const batchApiRes = await api.post('/partners/batch',batchData)
 
 					if(batchGoodsApiRes && batchGoodsApiRes.result===2000 && batchApiRes.result === 2000) {
 						this.$swal('성공')
-						this.refresh(idxParam)
+						this.refresh(batchApiRes.data.idx)
 					}
 
 					if(!batchGoodsApiRes && batchApiRes.result === 2000) {
@@ -338,7 +340,6 @@
 			},
 
 			addSelectedGoods (event) {
-				console.log(event);
 				if (!this.newGoodsList.find( item => item.idx === parseInt(event.target.value)) && !this.storedGoodsList.find( item => item.charge_plan.idx === parseInt(event.target.value))){
 					let selectedGoods = this.goodsList.find( item => item.idx === parseInt(event.target.value))
 					selectedGoods['list_price'] = 0

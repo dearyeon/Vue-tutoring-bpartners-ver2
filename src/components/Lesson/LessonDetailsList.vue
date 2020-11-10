@@ -10,9 +10,7 @@
             <a id="btnSendOrderEmailLessonStatus" class="btn btn-success btn-w-m" @click="openModal">학습현황 메일 일괄 발송</a>&nbsp;
             <a id="exportLessonList" class="btn btn-success btn-w-m" @click="exportExcel">
               <span v-if="!loading">엑셀 다운로드</span>
-              <span v-else><br/></span>
-              <clip-loader class="loader" :loading="loading" color="rgba(256, 256, 256, 0.7)" size="20px"></clip-loader></a> 
-
+              <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="20px"></clip-loader></a>
           </div>
         </div>
       </div>
@@ -292,7 +290,7 @@ export default {
       const batch = res.data.batch
       const orders = res.data.orders
 
-      let dataWs = []        
+      let dataWs = []
       orders.forEach((order,index) => {
 
         let dateInfo = {}
@@ -304,13 +302,13 @@ export default {
         dataWs.push(Object.assign(
           {
           '번호': index+1,
-          '소속': order.b2b_user.company, 
+          '소속': order.b2b_user.company,
           '부서': order.b2b_user.part,
           '직위(직책)': order.b2b_user.position,
           '사번(고유값)': order.b2b_user.emp_no,
           '성명': order.b2b_user.name,
           '학습 레벨': order.b2b_user.user? order.b2b_user.user.level:'',
-          '차수': batch.b_no, 
+          '차수': batch.b_no,
           '학습시작일': batch.fr_dt,
           '학습종료일': batch.to_dt,
           '학습언어': order.goods?order.goods.charge_plan.mode==='C'?'중국어':'영어':'',
