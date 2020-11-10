@@ -271,7 +271,12 @@ export default {
       }
     },
     async setCurrentPage(data) {
-        this.current_page = data;
+      this.current_page = data;
+      const res = await api.get('/partners/reportList', { bbIdx: this.$route.params.bbIdx, page: this.current_page })
+      this.items = res.data.orders.data
+      this.company = res.data.company
+      this.batches = res.data.batches
+      this.batch = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
     },
     async exportExcel() {
       const res = await api.get('/partners/exportReportToExcel', { bbIdx: this.$route.params.bbIdx })
