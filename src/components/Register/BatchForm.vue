@@ -248,7 +248,13 @@
 				} if(!this.targetRt || parseInt(this.targetRt) > 100) {
 					this.$swal('수료기준 출석률을 100% 이하로 입력해주세요.')
 					return;
-				} else {
+				} if(!this.selfChargeRt || parseInt(this.selfChargeRt) > 100) {
+					this.$swal('자기 부담요율을 100% 이하로 입력해주세요.')
+					return;
+				}/* if(this.newGoodsList.forEach(element => element.dc_rt > 100)) {
+					this.$swal('수강권 할인율을 100% 이하로 입력해주세요.')
+					return;
+				}*/ else {
 					let idxParam = ''
 					let batchData = {
 						frDt: this.batchFrDt,
@@ -272,8 +278,9 @@
 
 					if(this.selectedGoodsList.length !== 0) {
 						const batchGoodsParams = []
+						let i=0;
 						batchGoodsParams['bbIdx'] = idxParam
-						this.selectedGoodsList.forEach((col, i) => {
+						for (var col of this.selectedGoodsList) {
 							if (parseInt(col.dc_rt) > 100) {this.$swal('할인율의 최대 수치는 100%입니다.'); return;}
 							if (col.new_goods) batchGoodsParams['goods[' + i + '][cpIdx]'] = col.idx
 							else batchGoodsParams['goods[' + i + '][idx]'] = col.idx
@@ -282,7 +289,8 @@
 							batchGoodsParams['goods[' + i + '][chargePrice]'] = col.charge_price
 							batchGoodsParams['goods[' + i + '][dcRt]'] = col.dc_rt
 							batchGoodsParams['goods[' + i + '][dispYn]'] = col.disp_yn ? 1 : 0
-						})
+							i++
+						}
 
 						batchGoodsApiRes = await api.post('/partners/batchGoods', batchGoodsParams)
 					}

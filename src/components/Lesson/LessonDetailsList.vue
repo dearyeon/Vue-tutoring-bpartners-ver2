@@ -8,7 +8,11 @@
           </div>
           <div class="pull-right">
             <a id="btnSendOrderEmailLessonStatus" class="btn btn-success btn-w-m" @click="openModal">학습현황 메일 일괄 발송</a>&nbsp;
-            <a id="exportLessonList" class="btn btn-success btn-w-m" @click="exportExcel">엑셀 다운로드</a>
+            <a id="exportLessonList" class="btn btn-success btn-w-m" @click="exportExcel">
+              <span v-if="!loading">엑셀 다운로드</span>
+              <span v-else><br/></span>
+              <clip-loader class="loader" :loading="loading" color="rgba(256, 256, 256, 0.7)" size="20px"></clip-loader></a> 
+
           </div>
         </div>
       </div>
@@ -84,11 +88,11 @@
                       <span class="lesson-rate">{{ item.attend_pct }}%</span>
                     </td>
                     <td>
-                      {{ item.use_ticket_info && item.ticket_summary ? item.goods.charge_plan.secs_per_day*(item.use_ticket_info.length+1) - item.ticket_summary.sum_remain_secs/60 :'-' }}분/
+                      {{ item.use_ticket_info && item.ticket_summary ? item.goods.charge_plan.secs_per_day*(item.use_ticket_info.length+1) - parseInt(item.ticket_summary.sum_remain_secs/60) :'-' }}분/
                       {{ item.ticket_summary?item.ticket_summary.use_ticket_cnt:'-'}}회
                     </td>
                     <td>
-                      {{ item.goods? item.goods.charge_plan.ticket_cnt * item.goods.charge_plan.secs_per_day /60:'' }}분/
+                      {{ item.goods? item.goods.charge_plan.ticket_cnt * parseInt(item.goods.charge_plan.secs_per_day /60):'' }}분/
                       {{ item.goods? item.goods.charge_plan.ticket_cnt:'' }}회
                     </td>
                     <td>{{ item.b2b_user.user? item.b2b_user.user.cus_id:''}} </td>
@@ -176,6 +180,7 @@ import UserModifyModal from "@/components/atom/UserModifyModal";
 import Pagination from "@/components/atom/Pagination";
 import moment from 'moment'
 import XLSX from 'xlsx'
+import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 export default {
   data() {
     return {
@@ -191,6 +196,7 @@ export default {
       showMemo: false,
       memo: '',
       presentIdx: '',
+      loading: false,
 
       d_type: "all",
       showModal: false,
@@ -203,6 +209,7 @@ export default {
     UserInfo,
     UserModifyModal,
     Pagination,
+    ClipLoader,
   },
   async created() {
     this.refresh()
@@ -279,6 +286,7 @@ export default {
       this.batch = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
     },
     async exportExcel() {
+      this.loading = true
       const res = await api.get('/partners/exportReportToExcel', { bbIdx: this.$route.params.bbIdx })
       const calendar = res.data.calendar
       const batch = res.data.batch
@@ -325,7 +333,8 @@ export default {
       var ws = XLSX.utils.json_to_sheet(dataWs);
       var wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws,'수업현황');
-      XLSX.writeFile(wb, this.company+' 수업현황 '+batch.b_no+'주차.xlsx');
+      const test = XLSX.writeFile(wb, this.company+' 수업현황 '+batch.b_no+'주차.xlsx');
+      this.loading = false
     },
     setCycle(type) {
       this.d_type = type;
@@ -396,5 +405,13 @@ export default {
 .memo:hover {
   background-color: rgba(0, 0, 0, 0.1);
   cursor: pointer;
+}
+
+.loader {
+  display: block;
+  position: fixed;
+  z-index: 1031;
+  top: 63px;
+  right: 105px;
 }
 </style>
