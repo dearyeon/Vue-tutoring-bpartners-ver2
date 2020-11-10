@@ -115,8 +115,7 @@
             <div class="subtitle">
 				<h1>{{ company }}</h1>
 				<select v-if="batches.length" @change="routeBatch(batches, $event)">
-					<option value="none" selected disabled hidden>{{ getTempBatch() }}</option>   
-					<option v-for="(batch,i) in batches" :value="i" :key="i.id">{{batch.b_no}}회차 | {{ moment(batch.fr_dt).format('YY.MM.DD') }} - {{moment(batch.to_dt).format('YY.MM.DD') }}</option>
+					<option v-for="(bat,i) in batches" :value="i" :key="i.id" :selected="batch === bat">{{bat.b_no}}회차 | {{ moment(bat.fr_dt).format('YY.MM.DD') }} - {{moment(bat.to_dt).format('YY.MM.DD') }}</option>
 				</select>
 				<div v-if="tab===1" class="text-left col-lg-5" style="margin-left:40px;">
 					<h3 class="col-lg-4">정기결제일시</h3>
@@ -666,11 +665,12 @@
 				return !item.b2b_user.name.indexOf(this.search)
 			},
 			routeBatch(batches, event) {
-				if(batches.length && batches[event.target.value].idx !== parseInt(this.$route.params.bbIdx)) {
+				if(batches.length) {
 					this.$router.push({
 						name: "billingDetailsList",
 						params: { sIdx: this.$route.params.sIdx, bbIdx:batches[event.target.value].idx }
 					})
+					this.apiCall();
 				}
 			},
 			getTempBatch() {
@@ -698,8 +698,8 @@
 					}
 					if (status === 'P') return { class: 'btn-warning', text: '일시 정지', click: this.pausePayment }
 					if (status === 'F') return { class: 'btn-danger', text: '결제 실패', click: this.paymentFailed }
-					if (status === 'S') return { class: 'btn-default', text: '결제 성공', click: this.$refs.modalOnSuccess.open }
-					if (status === 'N') return { class: '', text: '대상 아님' }
+					if (status === 'S') return { class: 'btn-page-set', text: '결제 성공', click: this.$refs.modalOnSuccess.open }
+					if (status === 'N') return { class: 'btn-default', text: '대상 아님' }
 					if (status === 'R') return { class: 'btn-info disabled', text: '환불 완료' }
 					return { class: '', text: '' } //status === "R"
 				}
@@ -759,4 +759,11 @@
   .swal2-container {
     z-index: 300000 !important;
   }
+
+  .btn-page-set {
+	color: #1e9ed3;
+	background-color: #fff;
+	border: 1px solid #1e9ed3;
+	border-radius: 0px;
+}
 </style>
