@@ -248,7 +248,7 @@
 				} if(!this.targetRt || parseInt(this.targetRt) > 100) {
 					this.$swal('수료기준 출석률을 100% 이하로 입력해주세요.')
 					return;
-				} if(!this.selfChargeRt || parseInt(this.selfChargeRt) > 100) {
+				} if(parseInt(this.selfChargeRt) > 100) {
 					this.$swal('자기 부담요율을 100% 이하로 입력해주세요.')
 					return;
 				} else {
