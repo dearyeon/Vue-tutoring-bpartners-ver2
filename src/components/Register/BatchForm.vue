@@ -311,7 +311,6 @@
 
 			refresh(idx) {
 				this.getBacthApi(idx)
-				this.addSelectedGoods()
 			},
 
 			async getBacthApi (bIdx) {
