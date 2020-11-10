@@ -10,7 +10,7 @@
             <a id="btnSendOrderEmailLessonStatus" class="btn btn-success btn-w-m" @click="openModal">학습현황 메일 일괄 발송</a>&nbsp;
             <a id="exportLessonList" class="btn btn-success btn-w-m" @click="exportExcel">
               <span v-if="!loading">엑셀 다운로드</span>
-              <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="16px"></clip-loader></a>
+              <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader></a>
           </div>
         </div>
       </div>
@@ -179,6 +179,8 @@ import Pagination from "@/components/atom/Pagination";
 import moment from 'moment'
 import XLSX from 'xlsx'
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
+import _ from 'lodash'
+
 export default {
   data() {
     return {
@@ -283,7 +285,7 @@ export default {
       this.batches = res.data.batches
       this.batch = this.batches.find(element => element.idx === parseInt(this.$route.params.bbIdx));
     },
-    async exportExcel() {
+    exportExcel: _.debounce(async function () {
       this.loading = true
       const res = await api.get('/partners/exportReportToExcel', { bbIdx: this.$route.params.bbIdx })
       const calendar = res.data.calendar
@@ -333,7 +335,7 @@ export default {
       XLSX.utils.book_append_sheet(wb, ws,'수업현황');
       const test = XLSX.writeFile(wb, this.company+' 수업현황 '+batch.b_no+'주차.xlsx');
       this.loading = false
-    },
+    },500),
     setCycle(type) {
       this.d_type = type;
     },
