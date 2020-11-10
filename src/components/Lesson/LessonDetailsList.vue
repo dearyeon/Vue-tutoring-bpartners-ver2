@@ -10,7 +10,7 @@
             <a id="btnSendOrderEmailLessonStatus" class="btn btn-success btn-w-m" @click="openModal">학습현황 메일 일괄 발송</a>&nbsp;
             <a id="exportLessonList" class="btn btn-success btn-w-m" @click="exportExcel">
               <span v-if="!loading">엑셀 다운로드</span>
-              <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="20px"></clip-loader></a>
+              <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="16px"></clip-loader></a>
           </div>
         </div>
       </div>

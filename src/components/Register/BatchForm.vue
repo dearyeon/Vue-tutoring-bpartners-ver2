@@ -251,10 +251,7 @@
 				} if(!this.selfChargeRt || parseInt(this.selfChargeRt) > 100) {
 					this.$swal('자기 부담요율을 100% 이하로 입력해주세요.')
 					return;
-				}/* if(this.newGoodsList.forEach(element => element.dc_rt > 100)) {
-					this.$swal('수강권 할인율을 100% 이하로 입력해주세요.')
-					return;
-				}*/ else {
+				} else {
 					let idxParam = ''
 					let batchData = {
 						frDt: this.batchFrDt,
@@ -299,7 +296,7 @@
 					}
 
 
-					if(batchGoodsApiRes && batchGoodsApiRes.result===2000 && batchApiRes.result === 2000) {
+					if(batchGoodsApiRes ? batchGoodsApiRes.result===2000 : 'true' && batchApiRes.result === 2000) {
 						this.$swal('성공')
 						this.refresh(batchApiRes.data.idx)
 					}
