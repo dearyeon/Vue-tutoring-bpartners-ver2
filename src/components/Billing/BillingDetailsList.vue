@@ -172,7 +172,7 @@
                       <tbody id="chargeInfoList">
                         <!--정기 결제 -->
                         <tr class="text-center" v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
-                          <td>{{ item.idx }}</td>
+                          <td>{{ index+1 }}</td>
                           <td>{{ item.b2b_user.name }}</td>
                           <td>{{ item.goods? item.goods.charge_plan.title:'' }}</td>
                           <td>{{ item.charged_dt }}</td>
@@ -225,7 +225,7 @@
                       </thead>
                       <tbody id="pchargeInfoList">
                         <tr v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" class="text-center" v-show="setSearch(item)">
-                          <td>{{ item.idx }}</td>
+                          <td>{{ index+1 }}</td>
                           <td>{{ item.b2b_user.name }}</td>
                           <td>{{ item.goods? item.goods.charge_plan.title:''}}</td>
                           <td>{{ item.attend_pct }}%</td>
