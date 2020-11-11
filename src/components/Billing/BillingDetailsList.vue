@@ -179,7 +179,7 @@
 												<th>상태</th>
 												<th>집행일시</th>
 												<th>집행카드</th>
-												<th>집행TID</th>
+												<th>집행TID/실패사유</th>
 												<th>관리태그</th>
 												<th>태그수정</th>
 											</tr>
@@ -219,7 +219,9 @@
 														item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
 													}}
 												</td>
-												<td>{{ item.charged_t_id }}</td>
+												<td :class="{'text-danger':item.charged_bill_dump}">
+													{{ item.charged_t_id ? item.charged_t_id : item.charged_bill_dump }}
+												</td>
 												<td>{{ item.mng_tag ? item.mng_tag : '' }}</td>
 												<td>
 													<button class="btn btn-default"
@@ -247,7 +249,7 @@
 												<th>상태</th>
 												<th>집행일시</th>
 												<th>집행카드</th>
-												<th>집행TID</th>
+												<th>집행TID/실패사유</th>
 												<th>관리태그</th>
 												<th>태그수정</th>
 											</tr>
@@ -293,7 +295,9 @@
 													}}
 												</td>
 
-												<td>{{ item.pcharged_t_id }}</td>
+												<td :class="{'text-danger':item.pcharged_bill_dump}">
+													{{ item.pcharged_t_id ? item.pcharged_t_id : item.pcharged_bill_dump }}
+												</td>
 												<td>{{ item.pmng_tag ? item.pmng_tag : '' }}</td>
 												<td>
 													<button class="btn btn-default"
@@ -566,9 +570,11 @@ export default {
 				})
 		},
 		paymentFailed: function () {
+			const isPenaltyCharge = (this.tab != 1)
+			const info = isPenaltyCharge ? this.currentItem.pcharged_bill_dump : this.currentItem.charged_bill_dump
 			this.$swal
 				.fire({
-					html: `실패이유: ${this.currentItem.charged_bill_dump}`,
+					html: `실패사유: ${info}`,
 					confirmButtonText: '수동 재결제',
 					confirmButtonColor: '#8FD0F5',
 					showCancelButton: true,

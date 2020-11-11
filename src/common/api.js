@@ -21,8 +21,10 @@ const api = {
         const headers = {
             'BAST': shared.getToken()
         };
-        const res = await axios.get(`${server}${endpoint}`, {headers,params});
-        return res.data;
+        const response = await axios.get(`${server}${endpoint}`, {headers,params});
+        checkRes(response.data);
+
+        return response.data;
     },
 
     post: async function (endpoint, params) {
@@ -30,8 +32,10 @@ const api = {
             'Content-Type':'application/x-www-form-urlencoded',
             'BAST': shared.getToken()
         };
-        const res = await axios.post(`${server}${endpoint}`, querystring.stringify(params), {headers});
-        return res.data;
+        const response = await axios.post(`${server}${endpoint}`, querystring.stringify(params), {headers});
+        checkRes(response.data);
+
+        return response.data;
     },
 
     upload: async function (endpoint, params) {
@@ -43,8 +47,17 @@ const api = {
         Object.keys(params).map((key)=>{
             formData.append(key, params[key])
         })
-        const res = await axios.post(`${server}${endpoint}`, formData, {headers});
-        return res.data;
+        const response = await axios.post(`${server}${endpoint}`, formData, {headers});
+        checkRes(response.data);
+
+        return response.data;
+    },
+}
+
+
+const checkRes =  function (res) {
+    if(res.result===1000 && res.data.errorCode==900) {
+        shared.logout('세션 유효기간 만료로\n로그아웃 됩니다.');
     }
 }
 

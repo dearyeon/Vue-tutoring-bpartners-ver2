@@ -44,6 +44,12 @@ const shared = {
         }
         this.sortKey = sortKey1
     },
+    logout(msg) {
+        shared.setToken(null)
+        Vue.swal(msg).then(()=>{
+            location = '/'
+        })
+    }
 }
 
 Object.defineProperty(Vue.prototype,'$shared', {
