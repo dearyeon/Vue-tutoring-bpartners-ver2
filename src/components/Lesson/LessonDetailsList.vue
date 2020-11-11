@@ -25,8 +25,7 @@
                       <li><h1>{{ company }}</h1></li>
                       <li>
                         <select v-if="batches.length" @change="routeDetailPage($event)">
-                            <option value="none" selected disabled hidden>{{ batch.b_no }}차</option>
-                            <option v-for="(batch,i) in batches" :value="i" :key="batch.id">{{batch.b_no}}차</option>
+                            <option v-for="(item,i) in batches" :value="i" :key="item.id" :selected="item.idx === parseInt($route.params.bbIdx)">{{item.b_no}}차</option>
                         </select>
                       </li>
                     </ul>
@@ -229,12 +228,11 @@ export default {
         let bbIdx;
         if (event) bbIdx = this.batches[event.target.value].idx;
         else bbIdx = this.batches[0].idx;
-        if(bbIdx !== parseInt(this.$route.params.bbIdx)){
-          this.$router.push({
-              name: 'lessonDetailsList',
-              params: { bbIdx:bbIdx }
-          })
-        }
+        this.$router.push({
+            name: 'lessonDetailsList',
+            params: { bbIdx:bbIdx }
+        })
+        this.refresh();
       }
 		},
     setSearch(input) {
