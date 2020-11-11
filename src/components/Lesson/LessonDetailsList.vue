@@ -79,9 +79,9 @@
                 </thead>
 
                 <tbody>
-                  <tr class="text-center" v-for="(item, index) in items" :key="item.id" v-show="!item.b2b_user.name.indexOf(search)">
-                    <td>{{ item.b2b_user.idx }}</td>
-                    <td class="userInfo hover-pointer" @click="openUserInfo(index)">{{ item.b2b_user.name }}</td>
+                  <tr class="text-center" v-for="(item, index) in items" :key="item.id" v-show="!item.user.name.indexOf(search)">
+                    <td>{{ item.user.idx }}</td>
+                    <td class="userInfo hover-pointer" @click="openUserInfo(index)">{{ item.user.name }}</td>
                     <td>
                       <span class="lesson-rate">{{ item.attend_pct }}%</span>
                     </td>
@@ -93,17 +93,17 @@
                       {{ item.goods? item.goods.charge_plan.ticket_cnt * parseInt(item.goods.charge_plan.secs_per_day /60):'' }}분/
                       {{ item.goods? item.goods.charge_plan.ticket_cnt:'' }}회
                     </td>
-                    <td>{{ item.b2b_user.user? item.b2b_user.user.cus_id:''}} </td>
-                    <td>{{ item.b2b_user.user? item.b2b_user.user.level:'' }}</td>
-                    <td>{{ item.b2b_user.department }}</td>
-                    <td>{{ item.b2b_user.position }}</td>
-                    <td>{{ item.b2b_user.emp_no }}</td>
-                    <td @click="[memoNum=true,setMemo(item.b2b_user)]">
-                      <div class="memo" v-if="item.b2b_user.memo1">{{ item.b2b_user.memo1.length > 6 ? item.b2b_user.memo1.substring(0,6)+'...':item.b2b_user.memo1 }}</div>
+                    <td>{{ item.user.app_user? item.user.app_user.cus_id:''}} </td>
+                    <td>{{ item.user.app_user? item.user.app_user.level:'' }}</td>
+                    <td>{{ item.user.department }}</td>
+                    <td>{{ item.user.position }}</td>
+                    <td>{{ item.user.emp_no }}</td>
+                    <td @click="[memoNum=true,setMemo(item.user)]">
+                      <div class="memo" v-if="item.user.memo1">{{ item.user.memo1.length > 6 ? item.user.memo1.substring(0,6)+'...':item.user.memo1 }}</div>
                       <div v-else><button class="btn-xs btn-default">등록</button></div>
                     </td>
-                    <td @click="[memoNum=false,setMemo(item.b2b_user)]">
-                      <div class="memo" v-if="item.b2b_user.memo2">{{ item.b2b_user.memo2.length > 6 ? item.b2b_user.memo2.substring(0,6)+'...' :item.b2b_user.memo2 }}</div>
+                    <td @click="[memoNum=false,setMemo(item.user)]">
+                      <div class="memo" v-if="item.user.memo2">{{ item.user.memo2.length > 6 ? item.user.memo2.substring(0,6)+'...' :item.user.memo2 }}</div>
                       <div v-else><button class="btn-xs btn-default">등록</button></div>
                     </td>
                     <td>
@@ -139,7 +139,7 @@
             <br />
           </div>
           <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px">
-            <UserInfo :data="modalitem"/> 
+            <UserInfo :data="modalitem"/>
           </div>
           <div class="modal-footer" style="border-top:0px">
             <button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;" @click="openModify">학생 수정</button>
@@ -304,12 +304,12 @@ export default {
         dataWs.push(Object.assign(
           {
           '번호': index+1,
-          '소속': order.b2b_user.company,
-          '부서': order.b2b_user.part,
-          '직위(직책)': order.b2b_user.position,
-          '사번(고유값)': order.b2b_user.emp_no,
-          '성명': order.b2b_user.name,
-          '학습 레벨': order.b2b_user.user? order.b2b_user.user.level:'',
+          '소속': order.user.company,
+          '부서': order.user.part,
+          '직위(직책)': order.user.position,
+          '사번(고유값)': order.user.emp_no,
+          '성명': order.user.name,
+          '학습 레벨': order.user.app_user? order.user.app_user.level:'',
           '차수': batch.b_no,
           '학습시작일': batch.fr_dt,
           '학습종료일': batch.to_dt,
@@ -321,9 +321,9 @@ export default {
           '학습 시간': order.use_ticket_info && order.ticket_summary && order.goods ? order.goods.charge_plan.secs_per_day*(order.use_ticket_info.length+1) - order.ticket_summary.sum_remain_secs/60+'분' :'',
           '학습률': order.attend_pct,
           '학습 목표율': batch.target_rt,
-          '메모1': order.b2b_user.memo1,
-          '메모2': order.b2b_user.memo2,
-          '고객식별ID': order.b2b_user.user? order.b2b_user.user.cus_id:'',
+          '메모1': order.user.memo1,
+          '메모2': order.user.memo2,
+          '고객식별ID': order.user.app_user? order.user.app_user.cus_id:'',
           '코멘트_1': order.first_lesson_review?order.first_lesson_review.comment:'',
           '코멘트_2': order.last_lesson_review?order.last_lesson_review.comment:'',
           }, //
@@ -365,10 +365,10 @@ export default {
       this.items[this.UserNum] = JSON.parse(JSON.stringify(item));
       this.modalitem = this.items[this.UserNum];
     },
-    setMemo(b2b_user) {
-      if(this.memoNum) this.memo = b2b_user.memo1;
-      else this.memo = b2b_user.memo2;
-      this.presentIdx = b2b_user.idx;
+    setMemo(user) {
+      if(this.memoNum) this.memo = user.memo1;
+      else this.memo = user.memo2;
+      this.presentIdx = user.idx;
       this.showMemo = true;
     },
     async applyMemo() {

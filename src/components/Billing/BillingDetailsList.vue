@@ -24,7 +24,7 @@
       <div slot="header">
         <h1>카드 정보 수정</h1>
         <p>카드 정보를 확인해주세요.</p>
-        <strong>{{ currentItem.bill_card ? currentItem.bill_card.replace(/(\/\d{1})/gi, "") : "" }}</strong>
+        <strong>{{currentItem.user.card_name}} {{cardTypeLabel[currentItem.user.card_type]}} {{currentItem.user.card_no_masked}}</strong>
       </div>
       <div slot="body">
         <table class="table">
@@ -69,8 +69,8 @@
         </table>
       </div>
       <div slot="footer">
-        <button class="btn btn-danger">삭제</button>
-        <button class="btn btn-success" @click="editCardInfo(currentItem.bau_idx)">수정</button>
+        <button class="btn btn-danger" @click="delCardInfo(currentItem.user.idx)">삭제</button>
+        <button class="btn btn-success" @click="editCardInfo(currentItem.user.idx)">수정</button>
       </div>
     </Modal>
     <Modal ref="modalTag" v-cloak>
@@ -136,7 +136,7 @@
             <div class="input-group col-lg-3 col-md-12 col-xs-12 pull-left">
               <input type="text" v-model="search" placeholder="성명을 입력하세요." class="form-control" />
             </div>
-            
+
           </div>
 
           <div class="col-lg-12">
@@ -158,6 +158,7 @@
                       <thead>
                         <tr>
                           <th class="text-center">No</th>
+                          <th class="text-center">주문번호</th>
                           <th class="text-center">학생</th>
                           <th class="text-center">수강권</th>
                           <th class="text-center">실결제일시</th>
@@ -173,7 +174,8 @@
                         <!--정기 결제 -->
                         <tr class="text-center" v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
                           <td>{{ index+1 }}</td>
-                          <td>{{ item.b2b_user.name }}</td>
+                          <td>{{ item.idx }}</td>
+                          <td>{{ item.user.name }}</td>
                           <td>{{ item.goods? item.goods.charge_plan.title:'' }}</td>
                           <td>{{ item.charged_dt }}</td>
                           <td>
@@ -186,10 +188,11 @@
                             </button>
                           </td>
                           <td>
-                            <button class="btn btn-default" @click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
-                              카드변경
-                            </button>
-                          </td>
+						    <button :class="{'btn':true, 'btn-outline':true, 'btn-default':item.user.card_name, 'btn-danger':!item.user.card_name}"
+									@click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
+							  {{ item.user.card_name ? '카드변경' : '카드등록' }}
+						    </button>
+						  </td>
                           <td>
                             {{ item.charged_info &&
                                 item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
@@ -211,6 +214,7 @@
                       <thead>
                         <tr>
                           <th class="text-center">No</th>
+                          <th class="text-center">주문번호</th>
                           <th class="text-center">학생</th>
                           <th class="text-center">수강권</th>
                           <th class="text-center">달성률</th>
@@ -226,7 +230,8 @@
                       <tbody id="pchargeInfoList">
                         <tr v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" class="text-center" v-show="setSearch(item)">
                           <td>{{ index+1 }}</td>
-                          <td>{{ item.b2b_user.name }}</td>
+                          <td>{{ item.idx }}</td>
+                          <td>{{ item.user.name }}</td>
                           <td>{{ item.goods? item.goods.charge_plan.title:''}}</td>
                           <td>{{ item.attend_pct }}%</td>
                           <td>{{ item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1") }}</td>
@@ -241,8 +246,9 @@
                             </button>
                           </td>
                           <td>
-                            <button class="btn btn-default" @click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
-                              카드변경
+                            <button :class="{'btn':true, 'btn-outline':true, 'btn-default':item.user.card_name, 'btn-danger':!item.user.card_name}"
+									@click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
+                              {{ item.user.card_name ? '카드변경' : '카드등록' }}
                             </button>
                           </td>
                           <td>
@@ -286,17 +292,20 @@
 				orders: [],
         		isPenaltyCharge: false,
 				search: '',
-				currentItem: {},
+				currentItem: {
+					user: {}
+				},
 				batches: [],
 				batch: null,
 				company: '',
 				tab: 1,
 				tag: '',
 				moment: moment,
-				listInfo: '',	
+				listInfo: '',
 				bapInfo: {},
 				newCardInfo: { cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: '' },
 				targetCountCheck: false,
+				cardTypeLabel: ['신용', '직불']
 			}
 		},
 		methods: {
@@ -336,15 +345,15 @@
 				.then(async result => {
 					if (result.isConfirmed) {
 						if (this.tab === 1){
-							const res = await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: 'B' });
-						} else { 
-							const res = await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: 'B' });
+							const res = await api.post('/partners/chargeStatus', { boIdx: this.currentItem.idx, status: 'B' });
+						} else {
+							const res = await api.post('/partners/pchargeStatus', { boIdx: this.currentItem.idx, status: 'B' });
 						}
 						this.refresh();
 					}
 				})
 			},
-			editCardInfo: function (bauIdx) {
+			editCardInfo: function (buIdx) {
 				this.$swal
 					.fire({
 						title: '수정 하시겠습니까?',
@@ -353,7 +362,7 @@
 					})
 					.then(async result => {
 						if (result.isConfirmed) {
-							const res = await api.post('/partners/updateBillkey', { bauIdx, ...this.newCardInfo })
+							const res = await api.post('/partners/updateBillkey', { buIdx, ...this.newCardInfo })
 							if (res.result === 2000)
 								this.$swal
 									.fire({
@@ -379,8 +388,36 @@
 						}
 					})
 			},
+			delCardInfo: function (buIdx) {
+				this.$swal
+					.fire({
+						title: '삭제 하시겠습니까?',
+						confirmButtonText: '확인',
+						confirmButtonColor: '#8FD0F5',
+					})
+					.then(async result => {
+						if (result.isConfirmed) {
+							const res = await api.post('/partners/deleteBillkey', { buIdx })
+							if (res.result === 2000) {
+								this.$swal
+									.fire({
+										text: '결제 카드 정보가 삭제되었습니다',
+										icon: 'success',
+										confirmButtonText: '확인',
+										confirmButtonColor: '#8FD0F5',
+									})
+									.then(result => {
+										if (result.isConfirmed) {
+											this.$refs.modalCardEdit.close()
+											this.refresh()
+										}
+									})
+							}
+						}
+					})
+			},
 			editTag: async function () {
-				const params = { idx: this.currentItem.idx }
+				const params = { boIdx: this.currentItem.idx }
 				this.isPenaltyCharge ? params.pmngTag=this.tag : params.mngTag=this.tag;
 
 				const res = await api.post('/partners/updateMngTag', params)
@@ -390,7 +427,7 @@
 				const isPenaltyCharge = (this.tab!=1)
         		this.$swal
             .fire({
-              html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.b2b_user.name}</strong>님<br/>`
+              html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user.name}</strong>님<br/>`
 									+ `<strong>${this.currentItem.goods.charge_plan.title}</strong><br/>`
 									+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.goods[isPenaltyCharge?'pcharge_price':'charge_price'])}</strong>원이 환불됩니다.<br/>`
 									+ `<br/>환불 처리 하시겠습니까?`,
@@ -439,7 +476,7 @@
 				const isPenaltyCharge = (this.tab!=1)
 				this.$swal
 					.fire({
-						html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.b2b_user.name}</strong>님<br/>`
+						html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user.name}</strong>님<br/>`
 								+ `<strong>${this.currentItem.goods_name}</strong><br/>`
 								+ `${isPenaltyCharge?'추가':'정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.goods.charge_price)}</strong>원이 결제됩니다.<br/>`
 								+ `<br/>결제 진행 하시겠습니까?`,
@@ -617,8 +654,7 @@
 			},
 			updatePChargeTarget: async function () {
 				const res = await api.post('/partners/updatePChargeTarget', {
-					bapIdx: 1,
-					bNo: this.$route.params.bNo
+					bbIdx: this.batch.idx
 				})
 				if (res.result === 2000) {
 					this.$swal.fire({
@@ -653,8 +689,8 @@
 				}).then(async result => {
 					if (result.isConfirmed) {
 
-						if (this.tab === 1) await api.post('/partners/chargeStatus', { baoIdx: this.currentItem.idx, status: val })
-						else await api.post('/partners/pchargeStatus', { baoIdx: this.currentItem.idx, status: val })
+						if (this.tab === 1) await api.post('/partners/chargeStatus', { boIdx: this.currentItem.idx, status: val })
+						else await api.post('/partners/pchargeStatus', { boIdx: this.currentItem.idx, status: val })
 
 						this.$refs.modalWaitPayment.close()
 						this.refresh()
@@ -662,7 +698,7 @@
 				})
 			},
 			setSearch(item) {
-				return !item.b2b_user.name.indexOf(this.search)
+				return !item.user.name.indexOf(this.search)
 			},
 			routeBatch(batches, event) {
 				if(batches.length) {
@@ -684,7 +720,7 @@
 					if (list.length !== 0)
 						return list.filter(
 							item =>
-								(item.b2b_user.name && item.b2b_user.name.includes(this.search.trim())) ||
+								(item.user.name && item.user.name.includes(this.search.trim())) ||
 								(item.cus_id && item.cus_id.includes(this.search.trim())),
 						)
 				}
