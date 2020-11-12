@@ -5,12 +5,14 @@ import shared from './common/shared'
 import routes from "@/routes";
 import swal from 'vue-sweetalert2';
 import VueClipboard from 'vue-clipboard2'
-
+import { CoolSelectPlugin } from 'vue-cool-select'
+import 'vue-cool-select/dist/themes/material-design.css'
 
 Vue.use(VueRouter)
 Vue.use(shared)
 Vue.use(swal)
 Vue.use(VueClipboard)
+Vue.use(CoolSelectPlugin)
 Vue.config.productionTip = false
 
 const router = new VueRouter({routes});
