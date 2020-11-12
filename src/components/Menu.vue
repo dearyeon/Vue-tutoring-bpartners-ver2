@@ -4,7 +4,7 @@
 
     <div class="sidebar-collapse">
 
-      
+
       <ul class="nav metismenu" id="side-menu">
         <li class="nav-header">
           <div class="dropdown profile-element">
@@ -26,17 +26,17 @@
             </span>
           </router-link>
         </li>
-        
+
         <div class="pull-left" style="margin-bottom: 0; position:fixed; bottom:0;">
           <ul class="nav navbar-top-links">
             <li>
-              <a href="#" v-on:click="logout">
+              <a href="#" v-on:click="$shared.logout('로그아웃 되었습니다.')">
                 <i class="fa fa-sign-out"></i> Log out
               </a>
             </li>
           </ul>
         </div>
-        
+
       </ul>
     </div>
   </nav>
@@ -46,7 +46,6 @@
 
 
 <script>
-import shared from "@/common/shared";
 import menus from "@/menus";
 
 export default {
@@ -75,10 +74,6 @@ export default {
         const m = menus[i]
         m.isActive = (m.id==menuId)
       }
-    },
-    logout() {
-      shared.setToken(null)
-      this.$router.push('/login')
     }
   }
 }
