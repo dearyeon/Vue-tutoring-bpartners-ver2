@@ -35,9 +35,9 @@
               </thead>
               <tbody>
                 <tr v-for="(item, index) in chargeSite" :key="`billing-${index}`">
-                    <td @click="routeDetailPage(item.idx,item.batches)">{{ item.company?item.company:'-' }}</td>
+                    <td @click="routeDetailPage(item.batches)">{{ item.company?item.company:'-' }}</td>
                     <td>
-                      <select v-if="item.batches.length" style="height:30px;" @change="routeDetailPage(item.idx,item.batches,$event)">
+                      <select v-if="item.batches.length" style="height:30px;" @change="routeDetailPage(item.batches,$event)">
                         <option value="none" selected disabled hidden>{{item.batches[0].b_no}}회차 ({{moment(item.batches[0].fr_dt).format('YY.MM.DD')}}-{{moment(item.batches[0].to_dt).format('MM.DD')}})</option>   
                         <option v-for="(batch,i) in item.batches" :value="i" :key="i.id">{{batch.b_no}}회차 ({{moment(batch.fr_dt).format('YY.MM.DD')}}-{{moment(batch.to_dt).format('MM.DD')}})</option>
                       </select>
@@ -84,11 +84,11 @@ export default {
     this.total_page = res.data.last_page;
   },
   methods: {
-    routeDetailPage(idx, batches, event) {
+    routeDetailPage(batches, event) {
       if(batches.length) {
         this.$router.push({
             name: "billingDetailsList",
-            params: { sIdx: idx, bbIdx:event?batches[event.target.value].idx:batches[0].idx }
+            params: { bbIdx:event?batches[event.target.value].idx:batches[0].idx }
         
         })
       }

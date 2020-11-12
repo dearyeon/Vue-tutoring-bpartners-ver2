@@ -99,7 +99,7 @@ export default {
         if(parseInt(this.$route.params.bbIdx) !== this.batches[event.target.value].idx) {
           this.$router.push({
             name: "applyDetailsList",
-            params: { sIdx: this.$route.params.sIdx, bbIdx:this.batches[event.target.value].idx }
+            params: { bbIdx:this.batches[event.target.value].idx }
           })
           this.refreshData();
         }

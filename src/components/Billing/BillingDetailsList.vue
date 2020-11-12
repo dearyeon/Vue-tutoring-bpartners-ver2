@@ -749,7 +749,7 @@ export default {
 			if (batches.length) {
 				this.$router.push({
 					name: "billingDetailsList",
-					params: {sIdx: this.$route.params.sIdx, bbIdx: batches[event.target.value].idx}
+					params: {bbIdx: batches[event.target.value].idx}
 				})
 				this.apiCall();
 			}
