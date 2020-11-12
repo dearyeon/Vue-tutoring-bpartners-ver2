@@ -10,9 +10,9 @@
         <div class="ibox-content">
           <div class="subtitle">
             <h1>{{ company }}</h1>
-            <select v-if="batches.length" @change="routeDetailPage($event)">
-              <option value="none" selected disabled hidden>{{tempbatch.b_no}}회차 | {{ moment(tempbatch.fr_dt).format('YY.MM.DD') }} - {{moment(tempbatch.to_dt).format('YY.MM.DD') }}</option>
-              <option v-for="(apply,i) in batches" :value="i" :key="apply.id">{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY.MM.DD') }} - {{moment(apply.to_dt).format('YY.MM.DD') }}</option>
+            <select v-if="batches.length" style="height:30px" @change="routeDetailPage($event)">
+              <option value="none" selected disabled hidden>{{tempbatch.b_no}}회차 ({{moment(tempbatch.fr_dt).format('YY.MM.DD')}}-{{moment(tempbatch.to_dt).format('.MM.DD')}})</option>
+              <option v-for="(apply,i) in batches" :value="i" :key="apply.id">{{apply.b_no}}회차 ({{moment(apply.fr_dt).format('YY.MM.DD')}}-{{moment(apply.to_dt).format('.MM.DD')}})</option>
             </select>
           </div>
 

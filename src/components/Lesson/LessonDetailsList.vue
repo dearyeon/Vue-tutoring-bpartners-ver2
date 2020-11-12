@@ -24,8 +24,8 @@
                     <ul class="list-inline">
                       <li><h1>{{ company }}</h1></li>
                       <li>
-                        <select v-if="batches.length" @change="routeDetailPage($event)">
-                            <option v-for="(item,i) in batches" :value="i" :key="item.id" :selected="item.idx === parseInt($route.params.bbIdx)">{{item.b_no}}차</option>
+                        <select v-if="batches.length" style="height:30px;" @change="routeDetailPage($event)">
+                            <option v-for="(item,i) in batches" :value="i" :key="item.id" :selected="item.idx === parseInt($route.params.bbIdx)">{{item.b_no}}회차 ({{moment(item.fr_dt).format('YY.MM.DD')}}-{{moment(item.to_dt).format('.MM.DD')}})</option>
                         </select>
                       </li>
                     </ul>

@@ -120,10 +120,9 @@
 					<div id="listform">
 						<div class="subtitle">
 							<h1>{{ company }}</h1>
-							<select v-if="batches.length" @change="routeBatch(batches, $event)">
+							<select v-if="batches.length" style="height:30px" @change="routeBatch(batches, $event)">
 								<option v-for="(bat,i) in batches" :value="i" :key="i.id" :selected="batch === bat">
-									{{ bat.b_no }}회차 | {{ moment(bat.fr_dt).format('YY.MM.DD') }} -
-									{{ moment(bat.to_dt).format('YY.MM.DD') }}
+									{{bat.b_no}}회차 ({{moment(bat.fr_dt).format('YY.MM.DD')}}-{{moment(bat.to_dt).format('.MM.DD')}})
 								</option>
 							</select>
 							<div v-if="tab===1" class="text-left col-lg-5" style="margin-left:40px;">

@@ -21,34 +21,34 @@
 			<div class="ibox content">
         <div class="ibox-content">
           <div class="row">
-						<table class="table text-center table-hover dataTable">
+						<table class="table table-hover dataTable">
               <thead>
                 <tr>
 									<th class="text-left sorting" field="order" @click="$shared.sortBy(chargeSite,'company')">고객사명</th>
-									<th class="text-center">차수</th>
+									<th>차수</th>
 									<th class="text-center">현재상태</th>
-									<th class="text-center">과목</th>
-									<th class="text-center">정기결제일</th>
-									<th class="text-center">추가결제일</th>
-									<th class="text-center sorting" field="order" @click="$shared.sortBy(chargeSite,'applyCnt')">인원수</th>
+									<th>과목</th>
+									<th>정기결제일</th>
+									<th>추가결제일</th>
+									<th class="sorting" field="order" @click="$shared.sortBy(chargeSite,'applyCnt')">인원수</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(item, index) in chargeSite" :key="`billing-${index}`">
-                    <td class="text-left" @click="routeDetailPage(item.idx,item.batches)">{{ item.company?item.company:'-' }}</td>
+                    <td @click="routeDetailPage(item.idx,item.batches)">{{ item.company?item.company:'-' }}</td>
                     <td>
-                      <select v-if="item.batches.length" @change="routeDetailPage(item.idx,item.batches,$event)">
-                        <option value="none" selected disabled hidden>{{item.batches[0].b_no}}차</option>   
-                        <option v-for="(batch,i) in item.batches" :value="i" :key="i.id">{{batch.b_no}}차</option>
+                      <select v-if="item.batches.length" style="height:25px;" @change="routeDetailPage(item.idx,item.batches,$event)">
+                        <option value="none" selected disabled hidden>{{item.batches[0].b_no}}회차 ({{moment(item.batches[0].fr_dt).format('YY.MM.DD')}}-{{moment(item.batches[0].to_dt).format('.MM.DD')}})</option>   
+                        <option v-for="(batch,i) in item.batches" :value="i" :key="i.id">{{batch.b_no}}회차 ({{moment(batch.fr_dt).format('YY.MM.DD')}}-{{moment(batch.to_dt).format('.MM.DD')}})</option>
                       </select>
                     </td>
-                    <td class="text-center">
+                    <td>
                       <!--<label :class="currentStatus(item,1)" style="width:60px;text-align: center">{{ currentStatus(item,0) }}</label>-->
                     </td>
-                    <td class="text-center"></td>
-                    <td class="text-center">{{ item.batches?item.batches[0].charge_dt?moment(item.batches[0].charge_dt).format('YYYY-MM-DD'):'-':'-' }}</td>
-                    <td class="text-center">{{ item.batches?item.batches[0].pcharge_dt?moment(item.batches[0].pcharge_dt).format('YYYY-MM-DD'):'-':'-' }}</td>
-                    <td class="text-center"></td>
+                    <td></td>
+                    <td>{{ item.batches?item.batches[0].charge_dt?moment(item.batches[0].charge_dt).format('YYYY-MM-DD'):'-':'-' }}</td>
+                    <td>{{ item.batches?item.batches[0].pcharge_dt?moment(item.batches[0].pcharge_dt).format('YYYY-MM-DD'):'-':'-' }}</td>
+                    <td></td>
                 </tr>
               </tbody>
             </table>

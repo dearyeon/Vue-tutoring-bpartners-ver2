@@ -35,7 +35,7 @@
                                     <thead>
                                     <tr>
                                         <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy(items,'site','company')">고객사명</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="c_no" @click="$shared.sortBy(items,'c_no')">차수</th>
+                                        <th class="pagesubmit sorting" field="order" value="c_no" @click="$shared.sortBy(items,'c_no')">차수</th>
                                         <th class="pagesubmit text-center" value="status">현재상태</th>
                                         <th>과목</th>
                                         <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy(items,'fr_dt')">시작날짜</th>
@@ -51,10 +51,10 @@
                                             <td @click="routeDetailPage(item)">
                                                 {{ item.company }}
                                             </td>
-                                            <td class="text-center">
-                                                <select v-if="item.batches.length" @change="routeDetailPage(item,$event)">
-                                                    <option value="none" selected disabled hidden>{{item.batches[0].b_no}}차</option>
-                                                    <option v-for="(batch,i) in item.batches" :value="i" :key="batch.id">{{batch.b_no}}차</option>
+                                            <td>
+                                                <select v-if="item.batches.length" style="height:25px" @change="routeDetailPage(item,$event)">
+                                                    <option value="none" selected disabled hidden>{{item.batches[0].b_no}}회차 ({{moment(item.batches[0].fr_dt).format('YY.MM.DD')}}-{{moment(item.batches[0].to_dt).format('.MM.DD')}})</option>
+                                                    <option v-for="(batch,i) in item.batches" :value="i" :key="batch.id">{{batch.b_no}}회차 ({{moment(batch.fr_dt).format('YY.MM.DD')}}-{{moment(batch.to_dt).format('.MM.DD')}})</option>
                                                 </select>
                                             </td>
                                             <td class="text-center">

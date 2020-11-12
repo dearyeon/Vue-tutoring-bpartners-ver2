@@ -46,9 +46,9 @@
 							<td class="text-left">{{ item.company }}</td>
 							<td class="text-left">{{ item.name }}</td>
 							<td>
-								<select v-model="item.selectedApplyIdx" v-if="item.batches.length" style="width:100%">
+								<select v-model="item.selectedApplyIdx" v-if="item.batches.length" style="height:25px; width:100%">
 									<option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
-										{{apply.b_no}}회차 | {{ moment(apply.fr_dt).format('YY.MM.DD') }} - {{moment(apply.to_dt).format('YY.MM.DD') }}{{item.batches[item.selectedApplyIdx].del_yn?'(취소)':''}}
+										{{apply.b_no}}회차 ({{moment(apply.fr_dt).format('YY.MM.DD')}}-{{moment(apply.to_dt).format('.MM.DD')}}){{item.batches[item.selectedApplyIdx].del_yn?' 취소':''}}
 									</option>
 								</select>
 							</td>
