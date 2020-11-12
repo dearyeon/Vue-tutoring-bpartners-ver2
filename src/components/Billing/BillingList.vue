@@ -5,7 +5,7 @@
         <div class="pull-left col-lg-3">
           <h2>결제정보 관리</h2>
         </div>
-        <form id="listform">
+        <div>
           <div class="row">
               <div class="col-sm-3">
                   <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
@@ -14,7 +14,7 @@
                   <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
               </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -37,9 +37,9 @@
                 <tr v-for="(item, index) in chargeSite" :key="`billing-${index}`">
                     <td @click="routeDetailPage(item.idx,item.batches)">{{ item.company?item.company:'-' }}</td>
                     <td>
-                      <select v-if="item.batches.length" style="height:25px;" @change="routeDetailPage(item.idx,item.batches,$event)">
-                        <option value="none" selected disabled hidden>{{item.batches[0].b_no}}회차 ({{moment(item.batches[0].fr_dt).format('YY.MM.DD')}}-{{moment(item.batches[0].to_dt).format('.MM.DD')}})</option>   
-                        <option v-for="(batch,i) in item.batches" :value="i" :key="i.id">{{batch.b_no}}회차 ({{moment(batch.fr_dt).format('YY.MM.DD')}}-{{moment(batch.to_dt).format('.MM.DD')}})</option>
+                      <select v-if="item.batches.length" style="height:30px;" @change="routeDetailPage(item.idx,item.batches,$event)">
+                        <option value="none" selected disabled hidden>{{item.batches[0].b_no}}회차 ({{moment(item.batches[0].fr_dt).format('YY.MM.DD')}}-{{moment(item.batches[0].to_dt).format('MM.DD')}})</option>   
+                        <option v-for="(batch,i) in item.batches" :value="i" :key="i.id">{{batch.b_no}}회차 ({{moment(batch.fr_dt).format('YY.MM.DD')}}-{{moment(batch.to_dt).format('MM.DD')}})</option>
                       </select>
                     </td>
                     <td>

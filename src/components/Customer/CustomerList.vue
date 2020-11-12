@@ -6,7 +6,7 @@
                     <div class="pull-left col-lg-2">
                         <h2>고객사 관리</h2>
                     </div>
-                    <form id="listform">
+                    <div>
                         <div class="row">
                             <div class="col-sm-3">
                                 <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
@@ -18,7 +18,7 @@
                                 <a class="btn btn-success" @click="createCustomerPage"><i class="fa fa-plus"></i> 고객사 등록</a>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
 
                 <div class="row">

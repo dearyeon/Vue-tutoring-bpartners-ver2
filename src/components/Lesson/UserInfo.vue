@@ -22,7 +22,7 @@
                                             <div class="s_part center-block" style="font-size: 10px; margin-top:-10px"><h6>{{ userInfo.user.department }}/{{ userInfo.user.position }}</h6></div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-8" v-if="!comp">
+                                    <div class="col-lg-8">
                                         <dl class="dl-horizontal">
                                             <dt>고객식별ID | </dt>
                                             <dd><span class="s_mail">{{ userInfo.user.app_user?userInfo.user.app_user.cus_id:'' }}</span></dd>
@@ -59,12 +59,10 @@
                             </form>
                             <div class="col-lg-12" style="margin-top:20px;width:100%;">
                                 <strong>수업 히스토리</strong>
-                                <!--<ul class="col-lg-12 list-inline lesson_history" style="margin-top:20px;min-height:50px;width:100%;" >
-                                    <li class="no-padding" v-for="i in data.baseInfo.max_cnt" :key="i.id">
-                                        <div class="square square-pull" v-if="data.lesson['lesson_cnt_'+i]"></div>
-                                        <div class="square square-empty" v-else></div>
-                                    </li>
-                                </ul>-->
+                      <div v-for="i in calBatchDate()" :key="i.id">
+                        <div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)" :data-tooltip="useDtTooltip(i-1,item)"></div>
+                        <div class="square square-empty" v-else></div>
+                      </div>
                             </div>
                             <div class="col-lg-12" style="margin-top:20px;">
                                 <strong>레벨 테스트 결과비교</strong>
@@ -127,21 +125,48 @@ export default {
             type: Object,
             required: true,
         },
-        comp: {
-            type: Number,
-            default: 0
-        }
     },
     created() {
-        console.log(this.data,1111);
+        console.log(this.data,"paramsData");
         this.batch = this.data.batch
         this.userInfo = this.data.userInfo
-        console.log(this.userInfo.use_ticket_info)
+        console.log(this.userInfo.use_ticket_info, "review")
     },
     methods: {
         getImageSrc(prof_img) {
             return prof_img?"":"https://cdn.tutoring.co.kr/uploads/b2b_site_img/"+prof_img.substr(0,4)+"/"+prof_img.substr(4,2)+"/"+prof_img.substr(6,2)+"/"+prof_img+'_S';
+        },
+         calBatchDate() {
+      const a = moment(this.batch.fr_dt);
+      const b = moment(this.batch.to_dt);
+      return b.diff(a, 'days')+1;
+    },
+    isUseDt(i,use_ticket_info) {
+      if(use_ticket_info.length) {
+        for(var element of use_ticket_info) {
+          if(moment(this.batch.fr_dt).add(i, "days").isSame(element.use_dt,'day')) {
+            return true;
+          }
         }
+        return false;
+      } else return false;
+    },
+    useDtTooltip(i,item) {
+      if(item.use_ticket_info.length) {
+        let str = moment(this.batch.fr_dt).add(i, "days").format('YYYY-MM-DD')
+        let count=0, total = 0, min, secs;
+        for(var element of item.use_ticket_info) {
+          if(moment(this.batch.fr_dt).add(i, "days").isSame(element.use_dt,'day')) {
+            total += item.goods.charge_plan.secs_per_day - element.remain_secs
+            count++
+          }
+        }
+        min = parseInt(total/60)
+        secs = total - min*60
+        str+='\n'+count+'회 - '+min+'분 '+secs+'초'
+        return str;
+      }
+    }
     }
 };
 </script>

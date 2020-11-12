@@ -5,7 +5,7 @@
         <div class="pull-left col-lg-3">
           <h2>신청/입과 관리</h2>
         </div>
-        <form id="listform">
+        <div>
             <div class="row">
                 <div class="col-sm-3">
                     <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
@@ -14,7 +14,7 @@
                     <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
                 </div>
             </div>
-        </form>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -39,10 +39,14 @@
                 <tr v-for="(item, index) in applySite" :key="`apply-${index}`">
                     <td @click="routeDetailPage(item.idx,item.batches)">{{ item.company }}</td>
                     <td>
-                      <select v-if="item.batches.length" style="height:25px" @change="routeDetailPage(item.idx,item.batches,$event)">
-                        <option value="none" selected disabled hidden>{{item.batches[0].b_no}}회차 ({{moment(item.batches[0].fr_dt).format('YY.MM.DD')}}-{{moment(item.batches[0].to_dt).format('.MM.DD')}})</option>
-                        <option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">{{apply.b_no}}회차 ({{moment(apply.fr_dt).format('YY.MM.DD')}}-{{moment(apply.to_dt).format('.MM.DD')}})</option>
-                      </select>
+                      <SelectBox
+                            :batches="item.batches"
+                            @input="value => { console.log(value) }"
+                      ></SelectBox>
+                      <!--<select v-if="item.batches.length" style="height:30px;font-size:14px;" @change="routeDetailPage(item.idx,item.batches,$event)">
+                        <option value="none" selected disabled hidden>{{item.batches[0].b_no}}회차 ({{moment(item.batches[0].fr_dt).format('YY.MM.DD')}}-{{moment(item.batches[0].to_dt).format('MM.DD')}})</option>
+                        <option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">{{apply.b_no}}회차 ({{moment(apply.fr_dt).format('YY.MM.DD')}}-{{moment(apply.to_dt).format('MM.DD')}})</option>
+                      </select>-->
                     </td>
                     <td class="text-center">
                       <label :class="currentStatus(item,1)" style="width:60px;text-align: center">{{ currentStatus(item,0) }}</label>
@@ -74,6 +78,7 @@
 import api from "@/common/api"
 import moment from 'moment'
 import Pagination from '@/components/atom/Pagination'
+import SelectBox from '@/components/atom/SelectBox'
 export default {
   data() {
     return {
@@ -85,7 +90,7 @@ export default {
     };
   },
   components: {
-		Pagination
+		Pagination,SelectBox
 	},
   async created() {
     const res = await api.get("/partners/applySiteList");

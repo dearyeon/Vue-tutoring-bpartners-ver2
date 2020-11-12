@@ -5,7 +5,7 @@
 				    <div class="pull-left col-lg-2">
                         <h2>차수 관리</h2>
                     </div>
-                    <form id="listform">
+                    <div>
                         <div class="row">
                             <div class="col-sm-3">
                                 <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
@@ -14,7 +14,7 @@
                                 <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
                             </div>
                         </div>
-                    </form>
+                    </div>
 				<router-link :to="{ path: '/register/createPage' }">
 				</router-link>
 			</div>
@@ -46,9 +46,9 @@
 							<td class="text-left">{{ item.company }}</td>
 							<td class="text-left">{{ item.name }}</td>
 							<td>
-								<select v-model="item.selectedApplyIdx" v-if="item.batches.length" style="height:25px; width:100%">
+								<select v-model="item.selectedApplyIdx" v-if="item.batches.length" style="height:30px; width:100%">
 									<option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
-										{{apply.b_no}}회차 ({{moment(apply.fr_dt).format('YY.MM.DD')}}-{{moment(apply.to_dt).format('.MM.DD')}}){{item.batches[item.selectedApplyIdx].del_yn?' 취소':''}}
+										{{apply.b_no}}회차 ({{moment(apply.fr_dt).format('YY.MM.DD')}}-{{moment(apply.to_dt).format('MM.DD')}}){{item.batches[item.selectedApplyIdx].del_yn?' 취소':''}}
 									</option>
 								</select>
 							</td>
