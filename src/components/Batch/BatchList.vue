@@ -31,8 +31,9 @@
 							<th class="text-center" style="width:226px">회차</th>
 							<th class="text-center">달성률</th>
 							<th class="text-center">빌링</th>
-							<th class="text-center">정기결제일</th>
-							<th class="text-center">추가결제일</th>
+							<th class="text-center">현재상태</th>
+							<th class="text-center">신청시작일시</th>
+							<th class="text-center">신청종료일시</th>
 							<th class="text-center">수정일시</th>
 							<th class="text-center">차수관리</th>
 							<th class="text-center">신청양식설정</th>
@@ -54,8 +55,9 @@
 							</td>
 							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].target_rt?item.batches[item.selectedApplyIdx].target_rt+'%':''):'' }}</td>
 							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].use_billing?'빌링':''):'' }}</td>
-							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].charge_dt?moment(item.batches[item.selectedApplyIdx].charge_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
-							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].pcharge_dt?moment(item.batches[item.selectedApplyIdx].pcharge_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
+							<td><label :class="currentStatus(item,1)" style="width:60px;text-align: center">{{ currentStatus(item,0) }}</label></td>
+							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].fr_dt?moment(item.batches[item.selectedApplyIdx].fr_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
+							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].to_dt?moment(item.batches[item.selectedApplyIdx].to_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
 							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM'):'' }}</td>
 							<td class="text-left" style='white-space: nowrap;'>
 								<button class="btn btn-page-set" @click="createBatchPage(item.idx,item.company)">추가</button>
@@ -217,7 +219,19 @@ export default {
 			this.list = list
 			this.current_page = res.data.current_page
 			this.total_page = res.data.last_page
-        },
+		},
+		currentStatus (item, val) {
+			const date = moment().format('YYYY-MM-DD')
+			if (item.batches.length && date < item.batches[0].fr_dt) {
+				return val ? 'b-r-sm bg-warning' : '대기중'
+			} else if (item.apply && date >= item.apply.apply_fr_dt && date <= item.apply.apply_to_dt) {
+				return val ? 'b-r-sm btn-apply' : '신청중'
+			} else if (item.batches.length && date >= item.batches[0].fr_dt && date <= item.batches[0].to_dt) {
+				return val ? 'b-r-sm bg-primary' : '진행중'
+			} else if (item.batches.length && date > item.batches[0].to_dt) {
+				return val ? 'b-r-sm bg-success' : '완료'
+			}
+    	},
 	}
 }
 </script>
