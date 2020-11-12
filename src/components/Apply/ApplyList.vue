@@ -39,10 +39,10 @@
                 <tr v-for="(item, index) in applySite" :key="`apply-${index}`">
                     <td @click="routeDetailPage(item.idx,item.batches)">{{ item.company }}</td>
                     <td>
-                      <SelectBox
+                      <SelectBox 
                             :batches="item.batches"
-                            @input="value => { console.log(value) }"
-                      ></SelectBox>
+                            @change="value => {routeDetailPage(item.idx,item.batches,value)}" />
+                      <!--value => { console.log(value) }-->
                       <!--<select v-if="item.batches.length" style="height:30px;font-size:14px;" @change="routeDetailPage(item.idx,item.batches,$event)">
                         <option value="none" selected disabled hidden>{{item.batches[0].b_no}}회차 ({{moment(item.batches[0].fr_dt).format('YY.MM.DD')}}-{{moment(item.batches[0].to_dt).format('MM.DD')}})</option>
                         <option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">{{apply.b_no}}회차 ({{moment(apply.fr_dt).format('YY.MM.DD')}}-{{moment(apply.to_dt).format('MM.DD')}})</option>
@@ -99,11 +99,11 @@ export default {
     this.total_page = res.data.last_page
   },
   methods: {
-    routeDetailPage(s_idx, batches, event) {
+    routeDetailPage(s_idx, batches, value) {
       if(batches.length) {
         this.$router.push({
           name: "applyDetailsList",
-          params: { sIdx: s_idx, bbIdx:event?batches[event.target.value].idx:batches[0].idx }
+          params: { sIdx: s_idx, bbIdx:value?batches[value].idx:batches[0].idx }
         })
       }
     },
@@ -130,6 +130,10 @@ export default {
       this.current_page = res.data.current_page
       this.total_page = res.data.last_page
     },
+    selectChange(idx,batches, value) {
+      console.log("value:"+value);
+      //routeDetailPage(item.idx,item.batches,value);
+    }
   }
 };
 </script>
