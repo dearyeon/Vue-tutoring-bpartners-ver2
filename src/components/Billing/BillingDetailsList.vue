@@ -77,23 +77,23 @@
 				<button class="btn btn-success" @click="editCardInfo(currentItem.user.idx)">수정</button>
 			</div>
 		</Modal>
-		<Modal ref="modalTag" v-cloak>
+		<Modal ref="modalMemo" v-cloak>
 			<div slot="header">
-				<h1>관리 태그 입력</h1>
-				<p>관리 태그를 입력해 주세요.</p>
+				<h1>관리메모 입력</h1>
+				<p>관리메모를 입력해 주세요.</p>
 			</div>
 			<div slot="body">
 				<table class="table">
 					<tr>
-						<th style="vertical-align: top; padding-top:12px;">관리태그</th>
+						<th style="vertical-align: top; padding-top:12px;">관리메모</th>
 						<td>
-							<textarea class="form-control" rows="3" placeholder="내용을 입력해 주세요." v-model="tag"></textarea>
+							<textarea class="form-control" rows="3" placeholder="내용을 입력해 주세요." v-model="memo"></textarea>
 						</td>
 					</tr>
 				</table>
 			</div>
 			<div slot="footer" class="pull-right">
-				<button class="btn btn-success" @click="[$refs.modalTag.close(), editTag()]">저장</button>
+				<button class="btn btn-success" @click="[$refs.modalMemo.close(), editMemo()]">저장</button>
 			</div>
 		</Modal>
 		<div class="col-lg-12">
@@ -179,8 +179,8 @@
 												<th>집행일시</th>
 												<th>집행카드</th>
 												<th>집행TID/실패사유</th>
-												<th>관리태그</th>
-												<th>태그수정</th>
+												<th>관리메모</th>
+												<th>메모수정</th>
 											</tr>
 											</thead>
 											<tbody id="chargeInfoList">
@@ -221,10 +221,10 @@
 												<td :class="{'text-danger':item.charged_bill_dump}">
 													{{ item.charged_t_id ? item.charged_t_id : item.charged_bill_dump }}
 												</td>
-												<td>{{ item.mng_tag ? item.mng_tag : '' }}</td>
+												<td>{{ item.mng_memo }}</td>
 												<td>
 													<button class="btn btn-default"
-															@click="[setCurrentItem(item), (isPenaltyCharge=false), (tag=(item.mng_tag?item.mng_tag:'')), $refs.modalTag.open()]">
+															@click="[setCurrentItem(item), (isPenaltyCharge=false), (memo=(item.mng_memo)), $refs.modalMemo.open()]">
 														수정
 													</button>
 												</td>
@@ -249,8 +249,8 @@
 												<th>집행일시</th>
 												<th>집행카드</th>
 												<th>집행TID/실패사유</th>
-												<th>관리태그</th>
-												<th>태그수정</th>
+												<th>관리메모</th>
+												<th>메모수정</th>
 											</tr>
 											</thead>
 											<tbody id="pchargeInfoList">
@@ -297,10 +297,10 @@
 												<td :class="{'text-danger':item.pcharged_bill_dump}">
 													{{ item.pcharged_t_id ? item.pcharged_t_id : item.pcharged_bill_dump }}
 												</td>
-												<td>{{ item.pmng_tag ? item.pmng_tag : '' }}</td>
+												<td>{{ item.mng_memo }}</td>
 												<td>
 													<button class="btn btn-default"
-															@click="[setCurrentItem(item), (isPenaltyCharge=true), (tag=(item.pmng_tag?item.pmng_tag:'')), $refs.modalTag.open()]">
+															@click="[setCurrentItem(item), (isPenaltyCharge=true), (memo=(item.mng_memo)), $refs.modalMemo.open()]">
 														수정
 													</button>
 												</td>
@@ -340,7 +340,7 @@ export default {
 			batch: null,
 			company: '',
 			tab: 1,
-			tag: '',
+			memo: '',
 			moment: moment,
 			listInfo: '',
 			newCardInfo: {cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: ''},
@@ -461,11 +461,9 @@ export default {
 					}
 				})
 		},
-		editTag: async function () {
-			const params = {boIdx: this.currentItem.idx}
-			this.isPenaltyCharge ? params.pmngTag = this.tag : params.mngTag = this.tag;
-
-			const res = await api.post('/partners/updateMngTag', params)
+		editMemo: async function () {
+			const params = {boIdx: this.currentItem.idx, memo: this.memo}
+			const res = await api.post('/partners/updateMemo', params)
 			if (res) this.refresh()
 		},
 		refund: function () {
