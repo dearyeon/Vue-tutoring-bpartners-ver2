@@ -40,7 +40,7 @@
                   </div>-->
                   <div class="col-sm-4 pull-right">
                     <div class="input-group">
-                      <input type="text" placeholder="성명 or 이메일 or 고객식별ID" v-model="search" v-on:keypress.enter="setSearch" class="form-control"/>
+                      <input type="text" placeholder="성명 or 고객식별ID" v-model="search" v-on:keypress.enter="setSearch" class="form-control"/>
                       <span class="input-group-btn">
                         <button class="btn btn-default" v-on:click="setSearch">검색</button>
                       </span>
@@ -78,8 +78,8 @@
                 </thead>
 
                 <tbody>
-                  <tr class="text-center" v-for="item in items" :key="item.id">
-                    <td>{{ item.user.idx }}</td>
+                  <tr class="text-center" v-for="(item,index) in items" :key="item.id">
+                    <td>{{ index+1 }}</td>
                     <td class="userInfo hover-pointer" @click="openUserInfo(item)">{{ item.user.name }}</td>
                     <td>
                       <span class="lesson-rate">{{ item.attend_pct }}%</span>
