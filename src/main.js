@@ -4,15 +4,12 @@ import App from './App.vue'
 import shared from './common/shared'
 import routes from "@/routes";
 import swal from 'vue-sweetalert2';
-import 'chart.js'
-import 'hchs-vue-charts'
 import VueClipboard from 'vue-clipboard2'
 
 
 Vue.use(VueRouter)
 Vue.use(shared)
 Vue.use(swal)
-Vue.use(window.VueCharts)
 Vue.use(VueClipboard)
 Vue.config.productionTip = false
 

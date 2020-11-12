@@ -123,8 +123,8 @@
 
 
 <script>
-import UserInfo from "@/components/atom/UserInfo";
-import UserModifyModal from "@/components/atom/UserModifyModal";
+import UserInfo from "@/components/Lesson/UserInfo";
+import UserModifyModal from "@/components/Lesson/UserModifyModal";
 import Pagination from "@/components/atom/Pagination";
 export default {
     data() {

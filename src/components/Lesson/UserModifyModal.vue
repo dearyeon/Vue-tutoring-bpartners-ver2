@@ -21,31 +21,31 @@
                     <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
                       <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">고객식별ID</div>
                       <div class="col-lg-8">
-                        <input name="ui_email" type="text" class="form-control" :placeholder="modifyItem.userInfo.cus_id" readonly/>
+                        <input name="ui_email" type="text" class="form-control" :placeholder="modifyItem.user.app_user?modifyItem.user.app_user.cus_id:''" readonly/>
                       </div>
                     </div>
                     <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
                       <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">학습자 이름</div>
                       <div class="col-lg-8">
-                        <input name="ui_name" type="text" class="form-control" v-model="modifyItem.userInfo.name"/>
+                        <input name="ui_name" type="text" class="form-control" v-model="modifyItem.user.name"/>
                       </div>
                     </div>
                     <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
                       <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">부서</div>
                       <div class="col-lg-8">
-                        <input name="ui_part" type="text" class="form-control" v-model="modifyItem.userInfo.part"/>
+                        <input name="ui_part" type="text" class="form-control" v-model="modifyItem.user.part"/>
                       </div>
                     </div>
                     <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
                       <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">직책</div>
                       <div class="col-lg-8">
-                        <input name="ui_position" type="text" class="form-control" v-model="modifyItem.userInfo.position"/>
+                        <input name="ui_position" type="text" class="form-control" v-model="modifyItem.user.position"/>
                       </div>
                     </div>
                     <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
-                      <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">비고</div>
+                      <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">비고1</div>
                       <div class="col-lg-8">
-                        <input name="ui_memo" type="text" class="form-control" v-model="modifyItem.userInfo.memo"/>
+                        <input name="ui_memo" type="text" class="form-control" v-model="modifyItem.user.memo1"/>
                       </div>
                     </div>
                     <div style="position: absolute;left: -9999px;">
@@ -66,7 +66,7 @@
 export default {
     data() {
         return {
-            modifyItem: []
+            modifyItem: null
         }
     },
     props: {
@@ -77,6 +77,7 @@ export default {
     },
     created(){
         this.modifyItem = JSON.parse(JSON.stringify(this.item));
+        console.log(this.modifyItem);
     },
     methods: {
         applyModify() {

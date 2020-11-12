@@ -40,9 +40,9 @@
                   </div>-->
                   <div class="col-sm-4 pull-right">
                     <div class="input-group">
-                      <input type="text" placeholder="성명 or 이메일 or 고객식별ID" v-model="search" v-on:keypress.enter="setSearch(search)" class="form-control"/>
+                      <input type="text" placeholder="성명 or 이메일 or 고객식별ID" v-model="search" v-on:keypress.enter="setSearch" class="form-control"/>
                       <span class="input-group-btn">
-                        <button class="btn btn-default" v-on:click="setSearch(search)">검색</button>
+                        <button class="btn btn-default" v-on:click="setSearch">검색</button>
                       </span>
                     </div>
                   </div>
@@ -78,9 +78,9 @@
                 </thead>
 
                 <tbody>
-                  <tr class="text-center" v-for="(item, index) in items" :key="item.id" v-show="!item.user.name.indexOf(search)">
+                  <tr class="text-center" v-for="item in items" :key="item.id">
                     <td>{{ item.user.idx }}</td>
-                    <td class="userInfo hover-pointer" @click="openUserInfo(index)">{{ item.user.name }}</td>
+                    <td class="userInfo hover-pointer" @click="openUserInfo(item)">{{ item.user.name }}</td>
                     <td>
                       <span class="lesson-rate">{{ item.attend_pct }}%</span>
                     </td>
@@ -127,9 +127,10 @@
       </div>
     </div>
 
-    <div class="modal inmodal fade in"  style="display: block;" v-if="showModal">
+            <UserInfo style="" :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
+    <!--div class="modal inmodal fade in"  style="display: block;" v-if="showModal">
       <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content" style="width:100%">
           <div class="modal-header" style="border-bottom:0px;padding-bottom: 15px;">
             <button type="button" class="close" data-dismiss="modal">
               <span aria-hidden="true" @click="closeModal">&times;</span>
@@ -137,8 +138,7 @@
             </button>
             <br />
           </div>
-          <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px">
-            <UserInfo :data="modalitem"/>
+          <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px; width:100%">
           </div>
           <div class="modal-footer" style="border-top:0px">
             <button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;" @click="openModify">학생 수정</button>
@@ -147,7 +147,7 @@
           <UserModifyModal v-if="showModify" :item="modalitem" @update="updateItem" @close="openModify"/>
         </div>
       </div>
-    </div>
+    </div>-->
 
     <div class="modal inmodal fade in" id="addSiteModal" style="display: block;" v-show="showMemo">
         <div class="modal-dialog modal-sm">
@@ -172,8 +172,8 @@
 
 <script>
 import api from "@/common/api";
-import UserInfo from "@/components/atom/UserInfo";
-import UserModifyModal from "@/components/atom/UserModifyModal";
+import UserInfo from "@/components/Lesson/UserInfo";
+import UserModifyModal from "@/components/Lesson/UserModifyModal";
 import Pagination from "@/components/atom/Pagination";
 import moment from 'moment'
 import XLSX from 'xlsx'
@@ -196,12 +196,11 @@ export default {
       memo: '',
       presentIdx: '',
       loading: false,
+      showModal: false,
+      modalitem: null,
 
       d_type: "all",
-      showModal: false,
       showModify: false,
-      UserNum: '',
-      modalitem: [],
     };
   },
   components: {
@@ -235,8 +234,11 @@ export default {
         this.refresh();
       }
 		},
-    setSearch(input) {
-      this.search = input;
+    async setSearch() {
+      const res = await api.get('/partners/reportList', { bbIdx: this.$route.params.bbIdx, sk: this.search })
+      this.items = res.data.orders.data
+      this.current_page = res.data.orders.current_page
+      this.total_page = res.data.orders.last_page
     },
     sortBy(sortKey) {
       this.sortKey === sortKey ? this.items.reverse() : this.items.sort(function (a, b) {
@@ -348,9 +350,9 @@ export default {
         cancelButtonText: "Cancel",
       });
     },
-    openUserInfo(index) {
-      this.UserNum = index;
-      this.modalitem = this.items[this.UserNum];
+    async openUserInfo(item) {
+      const res = await api.get('/partners/report', { uIdx:item.user.idx ,bIdx: this.$route.params.bbIdx, bbgIdx:item.goods.idx })
+      this.modalitem = res.data;
       this.showModal = !this.showModal;
     },
     closeModal() {
