@@ -11,24 +11,22 @@
           </div>
           <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px; width:100%;">
                 <div class="col-lg-12" style="padding:0;">
-                    <form class="form-inline" style="width:100%;">
+                    <div class="row" style="width:100%;display:inline;">
                         <div class="col-lg-7">
-                            <div class="col-lg-12">
-                                <form class="form-inline">
-                                    <div class="col-auto"> <!-- center-block -->
-                                        <div class="m-b-sm center-block"> <!-- center-block -->
-                                            <img alt="image" class="img-circle s_image" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_S" style="width: 90px;height: 90px;">
-                                            <div class="text-success center-block s_name" style="font-size: 16px;"><h3>{{ userInfo.user.name }}님</h3></div>
-                                            <div class="s_part center-block" style="font-size: 10px; margin-top:-10px"><h6>{{ userInfo.user.department }}/{{ userInfo.user.position }}</h6></div>
-                                        </div>
+                            <div class="col-lg-12 row">
+                                <div class="col-lg-4" style="background-color:yellow;"> <!-- center-block -->
+                                    <div class="m-b-sm center-block"> <!-- center-block -->
+                                        <img alt="image" class="img-circle s_image" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_S" style="width: 90px;height: 90px;">
+                                        <div class="text-success center-block s_name" style="font-size: 16px;"><h3>{{ userInfo.user.name }}님</h3></div>
+                                        <div class="s_part center-block" style="font-size: 10px; margin-top:-10px"><h6>{{ userInfo.user.department }}/{{ userInfo.user.position }}</h6></div>
                                     </div>
-                                    <div class="col-lg-8">
-                                        <dl class="dl-horizontal">
-                                            <dt>고객식별ID | </dt>
-                                            <dd><span class="s_mail">{{ userInfo.user.app_user?userInfo.user.app_user.cus_id:'' }}</span></dd>
-                                        </dl>
-                                    </div>
-                                </form>
+                                </div>
+                                <div class="col-lg-8" style="background-color:black;">
+                                    <dl class="dl-horizontal">
+                                        <dt>고객식별ID | </dt>
+                                        <dd><span class="s_mail">{{ userInfo.user.app_user?userInfo.user.app_user.cus_id:'' }}</span></dd>
+                                    </dl>
+                                </div>
                             </div>
                             <div class="col-lg-12" style="margin-top:20px; display:inline;">
                                 수업시간 : <span class="s_lesson_time">{{ userInfo.use_ticket_info && userInfo.ticket_summary && userInfo.goods.charge_plan?userInfo.goods.charge_plan.secs_per_day*(userInfo.use_ticket_info.length+1) - parseInt(userInfo.ticket_summary.sum_remain_secs/60) :'-' }}분/
@@ -59,10 +57,12 @@
                             </form>
                             <div class="col-lg-12" style="margin-top:20px;width:100%;">
                                 <strong>수업 히스토리</strong>
-                      <div v-for="i in calBatchDate()" :key="i.id">
-                        <div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)" :data-tooltip="useDtTooltip(i-1,item)"></div>
-                        <div class="square square-empty" v-else></div>
-                      </div>
+                                <div class="col-lg-12" style="display:inline-block">
+                                <span v-for="i in calBatchDate()" :key="i.id">
+                                    <div class="square square-pull" v-if="isUseDt(i-1,userInfo.use_ticket_info)" :data-tooltip="useDtTooltip(i-1,userInfo)"></div>
+                                    <div class="square square-empty" v-else></div>
+                                </span>
+                                </div>
                             </div>
                             <div class="col-lg-12" style="margin-top:20px;">
                                 <strong>레벨 테스트 결과비교</strong>
@@ -72,7 +72,7 @@
                             </div>
                             </div>
                         </div>
-                        <div class="col-lg-5" style="background-color:hotpink;">
+                        <div class="col-lg-5" style="background-color;">
                             <div class="col-lg-12" style="margin-top:20px;">
                                 <form class="form-inline">
                                     <strong>수업 타임라인</strong>
@@ -81,9 +81,9 @@
                                     </button>
                                 </form>
                             </div>
-                            <div class="col-lg-12" style="margin-top:20px; background-color:yellow">
+                            <div class="col-lg-12" style="margin-top:20px; background-color">
                                 <div class="full-height-scroll" style="overflow: hidden; height: 100%;padding-right:5px;overflow-y:auto;">
-                                    <div id="vertical-timeline" class="vertical-container dark-timeline">
+                                    <div id="vertical-timeline col-lg-12" class="vertical-container dark-timeline" style="background-color;display: inherit;">
                                         <div class="vertical-timeline-block col-lg-12" v-for="item in userInfo.use_ticket_info" :key="item.id">
                                             <div v-if="item.review" class="vertical-timeline-icon" style="border:0px;">
                                                 <img alt="image" class="img-circle s_tutor_image" style="width: 50px;height: 50px;margin-left: -5px;" ><!--:src="getImageSrc(item.review.tutor.prof_img)"-->
@@ -91,14 +91,14 @@
                                             <div v-if="item.review" class="vertical-timeline-content">
                                                 <strong class="s_tutor_name">{{ item.review.tutor.name }}</strong>
                                                 <span class="small text-muted pull-right s_lesson_dt">dasfsf</span>
-                                                <hr><p class="s_review">{{ item.review.comment }}</p>
+                                                <hr><div class="s_review">{{ item.review.comment }}</div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
 
               </div>
@@ -113,12 +113,14 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
     data() {
-          return {
-              batch: null,
-              userInfo: null,
-          }
+        return {
+            batch: null,
+            userInfo: null,
+            moment: moment,
+        }
     },
     props: {
         data: {
@@ -172,10 +174,10 @@ export default {
 </script>
 
 <style scoped>
-.pull-right {
-  float: right !important;
-}
 .s_lesson_dt {
     font-size: 85%;
+}
+
+.modal-body div {
 }
 </style>
