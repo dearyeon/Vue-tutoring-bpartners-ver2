@@ -756,15 +756,6 @@ export default {
 		setSearch(item) {
 			return !item.user.name.indexOf(this.search)
 		},
-		routeBatch(batches, event) {
-			if (batches.length) {
-				this.$router.push({
-					name: "billingDetailsList",
-					params: {bbIdx: batches[event.target.value].idx}
-				})
-				this.apiCall();
-			}
-		},
 	},
 	computed: {
 		chargeBtnStatus() {
