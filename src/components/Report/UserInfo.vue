@@ -13,15 +13,15 @@
                 <div class="col-lg-12" style="padding:0;">
                     <div class="row" style="width:100%;display:inline;">
                         <div class="col-lg-7">
-                            <div class="col-lg-12 row">
-                                <div class="col-lg-4" style="background-color:yellow;"> <!-- center-block -->
+                            <div class="col-lg-12 row" style="display:inline;">
+                                <div class="col-lg-4"> <!-- center-block -->
                                     <div class="m-b-sm center-block"> <!-- center-block -->
                                         <img alt="image" class="img-circle s_image" src="https://cdn.tutoring.co.kr/uploads/prof_img/prof_img_S" style="width: 90px;height: 90px;">
                                         <div class="text-success center-block s_name" style="font-size: 16px;"><h3>{{ userInfo.user.name }}님</h3></div>
                                         <div class="s_part center-block" style="font-size: 10px; margin-top:-10px"><h6>{{ userInfo.user.department }}/{{ userInfo.user.position }}</h6></div>
                                     </div>
                                 </div>
-                                <div class="col-lg-8" style="background-color:black;">
+                                <div class="col-lg-8">
                                     <dl class="dl-horizontal">
                                         <dt>고객식별ID | </dt>
                                         <dd><span class="s_mail">{{ userInfo.user.app_user?userInfo.user.app_user.cus_id:'' }}</span></dd>

@@ -1,13 +1,26 @@
 <template>
 	<div class="row">
 		<div class="col-lg-12">
-			<div class="ibox-title header">
-				<h2 class="pull-left">신청 관리</h2>
-				<div class="pull-left batch-selection">
-					<BatchSelection @change="refreshData" />
+			<div class="ibox float-e-margins">
+				<div class="ibox-title" style="height: 65px;">
+					<div class="pull-left">
+						<h2>신청 관리</h2>
+					</div>
+					<div class="batch-selection">
+						<BatchSelection @change="refresh" />
+					</div>
+          <div class="pull-right">
+						<a v-if="!loading" class="btn btn-danger btn-w-m">취소 포함</a>&nbsp;
+            <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
+						<a v-if="!loading" class="btn btn-success btn-w-m" @click="exportFormat">포맷 다운로드</a>&nbsp;
+            <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
+						<a class="btn btn-primary btn-w-m">엑셀 업로드</a>
+            <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
+					</div>
 				</div>
 			</div>
-		</div>
+    </div>
+
 		<div class="row">
 			<div class="ibox content">
 				<div class="ibox-content">
@@ -66,6 +79,7 @@ import api from "@/common/api";
 import moment from 'moment'
 import BatchSelection from "@/components/Common/BatchSelection";
 import shared from "@/common/shared";
+import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 
 export default {
 	components: {
@@ -79,7 +93,8 @@ export default {
 			orders: [],
 			aNoList: [],
 			moment: moment,
-			curBBIdx: 0
+      curBBIdx: 0,
+      loading: false,
 		};
 	},
 	created() {

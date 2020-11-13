@@ -1,7 +1,6 @@
 <template>
 	<div class="row">
 		<div class="col-lg-12">
-
 			<div class="ibox float-e-margins">
 				<div class="ibox-title" style="height: 65px;">
 					<div class="pull-left">
@@ -10,8 +9,6 @@
 					<div class="batch-selection">
 						<BatchSelection @change="refresh" />
 					</div>
-
-
           <div class="pull-right">
 					<!-- 정기결제 -->
 					<div v-if="tab === 1">
@@ -26,9 +23,6 @@
 				</div>
 			</div>
 
-
-
-		
 		</div>
 		<div class="row">
 			<div class="ibox content">
