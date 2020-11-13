@@ -200,6 +200,7 @@
 	import 'vue2-datepicker/index.css'
 	import moment from "moment"
 	import api from '@/common/api'
+	import {refreshAllBatches} from "@/components/Common/BatchSelection";
 
 	export default {
 		data() {
@@ -295,6 +296,8 @@
 						batchGoodsApiRes = await api.post('/partners/batchGoods', batchGoodsParams)
 					}
 
+
+					refreshAllBatches();
 
 					if(batchGoodsApiRes ? batchGoodsApiRes.result===2000 : 'true' && batchApiRes.result === 2000) {
 						this.$swal('성공')
