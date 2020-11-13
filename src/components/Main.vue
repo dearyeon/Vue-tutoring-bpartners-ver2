@@ -80,6 +80,14 @@ body .row {
 	margin: 0px;
 }
 
+.header {
+	height: 65px;
+}
+.batch-selection {
+	margin-top: -5px;
+	margin-left: 100px;
+}
+
 @media (min-width: 1200px) {
 	.row.auto-clear .col-lg-1:nth-child(12n + 1) {
 		clear: left;

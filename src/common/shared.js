@@ -1,4 +1,7 @@
 import Vue from 'vue'
+import api from "@/common/api";
+
+let allBatches = null
 
 const shared = {
     bast: null,
@@ -30,6 +33,12 @@ const shared = {
     getSiteImgThumbnailUrl(imgFileNm) {
         if(!imgFileNm) imgFileNm = 'default.png'
         return 'https://cdn.tutoring.co.kr/uploads/b2b/site/tmb/'+imgFileNm
+    },
+   getCurBatch() {
+        return JSON.parse(localStorage.getItem('curBatch'))
+    },
+    setCurBatch(batch) {
+        localStorage.setItem('curBatch', JSON.stringify(batch))
     },
     sortBy (items, sortKey1, sortKey2) {
         if(this.items !== items) this.sortKey = '', this.items=items
