@@ -112,7 +112,7 @@ export default {
 
 <style scoped>
 .container {
-	display: flex;
+	display: contents;
 }
 .ci-img {
 	width: 30px;

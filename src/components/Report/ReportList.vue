@@ -2,11 +2,11 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="ibox float-e-margins">
-				<div class="ibox-title" style="height: 65px">
+				<div class="ibox-title" style="height: 65px;">
 					<div class="pull-left">
 						<h2>수업 현황</h2>
 					</div>
-					<div class="pull-left batch-selection">
+					<div class="batch-selection">
 						<BatchSelection @change="refresh" />
 					</div>
 					<div class="pull-right">

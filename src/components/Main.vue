@@ -86,6 +86,7 @@ body .row {
 .batch-selection {
 	margin-top: -5px;
 	margin-left: 100px;
+	display: inline-block;
 }
 
 @media (min-width: 1200px) {
