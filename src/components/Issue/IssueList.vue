@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="ibox-title header">
-				<h2 class="pull-left">신청 관리</h2>
+				<h2 class="pull-left">입과 관리</h2>
 				<div class="pull-left batch-selection">
 					<BatchSelection @change="refreshData" />
 				</div>

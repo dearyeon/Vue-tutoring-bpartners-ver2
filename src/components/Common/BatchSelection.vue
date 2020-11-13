@@ -1,13 +1,13 @@
 <template>
 	<div class="container">
 		<cool-select v-model="selectedBatch"
-					 :items="batches"
-					 placeholder=""
+					 :items="filteredBatches"
+					 :placeholder="selectedBatch ? '' : '사이트 이름으로 검색'"
 					 item-value="idx"
 					 item-text="company"
 					 class="select"
 					 :inputElCustomAttributes="{id:'cool-input'}"
-					 @select="onSelected" @focus="onFocus" @blur="onBlur">
+					 @select="onSelected" @focus="onFocus" @blur="onBlur" @search="onSearch">
 			<!-- slot for each item in the menu -->
 			<template slot="item" slot-scope="{ item: batch }">
 				<div class="item-container">
@@ -28,7 +28,7 @@
 
 			<template slot="no-data" slot-scope="{ item: batch }">
 				<div>
-					검색 결과가 없습니다.
+					검색 결과가 없습니다
 				</div>
 			</template>
 
@@ -40,35 +40,72 @@
 import { CoolSelect } from 'vue-cool-select'
 import api from "@/common/api";
 import moment from 'moment'
+import shared from "@/common/shared";
+
+let focusing = false
+let input = null
+let allBatches = null
+
+export const refreshAllBatches = async function() {
+	const res = await api.get('/partners/batches');
+	allBatches = res.data;
+}
 
 export default {
 	components: { CoolSelect },
 	data() {
 		return {
-			batches: ['a','b'],
+			filteredBatches: [],
 			selectedBatch: null,
-			moment: moment
+			moment: moment,
+			curBatch: {}
 		}
 	},
 	async created() {
-		const res = await api.get('/partners/batches');
-		this.batches = res.data;
+		if(allBatches == null) await refreshAllBatches();
+		this.filteredBatches = allBatches;
+
+		this.curBatch = shared.getCurBatch()
+		this.selectedBatch = this.curBatch
+		this.filter(this.curBatch.company)
 	},
 	methods: {
 		onSelected(batch) {
-			localStorage.setItem('curBBIdx', batch.idx)
-			console.debug('idx',batch.idx)
+			console.debug('selected',batch.idx)
+
+			this.curBatch = batch
+			shared.setCurBatch(batch)
+			this.$emit('change')
+
+			this.filter(batch.company)
 			document.getElementById('cool-input').blur();
 		},
 		onFocus() {
-			console.debug('focus')
 			this.selectedBatch = null
+			console.debug('focus')
+
+			focusing = true
+			setTimeout(()=>{
+				document.getElementById('cool-input').focus()
+				focusing = false
+			},300)
 		},
 		onBlur() {
-			const curBBIdx = localStorage.getItem('curBBIdx')
-			console.debug('blur',curBBIdx)
-			this.selectedBatch = Number(curBBIdx)
+			if(focusing) return
+
+			console.debug('blur')
+			this.selectedBatch = this.curBatch
 		},
+		onSearch() {
+			if(this.filteredBatches != allBatches) {
+				this.filteredBatches = allBatches
+			}
+		},
+		filter(word) {
+			this.filteredBatches = allBatches.filter(function (batch){
+				return batch.company.indexOf(word) > -1
+			});
+		}
 	}
 };
 </script>

@@ -302,9 +302,7 @@
 					}
 
 					if(!batchGoodsApiRes && batchApiRes.result === 2000) {
-						this.$router.push({
-							name: "registerList"
-						})
+						this.$router.push('/batch/list')
 					}
 				}
 			},
