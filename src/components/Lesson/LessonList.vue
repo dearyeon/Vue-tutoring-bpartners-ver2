@@ -15,22 +15,19 @@
         </div>
         <div>
             <div class="row">
-                <div class="col-sm-3">
-                    <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
-                </div>
-                <div class="col-sm-1">
-                    <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
+                <div class="col-lg-6">
+					<batch-selection />
                 </div>
             </div>
         </div>
       </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-lg-12 sub-title">
                     <div class="ibox-content">
                         <div class="row">
-                            <form id="listform"> 
+                            <form id="listform">
                                 <table class="table table-hover dataTable">
                                     <thead>
                                     <tr>
@@ -46,7 +43,7 @@
                                     <tbody>
 
 
-                                        <tr class="hover-pointer LESSON_INFO" 
+                                        <tr class="hover-pointer LESSON_INFO"
                                             v-for="(item, index) in items" :key="`Lesson-${index}`">
                                             <td @click="routeDetailPage(item)">
                                                 {{ item.company }}
@@ -93,6 +90,7 @@
 import api from '@/common/api'
 import moment from 'moment'
 import Pagination from '@/components/atom/Pagination'
+import BatchSelection from "@/components/Common/BatchSelection";
 
 export default {
 	data () {
@@ -105,7 +103,8 @@ export default {
 		}
 	},
 	components: {
-		Pagination
+		Pagination,
+		BatchSelection
 	},
 	async created () {
 		const res = await api.get('/partners/reportSiteList')
