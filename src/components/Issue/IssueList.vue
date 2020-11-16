@@ -1,80 +1,57 @@
 <template>
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox-title header">
-				<h2 class="pull-left">입과 관리</h2>
-				<div class="pull-left batch-selection">
-					<BatchSelection @change="refreshData" />
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="ibox content">
-				<div class="ibox-content">
-					<table class="table table-striped table-hover dataTable">
-						<thead>
-						<tr>
-							<th>No</th>
-							<th>이름</th>
-							<th>이메일/고객식별ID</th>
-							<th>수강권</th>
-							<th>수강권번호</th>
-							<th>신청일시</th>
-							<th>입과일시</th>
-							<th>입과번호</th>
-							<th>입과/취소</th>
-						</tr>
-						</thead>
-						<tbody id="applyerList">
-						<tr class="userInfo hover-pointer" v-for="(order, index) in orders" v-bind:key="order.id">
-							<td class="number" style="vertical-align: middle;">{{ index + 1 }}</td>
-							<td class="part">{{ order.user.name }}</td>
-							<td class="company">{{ order.user.company }}</td>
-							<td class="department">{{ order.user.department }}</td>
-							<td class="position">{{ order.user.position }}</td>
-							<td class="emp_no">{{ order.user.emp_no }}</td>
-							<td v-if="order.user.cf1">{{ getGTP('T', order.user.cf2) }}</td>
-							<td v-if="order.user.cf2">{{ getGTP('S', order.user.cf1) }}</td>
-							<td class="charge-plan__title text-left">{{
-									order.goods ? order.goods.charge_plan.title : ''
-								}}
-							</td>
-							<td class="supply_price">{{ order.goods ? $shared.nf(order.goods.supply_price) : '' }}</td>
-							<td>{{
-									order.goods ? $shared.nf(order.goods.supply_price - order.goods.charge_price) : ''
-								}}
-							</td>
-							<td class="company-charge__price">{{
-									order.goods ? $shared.nf(order.goods.charge_price) : ''
-								}}
-							</td>
-							<td class="apply_dt">{{ moment(order.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
-						</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+<div>
+	<Header title="입과 관리"
+			:use-batch-selection="true" @changeBatch="refreshData"
+			search-model="" @search="" search-placeholder="이름 or 이메일 or 고객식별ID"
+			switch-text="취소포함" :switch-model="false"
+			btn1-text="일괄 입과" @btn1Click="alert(1)" btn1-variant="primary" :btn1-loading="false"
+			btn2-text="일괄 취소" @btn2Click="alert(1)" btn2-variant="danger" :btn2-loading="false">
+		<span>테스트</span>
+	</Header>
+
+	<Content>
+		<Table :headers="['No','이름','이메일/고객식별ID','수강권','수강권번호','신청일시','입과일시','입과번호','입과/취소']"
+			   :data="orders"
+			    v-slot="{item, i}">
+					<td>{{ i + 1 }}</td>
+					<td>{{ item.user.name }}</td>
+					<td><CusIdField :user="item.user"></CusIdField></td>
+					<td>{{ item.charge_plan && item.charge_plan.title }}</td>
+					<td>{{ item.charge_plan && item.charge_plan.idx }}</td>
+					<td>{{ item.apply_dt && moment(item.apply_dt).format('YY-MM-DD HH:mm') }}</td>
+					<td>{{ item.issue_dt && moment(item.issue_dt).format('YY-MM-DD HH:mm') }}</td>
+					<td>{{ item.mt_idx }}</td>
+					<td v-if="item.mt_idx"><ItemButton text="취소" variant="danger" @click="" /></td>
+					<td v-if="!item.mt_idx"><ItemButton text="입과" variant="primary" @click="" /></td>
+		</Table>
+	</Content>
+</div>
 </template>
+
 
 <script>
 import api from "@/common/api";
 import moment from 'moment'
 import BatchSelection from "@/components/Common/BatchSelection";
 import shared from "@/common/shared";
+import CusIdField from "@/components/Common/CusIdField";
+import Header from "@/components/Common/Header";
+import Content from "@/components/Common/Content";
+import Table from "@/components/Common/Table";
+import ItemButton from "@/components/Common/ItemButton";
 
 export default {
 	components: {
-		BatchSelection
+		Header,
+		Content,
+		CusIdField,
+		BatchSelection,
+		Table,
+		ItemButton
 	},
 	data() {
 		return {
-			company: '',
-			batches: [],
-			cfs: [],
 			orders: [],
-			aNoList: [],
 			moment: moment,
 			curBBIdx: 0
 		};
@@ -85,36 +62,15 @@ export default {
 	methods: {
 		async refreshData() {
 			this.curBBIdx = shared.getCurBatch().idx
-			const res = await api.get("/partners/applyOrderList", {
-				bbIdx: this.curBBIdx
-			});
+			const res = await api.get("/partners/issueOrderList", {bbIdx: this.curBBIdx});
 			const data = res.data;
-			this.company = data.company;
-			this.batches = data.batches;
-			this.cfs = data.cfs;
 			this.orders = data.orders;
 		},
-		getGTP(type, val) {
-			if (type == 'S') {
-				return val ? this.cfs[1].opts[1] : this.cfs[1].opts[0]
-			} else {
-				return val
-			}
-		},
-		routeDetailPage(event) {
-			if (this.batches.length) {
-				if (parseInt(this.$route.params.bbIdx) !== this.batches[event.target.value].idx) {
-					this.$router.push({
-						name: "applyDetailsList",
-						params: {bbIdx: this.curBBIdx}
-					})
-					this.refreshData();
-				}
-			}
-		}
 	}
 };
 </script>
+
+
 
 <style scoped>
 </style>

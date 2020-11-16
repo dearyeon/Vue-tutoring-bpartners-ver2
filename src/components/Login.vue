@@ -79,7 +79,7 @@ export default {
 
 
 
-<style>
+<style scoped>
 .loginscreen.middle-box{
   width : 670px;
   max-width : 670px;
