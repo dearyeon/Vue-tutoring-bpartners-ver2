@@ -115,12 +115,13 @@ export default {
 	display: contents;
 }
 .ci-img {
-	width: 30px;
-	height: 30px;
+	width: 22px;
+	height: 22px;
 	margin-right: 0px;
 	border: 1px solid #eaecf0;
 	border-radius: 5px;
 }
+
 .select {
 	width: 320px;
 	height: 40px;
@@ -139,6 +140,7 @@ export default {
 }
 .batch-selection .IZ-select__input.IZ-select__input--selection-slot {
 	padding-left: 5px;
+	line-height: 22px;
 }
 .IZ-select__input.IZ-select__input--selection-slot input {
 	display: none;
