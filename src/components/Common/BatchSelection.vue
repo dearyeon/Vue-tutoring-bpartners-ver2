@@ -2,7 +2,7 @@
 	<div class="container">
 		<cool-select v-model="selectedBatch"
 					 :items="filteredBatches"
-					 :placeholder="selectedBatch ? '' : '사이트 이름으로 검색'"
+					 placeholder="사이트 이름으로 검색"
 					 item-value="idx"
 					 item-text="company"
 					 class="select"
@@ -117,12 +117,13 @@ export default {
 .ci-img {
 	width: 30px;
 	height: 30px;
-	margin-right: 10px;
+	margin-right: 0px;
 	border: 1px solid #eaecf0;
 	border-radius: 5px;
 }
 .select {
-	width: 400px;
+	width: 320px;
+	height: 40px;
 }
 .item-container {
 
@@ -130,7 +131,16 @@ export default {
 </style>
 
 <style>
-.IZ-select__item.IZ-select__item--selected {
-	background-color: #eceef2 !important;
+.batch-selection .IZ-select__item {
+	padding: 8px 5px;
+}
+.batch-selection .IZ-select__item.IZ-select__item--selected {
+	background-color: #eceef2;
+}
+.batch-selection .IZ-select__input.IZ-select__input--selection-slot {
+	padding-left: 5px;
+}
+.IZ-select__input.IZ-select__input--selection-slot input {
+	display: none;
 }
 </style>
