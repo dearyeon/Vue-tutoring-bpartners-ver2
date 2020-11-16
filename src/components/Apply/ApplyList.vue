@@ -61,7 +61,7 @@
 						</tr>
 						</thead>
 						<tbody id="applyerList">
-						<tr class="userInfo hover-pointer" v-for="(order, index) in orders" v-bind:key="order.id" v-show="isCancel? index!==0:true">
+						<tr class="userInfo hover-pointer" v-for="(order, index) in orders" v-bind:key="order.id" v-show="isCancel?index!==0:true">
 							<td class="number" style="vertical-align: middle;">{{ index + 1 }}</td>
 							<td class="part">{{ order.user.name }}</td>
 							<td class="company">{{ order.user.company }}</td>
