@@ -131,7 +131,7 @@
 			</div>
 		</div>
 
-		<UserInfo style="" :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
+		<UserInfoModal style="" :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
 		<!--div class="modal inmodal fade in"  style="display: block;" v-if="showModal">
 		  <div class="modal-dialog modal-lg">
 			<div class="modal-content" style="width:100%">
@@ -177,7 +177,7 @@
 
 <script>
 import api from "@/common/api";
-import UserInfo from "@/components/Report/UserInfo";
+import UserInfoModal from "@/components/Report/UserInfoModal";
 import UserModifyModal from "@/components/Report/UserModifyModal";
 import Pagination from "@/components/atom/Pagination";
 import moment from 'moment'
@@ -213,7 +213,7 @@ export default {
 	},
 	components: {
 		BatchSelection,
-		UserInfo,
+		UserInfoModal,
 		UserModifyModal,
 		Pagination,
 		ClipLoader,

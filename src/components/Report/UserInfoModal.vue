@@ -41,7 +41,7 @@
                             <div class="col-lg-12">
                                 <span class="s_title"></span><span class="cancel_cnt" style="color:red;"></span>
                             </div>
-                            <form class="form-inline" style="width:100%">
+                            <div class="form-inline" style="display:inline;width:100%">
                                 <div class="col-lg-4" style="margin-top:20px;">
                                     <strong>예산지원(A-B)</strong>
                                     <br><span class="s_budget_support">{{userInfo.goods?$shared.nf(userInfo.goods.supply_price-userInfo.goods.charge_price):'-'}}</span>
@@ -54,7 +54,7 @@
                                     <strong>자기부담금(B)</strong>
                                     <br><span class="s_personal_charge">{{userInfo.goods?$shared.nf(userInfo.goods.charge_price):'-'}}</span>
                                 </div>
-                            </form>
+                            </div>
                             <div class="col-lg-12" style="margin-top:20px;width:100%;">
                                 <strong>수업 히스토리</strong>
                                 <div class="col-lg-12" style="display:inline-block">
@@ -74,12 +74,12 @@
                         </div>
                         <div class="col-lg-5" style="background-color;">
                             <div class="col-lg-12" style="margin-top:20px;">
-                                <form class="form-inline">
+                                <div class="form-inline" style="display:inline;">
                                     <strong>수업 타임라인</strong>
                                     <button class="btn btn-default btn-xs pull-right exportReviewList">
                                         <i class="fa fa-download"></i> 리뷰 다운로드  <!-- click event 추가할 것 -->
                                     </button>
-                                </form>
+                                </div>
                             </div>
                             <div class="col-lg-12" style="margin-top:20px; background-color">
                                 <div class="full-height-scroll" style="overflow: hidden; height: 100%;padding-right:5px;overflow-y:auto;">

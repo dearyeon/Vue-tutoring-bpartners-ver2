@@ -163,7 +163,6 @@ export default {
           let dataWs = []
             dataWs.push(Object.assign(
               {
-                '': this.company +' '+ shared.getCurBatch().b_no + '주차 신청관리',
                 'No': '',
                 '이름': '',
                 '이메일': '',
