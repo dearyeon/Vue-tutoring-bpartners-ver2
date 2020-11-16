@@ -10,11 +10,16 @@
 						<BatchSelection @change="refreshData" />
 					</div>
           			<div class="pull-right">
-						<a v-if="!loading" class="btn btn-success btn-w-m" @click="exportFormat">포맷 다운로드</a>&nbsp;
-            			<clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
-						<a class="btn btn-primary btn-w-m">엑셀 업로드</a>
-						<input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></input>
-            			<clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
+						<label class="btn btn-success btn-w-m" @click="exportFormat">
+							<div v-if="!loading1"> 포맷 다운로드</div>
+							<clip-loader :loading="loading1" color="rgba(0, 0, 0, 0.7)" size="15px"></clip-loader>
+						</label>&nbsp;
+            			
+						<label class="btn btn-primary btn-w-m" for="file">
+							<div v-if="!loading2">엑셀 업로드</div>
+							<clip-loader :loading="loading2" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
+						</label>
+						<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="excel" @change="importExcel" />
 					</div>
 				</div>
 			</div>
@@ -52,18 +57,18 @@
 							<th>회사지원금</th>
 							<th>자기부담금</th>
 							<th>접수일시</th>
+							<th>취소/복원</th>
 						</tr>
 						</thead>
 						<tbody id="applyerList">
-						<tr class="userInfo hover-pointer" v-for="(order, index) in orders" v-bind:key="order.id">
+						<tr class="userInfo hover-pointer" v-for="(order, index) in orders" v-bind:key="order.id" v-show="isCancel? index!==0:true">
 							<td class="number" style="vertical-align: middle;">{{ index + 1 }}</td>
 							<td class="part">{{ order.user.name }}</td>
 							<td class="company">{{ order.user.company }}</td>
 							<td class="department">{{ order.user.department }}</td>
 							<td class="position">{{ order.user.position }}</td>
 							<td class="emp_no">{{ order.user.emp_no }}</td>
-							<td v-if="order.user.cf1">{{ getGTP('T', order.user.cf2) }}</td>
-							<td v-if="order.user.cf2">{{ getGTP('S', order.user.cf1) }}</td>
+							<td v-for="col in cfs" :key="col.id">{{ getGTP(col.type, order.user[col.col_id]) }}</td>
 							<td class="charge-plan__title text-left">{{
 									order.goods ? order.goods.charge_plan.title : ''
 								}}
@@ -78,6 +83,10 @@
 								}}
 							</td>
 							<td class="apply_dt">{{ moment(order.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
+							<td>
+								<div v-if="index !== 0" class="btn btn-del">취소</div>
+								<div v-else class="btn btn-reset">복원</div>
+							</td>
 						</tr>
 						</tbody>
 					</table>
@@ -106,7 +115,8 @@ export default {
 			moment: moment,
 			isCancel: false,
       		curBBIdx: 0,
-      		loading: false,
+      		loading1: false,
+      		loading2: false,
 		};
 	},
 	components: {
@@ -123,10 +133,11 @@ export default {
 			});
 			const data = res.data;
 			this.company = data.company;
-      this.batches = data.batches;
-      console.log(this.batches);console.log(shared.getCurBatch().b_no)
+      		this.batches = data.batches;
 			this.cfs = data.cfs;
 			this.orders = data.orders;
+			console.log(this.cfs);
+			console.log(data);
 		},
 		getGTP(type, val) {
 			if (type == 'S') {
@@ -147,7 +158,7 @@ export default {
 			}
     },
     exportFormat: _.debounce(async function () {
-          this.loading = true
+          this.loading1 = true
 
           let dataWs = []
             dataWs.push(Object.assign(
@@ -168,19 +179,41 @@ export default {
             ));
           var ws = XLSX.utils.json_to_sheet(dataWs);
           var wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, '신청관리');
+          XLSX.utils.book_append_sheet(wb, ws, this.company +' '+ shared.getCurBatch().b_no + '주차 신청관리');
           const test = XLSX.writeFile(wb, this.company +' '+ shared.getCurBatch().b_no + '주차 신청관리.xlsx');
-          this.loading = false
+          this.loading1 = false
         }, 500),
-		importExcel: _.debounce(async function () {
-          this.loading = true
-
-
-          this.loading = false
-        }, 500),
+		importExcel: _.debounce(function (event) {
+			this.loading2 = true
+			let input = event.target.files[0]
+			let reader = new FileReader()
+			reader.onload = function () {
+				let data = reader.result;
+				let workBook = XLSX.read(data, { type: 'binary' });
+				workBook.SheetNames.forEach(function (sheetName) {
+					console.log('SheetName: ' + sheetName);
+					let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+					console.log(JSON.stringify(rows));
+				})
+			};
+    		reader.readAsBinaryString(input);
+			this.loading2 = false
+		}, 500),
 	},
 };
 </script>
 
 <style scoped>
+.btn-del {
+	color: #d31e1e;
+	background-color: #fff;
+	border: 1px solid #d31e1e;
+	border-radius: 0px;
+}
+.btn-reset {
+	color: #1e9ed3;
+	background-color: #fff;
+	border: 1px solid #1e9ed3;
+	border-radius: 0px;
+}
 </style>
