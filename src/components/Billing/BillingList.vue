@@ -6,50 +6,50 @@
 					<div class="pull-left">
 						<h2>결제 관리</h2>
 					</div>
-					<div class="batch-selection">
+					<div class="batch-selection pull-left">
 						<BatchSelection @change="refresh" />
 					</div>
-          <div class="pull-right">
-					<!-- 정기결제 -->
-					<div v-if="tab === 1">
-						<button class="btn btn-primary btn-w-m" @click="chargeBatch">결제 대기건 일괄 결제</button>
+					<div class="col-sm-3">
+						<div class="input-group">
+						<input type="text" v-model="search" placeholder="성명을 입력하세요." class="form-control"/>
+						</div>
 					</div>
-					<!--추가결제-->
-					<div class=" pull-right" v-if="tab === 2">
-						<a class="btn btn-success btn-w-m" @click="updatePChargeTarget">결제대상 판정</a>&nbsp;
-						<a class="btn btn-primary btn-w-m" @click="pChargeBatch">결제 대기건 일괄 결제</a>
+          			<div class="pull-right">
+						<div v-if="tab === 1">
+							<button class="btn btn-primary btn-w-m" @click="chargeBatch">결제 대기건 일괄 결제</button>
+						</div>
+						<div v-if="tab === 2">
+							<a class="btn btn-success btn-w-m" @click="updatePChargeTarget">결제대상 판정</a>&nbsp;
+							<a class="btn btn-primary btn-w-m" @click="pChargeBatch">결제 대기건 일괄 결제</a>
+						</div>
 					</div>
-				</div>
 				</div>
 			</div>
 
 		</div>
 		<div class="row">
-			<div class="ibox content">
-				<div class="ibox-content">
-						<div class="input-group col-lg-3 col-md-12 col-xs-12 pull-left">
-							<input type="text" v-model="search" placeholder="성명을 입력하세요." class="form-control"/>
+			<div class="ibox content"> 
+				<div class="ibox-content pull-right">
+						<div class="col-lg-auto">
+							<div v-if="tab===1" class="pull-right text-left col-lg-4" style="margin-left:40px;">
+								<h3 class="col-lg-4">정기결제일시</h3>
+								<h4 v-if="batches.length" class="col-lg-8">{{
+									batch.charge_dt ? batch.charge_dt : '-'
+								}}</h4>
+							</div>
+							<div v-if="tab===2" class="pull-right text-left col-lg-4" style="margin-left:40px;">
+								<div class="col-lg-12">
+								<h3 class="col-lg-4">추가결제일시</h3>
+								<h4 v-if="batches.length" class="col-lg-8">
+									{{ batch.pcharge_dt ? batch.pcharge_dt : '-' }}</h4>
+								</div>
+								<div class="col-lg-12">
+								<h3 class="col-lg-4">기준출석률</h3>
+								<h4 v-if="batches.length" class="col-lg-8">
+									{{ batch.target_rt ? batch.target_rt + '%' : '-' }}</h4>
+								</div>
+							</div>
 						</div>
-            <div class="col-lg-auto">
-              <div v-if="tab===1" class="text-left col-lg-5" style="margin-left:40px;">
-                <h3 class="col-lg-4">정기결제일시</h3>
-                <h4 v-if="batches.length" class="col-lg-8">{{
-                    batch.charge_dt ? batch.charge_dt : '-'
-                  }}</h4>
-              </div>
-              <div v-if="tab===2" class="text-left col-lg-5" style="margin-left:40px;">
-                <div class="col-lg-12">
-                  <h3 class="col-lg-4">추가결제일시</h3>
-                  <h4 v-if="batches.length" class="col-lg-8">
-                    {{ batch.pcharge_dt ? batch.pcharge_dt : '-' }}</h4>
-                </div>
-                <div class="col-lg-12">
-                  <h3 class="col-lg-4">기준출석률</h3>
-                  <h4 v-if="batches.length" class="col-lg-8">
-                    {{ batch.target_rt ? batch.target_rt + '%' : '-' }}</h4>
-                </div>
-              </div>
-            </div>
 
 					<div class="col-lg-12">
 						<!-- 탭 부분 -->
