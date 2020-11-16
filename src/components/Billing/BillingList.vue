@@ -4,7 +4,7 @@
 			<div class="ibox float-e-margins">
 				<div class="ibox-title" style="height: 65px;">
 					<div class="pull-left">
-						<h2>결제 관리</h2>
+						<h2>정기 결제 관리</h2>
 					</div>
 					<div class="batch-selection pull-left">
 						<BatchSelection @change="refresh" />

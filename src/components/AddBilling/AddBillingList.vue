@@ -4,7 +4,7 @@
 			<div class="ibox float-e-margins">
 				<div class="ibox-title" style="height: 65px;">
 					<div class="pull-left">
-						<h2>결제 관리</h2>
+						<h2>추가 결제 관리</h2>
 					</div>
 					<div class="batch-selection pull-left">
 						<BatchSelection @change="refresh" />
@@ -15,10 +15,7 @@
 						</div>
 					</div>
           			<div class="pull-right">
-						<div v-if="tab === 1">
-							<button class="btn btn-primary btn-w-m" @click="chargeBatch">결제 대기건 일괄 결제</button>
-						</div>
-						<div v-if="tab === 2">
+						<div>
 							<a class="btn btn-success btn-w-m" @click="updatePChargeTarget">결제대상 판정</a>&nbsp;
 							<a class="btn btn-primary btn-w-m" @click="pChargeBatch">결제 대기건 일괄 결제</a>
 						</div>
@@ -30,187 +27,97 @@
 		<div class="row">
 			<div class="ibox content">
 				<div class="ibox-content pull-right">
-						<div class="col-lg-auto">
-							<div v-if="tab===1" class="pull-right text-left col-lg-4" style="margin-left:40px;">
-								<h3 class="col-lg-4">정기결제일시</h3>
-								<h4 v-if="batches.length" class="col-lg-8">{{
-									batch.charge_dt ? batch.charge_dt : '-'
-								}}</h4>
+					<div class="col-lg-auto">
+						<div class="pull-right text-left col-lg-4" style="margin-left:40px;">
+							<div class="col-lg-12">
+							<h3 class="col-lg-4">추가결제일시</h3>
+							<h4 v-if="batches.length" class="col-lg-8">
+								{{ batch.pcharge_dt ? batch.pcharge_dt : '-' }}</h4>
 							</div>
-							<div v-if="tab===2" class="pull-right text-left col-lg-4" style="margin-left:40px;">
-								<div class="col-lg-12">
-								<h3 class="col-lg-4">추가결제일시</h3>
-								<h4 v-if="batches.length" class="col-lg-8">
-									{{ batch.pcharge_dt ? batch.pcharge_dt : '-' }}</h4>
-								</div>
-								<div class="col-lg-12">
-								<h3 class="col-lg-4">기준출석률</h3>
-								<h4 v-if="batches.length" class="col-lg-8">
-									{{ batch.target_rt ? batch.target_rt + '%' : '-' }}</h4>
-								</div>
+							<div class="col-lg-12">
+							<h3 class="col-lg-4">기준출석률</h3>
+							<h4 v-if="batches.length" class="col-lg-8">
+								{{ batch.target_rt ? batch.target_rt + '%' : '-' }}</h4>
 							</div>
 						</div>
-
+					</div>
 					<div class="col-lg-12">
-						<!-- 탭 부분 -->
-						<div class="panel blank-panel">
-							<div class="panel-options">
-								<ul class="nav nav-tabs customer_tab">
-									<li :class="{ active: tab === 1 }"><a @click="chTab(1)">정기결제</a></li>
-									<li :class="{ active: tab === 2 }"><a @click="chTab(2)">추가결제(미수료)</a></li>
-								</ul>
-							</div>
-						</div>
-
 						<div class="panel-body">
-							<div class="tab-content">
-								<div class="tab-pane" :class="{ active: tab === 1 }">
-									<div class="row">
-										<table class="table table-striped table-hover dataTable">
-											<thead>
-											<tr>
-												<th>No</th>
-												<th>주문번호</th>
-												<th>학생</th>
-												<th>수강권</th>
-												<th>결제금액</th>
-												<th>사용될카드</th>
-												<th>상태</th>
-												<th>집행일시</th>
-												<th>집행카드</th>
-												<th>집행TID/실패사유</th>
-												<th>관리메모</th>
-												<th>메모수정</th>
-											</tr>
-											</thead>
-											<tbody id="chargeInfoList">
-											<!--정기 결제 -->
-											<tr v-for="(item, index) in orders"
-												:key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
-												<td>{{ index + 1 }}</td>
-												<td>{{ item.idx }}</td>
-												<td>{{ item.user.name }}</td>
-												<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
-												<td>{{ $shared.nf(item.goods.charge_price) }}</td>
-												<td>
-													<button
-														:class="{'btn':true, 'btn-outline':true, 'btn-default':item.user.card_name, 'btn-danger':!item.user.card_name}"
-														@click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
-														{{ item.user.card_name ? '변경' : '등록' }}
-													</button>
-													<span>
-														{{ item.user.card_name }}{{ item.user.card_no_masked }}/{{ cardTypeLabel[item.user.card_type] }}
-													</span>
-												</td>
-												<td>
-													<button v-if="item.charge_status"
-															class="btn"
-															:class="chargeBtnStatus(item.charge_status).class"
-															@click="[setCurrentItem(item), chargeBtnStatus(item.charge_status).click && chargeBtnStatus(item.charge_status).click()]"
-													>
-														{{ chargeBtnStatus(item.charge_status).text }}
-													</button>
-												</td>
-												<td>{{ item.charged_dt }}</td>
-												<td>
-													{{
-														item.charged_info &&
-														item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
-													}}
-												</td>
-												<td :class="{'text-danger':item.charged_bill_dump}">
-													{{ item.charged_t_id ? item.charged_t_id : item.charged_bill_dump }}
-												</td>
-												<td>{{ item.mng_memo }}</td>
-												<td>
-													<button class="btn btn-default"
-															@click="[setCurrentItem(item), (isPenaltyCharge=false), (memo=(item.mng_memo)), $refs.modalMemo.open()]">
-														수정
-													</button>
-												</td>
-											</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-								<div class="tab-pane" :class="{ active: tab === 2 }">
-									<div class="row">
-										<table class="table table-striped table-hover dataTable">
-											<thead>
-											<tr>
-												<th>No</th>
-												<th>주문번호</th>
-												<th>학생</th>
-												<th>수강권</th>
-												<th>결제금액</th>
-												<th>사용될카드</th>
-												<th>달성률</th>
-												<th>상태</th>
-												<th>집행일시</th>
-												<th>집행카드</th>
-												<th>집행TID/실패사유</th>
-												<th>관리메모</th>
-												<th>메모수정</th>
-											</tr>
-											</thead>
-											<tbody id="pchargeInfoList">
-											<tr v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
-												<td>{{ index + 1 }}</td>
-												<td>{{ item.idx }}</td>
-												<td>{{ item.user.name }}</td>
-												<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
-												<td>{{ $shared.nf(item.goods.supply_price - item.goods.charge_price) }}</td>
-												<td>
-													<button
-														:class="{'btn':true, 'btn-outline':true, 'btn-default':item.user.card_name, 'btn-danger':!item.user.card_name}"
-														@click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
-														{{ item.user.card_name ? '변경' : '등록' }}
-													</button>
-													<span>
-														{{ item.user.card_name }}{{ item.user.card_no_masked }}/{{ cardTypeLabel[item.user.card_type] }}
-													</span>
-												</td>
-												<td>{{ item.attend_pct }}%</td>
+						<div class="row">
+							<table class="table table-striped table-hover dataTable">
+								<thead>
+								<tr>
+									<th>No</th>
+									<th>주문번호</th>
+									<th>학생</th>
+									<th>수강권</th>
+									<th>결제금액</th>
+									<th>사용될카드</th>
+									<th>달성률</th>
+									<th>상태</th>
+									<th>집행일시</th>
+									<th>집행카드</th>
+									<th>집행TID/실패사유</th>
+									<th>관리메모</th>
+									<th>메모수정</th>
+								</tr>
+								</thead>
+								<tbody id="pchargeInfoList">
+								<tr v-for="(item, index) in orders" :key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
+									<td>{{ index + 1 }}</td>
+									<td>{{ item.idx }}</td>
+									<td>{{ item.user.name }}</td>
+									<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
+									<td>{{ $shared.nf(item.goods.supply_price - item.goods.charge_price) }}</td>
+									<td>
+										<button
+											:class="{'btn':true, 'btn-outline':true, 'btn-default':item.user.card_name, 'btn-danger':!item.user.card_name}"
+											@click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
+											{{ item.user.card_name ? '변경' : '등록' }}
+										</button>
+										<span>
+											{{ item.user.card_name }}{{ item.user.card_no_masked }}/{{ cardTypeLabel[item.user.card_type] }}
+										</span>
+									</td>
+									<td>{{ item.attend_pct }}%</td>
 
-												<td>
-													<button v-if="item.pcharge_status"
-															class="btn"
-															:class="chargeBtnStatus(item.pcharge_status).class"
-															@click="[setCurrentItem(item), chargeBtnStatus(item.pcharge_status).click && chargeBtnStatus(item.pcharge_status).click()]"
-													>
-														{{ chargeBtnStatus(item.pcharge_status).text }}
-													</button>
-												</td>
+									<td>
+										<button v-if="item.pcharge_status"
+												class="btn"
+												:class="chargeBtnStatus(item.pcharge_status).class"
+												@click="[setCurrentItem(item), chargeBtnStatus(item.pcharge_status).click && chargeBtnStatus(item.pcharge_status).click()]"
+										>
+											{{ chargeBtnStatus(item.pcharge_status).text }}
+										</button>
+									</td>
 
 
-												<td>{{
-														item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1")
-													}}
-												</td>
-												<td>
-													{{
-														item.pcharged_info &&
-														item.pcharged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
-													}}
-												</td>
+									<td>{{
+											item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1")
+										}}
+									</td>
+									<td>
+										{{
+											item.pcharged_info &&
+											item.pcharged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
+										}}
+									</td>
 
-												<td :class="{'text-danger':item.pcharged_bill_dump}">
-													{{ item.pcharged_t_id ? item.pcharged_t_id : item.pcharged_bill_dump }}
-												</td>
-												<td>{{ item.mng_memo }}</td>
-												<td>
-													<button class="btn btn-default"
-															@click="[setCurrentItem(item), (isPenaltyCharge=true), (memo=(item.mng_memo)), $refs.modalMemo.open()]">
-														수정
-													</button>
-												</td>
-											</tr>
-											</tbody>
-										</table>
-									</div>
-								</div>
-							</div>
+									<td :class="{'text-danger':item.pcharged_bill_dump}">
+										{{ item.pcharged_t_id ? item.pcharged_t_id : item.pcharged_bill_dump }}
+									</td>
+									<td>{{ item.mng_memo }}</td>
+									<td>
+										<button class="btn btn-default"
+												@click="[setCurrentItem(item), (isPenaltyCharge=true), (memo=(item.mng_memo)), $refs.modalMemo.open()]">
+											수정
+										</button>
+									</td>
+								</tr>
+								</tbody>
+							</table>
 						</div>
+					</div>
 					</div>
 				</div>
 			</div>
@@ -346,7 +253,6 @@ export default {
 			batches: [],
 			batch: null,
 			company: '',
-			tab: 1,
 			memo: '',
 			moment: moment,
 			listInfo: '',
@@ -359,22 +265,9 @@ export default {
 		refresh: async function () {
 			const bbIdx = shared.getCurBatch().idx;
 			let res
-			if (this.tab === 1) {
-				res = await api.get('/partners/chargeOrderList', {bbIdx})
-				this.orders = res.data.orders;
-				this.batches = res.data.batches;
-				this.batch = this.batches.find(element => element.idx === bbIdx);
-				this.company = res.data.company;
-			} else {
-				res = await api.get('/partners/pchargeOrderList', {bbIdx})
-				this.orders = res.data.orders;
-			}
-
+			res = await api.get('/partners/pchargeOrderList', {bbIdx})
+			this.orders = res.data.orders;
 			this.listInfo = res.data.list
-		},
-		chTab: function (index) {
-			this.tab = index
-			this.refresh()
 		},
 		pausePayment: function () {
 			this.$swal
@@ -388,17 +281,10 @@ export default {
 				})
 				.then(async result => {
 					if (result.isConfirmed) {
-						if (this.tab === 1) {
-							const res = await api.post('/partners/chargeStatus', {
+						const res = await api.post('/partners/pchargeStatus', {
 								boIdx: this.currentItem.idx,
 								status: 'B'
-							});
-						} else {
-							const res = await api.post('/partners/pchargeStatus', {
-								boIdx: this.currentItem.idx,
-								status: 'B'
-							});
-						}
+						});
 						this.refresh();
 					}
 				})
@@ -472,12 +358,11 @@ export default {
 			if (res) this.refresh()
 		},
 		refund: function () {
-			const isPenaltyCharge = (this.tab != 1)
 			this.$swal
 				.fire({
 					html: `<strong>[baoIdx:${this.currentItem.idx}] ${this.currentItem.user.name}</strong>님<br/>`
 						+ `<strong>${this.currentItem.goods.charge_plan.title}</strong><br/>`
-						+ `${isPenaltyCharge ? '추가' : '정기'}결제 건 <strong>${this.$shared.nf(this.currentItem.goods[isPenaltyCharge ? 'pcharge_price' : 'charge_price'])}</strong>원이 환불됩니다.<br/>`
+						+ `$추가결제 건 <strong>${this.$shared.nf(this.currentItem.goods['pcharge_price'])}</strong>원이 환불됩니다.<br/>`
 						+ `<br/>환불 처리 하시겠습니까?`,
 					icon: 'warning',
 					showCancelButton: true,
@@ -492,7 +377,7 @@ export default {
 					if (r.isConfirmed) {
 						const res = await api.post('/partners/refundOrder', {
 							baoIdx: this.currentItem.idx,
-							isPenaltyCharge: isPenaltyCharge ? 1 : 0,
+							isPenaltyCharge: 1
 						})
 						if (res.result === 1000) {
 							this.$swal
@@ -521,14 +406,12 @@ export default {
 				})
 		},
 		makePayment: function () {
-			const isPenaltyCharge = (this.tab != 1)
-			const chargeType = isPenaltyCharge ? '추가' : '정기'
-			const price = isPenaltyCharge ? this.currentItem.goods.supply_price - this.currentItem.goods.charge_price : this.currentItem.goods.charge_price
+			const price = this.currentItem.goods.supply_price - this.currentItem.goods.charge_price
 			this.$swal
 				.fire({
 					html: `<strong>[주문번호:${this.currentItem.idx}] ${this.currentItem.user.name}</strong>님<br/>`
 						+ `<strong>${this.currentItem.goods.charge_plan.title}</strong><br/>`
-						+ `${chargeType}결제 건 <strong>${this.$shared.nf(price)}</strong>원이 결제됩니다.<br/>`
+						+ `$추가결제 건 <strong>${this.$shared.nf(price)}</strong>원이 결제됩니다.<br/>`
 						+ `<br/>결제 진행 하시겠습니까?`,
 					icon: 'warning',
 					showCancelButton: true,
@@ -543,7 +426,7 @@ export default {
 					if (r.isConfirmed) {
 						const res = await api.post('/partners/chargeOrder', {
 							boIdx: this.currentItem.idx,
-							isPenaltyCharge: (isPenaltyCharge?1:0),
+							isPenaltyCharge: 1
 						})
 						if (res.result === 1000) {
 							this.$swal
@@ -572,8 +455,7 @@ export default {
 				})
 		},
 		paymentFailed: function () {
-			const isPenaltyCharge = (this.tab != 1)
-			const info = isPenaltyCharge ? this.currentItem.pcharged_bill_dump : this.currentItem.charged_bill_dump
+			const info = this.currentItem.pcharged_bill_dump
 			this.$swal
 				.fire({
 					html: `실패사유: ${info}`,
@@ -735,13 +617,7 @@ export default {
 				cancelButtonColor: '#d8d8d8',
 			}).then(async result => {
 				if (result.isConfirmed) {
-
-					if (this.tab === 1) await api.post('/partners/chargeStatus', {
-						boIdx: this.currentItem.idx,
-						status: val
-					})
-					else await api.post('/partners/pchargeStatus', {boIdx: this.currentItem.idx, status: val})
-
+					await api.post('/partners/pchargeStatus', {boIdx: this.currentItem.idx, status: val})
 					this.$refs.modalWaitPayment.close()
 					this.refresh()
 				}
