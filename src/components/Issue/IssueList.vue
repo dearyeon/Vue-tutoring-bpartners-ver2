@@ -16,16 +16,13 @@
 						<tr>
 							<th>No</th>
 							<th>이름</th>
-							<th>고객사 명</th>
-							<th>부서</th>
-							<th>직위</th>
-							<th>사번</th>
-							<th v-for="col in cfs" :key="col.id">{{ col.title }}</th>
+							<th>이메일/고객식별ID</th>
 							<th>수강권</th>
-							<th>제공가</th>
-							<th>회사지원금</th>
-							<th>자기부담금</th>
-							<th>접수일시</th>
+							<th>수강권번호</th>
+							<th>신청일시</th>
+							<th>입과일시</th>
+							<th>입과번호</th>
+							<th>입과/취소</th>
 						</tr>
 						</thead>
 						<tbody id="applyerList">

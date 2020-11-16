@@ -31,7 +31,7 @@
 			<div class="row">
 				<div class="col-lg-12 sub-title">
 					<div class="ibox-content">
-						
+
 						<div class="row">
 							<table class="table table-striped table-hover dataTable">
 								<thead>
@@ -228,9 +228,7 @@ export default {
 			this.current_page = res.data.orders.current_page
 			this.total_page = res.data.orders.last_page
 			this.items = res.data.orders.data
-			this.company = res.data.company
-			this.batches = res.data.batches
-			this.batch = this.batches.find(element => element.idx === this.curBBIdx);
+			this.batch = res.data.batch;
 		},
 		routeDetailPage(event) {
 			if (this.batches.length) {
