@@ -61,7 +61,7 @@
 						</tr>
 						</thead>
 						<tbody id="applyerList">
-						<tr class="userInfo hover-pointer" v-for="(order, index) in orders" v-bind:key="order.id" v-show="isCancel?index!==0:true">
+						<tr class="userInfo hover-pointer" v-for="(order, index) in isCancel?cancelOrders:orders" v-bind:key="order.id">
 							<td class="number" style="vertical-align: middle;">{{ index + 1 }}</td>
 							<td class="part">{{ order.user.name }}</td>
 							<td class="company">{{ order.user.company }}</td>
@@ -84,7 +84,7 @@
 							</td>
 							<td class="apply_dt">{{ moment(order.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
 							<td>
-								<div v-if="index !== 0" class="btn btn-del">취소</div>
+								<div v-if="order.idx === 14321" class="btn btn-del">취소</div> <!--TODO-->
 								<div v-else class="btn btn-reset">복원</div>
 							</td>
 						</tr>
@@ -112,11 +112,12 @@ export default {
 			batches: [],
 			cfs: [],
 			orders: [],
-			moment: moment,
+			cancelOrders: [],
 			isCancel: false,
       		curBBIdx: 0,
       		loading1: false,
       		loading2: false,
+			moment: moment,
 		};
 	},
 	components: {
@@ -136,6 +137,9 @@ export default {
       		this.batches = data.batches;
 			this.cfs = data.cfs;
 			this.orders = data.orders;
+			this.orders.forEach(element => { //TODO
+				if(element.idx !== 14321) this.cancelOrders.push(element)
+			});
 			console.log(this.cfs);
 			console.log(data);
 		},
