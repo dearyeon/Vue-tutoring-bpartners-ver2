@@ -6,7 +6,7 @@
 					<div class="pull-left">
 						<h2>수업 현황</h2>
 					</div>
-					<div class="batch-selection">
+					<div class="batch-selection pull-left">
 						<BatchSelection @change="refresh" />
 					</div>
 					<div class="col-sm-3">
