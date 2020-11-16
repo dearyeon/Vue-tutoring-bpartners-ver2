@@ -86,7 +86,7 @@
                                     <div id="vertical-timeline col-lg-12" class="vertical-container dark-timeline" style="background-color;display: inherit;">
                                         <div class="vertical-timeline-block col-lg-12" v-for="item in userInfo.use_ticket_info" :key="item.id">
                                             <div v-if="item.review" class="vertical-timeline-icon" style="border:0px;">
-                                                <img alt="image" class="img-circle s_tutor_image" style="width: 50px;height: 50px;margin-left: -5px;" ><!--:src="getImageSrc(item.review.tutor.prof_img)"-->
+                                                <img alt="image" class="img-circle s_tutor_image" style="width: 50px;height: 50px;margin-left: -5px;" :src="item.review.tutor.prof_img">
                                             </div>
                                             <div v-if="item.review" class="vertical-timeline-content">
                                                 <strong class="s_tutor_name">{{ item.review.tutor.name }}</strong>

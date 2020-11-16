@@ -7,15 +7,16 @@
 						<h2>신청 관리</h2>
 					</div>
 					<div class="batch-selection">
-						<BatchSelection @change="refresh" />
+						<BatchSelection @change="refreshData" />
 					</div>
           <div class="pull-right">
 						<a v-if="!loading" class="btn btn-danger btn-w-m">취소 포함</a>&nbsp;
-            <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
+            			<clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
 						<a v-if="!loading" class="btn btn-success btn-w-m" @click="exportFormat">포맷 다운로드</a>&nbsp;
-            <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
+            			<clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
 						<a class="btn btn-primary btn-w-m">엑셀 업로드</a>
-            <clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
+						<input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+            			<clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
 					</div>
 				</div>
 			</div>
@@ -80,10 +81,12 @@ import moment from 'moment'
 import BatchSelection from "@/components/Common/BatchSelection";
 import shared from "@/common/shared";
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
+import XLSX from 'xlsx'
+import _ from 'lodash'
 
 export default {
 	components: {
-		BatchSelection
+		BatchSelection, ClipLoader
 	},
 	data() {
 		return {
@@ -91,7 +94,6 @@ export default {
 			batches: [],
 			cfs: [],
 			orders: [],
-			aNoList: [],
 			moment: moment,
       curBBIdx: 0,
       loading: false,
@@ -108,7 +110,8 @@ export default {
 			});
 			const data = res.data;
 			this.company = data.company;
-			this.batches = data.batches;
+      this.batches = data.batches;
+      console.log(this.batches);console.log(shared.getCurBatch().b_no)
 			this.cfs = data.cfs;
 			this.orders = data.orders;
 		},
@@ -129,8 +132,40 @@ export default {
 					this.refreshData();
 				}
 			}
-		}
-	}
+    },
+    exportFormat: _.debounce(async function () {
+          this.loading = true
+
+          let dataWs = []
+            dataWs.push(Object.assign(
+              {
+                '': this.company +' '+ shared.getCurBatch().b_no + '주차 신청관리',
+                'No': '',
+                '이름': '',
+                '이메일': '',
+                '수강권': '',
+                '소속': '',
+                '부서': '',
+                '직급': '',
+                '사번': '',
+                '연락처': '',
+                'CF1': '',
+                'CF2': '',
+              }
+            ));
+          var ws = XLSX.utils.json_to_sheet(dataWs);
+          var wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, '신청관리');
+          const test = XLSX.writeFile(wb, this.company +' '+ shared.getCurBatch().b_no + '주차 신청관리.xlsx');
+          this.loading = false
+        }, 500),
+		importExcel: _.debounce(async function () {
+          this.loading = true
+
+
+          this.loading = false
+        }, 500),
+	},
 };
 </script>
 

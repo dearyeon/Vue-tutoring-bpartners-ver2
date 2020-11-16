@@ -9,6 +9,15 @@
 					<div class="batch-selection">
 						<BatchSelection @change="refresh" />
 					</div>
+					<div class="col-sm-3">
+						<div class="input-group">
+							<input type="text" placeholder="성명 or 고객식별ID" v-model="search"
+									v-on:keypress.enter="setSearch" class="form-control"/>
+							<span class="input-group-btn">
+								<button class="btn btn-default" v-on:click="setSearch">검색</button>
+							</span>
+						</div>
+					</div>
 					<div class="pull-right">
 						<a id="btnSendOrderEmailLessonStatus" class="btn btn-success btn-w-m" @click="openModal">학습현황 메일
 							일괄 발송</a>&nbsp;
@@ -22,21 +31,7 @@
 			<div class="row">
 				<div class="col-lg-12 sub-title">
 					<div class="ibox-content">
-						<div class="row ibox">
-							<form id="listform">
-								<div class="col-lg-12">
-									<div class="col-sm-4 pull-right">
-										<div class="input-group">
-											<input type="text" placeholder="성명 or 고객식별ID" v-model="search"
-												   v-on:keypress.enter="setSearch" class="form-control"/>
-											<span class="input-group-btn">
-                        <button class="btn btn-default" v-on:click="setSearch">검색</button>
-                      </span>
-										</div>
-									</div>
-								</div>
-							</form>
-						</div>
+						
 						<div class="row">
 							<table class="table table-striped table-hover dataTable">
 								<thead>
