@@ -9,22 +9,34 @@
 					<div class="batch-selection">
 						<BatchSelection @change="refreshData" />
 					</div>
-          <div class="pull-right">
-						<a v-if="!loading" class="btn btn-danger btn-w-m">취소 포함</a>&nbsp;
-            			<clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
+          			<div class="pull-right">
 						<a v-if="!loading" class="btn btn-success btn-w-m" @click="exportFormat">포맷 다운로드</a>&nbsp;
             			<clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
 						<a class="btn btn-primary btn-w-m">엑셀 업로드</a>
-						<input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+						<input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></input>
             			<clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
 					</div>
 				</div>
 			</div>
-    </div>
+    	</div>
 
 		<div class="row">
 			<div class="ibox content">
 				<div class="ibox-content">
+					<div class="col-xs-3 pull-right">
+						<h3 class="col-xs-6 no-margins">취소 포함</h3>
+						<div class="col-xs-6">
+							<div class="switch">
+								<div class="onoffswitch">
+									<input class="onoffswitch-checkbox form-control" name="cancel_bach" id="cancel_bach" type="checkbox" v-model="isCancel"/>
+									<label class="onoffswitch-label" for="cancel_bach">
+										<span class="onoffswitch-inner"></span>
+										<span class="onoffswitch-switch"></span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
 					<table class="table table-striped table-hover dataTable">
 						<thead>
 						<tr>
@@ -85,9 +97,6 @@ import XLSX from 'xlsx'
 import _ from 'lodash'
 
 export default {
-	components: {
-		BatchSelection, ClipLoader
-	},
 	data() {
 		return {
 			company: '',
@@ -95,9 +104,13 @@ export default {
 			cfs: [],
 			orders: [],
 			moment: moment,
-      curBBIdx: 0,
-      loading: false,
+			isCancel: false,
+      		curBBIdx: 0,
+      		loading: false,
 		};
+	},
+	components: {
+		BatchSelection, ClipLoader
 	},
 	created() {
 		this.refreshData();
