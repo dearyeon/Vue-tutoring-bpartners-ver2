@@ -11,7 +11,7 @@
 					</div>
 					<div class="col-sm-3">
 						<div class="input-group">
-						<input type="text" v-model="search" placeholder="성명을 입력하세요." class="form-control"/>
+							<input type="text" placeholder="성명 or 고객식별ID" v-model="search" class="form-control search-input"/>
 						</div>
 					</div>
           			<div class="pull-right">
@@ -28,7 +28,7 @@
 
 		</div>
 		<div class="row">
-			<div class="ibox content"> 
+			<div class="ibox content">
 				<div class="ibox-content pull-right">
 						<div class="col-lg-auto">
 							<div v-if="tab===1" class="pull-right text-left col-lg-4" style="margin-left:40px;">
@@ -778,7 +778,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.search-input {
+	width: 150px;
+}
 .content {
 	padding: 15px;
 	display: flex;
