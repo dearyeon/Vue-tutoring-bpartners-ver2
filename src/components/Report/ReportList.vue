@@ -288,13 +288,11 @@ export default {
 		async setCurrentPage(data) {
 			this.current_page = data;
 			const res = await api.get('/partners/reportList', {
-				bbIdx: this.$route.params.bbIdx,
-				page: this.current_page
+				page: this.current_page,
+				bbIdx: this.curBBIdx
 			})
 			this.items = res.data.orders.data
-			this.company = res.data.company
-			this.batches = res.data.batches
-			this.batch = this.batches.find(element => element.idx === parseInt(this.curBBIdx));
+			this.batch = res.data.batch
 		},
 		exportExcel: _.debounce(async function () {
 			this.loading = true

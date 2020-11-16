@@ -106,7 +106,6 @@
             <button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;">학생 수정</button>
             <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
           </div>
-          <!--<UserModifyModal v-if="showModify" :item="modalitem" @update="updateItem" @close="openModify"/>-->
         </div>
       </div>
     </div>
