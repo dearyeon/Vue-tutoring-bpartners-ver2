@@ -8,6 +8,7 @@ import Login from "@/components/Login";
 import ReportList from "@/components/Report/ReportList";
 import BatchList from "@/components/Batch/BatchList";
 import BillingList from "@/components/Billing/BillingList";
+import AddBillingList from "@/components/AddBilling/AddBillingList";
 import IssueList from "@/components/Issue/IssueList";
 
 const routes = [
@@ -22,6 +23,7 @@ const routes = [
 			{path: '/apply/list', component: ApplyList},
 			{path: '/issue/list', component: IssueList},
 			{path: '/billing/list', component: BillingList},
+			{path: '/addBilling/list', component: AddBillingList},
 			{path: "/batch/list", component: BatchList},
 			{path: "/batch/applyNew/:bIdx", name: "applyNew", component: ApplyForm, props: true},
 			{path: "/batch/applyEdit/:baIdx", name: "applyEdit", component: ApplyForm, props: true},
