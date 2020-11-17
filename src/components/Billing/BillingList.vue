@@ -1,28 +1,15 @@
 <template>
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title" style="height: 65px;">
-					<div class="pull-left">
-						<h2>정기 결제 관리</h2>
-					</div>
-					<div class="batch-selection pull-left">
-						<BatchSelection @change="refresh" />
-					</div>
-					<div class="col-sm-3">
-						<div class="input-group">
-							<input type="text" placeholder="성명 or 고객식별ID" v-model="search" class="form-control search-input"/>
-						</div>
-					</div>
-          			<div class="pull-right">
-						<div>
-							<button class="btn btn-primary btn-w-m" @click="chargeBatch">결제 대기건 일괄 결제</button>
-						</div>
-					</div>
-				</div>
-			</div>
-
-		</div>
+	<div>
+		<Header title="정기 결제 관리"
+			:use-batch-selection="true" @changeBatch="refresh"
+			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
+			btn1-text="결제 대기건 일괄 결제" @btn1-click="chargeBatch" btn1-variant="primary" :btn1-loading="false">
+			<span>
+				<h3 class="col-lg-4">정기결제일시</h3>
+				<h4 v-if="batches.length" class="col-lg-8">{{ batch.charge_dt ? batch.charge_dt : '-' }}</h4>
+			</span>
+		</Header>
+		
 		<div class="row">
 			<div class="ibox content">
 				<div class="ibox-content pull-right">
@@ -216,14 +203,23 @@ import api from '@/common/api'
 import Modal from '../atom/Modal'
 import Dropdown from '../atom/Dropdown'
 import moment from 'moment'
-import shared from "@/common/shared";
-import BatchSelection from "@/components/Common/BatchSelection";
+import shared from "@/common/shared"
+import BatchSelection from "@/components/Common/BatchSelection"
+import CusIdField from "@/components/Common/CusIdField"
+import Header from "@/components/Common/Header"
+import Content from "@/components/Common/Content"
+import Table from "@/components/Common/Table"
+import ItemButton from "@/components/Common/ItemButton"
 
 export default {
 	components: {
+		Header,
+		Content,
+		CusIdField,
+		BatchSelection,
+		Table,
 		Modal,
 		Dropdown,
-		BatchSelection,
 	},
 	async created() {
 		this.refresh();

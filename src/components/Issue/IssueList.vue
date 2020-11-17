@@ -4,8 +4,8 @@
 			:use-batch-selection="true" @changeBatch="refreshData"
 			search-placeholder="이름 or 이메일 or 고객식별ID" @search="search"
 			switch-text="취소포함" @change="refreshData"
-			btn1-text="일괄 입과" @btn1Click="alert(1)" btn1-variant="primary" :btn1-loading="false"
-			btn2-text="일괄 취소" @btn2Click="alert(1)" btn2-variant="danger" :btn2-loading="false">
+			btn1-text="일괄 입과" @btn1click="alert(1)" btn1-variant="primary" :btn1-loading="false"
+			btn2-text="일괄 취소" @btn2click="alert(1)" btn2-variant="danger" :btn2-loading="false">
 	</Header>
 
 	<Content>
