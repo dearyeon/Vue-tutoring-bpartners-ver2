@@ -21,7 +21,7 @@
 			</div>
 			<div id="switch-control">
 				<div class="onoffswitch">
-					<input class="onoffswitch-checkbox form-control" id="switch-input" type="checkbox"/>
+					<input class="onoffswitch-checkbox form-control" id="switch-input" type="checkbox" v-model="switchModel"/>
 					<label class="onoffswitch-label" for="switch-input">
 						<span class="onoffswitch-inner"></span>
 						<span class="onoffswitch-switch"></span>
