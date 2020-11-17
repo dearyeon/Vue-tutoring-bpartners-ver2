@@ -11,7 +11,7 @@
 				<input type="text" :placeholder="searchPlaceholder" v-model="searchModel"
 					   v-on:keypress.enter="$emit('search',searchModel)" class="form-control"/>
 				<span class="input-group-btn">
-					<button class="btn btn-default" v-on:click="$emit('search',searchModel)">검색</button>
+					<button class="btn btn-default" v-on:click="$emit('search', searchModel)">검색</button>
 				</span>
 			</div>
 		</div>
@@ -60,11 +60,9 @@ export default {
 
 		useBatchSelection: Boolean,
 
-		//searchModel: String,
 		searchPlaceholder: String,
 
 		switchText: String,
-		switchModel: Boolean,
 
 		btn1Variant: String,
 		btn1Text: String,
@@ -74,12 +72,10 @@ export default {
 		btn2Text: String,
 		btn2Loading: Boolean,
 	},
-	created() {
-
-	},
 	data() {
 		return {
-			searchModel:''
+			searchModel: '',
+			switchModel: false
 		}
 	},
 };
