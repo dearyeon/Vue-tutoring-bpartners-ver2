@@ -1,46 +1,24 @@
 <template>
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title" style="height: 65px;">
-					<div class="pull-left">
-						<h2>추가 결제 관리</h2>
-					</div>
-					<div class="batch-selection pull-left">
-						<BatchSelection @change="refresh" />
-					</div>
-					<div class="col-sm-3">
-						<div class="input-group">
-							<input type="text" placeholder="성명 or 고객식별ID" v-model="search" class="form-control search-input"/>
-						</div>
-					</div>
-          			<div class="pull-right">
-						<div>
-							<a class="btn btn-success btn-w-m" @click="updatePChargeTarget">결제대상 판정</a>&nbsp;
-							<a class="btn btn-primary btn-w-m" @click="pChargeBatch">결제 대기건 일괄 결제</a>
-						</div>
-					</div>
+	<div>
+		<Header title="추가 결제 관리"
+			:use-batch-selection="true" @changeBatch="refresh"
+			search-placeholder="성명 or 고객식별ID" @search="setSearch"
+			btn1-text="결제대상 판정" @btn1-click="updatePChargeTarget" btn1-variant="success" :btn1-loading="false"
+			btn2-text="결제 대기건 일괄 결제" @btn2-click="pChargeBatch" btn2-variant="primary" :btn2-loading="false">
+			<span>
+				<div class="col-lg-12">
+					<h3 class="col-lg-4">추가결제일시</h3>
+					<h4 v-if="batches.length" class="col-lg-8">{{ batch.pcharge_dt ? batch.pcharge_dt : '-' }}{{batch}}</h4>
 				</div>
-			</div>
-
-		</div>
+				<div class="col-lg-12">
+					<h3 class="col-lg-4">기준출석률</h3>
+					<h4 v-if="batches.length" class="col-lg-8">{{ batch.target_rt ? batch.target_rt + '%' : '-' }}</h4>
+				</div>
+			</span>
+		</Header>
 		<div class="row">
 			<div class="ibox content">
 				<div class="ibox-content pull-right">
-					<div class="col-lg-auto">
-						<div class="pull-right text-left col-lg-4" style="margin-left:40px;">
-							<div class="col-lg-12">
-							<h3 class="col-lg-4">추가결제일시</h3>
-							<h4 v-if="batches.length" class="col-lg-8">
-								{{ batch.pcharge_dt ? batch.pcharge_dt : '-' }}</h4>
-							</div>
-							<div class="col-lg-12">
-							<h3 class="col-lg-4">기준출석률</h3>
-							<h4 v-if="batches.length" class="col-lg-8">
-								{{ batch.target_rt ? batch.target_rt + '%' : '-' }}</h4>
-							</div>
-						</div>
-					</div>
 					<div class="col-lg-12">
 						<div class="panel-body">
 						<div class="row">
@@ -230,14 +208,23 @@ import api from '@/common/api'
 import Modal from '../atom/Modal'
 import Dropdown from '../atom/Dropdown'
 import moment from 'moment'
-import shared from "@/common/shared";
-import BatchSelection from "@/components/Common/BatchSelection";
+import shared from "@/common/shared"
+import BatchSelection from "@/components/Common/BatchSelection"
+import CusIdField from "@/components/Common/CusIdField"
+import Header from "@/components/Common/Header"
+import Content from "@/components/Common/Content"
+import Table from "@/components/Common/Table"
+import ItemButton from "@/components/Common/ItemButton"
 
 export default {
 	components: {
+		Header,
+		Content,
+		CusIdField,
+		BatchSelection,
+		Table,
 		Modal,
 		Dropdown,
-		BatchSelection,
 	},
 	async created() {
 		this.refresh();
