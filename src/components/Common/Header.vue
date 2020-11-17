@@ -9,9 +9,9 @@
 		<div id="search" v-if="searchPlaceholder">
 			<div class="input-group">
 				<input type="text" :placeholder="searchPlaceholder" v-model="searchModel"
-					   v-on:keypress.enter="this.$emit('search')" class="form-control"/>
+					   v-on:keypress.enter="$emit('search',searchModel)" class="form-control"/>
 				<span class="input-group-btn">
-					<button class="btn btn-default" v-on:click="this.$emit('search')">검색</button>
+					<button class="btn btn-default" v-on:click="$emit('search',searchModel)">검색</button>
 				</span>
 			</div>
 		</div>
@@ -33,12 +33,12 @@
 			<slot></slot>
 		</div>
 		<div id="buttons">
-			<label v-if="btn1Text" :class="'btn btn-w-m btn-'+btn1Variant" @click="$emit('btn1Click')">
+			<label v-if="btn1Text" :class="'btn btn-w-m btn-'+btn1Variant" @click="$emit('btn1click')">
 				<div v-if="!btn1Loading">{{ btn1Text }}</div>
 				<clip-loader :loading="btn1Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>&nbsp;
 
-			<label v-if="btn2Text" :class="'btn btn-w-m btn-'+btn2Variant" @click="$emit('btn2Click')">
+			<label v-if="btn2Text" :class="'btn btn-w-m btn-'+btn2Variant" @click="$emit('btn2click')">
 				<div v-if="!btn2Loading">{{ btn2Text }}</div>
 				<clip-loader :loading="btn2Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>&nbsp;
@@ -60,7 +60,7 @@ export default {
 
 		useBatchSelection: Boolean,
 
-		searchModel: String,
+		//searchModel: String,
 		searchPlaceholder: String,
 
 		switchText: String,
@@ -74,11 +74,14 @@ export default {
 		btn2Text: String,
 		btn2Loading: Boolean,
 	},
-	methods: {
-		btn1Click() {
+	created() {
 
-		},
-	}
+	},
+	data() {
+		return {
+			searchModel:''
+		}
+	},
 };
 </script>
 

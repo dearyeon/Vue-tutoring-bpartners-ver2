@@ -2,7 +2,7 @@
 <div>
 	<Header title="입과 관리"
 			:use-batch-selection="true" @changeBatch="refreshData"
-			search-model="" @search="" search-placeholder="이름 or 이메일 or 고객식별ID"
+			@search="refreshData" search-placeholder="이름 or 이메일 or 고객식별ID"
 			switch-text="취소포함" :switch-model="false"
 			btn1-text="일괄 입과" @btn1Click="alert(1)" btn1-variant="primary" :btn1-loading="false"
 			btn2-text="일괄 취소" @btn2Click="alert(1)" btn2-variant="danger" :btn2-loading="false">
@@ -30,15 +30,15 @@
 
 
 <script>
-import api from "@/common/api";
+import api from "@/common/api"
 import moment from 'moment'
-import BatchSelection from "@/components/Common/BatchSelection";
-import shared from "@/common/shared";
-import CusIdField from "@/components/Common/CusIdField";
-import Header from "@/components/Common/Header";
-import Content from "@/components/Common/Content";
-import Table from "@/components/Common/Table";
-import ItemButton from "@/components/Common/ItemButton";
+import shared from "@/common/shared"
+import BatchSelection from "@/components/Common/BatchSelection"
+import CusIdField from "@/components/Common/CusIdField"
+import Header from "@/components/Common/Header"
+import Content from "@/components/Common/Content"
+import Table from "@/components/Common/Table"
+import ItemButton from "@/components/Common/ItemButton"
 
 export default {
 	components: {
@@ -53,16 +53,19 @@ export default {
 		return {
 			orders: [],
 			moment: moment,
-			curBBIdx: 0
+			curBBIdx: 0,
 		};
 	},
 	created() {
 		this.refreshData();
 	},
 	methods: {
-		async refreshData() {
+		async refreshData(searchKey) {
+			console.log(searchKey);
 			this.curBBIdx = shared.getCurBatch().idx
-			const res = await api.get("/partners/issueOrderList", {bbIdx: this.curBBIdx});
+			const params = searchKey?{bbIdx: this.curBBIdx,sk:searchKey}:{bbIdx: this.curBBIdx}
+			console.log(params);
+			const res = await api.get("/partners/issueOrderList", params);
 			const data = res.data;
 			this.orders = data.orders;
 		},

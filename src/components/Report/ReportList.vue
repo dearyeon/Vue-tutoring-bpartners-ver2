@@ -1,132 +1,111 @@
 <template>
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title" style="height: 65px;">
-					<div class="pull-left">
-						<h2>수업 현황</h2>
-					</div>
-					<div class="batch-selection pull-left">
-						<BatchSelection @change="refresh" />
-					</div>
-					<div class="col-sm-3">
-						<div class="input-group">
-							<input type="text" placeholder="성명 or 고객식별ID" v-model="search"
-									v-on:keypress.enter="setSearch" class="form-control"/>
-							<span class="input-group-btn">
-								<button class="btn btn-default" v-on:click="setSearch">검색</button>
-							</span>
-						</div>
-					</div>
-					<div class="pull-right">
-						<a id="btnSendOrderEmailLessonStatus" class="btn btn-success btn-w-m" @click="openModal">학습현황 메일
-							일괄 발송</a>&nbsp;
-						<a id="exportLessonList" class="btn btn-success btn-w-m" @click="exportExcel">
-							<span v-if="!loading">엑셀 다운로드</span>
-							<clip-loader :loading="loading" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
-						</a>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-lg-12 sub-title">
-					<div class="ibox-content">
+	<div>
+		<Header title="수업 현황"
+				:use-batch-selection="true" @changeBatch="refresh"
+				@search="refresh" search-placeholder="이름 or 고객식별ID"
+				btn1-text="학습현황 메일 일괄 발송" @btn1click="openModal" btn1-variant="success" :btn1-loading="false"
+				btn2-text="엑셀 다운로드" @btn2click="exportExcel" btn2-variant="success" :btn2-loading="false">
+		</Header>
 
-						<div class="row">
-							<table class="table table-striped table-hover dataTable">
-								<thead>
-								<tr>
-									<th>No</th>
-									<th class="pagesubmit sorting" field="order" value="name">성명</th>
-									<!--@click="sortBy('name')"-->
-									<th class="pagesubmit sorting" field="order" value="lesson_rate">달성률</th>
-									<!-- lesson_rate? -->
-									<th class="pagesubmit sorting text-center" field="order" value="lesson_min">수업</th>
-									<th class="pagesubmit sorting" field="order" value="total_min">전체</th>
-									<th class="pagesubmit sorting" field="order" value="email">고객식별ID</th>
-									<th>학습 레벨</th>
-									<th class="pagesubmit sorting" field="order" value="part">부서</th>
-									<th class="pagesubmit sorting" field="order" value="position">직위<br/>(직책)</th>
-									<th class="pagesubmit sorting" field="order" value="position">사번<br/>(고유값)</th>
-									<th class="text-center">메모1</th>
-									<th class="text-center">메모2</th>
-									<th style="width:35%">
-										수업 히스토리(횟수)
-										<div class="pull-right">
-											<div class="square square-empty"></div>
-											<div class="pull-left">미진행</div>
-											<div class="square square-pull"></div>
-											<div class="pull-left">수업완료(3분이상)</div>
-										</div>
-									</th>
-								</tr>
-								</thead>
+			
+		<div class="row">
+			<div class="col-lg-12 sub-title">
+				<div class="ibox-content">
 
-								<tbody>
-								<tr class="text-center" v-for="(item,index) in items" :key="item.id">
-									<td>{{ index + 1 }}</td>
-									<td class="userInfo hover-pointer" @click="openUserInfo(item)">{{
-											item.user.name
+					<div class="row">
+						<table class="table table-striped table-hover dataTable">
+							<thead>
+							<tr>
+								<th>No</th>
+								<th class="pagesubmit sorting" field="order" value="name">성명</th>
+								<!--@click="sortBy('name')"-->
+								<th class="pagesubmit sorting" field="order" value="lesson_rate">달성률</th>
+								<!-- lesson_rate? -->
+								<th class="pagesubmit sorting text-center" field="order" value="lesson_min">수업</th>
+								<th class="pagesubmit sorting" field="order" value="total_min">전체</th>
+								<th class="pagesubmit sorting" field="order" value="email">고객식별ID</th>
+								<th>학습 레벨</th>
+								<th class="pagesubmit sorting" field="order" value="part">부서</th>
+								<th class="pagesubmit sorting" field="order" value="position">직위<br/>(직책)</th>
+								<th class="pagesubmit sorting" field="order" value="position">사번<br/>(고유값)</th>
+								<th class="text-center">메모1</th>
+								<th class="text-center">메모2</th>
+								<th style="width:35%">
+									수업 히스토리(횟수)
+									<div class="pull-right">
+										<div class="square square-empty"></div>
+										<div class="pull-left">미진행</div>
+										<div class="square square-pull"></div>
+										<div class="pull-left">수업완료(3분이상)</div>
+									</div>
+								</th>
+							</tr>
+							</thead>
+
+							<tbody>
+							<tr class="text-center" v-for="(item,index) in items" :key="item.id">
+								<td>{{ index + 1 }}</td>
+								<td class="userInfo hover-pointer" @click="openUserInfo(item)">{{
+										item.user.name
+									}}
+								</td>
+								<td>
+									<span class="lesson-rate">{{ item.attend_pct }}%</span>
+								</td>
+								<td>
+									{{
+										item.use_ticket_info && item.ticket_summary ? item.goods.charge_plan.secs_per_day * (item.use_ticket_info.length + 1) - parseInt(item.ticket_summary.sum_remain_secs / 60) : '-'
+									}}분/
+									{{ item.ticket_summary ? item.ticket_summary.use_ticket_cnt : '-' }}회
+								</td>
+								<td>
+									{{
+										item.goods ? item.goods.charge_plan.ticket_cnt * parseInt(item.goods.charge_plan.secs_per_day / 60) : ''
+									}}분/
+									{{ item.goods ? item.goods.charge_plan.ticket_cnt : '' }}회
+								</td>
+								<td>{{ item.user.app_user ? item.user.app_user.cus_id : '' }}</td>
+								<td>{{ item.user.app_user ? item.user.app_user.level : '' }}</td>
+								<td>{{ item.user.department }}</td>
+								<td>{{ item.user.position }}</td>
+								<td>{{ item.user.emp_no }}</td>
+								<td @click="[memoNum=true,setMemo(item.user)]">
+									<div class="memo" v-if="item.user.memo1">{{
+											item.user.memo1.length > 6 ? item.user.memo1.substring(0, 6) + '...' : item.user.memo1
 										}}
-									</td>
-									<td>
-										<span class="lesson-rate">{{ item.attend_pct }}%</span>
-									</td>
-									<td>
-										{{
-											item.use_ticket_info && item.ticket_summary ? item.goods.charge_plan.secs_per_day * (item.use_ticket_info.length + 1) - parseInt(item.ticket_summary.sum_remain_secs / 60) : '-'
-										}}분/
-										{{ item.ticket_summary ? item.ticket_summary.use_ticket_cnt : '-' }}회
-									</td>
-									<td>
-										{{
-											item.goods ? item.goods.charge_plan.ticket_cnt * parseInt(item.goods.charge_plan.secs_per_day / 60) : ''
-										}}분/
-										{{ item.goods ? item.goods.charge_plan.ticket_cnt : '' }}회
-									</td>
-									<td>{{ item.user.app_user ? item.user.app_user.cus_id : '' }}</td>
-									<td>{{ item.user.app_user ? item.user.app_user.level : '' }}</td>
-									<td>{{ item.user.department }}</td>
-									<td>{{ item.user.position }}</td>
-									<td>{{ item.user.emp_no }}</td>
-									<td @click="[memoNum=true,setMemo(item.user)]">
-										<div class="memo" v-if="item.user.memo1">{{
-												item.user.memo1.length > 6 ? item.user.memo1.substring(0, 6) + '...' : item.user.memo1
-											}}
-										</div>
-										<div v-else>
-											<button class="btn-xs btn-default">등록</button>
-										</div>
-									</td>
-									<td @click="[memoNum=false,setMemo(item.user)]">
-										<div class="memo" v-if="item.user.memo2">{{
-												item.user.memo2.length > 6 ? item.user.memo2.substring(0, 6) + '...' : item.user.memo2
-											}}
-										</div>
-										<div v-else>
-											<button class="btn-xs btn-default">등록</button>
-										</div>
-									</td>
-									<td>
-										<div v-for="i in calBatchDate()" :key="i.id">
-											<div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)"
-												 :data-tooltip="useDtTooltip(i-1,item)"></div>
-											<div class="square square-empty" v-else></div>
-										</div>
-									</td>
-								</tr>
-								</tbody>
-							</table>
-						</div>
+									</div>
+									<div v-else>
+										<button class="btn-xs btn-default">등록</button>
+									</div>
+								</td>
+								<td @click="[memoNum=false,setMemo(item.user)]">
+									<div class="memo" v-if="item.user.memo2">{{
+											item.user.memo2.length > 6 ? item.user.memo2.substring(0, 6) + '...' : item.user.memo2
+										}}
+									</div>
+									<div v-else>
+										<button class="btn-xs btn-default">등록</button>
+									</div>
+								</td>
+								<td>
+									<div v-for="i in calBatchDate()" :key="i.id">
+										<div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)"
+												:data-tooltip="useDtTooltip(i-1,item)"></div>
+										<div class="square square-empty" v-else></div>
+									</div>
+								</td>
+							</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
-			<div>
-				<div class="row">
-					<div class="text-center">
-						<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)"
-									@returnPage="setCurrentPage"/>
-					</div>
+		</div>
+		<div>
+			<div class="row">
+				<div class="text-center">
+					<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)"
+								@returnPage="setCurrentPage"/>
 				</div>
 			</div>
 		</div>
@@ -171,7 +150,6 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
 </template>
 
@@ -184,8 +162,13 @@ import moment from 'moment'
 import XLSX from 'xlsx'
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 import _ from 'lodash'
-import shared from "@/common/shared";
-import BatchSelection from "@/components/Common/BatchSelection";
+import shared from "@/common/shared"
+import BatchSelection from "@/components/Common/BatchSelection"
+import CusIdField from "@/components/Common/CusIdField"
+import Header from "@/components/Common/Header"
+import Content from "@/components/Common/Content"
+import Table from "@/components/Common/Table"
+import ItemButton from "@/components/Common/ItemButton"
 
 export default {
 	data() {
@@ -212,11 +195,16 @@ export default {
 		};
 	},
 	components: {
-		BatchSelection,
 		UserInfoModal,
 		UserModifyModal,
 		Pagination,
 		ClipLoader,
+		Header,
+		Content,
+		CusIdField,
+		BatchSelection,
+		Table,
+		ItemButton
 	},
 	async created() {
 		this.refresh()
