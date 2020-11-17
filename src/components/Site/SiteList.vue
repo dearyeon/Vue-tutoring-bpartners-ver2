@@ -1,25 +1,11 @@
 <template>
-    <div class="row">
+    <div>
+        <Header title="고객사 관리"
+                search-placeholder="고객사 명" @search="setSearch"
+                btn1-text="고객사 등록" @btn1click="createCustomerPage" btn1-variant="success" :btn1-loading="false">
+        </Header>
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
-                <div class="ibox-title">
-                    <div class="pull-left col-lg-2">
-                        <h2>고객사 관리</h2>
-                    </div>
-                    <div>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
-                            </div>
-                            <div class="col-sm-1">
-                                <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
-                            </div>
-                            <div class="pull-right">
-                                <a class="btn btn-success" @click="createCustomerPage"><i class="fa fa-plus"></i> 고객사 등록</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="row">
                     <div class="ibox content">
@@ -69,7 +55,7 @@
                 </div>
             </div>
         </div>
-        <AddCustomerModal v-if="showModal" @close="openModal" @update="updateItem"/>
+        <AddSiteModal v-if="showModal" @close="openModal" @update="updateItem"/>
     </div>
 </template>
 
@@ -77,7 +63,13 @@
 import api from '@/common/api'
 import moment from 'moment'
 import Pagination from '@/components/atom/Pagination'
-import AddCustomerModal from '../Customer/AddCustomerModal'
+import AddSiteModal from '../Site/AddSiteModal'
+import BatchSelection from "@/components/Common/BatchSelection"
+import CusIdField from "@/components/Common/CusIdField"
+import Header from "@/components/Common/Header"
+import Content from "@/components/Common/Content"
+import Table from "@/components/Common/Table"
+import ItemButton from "@/components/Common/ItemButton"
 export default {
     data() {
         return {
@@ -92,7 +84,14 @@ export default {
         };
     },
     components: {
-        Pagination, AddCustomerModal
+		Header,
+		Content,
+		CusIdField,
+		BatchSelection,
+        Table,
+        ItemButton,
+        Pagination,
+        AddSiteModal
     },
     async created() {
         const res = await api.get('/partners/siteList')
@@ -122,11 +121,11 @@ export default {
             this.items = res.data.data
         },
         createCustomerPage() {
-			this.$router.push({ name: 'customerNew' })
+			this.$router.push({ name: 'siteNew' })
 		},
         editCustomerPage(idx) {
 			this.$router.push({
-				name: 'customerEdit',
+				name: 'siteEdit',
 				params: { idx:idx }
 			})
 		},

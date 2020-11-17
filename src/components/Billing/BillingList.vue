@@ -218,6 +218,7 @@ export default {
 		CusIdField,
 		BatchSelection,
 		Table,
+		ItemButton,
 		Modal,
 		Dropdown,
 	},

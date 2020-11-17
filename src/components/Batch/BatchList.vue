@@ -1,24 +1,9 @@
 <template>
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox-title">
-				    <div class="pull-left col-lg-2">
-                        <h2>차수 관리</h2>
-                    </div>
-                    <div>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <input type="text" placeholder="고객사 명" class="form-control" v-model="searchKey" v-on:keypress.enter="setSearch(searchKey)" >
-                            </div>
-                            <div class="col-sm-1">
-                                <button class="btn btn-primary" v-on:click="setSearch(searchKey)">검색</button>
-                            </div>
-                        </div>
-                    </div>
-				<router-link :to="{ path: '/register/createPage' }">
-				</router-link>
-			</div>
-		</div>
+	<div>
+		<Header title="차수 관리"
+			search-placeholder="고객사 명" @search="setSearch">
+			<!--<router-link :to="{ path: '/register/createPage' }"></router-link>-->
+		</Header>
 		<div class="row">
 			<div class="ibox content">
 				<div class="ibox-content">
@@ -97,6 +82,12 @@ import api from '@/common/api'
 import Dropdown from '../atom/Dropdown'
 import moment from 'moment'
 import Pagination from '@/components/atom/Pagination'
+import BatchSelection from "@/components/Common/BatchSelection"
+import CusIdField from "@/components/Common/CusIdField"
+import Header from "@/components/Common/Header"
+import Content from "@/components/Common/Content"
+import Table from "@/components/Common/Table"
+import ItemButton from "@/components/Common/ItemButton"
 
 	const hostId = window.location.hostname.split('.')[0].split('-')[1];
 
@@ -127,7 +118,14 @@ export default {
 		}
 	},
 	components: {
-		Dropdown, Pagination
+		Header,
+		Content,
+		CusIdField,
+		BatchSelection,
+		Table,
+		ItemButton,
+		Dropdown,
+		Pagination
 	},
 	async created () {
 

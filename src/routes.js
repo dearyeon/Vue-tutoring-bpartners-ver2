@@ -1,8 +1,8 @@
 import ApplyList from "@/components/Apply/ApplyList";
 import ApplyForm from "@/components/Batch/ApplyForm";
 import BatchForm from "@/components/Batch/BatchForm";
-import CustomerList from "@/components/Customer/CustomerList";
-import CustomerForm from "@/components/Customer/CustomerForm";
+import SiteList from "@/components/Site/SiteList";
+import SiteForm from "@/components/Site/SiteForm";
 import Main from "@/components/Main";
 import Login from "@/components/Login";
 import ReportList from "@/components/Report/ReportList";
@@ -29,9 +29,9 @@ const routes = [
 			{path: "/batch/applyEdit/:baIdx", name: "applyEdit", component: ApplyForm, props: true},
 			{path: "/batch/batchNew/:bsIdx/:company", name: "batchNew", component: BatchForm, props: true},
 			{path: "/batch/batchEdit/:bIdx", name: "batchEdit", component: BatchForm, props: true},
-			{path: '/site/list', name: "customerList", component: CustomerList},
-			{path: "/site/customerNew", name: "customerNew", component: CustomerForm, props: true},
-			{path: "/site/customerEdit/:idx", name: "customerEdit", component: CustomerForm, props: true},
+			{path: '/site/list', name: "siteList", component: SiteList},
+			{path: "/site/siteNew", name: "siteNew", component: SiteForm, props: true},
+			{path: "/site/siteEdit/:idx", name: "siteEdit", component: SiteForm, props: true},
 		],
 	},
 ];
