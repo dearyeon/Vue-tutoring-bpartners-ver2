@@ -1,29 +1,11 @@
 <template>
-	<div class="row">
-		<div class="col-lg-12">
-			<div class="ibox float-e-margins">
-				<div class="ibox-title" style="height: 65px;">
-					<div class="pull-left">
-						<h2>신청 관리</h2>
-					</div>
-					<div class="batch-selection">
-						<BatchSelection @change="refreshData" />
-					</div>
-          			<div class="pull-right">
-						<label class="btn btn-success btn-w-m" @click="exportFormat">
-							<div v-if="!loading1"> 포맷 다운로드</div>
-							<clip-loader :loading="loading1" color="rgba(0, 0, 0, 0.7)" size="15px"></clip-loader>
-						</label>&nbsp;
-            			
-						<label class="btn btn-primary btn-w-m" for="file">
-							<div v-if="!loading2">엑셀 업로드</div>
-							<clip-loader :loading="loading2" color="rgba(256, 256, 256, 0.7)" size="15px"></clip-loader>
-						</label>
-						<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="excel" @change="importExcel" />
-					</div>
-				</div>
-			</div>
-    	</div>
+	<div>
+		<Header title="신청 관리"
+			:use-batch-selection="true" @changeBatch="refreshData"
+			btn1-text="포맷 다운로드" @btn1click="exportFormat" btn1-variant="primary" :btn1-loading="false"
+			btn2-text="엑셀 업로드" @btn2click="$refs.file.click()" btn2-variant="primary" :btn2-loading="false">
+		</Header>
+		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="file" @change="importExcel" />
 
 		<div class="row">
 			<div class="ibox content">
@@ -99,11 +81,16 @@
 <script>
 import api from "@/common/api";
 import moment from 'moment'
-import BatchSelection from "@/components/Common/BatchSelection";
 import shared from "@/common/shared";
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 import XLSX from 'xlsx'
 import _ from 'lodash'
+import BatchSelection from "@/components/Common/BatchSelection"
+import CusIdField from "@/components/Common/CusIdField"
+import Header from "@/components/Common/Header"
+import Content from "@/components/Common/Content"
+import Table from "@/components/Common/Table"
+import ItemButton from "@/components/Common/ItemButton"
 
 export default {
 	data() {
@@ -121,7 +108,13 @@ export default {
 		};
 	},
 	components: {
-		BatchSelection, ClipLoader
+		Header,
+		Content,
+		CusIdField,
+		BatchSelection,
+		Table,
+		ItemButton,
+		ClipLoader
 	},
 	created() {
 		this.refreshData();
