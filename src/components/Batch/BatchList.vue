@@ -4,76 +4,51 @@
 			search-placeholder="고객사 명" @search="setSearch">
 			<!--<router-link :to="{ path: '/register/createPage' }"></router-link>-->
 		</Header>
-		<div class="row">
-			<div class="ibox content">
-				<div class="ibox-content">
-					<table class="table text-center table-hover dataTable">
-						<thead>
-						<tr>
-							<th class="text-center">No</th>
-							<th class="text-left">고객사</th>
-							<th class="text-left">담당자</th>
-							<th class="text-center" style="width:226px">회차</th>
-							<th class="text-center">달성률</th>
-							<th class="text-center">빌링</th>
-							<th class="text-center">현재상태</th>
-							<th class="text-center">신청시작일시</th>
-							<th class="text-center">신청종료일시</th>
-							<th class="text-center">수정일시</th>
-							<th class="text-center">차수관리</th>
-							<th class="text-center">신청양식설정</th>
-							<th class="text-center"></th>
-							<th class="text-center">URL</th>
-						</tr>
-						</thead>
-						<tbody>
-						<tr v-for="(item, index) in list" :key="`Register-${index}`">
-							<td>{{ index+1 }}</td>
-							<td class="text-left">{{ item.company }}</td>
-							<td class="text-left">{{ item.name }}</td>
-							<td>
-								<select v-model="item.selectedApplyIdx" v-if="item.batches.length" style="height:30px; width:100%">
-									<option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
-										{{apply.b_no}}회차 ({{moment(apply.fr_dt).format('YY.MM.DD')}}-{{moment(apply.to_dt).format('MM.DD')}}){{item.batches[item.selectedApplyIdx].del_yn?' 취소':''}}
-									</option>
-								</select>
-							</td>
-							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].target_rt?item.batches[item.selectedApplyIdx].target_rt+'%':''):'' }}</td>
-							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].use_billing?'빌링':''):'' }}</td>
-							<td><label :class="currentStatus(item,1)" style="width:60px;text-align: center">{{ currentStatus(item,0) }}</label></td>
-							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].fr_dt?moment(item.batches[item.selectedApplyIdx].fr_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
-							<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].to_dt?moment(item.batches[item.selectedApplyIdx].to_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
-							<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM'):'' }}</td>
-							<td class="text-left" style='white-space: nowrap;'>
-								<button class="btn btn-page-set" @click="createBatchPage(item.idx,item.company)">추가</button>
-								<button v-if="item.batches.length?(!!item.batches[item.selectedApplyIdx].idx):0" class="btn btn-page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)">수정</button>
-							</td>
-							<td style='white-space: nowrap'>
-								<div v-if="item.batches.length">
-									<button v-if="!!item.batches[item.selectedApplyIdx].apply" class="btn btn-page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)">페이지 수정</button>
-									<button v-else class="btn btn-page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)">페이지 등록</button>
-								</div>
-							</td>
-							<td>
-								<button class="btn btn-primary" v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="goToApplyPage(applyPageUrl(item,item.selectedApplyIdx)+'/7788')">신청 페이지</button>
-							</td>
-							<td>
-								<a v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="copyText($event,index)">{{applyPageUrl(item,item.selectedApplyIdx)}}</a>
-								<div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+index">
-									<a href="#" class="alert-link">클립보드에 복사되었습니다.</a>
-								</div>
-							</td>
-						</tr>
-						</tbody>
-					</table>
-				</div>
-				<div class="row">
-                    <div class="text-center">
-                        <Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage" />
-                    </div>
-                </div>
-			</div>
-		</div>
+
+		<Content>
+			<Table :headers="['No','고객사','담당자','회차','달성률','빌링','현재상태','신청시작일시','신청종료일시','수정일시','차수관리','신청양식설정','','URL']"
+					:data="list"
+					v-slot="{item, i}">
+				<td>{{ i + 1 }}</td>
+				<td>{{ item.company }}</td>
+				<td>{{ item.name }}</td>
+				<td>
+					<select v-model="item.selectedApplyIdx" v-if="item.batches.length" style="height:30px; width:100%">
+						<option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
+							{{apply.b_no}}회차 ({{moment(apply.fr_dt).format('YY.MM.DD')}}-{{moment(apply.to_dt).format('MM.DD')}}){{item.batches[item.selectedApplyIdx].del_yn?' 취소':''}}
+						</option>
+					</select>
+				</td>
+				<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].target_rt?item.batches[item.selectedApplyIdx].target_rt+'%':''):'' }}</td>
+				<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].use_billing?'빌링':''):'' }}</td>
+				<td><label :class="currentStatus(item,1)" style="width:60px;text-align: center">{{ currentStatus(item,0) }}</label></td>
+				<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].fr_dt?moment(item.batches[item.selectedApplyIdx].fr_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
+				<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].to_dt?moment(item.batches[item.selectedApplyIdx].to_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
+				<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM'):'' }}</td>
+				<td class="text-left" style='white-space: nowrap;'>
+					<ItemButton text="추가" variant="page-set" @click="createBatchPage(item.idx,item.company)" />
+					<ItemButton v-if="item.batches.length?(!!item.batches[item.selectedApplyIdx].idx):0" text="수정" variant="page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)" />
+				</td>
+
+				<td style='white-space: nowrap'>
+					<div v-if="item.batches.length">
+						<ItemButton v-if="!!item.batches[item.selectedApplyIdx].apply" text="페이지 수정" variant="page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)" />
+						<ItemButton v-else text="페이지 등록" variant="page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)" />
+					</div>
+				</td>
+				<td>
+					<ItemButton v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" text="신청 페이지" variant="primary" @click="goToApplyPage(applyPageUrl(item,item.selectedApplyIdx)+'/7788')" />
+				</td>
+				<td>
+					<a v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="copyText($event,index)">{{applyPageUrl(item,item.selectedApplyIdx)}}</a>
+					<div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+index">
+						<a href="#" class="alert-link">클립보드에 복사되었습니다.</a>
+					</div>
+				</td>
+			</Table>
+		</Content>
+
+		<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage" />
 	</div>
 </template>
 

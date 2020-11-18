@@ -46,12 +46,7 @@
 			</Table>
 		</Content>
 
-		<div class="row">
-			<div class="text-center">
-				<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)"
-							@returnPage="setCurrentPage"/>
-			</div>
-		</div>
+		<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage"/>
 
 		<UserInfoModal style="" :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
 		
