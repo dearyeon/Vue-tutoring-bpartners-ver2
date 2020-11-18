@@ -9,95 +9,34 @@
 				<h4 v-if="batches.length" class="col-lg-8">{{ batch.charge_dt ? batch.charge_dt : '-' }}</h4>
 			</span>
 		</Header>
+
+		<Content>
+			<Table :headers="['No','주문번호','학생','수강권','결제금액','사용될카드','상태','집행일시','집행카드','집행TID/실패사유','관리메모','메모수정']"
+				:data="orders"
+					v-slot="{item, i}">
+				<td>{{ i + 1 }}</td>
+				<td>{{ item.idx }}</td>
+				<td>{{ item.user.name }}</td>
+				<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
+				<td>{{ $shared.nf(item.goods.charge_price) }}</td>
+				<td><ItemButton :text="item.user.card_name?'변경':'등록'"
+								:variant="item.user.card_name?'default':'danger'"
+								@click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]" />
+					<span>{{ item.user.card_name }}{{ item.user.card_no_masked }}/{{ cardTypeLabel[item.user.card_type] }}</span>
+				</td>
+				<td><ItemButton v-if="item.charge_status" :text="chargeBtnStatus(item.charge_status).text"
+								:variant="chargeBtnStatus(item.charge_status).class"
+								@click="[setCurrentItem(item), chargeBtnStatus(item.charge_status).click && chargeBtnStatus(item.charge_status).click()]" />
+				</td>
+				<td>{{ item.charged_dt }}</td>
+				<td>{{ item.charged_info && item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불")) }}</td>
+				<td :class="{'text-danger':item.charged_bill_dump}">{{ item.charged_t_id ? item.charged_t_id : item.charged_bill_dump }}</td>
+				<td>{{ item.mng_memo }}</td>
+				<td><ItemButton text="수정" variant="default" @click="[setCurrentItem(item), (isPenaltyCharge=false), (memo=(item.mng_memo)), $refs.modalMemo.open()]" /></td>
+
+			</Table>
+		</Content>
 		
-		<div class="row">
-			<div class="ibox content">
-				<div class="ibox-content pull-right">
-					<div class="col-lg-auto">
-						<div class="pull-right text-left col-lg-4" style="margin-left:40px;">
-							<h3 class="col-lg-4">정기결제일시</h3>
-							<h4 v-if="batches.length" class="col-lg-8">{{
-								batch.charge_dt ? batch.charge_dt : '-'
-							}}</h4>
-						</div>
-					</div>
-					<div class="col-lg-12">
-						<div class="panel-body">
-							<div class="row">
-								<table class="table table-striped table-hover dataTable">
-									<thead>
-									<tr>
-										<th>No</th>
-										<th>주문번호</th>
-										<th>학생</th>
-										<th>수강권</th>
-										<th>결제금액</th>
-										<th>사용될카드</th>
-										<th>상태</th>
-										<th>집행일시</th>
-										<th>집행카드</th>
-										<th>집행TID/실패사유</th>
-										<th>관리메모</th>
-										<th>메모수정</th>
-									</tr>
-									</thead>
-									<tbody id="chargeInfoList">
-									<!--정기 결제 -->
-									<tr v-for="(item, index) in orders"
-										:key="`biillingDetailItem-${index}`" v-show="setSearch(item)">
-										<td>{{ index + 1 }}</td>
-										<td>{{ item.idx }}</td>
-										<td>{{ item.user.name }}</td>
-										<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
-										<td>{{ $shared.nf(item.goods.charge_price) }}</td>
-										<td>
-											<button
-												:class="{'btn':true, 'btn-outline':true, 'btn-default':item.user.card_name, 'btn-danger':!item.user.card_name}"
-												@click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]">
-												{{ item.user.card_name ? '변경' : '등록' }}
-											</button>
-											<span>
-												{{ item.user.card_name }}{{ item.user.card_no_masked }}/{{ cardTypeLabel[item.user.card_type] }}
-											</span>
-										</td>
-										<td>
-											<button v-if="item.charge_status"
-													class="btn"
-													:class="chargeBtnStatus(item.charge_status).class"
-													@click="[setCurrentItem(item), chargeBtnStatus(item.charge_status).click && chargeBtnStatus(item.charge_status).click()]"
-											>
-												{{ chargeBtnStatus(item.charge_status).text }}
-											</button>
-										</td>
-										<td>{{ item.charged_dt }}</td>
-										<td>
-											{{
-												item.charged_info &&
-												item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불"))
-											}}
-										</td>
-										<td :class="{'text-danger':item.charged_bill_dump}">
-											{{ item.charged_t_id ? item.charged_t_id : item.charged_bill_dump }}
-										</td>
-										<td>{{ item.mng_memo }}</td>
-										<td>
-											<button class="btn btn-default"
-													@click="[setCurrentItem(item), (isPenaltyCharge=false), (memo=(item.mng_memo)), $refs.modalMemo.open()]">
-												수정
-											</button>
-										</td>
-									</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-
-
 		<Modal ref="modalWaitPayment" v-cloak>
 			<div slot="body" style="align-items:center">
 				<h1><strong>작업을 선택해주세요.</strong></h1>
@@ -245,10 +184,10 @@ export default {
 		}
 	},
 	methods: {
-		refresh: async function () {
+		refresh: async function (sk) {
 			const bbIdx = shared.getCurBatch().idx;
-			let res
-			res = await api.get('/partners/chargeOrderList', {bbIdx})
+			const params = search?{bbIdx, sk}:{bbIdx}
+			let res = await api.get('/partners/chargeOrderList',params)
 			this.orders = res.data.orders;
 			this.batches = res.data.batches;
 			this.batch = this.batches.find(element => element.idx === bbIdx);
@@ -611,8 +550,8 @@ export default {
 				}
 			})
 		},
-		setSearch(item) {
-			return !item.user.name.indexOf(this.search)
+		setSearch(search) {
+			this.refresh(search)
 		},
 	},
 	computed: {
@@ -623,11 +562,11 @@ export default {
 					text: '결제 대기',
 					click: this.$refs.modalWaitPayment.open
 				}
-				if (status === 'P') return {class: 'btn-warning', text: '일시 정지', click: this.pausePayment}
-				if (status === 'F') return {class: 'btn-danger', text: '결제 실패', click: this.paymentFailed}
-				if (status === 'S') return {class: 'btn-page-set', text: '결제 성공', click: this.$refs.modalOnSuccess.open}
-				if (status === 'N') return {class: 'btn-default', text: '대상 아님'}
-				if (status === 'R') return {class: 'btn-info disabled', text: '환불 완료'}
+				if (status === 'P') return {class: 'warning', text: '일시 정지', click: this.pausePayment}
+				if (status === 'F') return {class: 'danger', text: '결제 실패', click: this.paymentFailed}
+				if (status === 'S') return {class: 'page-set', text: '결제 성공', click: this.$refs.modalOnSuccess.open}
+				if (status === 'N') return {class: 'default', text: '대상 아님'}
+				if (status === 'R') return {class: 'info disabled', text: '환불 완료'}
 				return {class: '', text: ''} //status === "R"
 			}
 		},
