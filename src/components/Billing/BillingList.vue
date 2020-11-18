@@ -2,7 +2,7 @@
 	<div>
 		<Header title="정기 결제 관리"
 			:use-batch-selection="true" @changeBatch="refresh"
-			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
+			search-placeholder="이름을 입력하세요." @search="setSearch"
 			btn1-text="결제 대기건 일괄 결제" @btn1-click="chargeBatch" btn1-variant="primary" :btn1-loading="false">
 			<span>
 				<h3 class="col-lg-4">정기결제일시</h3>
@@ -186,7 +186,7 @@ export default {
 	methods: {
 		refresh: async function (sk) {
 			const bbIdx = shared.getCurBatch().idx;
-			const params = search?{bbIdx, sk}:{bbIdx}
+			const params = sk?{bbIdx, sk}:{bbIdx}
 			let res = await api.get('/partners/chargeOrderList',params)
 			this.orders = res.data.orders;
 			this.batches = res.data.batches;
