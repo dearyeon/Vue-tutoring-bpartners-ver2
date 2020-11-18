@@ -40,8 +40,8 @@
 					<ItemButton v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" text="신청 페이지" variant="primary" @click="goToApplyPage(applyPageUrl(item,item.selectedApplyIdx)+'/7788')" />
 				</td>
 				<td>
-					<a v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="copyText($event,index)">{{applyPageUrl(item,item.selectedApplyIdx)}}</a>
-					<div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+index">
+					<a v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="copyText($event,i)">{{applyPageUrl(item,item.selectedApplyIdx)}}</a>
+					<div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+i">
 						<a href="#" class="alert-link">클립보드에 복사되었습니다.</a>
 					</div>
 				</td>

@@ -4,57 +4,24 @@
                 search-placeholder="고객사 명" @search="setSearch"
                 btn1-text="고객사 등록" @btn1click="createCustomerPage" btn1-variant="success" :btn1-loading="false">
         </Header>
-        <div class="col-lg-12">
-            <div class="ibox float-e-margins">
 
-                <div class="row">
-                    <div class="ibox content">
-                        <div class="ibox-content">
-                            <div class="row ibox-content">
-                                <table class="table table-hover dataTable">
-                                    <thead>
-                                    <tr>
-                                        <th style="width:20px"></th>
-                                        <th class="pagesubmit sorting" field="order" value="company" @click="$shared.sortBy(items, 'company')">고객사 명</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="name" @click="$shared.sortBy(items, 'name')">담당자 이름</th>
-                                        <th class="pagesubmit text-center" value="part">부서</th>
-                                        <th class="pagesubmit text-center" value="tel">전화번호</th>
-                                        <th class="pagesubmit text-center" value="email">이메일</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="fr_dt" @click="$shared.sortBy(items, 'reg_dt')">등록일자</th>
-                                        <th class="pagesubmit sorting text-center" field="order" value="to_dt" @click="$shared.sortBy(items, 'upd_dt')">수정일자</th>
-                                        <th class="pagesubmit text-center">고객사수정</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="hover-pointer LESSON_INFO" v-for="(item, index) in items" :key="`Customer-${index}`" @click="editCustomerPage(item.idx)">
-                                            <td>
-                                                <img alt="image" class="img-rounded" :src="$shared.getSiteImgThumbnailUrl(item.ci_img)" style="width:20px;height:20px;">
-                                            </td>
-                                            <td>{{ item.company }}</td>
-                                            <td class="text-center">{{ item.name }}</td>
-                                            <td class="text-center">{{ item.part }}</td>
-                                            <td class="text-center">{{ item.tel }}</td>
-                                            <td class="text-center">{{ item.email }}</td>
-                                            <td class="text-center">{{ item.reg_dt?moment(item.reg_dt).format('YYYY-MM-DD'):'' }}</td>
-                                            <td class="text-center">{{ item.upd_dt?moment(item.upd_dt).format('YYYY-MM-DD'):'' }}</td>
-                                            <td class="text-center"><button class="btn btn-edit">수정</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="row">
-                        <div class="text-center">
-                            <Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <Content>
+            <Table :headers="['','고객사 명','담당자 이름','부서','전화번호','이메일','등록일자','수정일자','고객사수정']"
+                :data="items"
+                    v-slot="{item}">
+                <td><img alt="image" class="img-rounded" :src="$shared.getSiteImgThumbnailUrl(item.ci_img)" style="width:20px;height:20px;"></td>
+                <td>{{ item.company }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.part }}</td>
+                <td>{{ item.tel }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.reg_dt?moment(item.reg_dt).format('YYYY-MM-DD'):'' }}</td>
+                <td>{{ item.upd_dt?moment(item.upd_dt).format('YYYY-MM-DD'):'' }}</td>
+                <td><ItemButton text="수정" variant="edit" @click="editCustomerPage(item.idx)" /></td>
+            </Table>
+        </Content>
+        
+        <Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage" />
         <AddSiteModal v-if="showModal" @close="openModal" @update="updateItem"/>
     </div>
 </template>
