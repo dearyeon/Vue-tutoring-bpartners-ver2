@@ -2,135 +2,59 @@
 	<div>
 		<Header title="수업 현황"
 				:use-batch-selection="true" @changeBatch="refresh"
-				@search="refresh" search-placeholder="이름 or 고객식별ID"
-				btn1-text="학습현황 메일 일괄 발송" @btn1click="openModal" btn1-variant="success" :btn1-loading="false"
-				btn2-text="엑셀 다운로드" @btn2click="exportExcel" btn2-variant="success" :btn2-loading="false">
+				@search="setSearch" search-placeholder="이름 or 고객식별ID"
+				btn1-text="학습현황 메일 일괄 발송" @btn1click="openModal" btn1-variant="success"
+				btn2-text="엑셀 다운로드" @btn2click="exportExcel" btn2-variant="success" :btn2-loading="loading">
 		</Header>
 
-			
-		<div class="row">
-			<div class="col-lg-12 sub-title">
-				<div class="ibox-content">
 
-					<div class="row">
-						<table class="table table-striped table-hover dataTable">
-							<thead>
-							<tr>
-								<th>No</th>
-								<th class="pagesubmit sorting" field="order" value="name">성명</th>
-								<!--@click="sortBy('name')"-->
-								<th class="pagesubmit sorting" field="order" value="lesson_rate">달성률</th>
-								<!-- lesson_rate? -->
-								<th class="pagesubmit sorting text-center" field="order" value="lesson_min">수업</th>
-								<th class="pagesubmit sorting" field="order" value="total_min">전체</th>
-								<th class="pagesubmit sorting" field="order" value="email">고객식별ID</th>
-								<th>학습 레벨</th>
-								<th class="pagesubmit sorting" field="order" value="part">부서</th>
-								<th class="pagesubmit sorting" field="order" value="position">직위<br/>(직책)</th>
-								<th class="pagesubmit sorting" field="order" value="position">사번<br/>(고유값)</th>
-								<th class="text-center">메모1</th>
-								<th class="text-center">메모2</th>
-								<th style="width:35%">
-									수업 히스토리(횟수)
-									<div class="pull-right">
-										<div class="square square-empty"></div>
-										<div class="pull-left">미진행</div>
-										<div class="square square-pull"></div>
-										<div class="pull-left">수업완료(3분이상)</div>
-									</div>
-								</th>
-							</tr>
-							</thead>
-
-							<tbody>
-							<tr class="text-center" v-for="(item,index) in items" :key="item.id">
-								<td>{{ index + 1 }}</td>
-								<td class="userInfo hover-pointer" @click="openUserInfo(item)">{{
-										item.user.name
-									}}
-								</td>
-								<td>
-									<span class="lesson-rate">{{ item.attend_pct }}%</span>
-								</td>
-								<td>
-									{{
-										item.use_ticket_info && item.ticket_summary ? item.goods.charge_plan.secs_per_day * (item.use_ticket_info.length + 1) - parseInt(item.ticket_summary.sum_remain_secs / 60) : '-'
-									}}분/
-									{{ item.ticket_summary ? item.ticket_summary.use_ticket_cnt : '-' }}회
-								</td>
-								<td>
-									{{
-										item.goods ? item.goods.charge_plan.ticket_cnt * parseInt(item.goods.charge_plan.secs_per_day / 60) : ''
-									}}분/
-									{{ item.goods ? item.goods.charge_plan.ticket_cnt : '' }}회
-								</td>
-								<td>{{ item.user.app_user ? item.user.app_user.cus_id : '' }}</td>
-								<td>{{ item.user.app_user ? item.user.app_user.level : '' }}</td>
-								<td>{{ item.user.department }}</td>
-								<td>{{ item.user.position }}</td>
-								<td>{{ item.user.emp_no }}</td>
-								<td @click="[memoNum=true,setMemo(item.user)]">
-									<div class="memo" v-if="item.user.memo1">{{
-											item.user.memo1.length > 6 ? item.user.memo1.substring(0, 6) + '...' : item.user.memo1
-										}}
-									</div>
-									<div v-else>
-										<button class="btn-xs btn-default">등록</button>
-									</div>
-								</td>
-								<td @click="[memoNum=false,setMemo(item.user)]">
-									<div class="memo" v-if="item.user.memo2">{{
-											item.user.memo2.length > 6 ? item.user.memo2.substring(0, 6) + '...' : item.user.memo2
-										}}
-									</div>
-									<div v-else>
-										<button class="btn-xs btn-default">등록</button>
-									</div>
-								</td>
-								<td>
-									<div v-for="i in calBatchDate()" :key="i.id">
-										<div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)"
-												:data-tooltip="useDtTooltip(i-1,item)"></div>
-										<div class="square square-empty" v-else></div>
-									</div>
-								</td>
-							</tr>
-							</tbody>
-						</table>
+		<Content>
+			<Table :headers="['No','이름','달성률','수업','전체','고객식별ID','학습 레벨','부서','직위(직책)','사번(고유값)','메모1','메모2','수업 히스토리(횟수)']"
+				:data="items"
+					v-slot="{item, i}">
+				<td>{{ i + 1 }}</td>
+				<td @click="openUserInfo(item)">{{ item.user.name }}</td>
+				<td>{{ item.attend_pct }}%</td>
+				<td>
+					{{ item.use_ticket_info && item.ticket_summary ? item.goods.charge_plan.secs_per_day * (item.use_ticket_info.length + 1) - parseInt(item.ticket_summary.sum_remain_secs / 60) : '-'}}분/
+					{{ item.ticket_summary ? item.ticket_summary.use_ticket_cnt : '-' }}회
+				</td>
+				<td>
+					{{ item.goods ? item.goods.charge_plan.ticket_cnt * parseInt(item.goods.charge_plan.secs_per_day / 60) : '' }}분/
+					{{ item.goods ? item.goods.charge_plan.ticket_cnt : '' }}회
+				</td>
+				<td>{{ item.user.app_user ? item.user.app_user.cus_id : '' }}</td>
+				<td>{{ item.user.app_user ? item.user.app_user.level : '' }}</td>
+				<td>{{ item.user.department }}</td>
+				<td>{{ item.user.position }}</td>
+				<td>{{ item.user.emp_no }}</td>
+				<td @click="[memoNum=true,setMemo(item.user)]">
+					<div class="memo" v-if="item.user.memo1">{{item.user.memo1.length > 6 ? item.user.memo1.substring(0, 6) + '...' : item.user.memo1}}</div>
+					<div v-else><button class="btn-xs btn-default">등록</button></div>
+				</td>
+				<td @click="[memoNum=false,setMemo(item.user)]">
+					<div class="memo" v-if="item.user.memo2">{{item.user.memo2.length > 6 ? item.user.memo2.substring(0, 6) + '...' : item.user.memo2}}</div>
+					<div v-else><button class="btn-xs btn-default">등록</button></div>
+				</td>
+				<td>
+					<div v-for="i in calBatchDate()" :key="i.id">
+						<div class="square square-pull" v-if="isUseDt(i-1,item.use_ticket_info)"
+								:data-tooltip="useDtTooltip(i-1,item)"></div>
+						<div class="square square-empty" v-else></div>
 					</div>
-				</div>
-			</div>
-		</div>
-		<div>
-			<div class="row">
-				<div class="text-center">
-					<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)"
-								@returnPage="setCurrentPage"/>
-				</div>
+				</td>
+			</Table>
+		</Content>
+
+		<div class="row">
+			<div class="text-center">
+				<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)"
+							@returnPage="setCurrentPage"/>
 			</div>
 		</div>
 
 		<UserInfoModal style="" :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
-		<!--div class="modal inmodal fade in"  style="display: block;" v-if="showModal">
-		  <div class="modal-dialog modal-lg">
-			<div class="modal-content" style="width:100%">
-			  <div class="modal-header" style="border-bottom:0px;padding-bottom: 15px;">
-				<button type="button" class="close" data-dismiss="modal">
-				  <span aria-hidden="true" @click="closeModal">&times;</span>
-				  <span class="sr-only">Close</span>
-				</button>
-				<br />
-			  </div>
-			  <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px; width:100%">
-			  </div>
-			  <div class="modal-footer" style="border-top:0px">
-				<button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;" @click="openModify">학생 수정</button>
-				<button type="button" class="btn btn-white" data-dismiss="modal" @click="closeModal">닫기</button>
-			  </div>
-			  <UserModifyModal v-if="showModify" :item="modalitem" @update="updateItem" @close="openModify"/>
-			</div>
-		  </div>
-		</div>-->
+		
 
 		<div class="modal inmodal fade in" id="addSiteModal" style="display: block;" v-show="showMemo">
 			<div class="modal-dialog modal-sm">
@@ -218,29 +142,13 @@ export default {
 			this.items = res.data.orders.data
 			this.batch = res.data.batch;
 		},
-		routeDetailPage(event) {
-			if (this.batches.length) {
-				let bbIdx;
-				if (event) bbIdx = this.batches[event.target.value].idx;
-				else bbIdx = this.batches[0].idx;
-				this.$router.push({
-					name: 'lessonDetailsList',
-					params: {bbIdx: bbIdx}
-				})
-				this.refresh();
-			}
-		},
-		async setSearch() {
-			const res = await api.get('/partners/reportList', {bbIdx: this.curBBIdx, sk: this.search})
+		async setSearch(sk) {
+			console.log(sk);
+			const res = await api.get('/partners/reportList', {bbIdx: this.curBBIdx, sk: sk})
+			console.log(res);
 			this.items = res.data.orders.data
 			this.current_page = res.data.orders.current_page
 			this.total_page = res.data.orders.last_page
-		},
-		sortBy(sortKey) {
-			this.sortKey === sortKey ? this.items.reverse() : this.items.sort(function (a, b) {
-				return a.userInfo[sortKey] < b.userInfo[sortKey] ? -1 : a.userInfo[sortKey] > b.userInfo[sortKey] ? 1 : 0;
-			});
-			this.sortKey = sortKey;
 		},
 		calBatchDate() {
 			const a = moment(this.batch.fr_dt);
