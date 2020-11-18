@@ -24,7 +24,7 @@
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price - item.goods.charge_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.charge_price) : '' }}</td>
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
-				<td v-if="item.idx === 14321"><ItemButton text="취소" variant="danger" @click="" /></td>
+				<td v-if="item.del_yn"><ItemButton text="취소" variant="danger" @click="" /></td>
 				<td v-else><ItemButton text="복원" variant="primary" @click="" /></td>
 			</Table>
 		</Content>
@@ -83,8 +83,9 @@ export default {
       		this.batches = data.batches;
 			this.cfs = data.cfs;
 			this.orders = data.orders;
-			this.orders.forEach(element => { //TODO
-				if(element.idx === 14321) this.cancelOrders.push(element)
+			this.cancelOrders = [];
+			this.orders.forEach(element => {
+				if(element.del_yn) this.cancelOrders.push(element)
 			});
 		},
 		getGTP(type, val) {
