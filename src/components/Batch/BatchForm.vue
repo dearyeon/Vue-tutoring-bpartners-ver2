@@ -114,21 +114,27 @@
 												<input class="form-control" type="text" v-model="item.list_price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
 											</td>
 											<td>
-												<div class="input-w-text">
-													<input class="form-control" type="text" v-model="item.dc_rt" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-													<p>%</p>
+												<div class="input-w-text row">
+													<span class="col-md-8 no-padding">
+														<input class="form-control" type="text" v-model="item.dc_rt" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+													</span>
+													<span class="col-md-4">%</span>
 												</div>
 											</td>
 											<td>
-												<div class="input-w-text">
-													<input class="form-control" type="text" v-model="item.supply_price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-													<p>원</p>
+												<div class="input-w-text row">
+													<span class="col-md-8 no-padding">
+														<input class="form-control" type="text" v-model="item.supply_price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+													</span>
+													<span class="col-md-4">원</span>
 												</div>
 											</td>
 											<td>
-												<div class="input-w-text">
-													<input class="form-control" type="text" v-model="item.charge_price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
-													<p>원</p>
+												<div class="input-w-text row">
+													<span class="col-md-8 no-padding">
+														<input class="form-control" type="text" v-model="item.charge_price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+													</span>
+													<span class="col-md-4">원</span>
 												</div>
 											</td>
 											<td class="text-center">
@@ -145,7 +151,7 @@
 
 					</div>
 
-					<div class="form-group">
+					<div class="form-group row">
 						<h3 class="col-sm-1 control-label">결제 여부</h3>
 						<div class="col-sm-10">
 							<div class="switch">
@@ -236,7 +242,7 @@
 			if(this.$route.params.bsIdx) {
 				this.isNew = true
 				this.company = this.$route.params.company
-				this.getBacthApi()
+				this.getBacthApi(this.$route.params.bsIdx)
 			}
 
 		},
@@ -314,26 +320,47 @@
 				this.getBacthApi(idx)
 			},
 
-			async getBacthApi (bIdx) {
-				const goodsList = await api.get('/partners/chargePlanList');
+			async getBacthApi (idx) {
+				const {data:goodsList} = await api.get('/partners/chargePlanList');
+				this.goodsList = goodsList
 
-				if(bIdx) {
-					const res = await api.get('/partners/batch', { idx: bIdx })
-					this.company = res.data.site.company
-					this.batchFrDt = moment(res.data.fr_dt).format('YYYY-MM-DD')
-					this.batchToDt = moment(res.data.to_dt).format('YYYY-MM-DD')
-					this.targetRt = res.data.target_rt
-					this.selfChargeRt = res.data.self_charge_rt
-					this.useBilling = res.data.use_billing
-					this.chargeDt = res.data.charge_dt
-					this.pchargeDt = res.data.pcharge_dt
+				if(idx === this.$route.params.bIdx) {
+					const {result, data} = await api.get('/partners/batch', { idx: idx })
+					if(result === 2000) {
+						this.company = data.site.company
+						this.batchFrDt = moment(data.fr_dt).format('YYYY-MM-DD')
+						this.batchToDt = moment(data.to_dt).format('YYYY-MM-DD')
+						this.targetRt = data.target_rt
+						this.selfChargeRt = data.self_charge_rt
+						this.useBilling = data.use_billing
+						this.chargeDt = data.charge_dt
+						this.pchargeDt = data.pcharge_dt
 
-					this.storedGoodsList = res.data.goods
-					this.newGoodsList = []
-					this.isCancel = res.data.del_yn
+						this.storedGoodsList = data.goods
+						this.newGoodsList = []
+						this.isCancel = data.del_yn
+					}
+
+				} else {
+
+					const {result, data} = await api.get('/partners/batch', { bsIdx: idx })
+					if(result === 2000) {
+						this.company = data.site.company
+						this.batchFrDt = moment(data.fr_dt).format('YYYY-MM-DD')
+						this.batchToDt = moment(data.to_dt).format('YYYY-MM-DD')
+						this.targetRt = data.target_rt
+						this.selfChargeRt = data.self_charge_rt
+						this.useBilling = data.use_billing
+						this.chargeDt = data.charge_dt
+						this.pchargeDt = data.pcharge_dt
+
+						this.storedGoodsList = data.goods
+						this.newGoodsList = []
+						this.isCancel = data.del_yn
+					}
+
 				}
 
-				this.goodsList = goodsList.data
 			},
 
 			addSelectedGoods (event) {

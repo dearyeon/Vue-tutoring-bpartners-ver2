@@ -33,7 +33,7 @@
 				<td style='white-space: nowrap'>
 					<div v-if="item.batches.length">
 						<ItemButton v-if="!!item.batches[item.selectedApplyIdx].apply" text="페이지 수정" variant="page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)" />
-						<ItemButton v-else text="페이지 등록" variant="page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx)" />
+						<ItemButton v-else text="페이지 등록" variant="page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx, item.idx)" />
 					</div>
 				</td>
 				<td>
@@ -176,10 +176,10 @@ export default {
 				params: { baIdx: baIdx }
 			})
 		},
-		createApplyPage(bIdx) {
+		createApplyPage(bIdx, bsIdx) {
 			this.$router.push({
 				name: 'applyNew',
-				params: { bIdx: bIdx }
+				params: { bIdx: bIdx}
 			})
 		},
 		async setSearch(input) {
