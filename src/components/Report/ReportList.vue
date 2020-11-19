@@ -16,14 +16,14 @@
 				<td @click="openUserInfo(item)">{{ item.user.name }}</td>
 				<td>{{ item.attend_pct }}%</td>
 				<td>
-					{{ item.use_ticket_info && item.ticket_summary ? item.goods.charge_plan.secs_per_day * (item.use_ticket_info.length + 1) - parseInt(item.ticket_summary.sum_remain_secs / 60) : '-'}}분/
+					{{ item.use_ticket_info && item.ticket_summary ? parseInt(item.goods.charge_plan.secs_per_day/60) * (item.use_ticket_info.length + 1) - parseInt(item.ticket_summary.sum_remain_secs / 60) : '-'}}분/
 					{{ item.ticket_summary ? item.ticket_summary.use_ticket_cnt : '-' }}회
 				</td>
 				<td>
 					{{ item.goods ? item.goods.charge_plan.ticket_cnt * parseInt(item.goods.charge_plan.secs_per_day / 60) : '' }}분/
 					{{ item.goods ? item.goods.charge_plan.ticket_cnt : '' }}회
 				</td>
-				<td>{{ item.user.app_user ? item.user.app_user.cus_id : '' }}</td>
+				<td><CusIdField :user="item.user.app_user"></CusIdField></td>
 				<td>{{ item.user.app_user ? item.user.app_user.level : '' }}</td>
 				<td>{{ item.user.department }}</td>
 				<td>{{ item.user.position }}</td>

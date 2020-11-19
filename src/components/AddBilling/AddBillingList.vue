@@ -8,11 +8,11 @@
 			<span>
 				<div class="col-lg-12">
 					<h3 class="col-lg-4">추가결제일시</h3>
-					<h4 v-if="batches.length" class="col-lg-8">{{ batch.pcharge_dt ? batch.pcharge_dt : '-' }}{{batch}}</h4>
+					<h4 class="col-lg-8">{{ batch ? batch.pcharge_dt : '-' }}</h4>
 				</div>
 				<div class="col-lg-12">
 					<h3 class="col-lg-4">기준출석률</h3>
-					<h4 v-if="batches.length" class="col-lg-8">{{ batch.target_rt ? batch.target_rt + '%' : '-' }}</h4>
+					<h4 class="col-lg-8">{{ batch ? batch.target_rt + '%' : '-' }}</h4>
 				</div>
 			</span>
 		</Header>
@@ -180,7 +180,6 @@ export default {
 			currentItem: {
 				user: {}
 			},
-			batches: [],
 			batch: null,
 			company: '',
 			memo: '',
@@ -196,8 +195,9 @@ export default {
 			const bbIdx = shared.getCurBatch().idx;
 			const params = sk?{bbIdx, sk}:{bbIdx}
 			let res = await api.get('/partners/pchargeOrderList', params)
-			this.orders = res.data.orders;
+			this.orders = res.data.orders
 			this.listInfo = res.data.list
+			this.batch = res.data.batches.find(element => element.idx === bbIdx)
 		},
 		pausePayment: function () {
 			this.$swal

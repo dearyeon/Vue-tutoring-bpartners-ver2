@@ -3,10 +3,10 @@
 		<Header title="정기 결제 관리"
 			:use-batch-selection="true" @changeBatch="refresh"
 			search-placeholder="이름을 입력하세요." @search="setSearch"
-			btn1-text="결제 대기건 일괄 결제" @btn1-click="chargeBatch" btn1-variant="primary" :btn1-loading="false">
+			btn1-text="결제 대기건 일괄 결제" @btn1click="chargeBatch" btn1-variant="primary" :btn1-loading="false">
 			<span>
 				<h3 class="col-lg-4">정기결제일시</h3>
-				<h4 v-if="batches.length" class="col-lg-8">{{ batch.charge_dt ? batch.charge_dt : '-' }}</h4>
+				<h4 class="col-lg-8">{{ batch ? batch.charge_dt : '-' }}</h4>
 			</span>
 		</Header>
 
@@ -172,7 +172,6 @@ export default {
 			currentItem: {
 				user: {}
 			},
-			batches: [],
 			batch: null,
 			company: '',
 			memo: '',
@@ -189,8 +188,7 @@ export default {
 			const params = sk?{bbIdx, sk}:{bbIdx}
 			let res = await api.get('/partners/chargeOrderList',params)
 			this.orders = res.data.orders;
-			this.batches = res.data.batches;
-			this.batch = this.batches.find(element => element.idx === bbIdx);
+			this.batch = res.data.batches.find(element => element.idx === bbIdx);
 			this.company = res.data.company;
 			this.listInfo = res.data.list
 		},
