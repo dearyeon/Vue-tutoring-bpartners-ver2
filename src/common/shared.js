@@ -58,6 +58,14 @@ const shared = {
         Vue.swal(msg).then(()=>{
             location = '/'
         })
+    },
+    async getUserInfo(item) {
+        const res = await api.get('/partners/report', {
+            uIdx: item.user.idx,
+            bIdx: this.getCurBatch().idx,
+            bbgIdx: item.goods.idx
+        })
+        return res.data
     }
 }
 

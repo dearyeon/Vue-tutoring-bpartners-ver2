@@ -74,8 +74,8 @@
 
 <script>
 import api from "@/common/api"
-import UserInfoModal from "@/components/Report/UserInfoModal"
-import UserModifyModal from "@/components/Report/UserModifyModal"
+import UserInfoModal from "@/components/Modal/UserInfoModal"
+import UserModifyModal from "@/components/Modal/UserModifyModal"
 import Pagination from "@/components/atom/Pagination"
 import moment from 'moment'
 import XLSX from 'xlsx'
@@ -251,13 +251,8 @@ export default {
 			});
 		},
 		async openUserInfo(item) {
-			const res = await api.get('/partners/report', {
-				uIdx: item.user.idx,
-				bIdx: this.curBBIdx,
-				bbgIdx: item.goods.idx
-			})
-			this.modalitem = res.data;
-			this.showModal = !this.showModal;
+			this.modalitem = await shared.getUserInfo(item)
+			this.showModal = !this.showModal
 		},
 		closeModal() {
 			this.showModal = !this.showModal;

@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import UserModifyModal from "@/components/Report/UserModifyModal"
+import UserModifyModal from "@/components/Modal/UserModifyModal"
 import moment from 'moment'
 export default {
     data() {
