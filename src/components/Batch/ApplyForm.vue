@@ -199,38 +199,70 @@ export default {
 		draggable, DatePicker
 	},
 	async created () {
-		this.getApplyPageApi()
+		// 수정
+		if(this.$route.params.baIdx) {
+			this.getApplyPageApi(this.$route.params.baIdx)
+		}
+
+		// 생성
+		if(this.$route.params.bIdx && this.$route.params.bsIdx) {
+			this.getApplyPageApi(this.$route.params.bsIdx)
+		}
+
+		// this.getApplyPageApi()
 	},
 	methods: {
 		refresh: async function () {
 			this.getApplyPageApi()
 		},
-		getApplyPageApi: async function () {
-			const applyPageFormParams = []
-			applyPageFormParams['baIdx'] = this.$route.params.bIdx ? this.$route.params.bIdx : this.$route.params.baIdx
-			if (this.$route.params.baIdx) {
-				const res = await api.get('/partners/apply', { idx: this.$route.params.baIdx })
-				const data = res.data
-				this.accessCode = data.access_code
-				this.emailDomain = data.email_domain
-				this.contacts = data.contacts
-				this.notice = data.notice
-				this.billNotice = data.bill_notice
-				this.applyFrDt = data.apply_fr_dt
-				this.applyToDt = data.apply_to_dt
-				this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)]
-				this.openYn = data.open_yn ? true : false
-				this.limitCnt = data.limit_cnt
-				this.applyerFormList = data.user_fields
+		getApplyPageApi: async function (idx) {
 
-				let cfCount = this.cfCnt
-				this.applyerFormList.forEach(function (item) {
-					item['isCf'] = false
-					if (item.col_id.slice(0, 2) === 'cf' && cfCount < item.col_id.charAt(2)) cfCount = item.col_id.charAt(2)
-				})
-				this.cfCnt = parseInt(cfCount)
-				//this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${data.site.ci_img}`
+			// 수정일 경우
+			if (idx === this.$route.params.baIdx) {
+				const {result, data} = await api.get('/partners/apply', { idx: idx }).catch( (e) => { console.log(e) })
+				if(result === 2000) {
+					this.accessCode = data.access_code
+					this.emailDomain = data.email_domain
+					this.contacts = data.contacts
+					this.notice = data.notice
+					this.billNotice = data.bill_notice
+					this.applyFrDt = data.apply_fr_dt
+					this.applyToDt = data.apply_to_dt
+					this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)]
+					this.openYn = data.open_yn ? true : false
+					this.limitCnt = data.limit_cnt
+					this.applyerFormList = data.user_fields
+
+					let cfCount = this.cfCnt
+					this.applyerFormList.forEach(function (item) {
+						item['isCf'] = false
+						if (item.col_id.slice(0, 2) === 'cf' && cfCount < item.col_id.charAt(2)) cfCount = item.col_id.charAt(2)
+					})
+					this.cfCnt = parseInt(cfCount)
+				}
 			}
+			// 생성
+			else {
+				const { result, data } = await api.get('/partners/apply', { bsIdx : idx }).catch( (e) => { console.log(e) })
+				if(result === 2000) {
+					this.accessCode = data.access_code
+					this.emailDomain = data.email_domain
+					this.contacts = data.contacts
+					this.notice = data.notice
+					this.billNotice = data.bill_notice
+					this.applyFrDt = data.apply_fr_dt
+					this.applyToDt = data.apply_to_dt
+					this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)]
+					this.openYn = data.open_yn ? true : false
+					this.limitCnt = data.limit_cnt
+					this.applyerFormList = data.user_fields
+				}
+
+
+			}
+
+
+
 			let cfCount = 0
 			if (this.applyerFormList.length === 0) {
 				const col = [
@@ -350,8 +382,8 @@ export default {
 			const applyPageFormParams = []
 
 			for (const [i, col] of this.applyerFormList.entries()) {
-				if (col.col_id === '' || col.title === '') {
-					this.$swal('column Name과 항목을 모두 채워주세요.')
+				if (!col.title) {
+					this.$swal('항목을 모두 채워주세요.')
 					return
 				}
 				applyPageFormParams['cols[' + i + '][dispYn]'] = col.disp_yn ? 1 : 0
