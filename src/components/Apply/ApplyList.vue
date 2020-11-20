@@ -13,7 +13,7 @@
 				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
-				<td>{{ item.user.name }}</td>
+				<td @click="openUserInfo(item)">{{ item.user.name }}</td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.user.company }}</td>
 				<td>{{ item.user.department }}</td>
@@ -30,6 +30,8 @@
 				<td v-else><ItemButton text="취소" variant="danger" @click="" /></td>
 			</Table>
 		</Content>
+
+		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
 	</div>
 </template>
 
@@ -46,6 +48,7 @@ import Header from "@/components/Common/Header"
 import Content from "@/components/Common/Content"
 import Table from "@/components/Common/Table"
 import ItemButton from "@/components/Common/ItemButton"
+import UserInfoModal from "@/components/Modal/UserInfoModal"
 
 export default {
 	data() {
@@ -57,7 +60,8 @@ export default {
 			includeCancel: false,
       		curBBIdx: 0,
       		loading1: false,
-      		loading2: false,
+			loading2: false,
+			showModal: false,
 			moment: moment,
 		};
 	},
@@ -68,7 +72,8 @@ export default {
 		BatchSelection,
 		Table,
 		ItemButton,
-		ClipLoader
+		ClipLoader,
+		UserInfoModal
 	},
 	created() {
 		this.refreshData();
@@ -151,7 +156,11 @@ export default {
 		changeCancel(event){
 			this.includeCancel = event;
 			this.refreshData();
-		}
+		},
+		async openUserInfo(item) {
+			this.modalitem = await shared.getUserInfo(item)
+			this.showModal = !this.showModal
+		},
 	},
 };
 </script>

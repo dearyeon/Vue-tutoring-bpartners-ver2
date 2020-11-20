@@ -13,7 +13,7 @@
 			   :data="orders"
 			    v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
-			<td>{{ item.user.name }}</td>
+			<td @click="openUserInfo(item)">{{ item.user.name }}</td>
 			<td><CusIdField :user="item.user"></CusIdField></td>
 			<td>{{ item.charge_plan && item.charge_plan.title }}</td>
 			<td>{{ item.charge_plan && item.charge_plan.idx }}</td>
@@ -24,6 +24,8 @@
 			<td v-if="!item.mt_idx"><ItemButton text="입과" variant="primary" @click="" /></td>
 		</Table>
 	</Content>
+
+	<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
 </div>
 </template>
 
@@ -38,6 +40,7 @@ import Header from "@/components/Common/Header"
 import Content from "@/components/Common/Content"
 import Table from "@/components/Common/Table"
 import ItemButton from "@/components/Common/ItemButton"
+import UserInfoModal from "@/components/Modal/UserInfoModal"
 
 export default {
 	components: {
@@ -46,13 +49,15 @@ export default {
 		CusIdField,
 		BatchSelection,
 		Table,
-		ItemButton
+		ItemButton,
+		UserInfoModal
 	},
 	data() {
 		return {
 			orders: [],
 			moment: moment,
 			curBBIdx: 0,
+			showModal: false,
 		};
 	},
 	created() {
@@ -71,6 +76,10 @@ export default {
 			const res = await api.get("/partners/issueOrderList", params);
 			const data = res.data;
 			this.orders = data.orders;
+		},
+		async openUserInfo(item) {
+			this.modalitem = await shared.getUserInfo(item)
+			this.showModal = !this.showModal
 		},
 	}
 };

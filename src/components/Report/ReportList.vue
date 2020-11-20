@@ -75,7 +75,6 @@
 <script>
 import api from "@/common/api"
 import UserInfoModal from "@/components/Modal/UserInfoModal"
-import UserModifyModal from "@/components/Modal/UserModifyModal"
 import Pagination from "@/components/atom/Pagination"
 import moment from 'moment'
 import XLSX from 'xlsx'
@@ -115,7 +114,6 @@ export default {
 	},
 	components: {
 		UserInfoModal,
-		UserModifyModal,
 		Pagination,
 		ClipLoader,
 		Header,

@@ -16,7 +16,7 @@
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td>{{ item.idx }}</td>
-				<td>{{ item.user.name }}</td>
+				<td @click="openUserInfo(item)">{{ item.user.name }}</td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
 				<td>{{ $shared.nf(item.goods.charge_price) }}</td>
@@ -37,6 +37,8 @@
 
 			</Table>
 		</Content>
+
+		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
 		
 		<Modal ref="modalWaitPayment" v-cloak>
 			<div slot="body" style="align-items:center">
@@ -150,6 +152,7 @@ import Header from "@/components/Common/Header"
 import Content from "@/components/Common/Content"
 import Table from "@/components/Common/Table"
 import ItemButton from "@/components/Common/ItemButton"
+import UserInfoModal from "@/components/Modal/UserInfoModal"
 
 export default {
 	components: {
@@ -161,6 +164,7 @@ export default {
 		ItemButton,
 		Modal,
 		Dropdown,
+		UserInfoModal
 	},
 	async created() {
 		this.refresh();
@@ -180,7 +184,8 @@ export default {
 			listInfo: '',
 			newCardInfo: {cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: ''},
 			targetCountCheck: false,
-			cardTypeLabel: ['신용', '직불']
+			cardTypeLabel: ['신용', '직불'],
+			showModal: false,
 		}
 	},
 	methods: {
@@ -551,6 +556,10 @@ export default {
 		},
 		setSearch(search) {
 			this.refresh(search)
+		},
+		async openUserInfo(item) {
+			this.modalitem = await shared.getUserInfo(item)
+			this.showModal = !this.showModal
 		},
 	},
 	computed: {
