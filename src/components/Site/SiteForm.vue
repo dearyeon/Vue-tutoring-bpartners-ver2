@@ -135,7 +135,7 @@ export default {
             }
             if( res.result === 2000 ) {
                 this.$swal('성공').then(result => {
-				    this.$router.push({name: "customerList"})
+				    this.$router.push({name: "siteList"})
 		    	})
             } else {
                 this.$swal('실패!');
