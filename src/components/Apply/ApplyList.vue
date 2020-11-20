@@ -24,8 +24,7 @@
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price - item.goods.charge_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.charge_price) : '' }}</td>
-				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
-				<td>{{ item.apply_ccl_dt && moment(item.apply_ccl_dt).format('YYYY-MM-DD HH:mm') }}</td>
+				<td>{{ item.apply_ccl_dt ? moment(item.apply_ccl_dt).format('YYYY-MM-DD HH:mm') :  moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td v-if="!!item.apply_ccl_dt"><ItemButton text="복원" variant="primary" @click="" /></td>
 				<td v-else><ItemButton text="취소" variant="danger" @click="" /></td>
 			</Table>
@@ -166,16 +165,4 @@ export default {
 </script>
 
 <style scoped>
-.btn-del {
-	color: #d31e1e;
-	background-color: #fff;
-	border: 1px solid #d31e1e;
-	border-radius: 0px;
-}
-.btn-reset {
-	color: #1e9ed3;
-	background-color: #fff;
-	border: 1px solid #1e9ed3;
-	border-radius: 0px;
-}
 </style>
