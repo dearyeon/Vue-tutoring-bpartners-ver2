@@ -575,11 +575,11 @@ export default {
 					text: '결제 대기',
 					click: this.$refs.modalWaitPayment.open
 				}
-				if (status === 'P') return {class: 'btn-warning', text: '일시 정지', click: this.pausePayment}
-				if (status === 'F') return {class: 'btn-danger', text: '결제 실패', click: this.paymentFailed}
-				if (status === 'S') return {class: 'btn-page-set', text: '결제 성공', click: this.$refs.modalOnSuccess.open}
-				if (status === 'N') return {class: 'btn-default', text: '대상 아님'}
-				if (status === 'R') return {class: 'btn-info disabled', text: '환불 완료'}
+				if (status === 'P') return {class: 'warning', text: '일시 정지', click: this.pausePayment}
+				if (status === 'F') return {class: 'danger', text: '결제 실패', click: this.paymentFailed}
+				if (status === 'S') return {class: 'page-set', text: '결제 성공', click: this.$refs.modalOnSuccess.open}
+				if (status === 'N') return {class: 'default', text: '대상 아님'}
+				if (status === 'R') return {class: 'info disabled', text: '환불 완료'}
 				return {class: '', text: ''} //status === "R"
 			}
 		},
