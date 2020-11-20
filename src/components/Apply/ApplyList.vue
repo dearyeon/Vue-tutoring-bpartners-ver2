@@ -9,8 +9,8 @@
 		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="file" @change="importExcel" />
 
 		<Content>
-			<Table :headers="['No','이름','고객사 명','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','접수일시','취소/복원'])"
-				:data="isCancel?cancelOrders:orders"
+			<Table :headers="['No','이름','고객사 명','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','접수일시 or 취소일시','취소/복원'])"
+				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td>{{ item.user.name }}</td>
@@ -23,9 +23,9 @@
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price - item.goods.charge_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.charge_price) : '' }}</td>
-				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
-				<td v-if="item.del_yn"><ItemButton text="취소" variant="danger" @click="" /></td>
-				<td v-else><ItemButton text="복원" variant="primary" @click="" /></td>
+				<td>{{ !!item.apply_ccl_dt ? moment(item.apply_ccl_dt).format('YYYY-MM-DD HH:mm') : moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
+				<td v-if="!!item.apply_ccl_dt"><ItemButton text="복원" variant="danger" @click="" /></td>
+				<td v-else><ItemButton text="취소" variant="primary" @click="" /></td>
 			</Table>
 		</Content>
 	</div>
@@ -52,8 +52,7 @@ export default {
 			batches: [],
 			cfs: [],
 			orders: [],
-			cancelOrders: [],
-			isCancel: false,
+			includeCancel: false,
       		curBBIdx: 0,
       		loading1: false,
       		loading2: false,
@@ -82,11 +81,14 @@ export default {
 			this.company = data.company;
       		this.batches = data.batches;
 			this.cfs = data.cfs;
-			this.orders = data.orders;
-			this.cancelOrders = [];
-			this.orders.forEach(element => {
-				if(element.del_yn) this.cancelOrders.push(element)
-			});
+
+			if(this.includeCancel) {
+				this.orders = data.orders;
+			} else {
+				this.orders = data.orders.filter( (order) => {
+					return order.apply_ccl_dt === null
+				})
+			}
 		},
 		getGTP(type, val) {
 			if (type == 'S') {
@@ -145,7 +147,8 @@ export default {
 			this.loading2 = false
 		}, 500),
 		changeCancel(event){
-			this.isCancel = event;
+			this.includeCancel = event;
+			this.refreshData();
 		}
 	},
 };
