@@ -138,7 +138,7 @@
 												</div>
 											</td>
 											<td class="text-center">
-												<button v-if="item.new_goods" class="btn btn-danger" @click="deleteSelectedGoods(item.idx)">취소</button>
+												<button v-if="isNew || item.new_goods" class="btn btn-danger" @click="deleteSelectedGoods(item.idx)">취소</button>
 												<input v-else type="checkbox" class="btn btn-danger" v-model="item.disp_yn"/>
 											</td>
 										</tr>
