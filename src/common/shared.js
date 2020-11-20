@@ -67,6 +67,14 @@ const shared = {
         })
         return res.data
     }
+    },
+	
+	
+	
+		removeElementInArray(arr, item) {
+			const idx = arr.indexOf(item)
+			if (idx > -1) arr.splice(idx, 1)
+		}
 }
 
 Object.defineProperty(Vue.prototype,'$shared', {

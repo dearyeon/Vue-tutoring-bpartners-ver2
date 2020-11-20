@@ -82,7 +82,7 @@
 								<strong class="col-xs-12">수강권 선택</strong>
 								<select class="col-xs-12" @change="addSelectedGoods($event)">
 									<option v-if="!planTitle" value="">-- 수강권을 선택하세요. --</option>
-									<option v-for="(goods,index) in filterdGoodsList(goodsList)" :key="index" :value="goods.idx">{{goods.title}}</option>
+									<option v-for="(goods,index) in filterdChargePlanList(chargePlanList)" :key="index" :value="goods.idx">{{goods.title}}</option>
 								</select>
 							</div>
 
@@ -90,7 +90,7 @@
 								<table class="table">
 									<thead>
 										<tr>
-											<th>idx</th>
+											<th>CP IDX</th>
 											<th>수강권 구분</th>
 											<th>
 												표준 제공가
@@ -102,14 +102,15 @@
 											<th>
 												자기 부담금
 											</th>
-											<th class="text-center">삭제</th>
+											<th class="text-center">표시여부</th>
+											<th class="text-center">취소</th>
 										</tr>
 									</thead>
 									<tbody>
 
-										<tr v-for="(item, index) in selectedGoodsList" :key="index">
-											<td>{{ item.new_goods ? item.idx : item.charge_plan.idx }}</td>
-											<td>{{ item.new_goods ? item.title : item.charge_plan.title}}</td>
+										<tr v-for="(item, index) in goodsList" :key="index">
+											<td>{{ item.charge_plan.idx }}</td>
+											<td>{{ item.charge_plan.title }}</td>
 											<td>
 												<input class="form-control" type="text" v-model="item.list_price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
 											</td>
@@ -138,8 +139,11 @@
 												</div>
 											</td>
 											<td class="text-center">
-												<button v-if="isNew || item.new_goods" class="btn btn-danger" @click="deleteSelectedGoods(item.idx)">취소</button>
-												<input v-else type="checkbox" class="btn btn-danger" v-model="item.disp_yn"/>
+												<input type="checkbox" class="btn btn-danger" v-model="item.disp_yn"/>
+											</td>
+											<td class="text-center">
+												<button v-if="!item.idx" class="btn btn-danger" @click="deleteSelectedGoods(item.charge_plan.idx)">취소</button>
+												<button v-if="item.idx" class="btn btn-default" disabled @click="deleteSelectedGoods(item.charge_plan.idx)">취소불가</button>
 											</td>
 										</tr>
 									</tbody>
@@ -219,9 +223,8 @@
 				chargeDt: '',
 				pchargeDt: '',
 				selfChargeRt:'',
-				storedGoodsList: [],
-				goodsList:[],
-				newGoodsList: [],
+				chargePlanList:[],
+				goodsList: [],
 				company: '',
 				planTitle:'',
 				isCancel: 0
@@ -283,23 +286,26 @@
 					const batchApiRes = await api.post('/partners/batch',batchData)
 
 
-					if(this.selectedGoodsList.length !== 0 && batchApiRes.result === 2000) {
-						const batchGoodsParams = []
+					if(this.goodsList.length !== 0 && batchApiRes.result === 2000) {
+						const goodsParams = []
 						let i=0;
-						batchGoodsParams['bbIdx'] = batchApiRes.data.idx
-						for (var col of this.selectedGoodsList) {
-							if (parseInt(col.dc_rt) > 100) {this.$swal('할인율의 최대 수치는 100%입니다.'); return;}
-							if (col.new_goods) batchGoodsParams['goods[' + i + '][cpIdx]'] = col.idx
-							else batchGoodsParams['goods[' + i + '][idx]'] = col.idx
-							batchGoodsParams['goods[' + i + '][listPrice]'] = col.list_price
-							batchGoodsParams['goods[' + i + '][supplyPrice]'] = col.supply_price
-							batchGoodsParams['goods[' + i + '][chargePrice]'] = col.charge_price
-							batchGoodsParams['goods[' + i + '][dcRt]'] = col.dc_rt
-							batchGoodsParams['goods[' + i + '][dispYn]'] = col.disp_yn ? 1 : 0
+						goodsParams['bbIdx'] = batchApiRes.data.idx
+						for(const item of this.goodsList) {
+							if (parseInt(item.dc_rt) > 100) {this.$swal('할인율의 최대 수치는 100%입니다.'); return;}
+							if(item.idx) {
+								goodsParams['goods[' + i + '][idx]'] = item.idx
+							}else {
+								goodsParams['goods[' + i + '][cpIdx]'] = item.charge_plan.idx
+							}
+							goodsParams['goods[' + i + '][listPrice]'] = item.list_price
+							goodsParams['goods[' + i + '][supplyPrice]'] = item.supply_price
+							goodsParams['goods[' + i + '][chargePrice]'] = item.charge_price
+							goodsParams['goods[' + i + '][dcRt]'] = item.dc_rt
+							goodsParams['goods[' + i + '][dispYn]'] = item.disp_yn ? 1 : 0
 							i++
 						}
 
-						batchGoodsApiRes = await api.post('/partners/batchGoods', batchGoodsParams)
+						batchGoodsApiRes = await api.post('/partners/batchGoods', goodsParams)
 					}
 
 
@@ -307,11 +313,7 @@
 
 					if(batchGoodsApiRes ? batchGoodsApiRes.result===2000 : 'true' && batchApiRes.result === 2000) {
 						this.$swal('성공')
-						this.refresh(batchApiRes.data.idx)
-					}
-
-					if(!batchGoodsApiRes && batchApiRes.result === 2000) {
-						this.$router.push('/batch/list')
+						this.$router.go(-1)
 					}
 				}
 			},
@@ -321,8 +323,8 @@
 			},
 
 			async getBacthApi (idx) {
-				const {data:goodsList} = await api.get('/partners/chargePlanList');
-				this.goodsList = goodsList
+				const res = await api.get('/partners/chargePlanList');
+				this.chargePlanList = res.data
 
 				if(idx === this.$route.params.bIdx) {
 					const {result, data} = await api.get('/partners/batch', { idx: idx })
@@ -336,8 +338,7 @@
 						this.chargeDt = data.charge_dt
 						this.pchargeDt = data.pcharge_dt
 
-						this.storedGoodsList = data.goods
-						this.newGoodsList = []
+						this.goodsList = data.goods
 						this.isCancel = data.del_yn
 					}
 
@@ -354,8 +355,10 @@
 						this.chargeDt = data.charge_dt
 						this.pchargeDt = data.pcharge_dt
 
-						this.storedGoodsList = data.goods
-						this.newGoodsList = []
+						this.goodsList = data.goods
+						this.goodsList.forEach(item=>{
+							item.idx = null
+						})
 						this.isCancel = data.del_yn
 					}
 
@@ -364,25 +367,29 @@
 			},
 
 			addSelectedGoods (event) {
-				if (!this.newGoodsList.find( item => item.idx === parseInt(event.target.value)) && !this.storedGoodsList.find( item => item.charge_plan.idx === parseInt(event.target.value))){
-					let selectedGoods = this.goodsList.find( item => item.idx === parseInt(event.target.value))
-					selectedGoods['list_price'] = 0
-					selectedGoods['supply_price'] = 0
-					selectedGoods['charge_price'] = 0
-					selectedGoods['dc_rt'] = 0
-					selectedGoods['disp_yn'] = 1
-					selectedGoods['new_goods'] = true
-
-					this.newGoodsList.push(selectedGoods)
-				} else {
+				const cp = this.chargePlanList.find(item => item.idx === Number(event.target.value))
+				if (!this.goodsList.find( item => item.cp_idx === cp.idx)) {
+					let goods = {
+						charge_plan: {
+							idx: cp.idx,
+							title: cp.title
+						},
+						list_price: 0,
+						supply_price: 0,
+						charge_price: 0,
+						dc_rt: 0,
+						disp_yn: 1
+					}
+					this.goodsList.push(goods)
+				}
+				else {
 					this.$swal('이미 추가된 수강권 입니다.')
 				}
 			},
 
-			deleteSelectedGoods (goodsIdx) {
-				const itemToFind = this.newGoodsList.find( item => item.idx === parseInt(goodsIdx) )
-				const idx = this.newGoodsList.indexOf(itemToFind)
-				if (idx > -1) this.newGoodsList.splice(idx, 1)
+			deleteSelectedGoods (cpIdx) {
+				const itemToRemove = this.goodsList.find( item => item.charge_plan.idx == cpIdx )
+				this.$shared.removeElementInArray(this.goodsList, itemToRemove)
 			}
 		},
 
@@ -397,15 +404,12 @@
 				}
 			},
 
-			selectedGoodsList: function () {
-				return this.storedGoodsList.concat(this.newGoodsList)
-			},
-			filterdGoodsList: function () {
-				return (goodsList) => {
+			filterdChargePlanList: function () {
+				return (chargePlanList) => {
 
 					let filterdList = []
-					if(this.planTitle) filterdList = goodsList.filter(goods => goods.title.indexOf(this.planTitle) >= 0)
-					else filterdList = goodsList
+					if(this.planTitle) filterdList = chargePlanList.filter(goods => goods.title.indexOf(this.planTitle) >= 0)
+					else filterdList = chargePlanList
 
 					return filterdList
 				}
