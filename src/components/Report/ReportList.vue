@@ -9,11 +9,12 @@
 
 
 		<Content>
-			<Table :headers="['No','이름','달성률','수업','전체','고객식별ID','학습 레벨','부서','직위(직책)','사번(고유값)','메모1','메모2','수업 히스토리(횟수)']"
+			<Table :headers="['No','이름','고객식별ID','달성률','수업','전체','학습 레벨','부서','직위(직책)','사번(고유값)','메모1','메모2','수업 히스토리(횟수)']"
 				:data="items"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td @click="openUserInfo(item)">{{ item.user.name }}</td>
+				<td><CusIdField :user="item.user.app_user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
 				<td>
 					{{ item.use_ticket_info && item.ticket_summary ? parseInt(item.goods.charge_plan.secs_per_day/60) * (item.use_ticket_info.length + 1) - parseInt(item.ticket_summary.sum_remain_secs / 60) : '-'}}분/
@@ -23,7 +24,6 @@
 					{{ item.goods ? item.goods.charge_plan.ticket_cnt * parseInt(item.goods.charge_plan.secs_per_day / 60) : '' }}분/
 					{{ item.goods ? item.goods.charge_plan.ticket_cnt : '' }}회
 				</td>
-				<td><CusIdField :user="item.user.app_user"></CusIdField></td>
 				<td>{{ item.user.app_user ? item.user.app_user.level : '' }}</td>
 				<td>{{ item.user.department }}</td>
 				<td>{{ item.user.position }}</td>
@@ -48,7 +48,7 @@
 
 		<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage"/>
 
-		<UserInfoModal style="" :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
+		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
 		
 
 		<div class="modal inmodal fade in" id="addSiteModal" style="display: block;" v-show="showMemo">
@@ -73,10 +73,10 @@
 </template>
 
 <script>
-import api from "@/common/api";
-import UserInfoModal from "@/components/Report/UserInfoModal";
-import UserModifyModal from "@/components/Report/UserModifyModal";
-import Pagination from "@/components/atom/Pagination";
+import api from "@/common/api"
+import UserInfoModal from "@/components/Report/UserInfoModal"
+import UserModifyModal from "@/components/Report/UserModifyModal"
+import Pagination from "@/components/atom/Pagination"
 import moment from 'moment'
 import XLSX from 'xlsx'
 import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
@@ -286,22 +286,8 @@ export default {
 </script>
 
 <style scoped>
-.row {
-	width: 100%;
-}
-
-.modal {
-	background-color: rgba(0, 0, 0, 0.5);
-	overflow-y: auto;
-	z-index: 1;
-}
-
 .s_lesson_dt {
 	font-size: 85%;
-}
-
-.vertical-timeline-content {
-	display: inline;
 }
 
 .swal2-container {

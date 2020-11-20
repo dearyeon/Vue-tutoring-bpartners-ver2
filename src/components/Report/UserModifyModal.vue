@@ -107,8 +107,6 @@ export default {
 
 <style scoped>
 .modal {
-  background-color: rgba(0, 0, 0, 0.5);
-  overflow-y: auto;
-  z-index: 1;
+  z-index: 1031 !important;
 }
 </style>

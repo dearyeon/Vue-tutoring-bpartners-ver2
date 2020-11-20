@@ -145,4 +145,10 @@ body .row {
 		clear: left;
 	}
 }
+
+.modal {
+	background-color: rgba(0, 0, 0, 0.5);
+	overflow-y: auto;
+	z-index: 1;
+}
 </style>

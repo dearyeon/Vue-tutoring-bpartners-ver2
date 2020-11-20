@@ -1,4 +1,6 @@
 <template>
+<div>
+    <UserModifyModal :item="userInfo" v-if="modify"/>
     <div class="modal inmodal fade in"  style="display: block;">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="width:100%">
@@ -98,15 +100,17 @@
                 </div>
 
                 <div class="modal-footer" style="border-top:0px">
-                    <button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;">학생 수정</button>
+                    <button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;" @click="showModify">학생 수정</button>
                     <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </template>
 
 <script>
+import UserModifyModal from "@/components/Report/UserModifyModal"
 import moment from 'moment'
 export default {
     data() {
@@ -114,6 +118,7 @@ export default {
             batch: null,
             userInfo: null,
             moment: moment,
+            modify: false
         }
     },
     props: {
@@ -122,47 +127,51 @@ export default {
             required: true,
         },
     },
+    components: {
+        UserModifyModal
+    },
     created() {
-        console.log(this.data,"paramsData");
         this.batch = this.data.batch
         this.userInfo = this.data.userInfo
-        console.log(this.userInfo.use_ticket_info, "review")
     },
     methods: {
         getImageSrc(prof_img) {
             return prof_img?"":"https://cdn.tutoring.co.kr/uploads/b2b_site_img/"+prof_img.substr(0,4)+"/"+prof_img.substr(4,2)+"/"+prof_img.substr(6,2)+"/"+prof_img+'_S';
         },
-         calBatchDate() {
-      const a = moment(this.batch.fr_dt);
-      const b = moment(this.batch.to_dt);
-      return b.diff(a, 'days')+1;
-    },
-    isUseDt(i,use_ticket_info) {
-      if(use_ticket_info.length) {
-        for(var element of use_ticket_info) {
-          if(moment(this.batch.fr_dt).add(i, "days").isSame(element.use_dt,'day')) {
-            return true;
-          }
+        calBatchDate() {
+            const a = moment(this.batch.fr_dt);
+            const b = moment(this.batch.to_dt);
+            return b.diff(a, 'days')+1;
+        },
+        isUseDt(i,use_ticket_info) {
+            if(use_ticket_info.length) {
+                for(var element of use_ticket_info) {
+                if(moment(this.batch.fr_dt).add(i, "days").isSame(element.use_dt,'day')) {
+                    return true;
+                }
+                }
+                return false;
+            } else return false;
+        },
+        useDtTooltip(i,item) {
+            if(item.use_ticket_info.length) {
+                let str = moment(this.batch.fr_dt).add(i, "days").format('YYYY-MM-DD')
+                let count=0, total = 0, min, secs;
+                for(var element of item.use_ticket_info) {
+                    if(moment(this.batch.fr_dt).add(i, "days").isSame(element.use_dt,'day')) {
+                        total += item.goods.charge_plan.secs_per_day - element.remain_secs
+                        count++
+                    }
+                }
+                min = parseInt(total/60)
+                secs = total - min*60
+                str+='\n'+count+'회 - '+min+'분 '+secs+'초'
+                return str;
+            }
+        },
+        showModify() {
+            this.modify = !this.modify
         }
-        return false;
-      } else return false;
-    },
-    useDtTooltip(i,item) {
-      if(item.use_ticket_info.length) {
-        let str = moment(this.batch.fr_dt).add(i, "days").format('YYYY-MM-DD')
-        let count=0, total = 0, min, secs;
-        for(var element of item.use_ticket_info) {
-          if(moment(this.batch.fr_dt).add(i, "days").isSame(element.use_dt,'day')) {
-            total += item.goods.charge_plan.secs_per_day - element.remain_secs
-            count++
-          }
-        }
-        min = parseInt(total/60)
-        secs = total - min*60
-        str+='\n'+count+'회 - '+min+'분 '+secs+'초'
-        return str;
-      }
-    }
     }
 };
 </script>
@@ -178,5 +187,9 @@ export default {
 
 .vertical-timeline-content {
     display: block;
+}
+
+.modal {
+  z-index: 1;
 }
 </style>
