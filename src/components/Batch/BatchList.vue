@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<Header title="차수 관리"
-			search-placeholder="고객사 명" @search="setSearch">
+				search-placeholder="고객사 명" :search-key-default="searchKey" @search="search" @reset="search(null)">
 			<!--<router-link :to="{ path: '/register/createPage' }"></router-link>-->
 		</Header>
 
@@ -9,7 +9,7 @@
 			<Table :headers="['No','고객사','담당자','회차','달성률','빌링','현재상태','신청시작일시','신청종료일시','수정일시','차수관리','신청양식설정','','URL']"
 					:data="list"
 					v-slot="{item, i}">
-				<td>{{ i + 1 }}</td>
+				<td>{{ total - ((current_page-1)*per_page) - i }}</td>
 				<td>{{ item.company }}</td>
 				<td>{{ item.name }}</td>
 				<td>
@@ -81,6 +81,8 @@ export default {
 			list: [],
 			current_page: 1,
 			total_page: 1,
+			per_page: 0,
+			total: 0,
 			searchKey: '',
 			moment: moment
 		}
@@ -103,19 +105,35 @@ export default {
 		Pagination
 	},
 	async created () {
-
-		const res = await api.get('/partners/siteBatchList');
-		let list = res.data.data;
-		list.forEach(item => {
-			item.selectedApplyIdx = 0
-			item.isCopy = false
-		})
-
-		this.list = list
-		this.current_page = res.data.current_page
-		this.total_page = res.data.last_page
+		this.searchKey = this.$shared.getCurSite().company;
+		this.refreshData()
 	},
 	methods: {
+		async refreshData() {
+			const {data} = await api.get('/partners/siteBatchList',{sk:this.searchKey, page:this.current_page})
+			let list = data.data;
+			list.forEach(item => {
+				item.selectedApplyIdx = 0,
+					item.isCopy = false
+			})
+			this.list = list
+			this.current_page = data.current_page
+			this.total_page = data.last_page
+			this.per_page = data.per_page
+			this.total = data.total
+		},
+		async search(searchKey) {
+			this.searchKey = searchKey
+			this.current_page = 1
+			this.$shared.setCurSite({company:searchKey})
+			this.refreshData()
+		},
+		async setCurrentPage(page) {
+			this.current_page = page
+			this.refreshData()
+		},
+
+
 		copyText: function (e, index) {
 			this.$copyText(e.target.innerText).then((e) => {
 				this.list[index].isCopy = true
@@ -147,17 +165,6 @@ export default {
 				params: { idx: idx }
 			})
 		},
-		async setCurrentPage (data) {
-			this.current_page = data
-			const res = await api.get('/partners/siteBatchList?page=' + this.current_page)
-			let list = res.data.data;
-			list.forEach(item => {
-				item.selectedApplyIdx = 0,
-				item.isCopy = false
-			})
-			this.list = list
-			this.current_page = res.data.current_page
-		},
 		createBatchPage (bsIdx,company) {
 			this.$router.push({
 				name: 'batchNew',
@@ -181,17 +188,6 @@ export default {
 				name: 'applyNew',
 				params: { bIdx: bIdx}
 			})
-		},
-		async setSearch(input) {
-            const res = await api.get('/partners/siteBatchList', { sk:input })
-			let list = res.data.data;
-			list.forEach(item => {
-				item.selectedApplyIdx = 0,
-				item.isCopy = false
-			})
-			this.list = list
-			this.current_page = res.data.current_page
-			this.total_page = res.data.last_page
 		},
 		currentStatus (item, val) {
 			const date = moment().format('YYYY-MM-DD')

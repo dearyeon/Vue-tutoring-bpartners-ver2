@@ -9,7 +9,7 @@
 		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="file" @change="importExcel" />
 
 		<Content>
-			<Table :headers="['No','이름','이메일/고객식별ID','고객사 명','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','접수일시 or 취소일시','취소/복원'])"
+			<Table :headers="['No','이름','이메일/고객식별ID','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','접수일시 or 취소일시','취소/복원'])"
 				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>

@@ -9,7 +9,9 @@
 		<div id="search" v-if="searchPlaceholder">
 			<div class="input-group">
 				<input type="text" :placeholder="searchPlaceholder" v-model="searchModel"
-					   v-on:keypress.enter="$emit('search',searchModel)" class="form-control"/>
+					   v-on:keypress.enter="$emit('search',searchModel)"
+					   class="form-control" />
+				<span v-if="searchModel" id="search-reset" @click="searchModel='';$emit('reset')">x</span>
 				<span class="input-group-btn">
 					<button class="btn btn-default" v-on:click="$emit('search', searchModel)">검색</button>
 				</span>
@@ -61,6 +63,7 @@ export default {
 		useBatchSelection: Boolean,
 
 		searchPlaceholder: String,
+		searchKeyDefault: String,
 
 		switchText: String,
 
@@ -74,7 +77,7 @@ export default {
 	},
 	data() {
 		return {
-			searchModel: '',
+			searchModel: this.searchKeyDefault,
 			switchModel: false
 		}
 	},
@@ -99,7 +102,17 @@ export default {
 }
 
 #search {
+	position: relative;
 	margin-right: 20px;
+}
+#search-reset {
+	position: absolute;
+	font-size: 2rem;
+	color: #ccc;
+	z-index: 99;
+	top: -2px;
+	right: 60px;
+	cursor: pointer;
 }
 
 #switch {

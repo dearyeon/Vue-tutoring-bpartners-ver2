@@ -34,12 +34,25 @@ const shared = {
         if(!imgFileNm) imgFileNm = 'default.png'
         return 'https://cdn.tutoring.co.kr/uploads/b2b/site/tmb/'+imgFileNm
     },
-   getCurBatch() {
-        return JSON.parse(localStorage.getItem('curBatch'))
+
+
+
+    getCurBatch() {
+        const json = localStorage.getItem('curBatch')
+        return json ? JSON.parse(json) : {}
     },
     setCurBatch(batch) {
         localStorage.setItem('curBatch', JSON.stringify(batch))
     },
+    getCurSite() {
+        const json = localStorage.getItem('curSite')
+        return json ? JSON.parse(json) : {}
+    },
+    setCurSite(site) {
+        localStorage.setItem('curSite', JSON.stringify(site))
+    },
+
+
     sortBy (items, sortKey1, sortKey2) {
         if(this.items !== items) this.sortKey = '', this.items=items
         if(sortKey2) {
@@ -67,7 +80,7 @@ const shared = {
         })
         return res.data
     },
-	
+
 		removeElementInArray(arr, item) {
 			const idx = arr.indexOf(item)
 			if (idx > -1) arr.splice(idx, 1)

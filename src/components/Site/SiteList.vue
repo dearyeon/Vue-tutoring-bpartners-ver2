@@ -1,7 +1,7 @@
 <template>
     <div>
         <Header title="고객사 관리"
-                search-placeholder="고객사 명" @search="setSearch"
+                search-placeholder="고객사 명" :search-key-default="searchKey" @search="search" @reset="search(null)"
                 btn1-text="고객사 등록" @btn1click="createCustomerPage" btn1-variant="success" :btn1-loading="false">
         </Header>
 
@@ -20,7 +20,7 @@
                 <td><ItemButton text="수정" variant="edit" @click="editCustomerPage(item.idx)" /></td>
             </Table>
         </Content>
-        
+
         <Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage" />
         <AddSiteModal v-if="showModal" @close="openModal" @update="updateItem"/>
     </div>
@@ -42,7 +42,7 @@ export default {
         return {
             items: [],
             sortKey: '',
-            searchKey: '',
+            searchKey: '삼성',
             current_page: 1,
             total_page: 1,
             per_page: '',
@@ -61,31 +61,33 @@ export default {
         AddSiteModal
     },
     async created() {
-        const res = await api.get('/partners/siteList')
-        this.current_page = res.data.current_page
-        this.total_page = res.data.last_page
-        this.per_page = res.data.per_page
-        this.items = res.data.data
+    	this.searchKey = this.$shared.getCurSite().company;
+        this.refreshData()
     },
     methods: {
+    	async refreshData() {
+			const res = await api.get('/partners/siteList',{sk:this.searchKey, page:this.current_page})
+			this.current_page = res.data.current_page
+			this.total_page = res.data.last_page
+			this.per_page = res.data.per_page
+			this.items = res.data.data
+		},
+		async search(searchKey) {
+			this.searchKey = searchKey
+			this.current_page = 1
+			this.$shared.setCurSite({company:searchKey})
+			this.refreshData()
+		},
+		async setCurrentPage(page) {
+			this.current_page = page
+			this.refreshData()
+		},
+
         routeDetailPage (idx, c_no) {
             this.$router.push({
                 name: '',
                 params: { }
             })
-        },
-        async setSearch(input) {
-            const res = await api.get('/partners/siteList', { sk:input })
-            this.current_page = res.data.current_page
-            this.total_page = res.data.last_page
-            this.per_page = res.data.per_page
-            this.items = res.data.data
-        },
-        async setCurrentPage(data) {
-            this.current_page = data
-            const res = await api.get('/partners/siteList?page=' + this.current_page)
-            this.current_page = res.data.current_page
-            this.items = res.data.data
         },
         createCustomerPage() {
 			this.$router.push({ name: 'siteNew' })
