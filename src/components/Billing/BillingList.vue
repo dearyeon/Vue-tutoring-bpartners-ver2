@@ -11,12 +11,13 @@
 		</Header>
 
 		<Content>
-			<Table :headers="['No','주문번호','학생','수강권','결제금액','사용될카드','상태','집행일시','집행카드','집행TID/실패사유','관리메모','메모수정']"
+			<Table :headers="['No','주문번호','학생','이메일/고객식별ID','수강권','결제금액','사용될카드','상태','집행일시','집행카드','집행TID/실패사유','관리메모','메모수정']"
 				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td>{{ item.idx }}</td>
 				<td>{{ item.user.name }}</td>
+				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
 				<td>{{ $shared.nf(item.goods.charge_price) }}</td>
 				<td><ItemButton :text="item.user.card_name?'변경':'등록'"
