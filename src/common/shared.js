@@ -66,10 +66,7 @@ const shared = {
             bbgIdx: item.goods.idx
         })
         return res.data
-    }
     },
-	
-	
 	
 		removeElementInArray(arr, item) {
 			const idx = arr.indexOf(item)
