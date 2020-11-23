@@ -56,7 +56,7 @@ const api = {
 
 
 const checkRes =  function (res) {
-    if(res.result===1000 && res.data.errorCode==900) {
+    if(res.result===1000 && res.data && res.data.errorCode==900) {
         shared.logout('세션 유효기간 만료로\n로그아웃 됩니다.');
     }
 }
