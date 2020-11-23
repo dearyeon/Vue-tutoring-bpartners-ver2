@@ -12,7 +12,7 @@
 			<Table :headers="['No','이름','고객식별ID','달성률','수업','전체','학습 레벨','부서','직위(직책)','사번(고유값)','메모1','메모2','수업 히스토리(횟수)']"
 				:data="items"
 					v-slot="{item, i}">
-				<td>{{ total - ((current_page-1)*per_page) - i }}</td>
+				<td>{{ sk?i+1:total - ((current_page-1)*per_page) - i }}</td>
 				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
@@ -91,7 +91,7 @@ import ItemButton from "@/components/Common/ItemButton"
 export default {
 	data() {
 		return {
-			search: '',
+			sk: '',
 			company: '',
 			batches: [],
 			batch: null,
@@ -141,9 +141,8 @@ export default {
 			this.total = data.orders.total
 		},
 		async setSearch(sk) {
-			console.log(sk);
-			const res = await api.get('/partners/reportList', {bbIdx: this.curBBIdx, sk: sk})
-			console.log(res);
+			this.sk = sk
+			const res = await api.get('/partners/reportList', {bbIdx: this.curBBIdx, sk:this.sk})
 			this.items = res.data.orders.data
 			this.current_page = res.data.orders.current_page
 			this.total_page = res.data.orders.last_page
