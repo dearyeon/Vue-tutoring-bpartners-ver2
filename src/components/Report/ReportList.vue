@@ -14,7 +14,7 @@
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td @click="openUserInfo(item)">{{ item.user.name }}</td>
-				<td><CusIdField :user="item.user.app_user"></CusIdField></td>
+				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
 				<td>
 					{{ item.use_ticket_info && item.ticket_summary ? parseInt(item.goods.charge_plan.secs_per_day/60) * (item.use_ticket_info.length + 1) - parseInt(item.ticket_summary.sum_remain_secs / 60) : '-'}}분/
