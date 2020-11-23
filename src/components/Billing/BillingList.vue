@@ -26,7 +26,8 @@
 					<span>{{ item.user.card_name }}{{ item.user.card_no_masked }}/{{ cardTypeLabel[item.user.card_type] }}</span>
 				</td>
 				<td><ItemButton v-if="item.charge_status" :text="chargeBtnStatus(item.charge_status).text"
-								:variant="chargeBtnStatus(item.charge_status).class"
+								:variant="chargeBtnStatus(item.charge_status).variant"
+								:disabled="chargeBtnStatus(item.charge_status).disabled"
 								@click="[setCurrentItem(item), chargeBtnStatus(item.charge_status).click && chargeBtnStatus(item.charge_status).click()]" />
 				</td>
 				<td>{{ item.charged_dt }}</td>
@@ -565,16 +566,16 @@ export default {
 		chargeBtnStatus() {
 			return status => {
 				if (status === 'B') return {
-					class: 'btn-primary',
+					variant: 'primary',
 					text: '결제 대기',
 					click: this.$refs.modalWaitPayment.open
 				}
-				if (status === 'P') return {class: 'warning', text: '일시 정지', click: this.pausePayment}
-				if (status === 'F') return {class: 'danger', text: '결제 실패', click: this.paymentFailed}
-				if (status === 'S') return {class: 'page-set', text: '결제 성공', click: this.$refs.modalOnSuccess.open}
-				if (status === 'N') return {class: 'default', text: '대상 아님'}
-				if (status === 'R') return {class: 'info disabled', text: '환불 완료'}
-				return {class: '', text: ''} //status === "R"
+				if (status === 'P') return {variant: 'warning', text: '일시 정지', click: this.pausePayment}
+				if (status === 'F') return {variant: 'danger', text: '결제 실패', click: this.paymentFailed}
+				if (status === 'S') return {variant: 'success', text: '결제 성공', click: this.$refs.modalOnSuccess.open}
+				if (status === 'N') return {variant: 'default', text: '대상 아님'}
+				if (status === 'R') return {variant: 'info', text: '환불 완료', disabled:true}
+				return {variant: '', text: ''} //status === "R"
 			}
 		},
 		setCurrentItem() {

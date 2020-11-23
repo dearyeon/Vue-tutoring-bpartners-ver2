@@ -729,7 +729,7 @@ fieldset[disabled] .btn-success:hover,
 fieldset[disabled] .btn-success:focus,
 fieldset[disabled] .btn-success:active,
 fieldset[disabled] .btn-success.active {
-  background-color: #1f90d8;
+  background-color: #EEEEEE;
   border-color: #1f90d8;
 }
 .btn-info {
@@ -770,7 +770,7 @@ fieldset[disabled] .btn-info:hover,
 fieldset[disabled] .btn-info:focus,
 fieldset[disabled] .btn-info:active,
 fieldset[disabled] .btn-info.active {
-  background-color: #26d7d9;
+  background-color: #EEEEEE;
   border-color: #26d7d9;
 }
 .btn-default {

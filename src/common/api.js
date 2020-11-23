@@ -4,7 +4,7 @@ import shared from "@/common/shared";
 import {config} from "../../deploy.config"
 
 const hostId = window.location.hostname.split('.')[0];
-let server = 'https://bapi-dev.tutoring.co.kr';
+let server = 'https://bapi.tutoring.co.kr';
 if(hostId=='partners2') {
     server = 'https://bapi.tutoring.co.kr';
 }

@@ -1,6 +1,6 @@
 <template>
 	<div id="button"
-		 :class="`btn btn-${variant} btn-outline`"
+		 :class="`btn btn-${variant} btn-outline ${disabled?'disabled':''}`"
 		 @click="$emit('click')">
 		{{text}}
 	</div>
@@ -10,7 +10,8 @@
 export default {
 	props: {
 		text: String,
-		variant: String
+		variant: String,
+		disabled: Boolean
 	}
 }
 </script>
@@ -19,4 +20,5 @@ export default {
 #button {
 	border-radius: 4px;
 }
+
 </style>

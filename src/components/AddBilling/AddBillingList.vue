@@ -35,7 +35,8 @@
 				</td>
 				<td>{{ item.attend_pct }}%</td>
 				<td><ItemButton v-if="item.pcharge_status" :text="chargeBtnStatus(item.pcharge_status).text"
-								:variant="chargeBtnStatus(item.pcharge_status).class"
+								:variant="chargeBtnStatus(item.pcharge_status).variant"
+								:disabled="chargeBtnStatus(item.pcharge_status).disabled"
 								@click="[setCurrentItem(item), chargeBtnStatus(item.pcharge_status).click && chargeBtnStatus(item.pcharge_status).click()]" />
 				</td>
 				<td>{{ item.pcharged_dt && item.pcharged_dt.replace(/(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}).*/gi, "$1") }}</td>
@@ -570,16 +571,16 @@ export default {
 		chargeBtnStatus() {
 			return status => {
 				if (status === 'B') return {
-					class: 'btn-primary',
+					variant: 'primary',
 					text: '결제 대기',
 					click: this.$refs.modalWaitPayment.open
 				}
-				if (status === 'P') return {class: 'warning', text: '일시 정지', click: this.pausePayment}
-				if (status === 'F') return {class: 'danger', text: '결제 실패', click: this.paymentFailed}
-				if (status === 'S') return {class: 'page-set', text: '결제 성공', click: this.$refs.modalOnSuccess.open}
-				if (status === 'N') return {class: 'default', text: '대상 아님'}
-				if (status === 'R') return {class: 'info disabled', text: '환불 완료'}
-				return {class: '', text: ''} //status === "R"
+				if (status === 'P') return {variant: 'warning', text: '일시 정지', click: this.pausePayment}
+				if (status === 'F') return {variant: 'danger', text: '결제 실패', click: this.paymentFailed}
+				if (status === 'S') return {variant: 'success', text: '결제 성공', click: this.$refs.modalOnSuccess.open}
+				if (status === 'N') return {variant: 'default', text: '대상 아님'}
+				if (status === 'R') return {variant: 'info', text: '환불 완료', disabled:true}
+				return {variant: '', text: ''} //status === "R"
 			}
 		},
 		setCurrentItem() {
