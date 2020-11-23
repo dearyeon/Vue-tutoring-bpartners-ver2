@@ -3,7 +3,7 @@
 		<Header title="정기 결제 관리"
 			:use-batch-selection="true" @changeBatch="refresh"
 			search-placeholder="이름을 입력하세요." @search="setSearch"
-			btn1-text="결제 대기건 일괄 결제" @btn1click="chargeBatch" btn1-variant="primary" :btn1-loading="false">
+			btn1-text="결제 대기건 일괄 결제" @btn1-click="chargeBatch" btn1-variant="primary" :btn1-loading="false">
 			<span>
 				<h3 class="col-lg-4">정기결제일시</h3>
 				<h4 class="col-lg-8">{{ batch ? batch.charge_dt : '-' }}</h4>
@@ -39,7 +39,7 @@
 		</Content>
 
 		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
-		
+
 		<Modal ref="modalWaitPayment" v-cloak>
 			<div slot="body" style="align-items:center">
 				<h1><strong>작업을 선택해주세요.</strong></h1>

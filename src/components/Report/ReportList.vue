@@ -3,7 +3,7 @@
 		<Header title="수업 현황"
 				:use-batch-selection="true" @changeBatch="refresh"
 				@search="setSearch" search-placeholder="이름 or 고객식별ID"
-				btn1-text="학습현황 메일 일괄 발송" @btn1click="openModal" btn1-variant="success"
+				btn1-text="학습현황 메일 일괄 발송" @btn1-click="openModal" btn1-variant="success"
 				btn2-text="엑셀 다운로드" @btn2click="exportExcel" btn2-variant="success" :btn2-loading="loading">
 		</Header>
 
@@ -49,7 +49,7 @@
 		<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage"/>
 
 		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
-		
+
 
 		<div class="modal inmodal fade in" id="addSiteModal" style="display: block;" v-show="showMemo">
 			<div class="modal-dialog modal-sm">

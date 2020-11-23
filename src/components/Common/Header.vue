@@ -17,17 +17,33 @@
 				</span>
 			</div>
 		</div>
-		<div id="switch" v-if="switchText">
-			<div id="switch-text">
-				{{ switchText }}
+		<div id="switches">
+			<div class="switch" v-if="switch1Text">
+				<div class="switch-text">
+					{{ switch1Text }}
+				</div>
+				<div>
+					<div class="onoffswitch">
+						<input class="onoffswitch-checkbox form-control" id="switch1-input" type="checkbox" v-model="switchModel" @change="$emit('switch1-change', switchModel)"/>
+						<label class="onoffswitch-label" for="switch1-input">
+							<span class="onoffswitch-inner"></span>
+							<span class="onoffswitch-switch"></span>
+						</label>
+					</div>
+				</div>
 			</div>
-			<div id="switch-control">
-				<div class="onoffswitch">
-					<input class="onoffswitch-checkbox form-control" id="switch-input" type="checkbox" v-model="switchModel" @change="$emit('checkchange', switchModel)"/>
-					<label class="onoffswitch-label" for="switch-input">
-						<span class="onoffswitch-inner"></span>
-						<span class="onoffswitch-switch"></span>
-					</label>
+			<div class="switch" v-if="switch2Text">
+				<div class="switch-text">
+					{{ switch2Text }}
+				</div>
+				<div>
+					<div class="onoffswitch">
+						<input class="onoffswitch-checkbox form-control" id="switch2-input" type="checkbox" v-model="switchModel" @change="$emit('switch2-change', switchModel)"/>
+						<label class="onoffswitch-label" for="switch2-input">
+							<span class="onoffswitch-inner"></span>
+							<span class="onoffswitch-switch"></span>
+						</label>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -35,15 +51,20 @@
 			<slot></slot>
 		</div>
 		<div id="buttons">
-			<label v-if="btn1Text" :class="'btn btn-w-m btn-'+btn1Variant" @click="$emit('btn1click')">
+			<label v-if="btn1Text" :class="'btn btn-w-m btn-'+btn1Variant" @click="$emit('btn1-click')">
 				<div v-if="!btn1Loading">{{ btn1Text }}</div>
 				<clip-loader :loading="btn1Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
-			</label>&nbsp;
+			</label>
 
-			<label v-if="btn2Text" :class="'btn btn-w-m btn-'+btn2Variant" @click="$emit('btn2click')">
+			<label v-if="btn2Text" :class="'btn btn-w-m btn-'+btn2Variant" @click="$emit('btn2-click')">
 				<div v-if="!btn2Loading">{{ btn2Text }}</div>
 				<clip-loader :loading="btn2Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
-			</label>&nbsp;
+			</label>
+
+			<label v-if="btn3Text" :class="'btn btn-w-m btn-'+btn3Variant" @click="$emit('btn3-click')">
+				<div v-if="!btn3Loading">{{ btn2Text }}</div>
+				<clip-loader :loading="btn3Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
+			</label>
 		</div>
 	</div>
 </template>
@@ -65,7 +86,8 @@ export default {
 		searchPlaceholder: String,
 		searchKeyDefault: String,
 
-		switchText: String,
+		switch1Text: String,
+		switch2Text: String,
 
 		btn1Variant: String,
 		btn1Text: String,
@@ -74,6 +96,10 @@ export default {
 		btn2Variant: String,
 		btn2Text: String,
 		btn2Loading: Boolean,
+
+		btn3Variant: String,
+		btn3Text: String,
+		btn3Loading: Boolean,
 	},
 	data() {
 		return {
@@ -115,15 +141,20 @@ export default {
 	cursor: pointer;
 }
 
-#switch {
-	display: flex;
+
+#switches {
 	margin-top: 12px;
+}
+.switch {
+	display: flex;
 	line-height: 1.5;
 }
-#switch-text {
+.switch-text {
 	font-size: 1.5rem;
 	margin-right: 10px;
 }
+
+
 
 #custom {
 	margin-top: 10px;
@@ -134,5 +165,8 @@ export default {
 
 #buttons {
 	margin-left: auto;
+}
+#buttons .btn {
+	margin-left: 10px;
 }
 </style>

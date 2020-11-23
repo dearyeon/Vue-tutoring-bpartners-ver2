@@ -2,7 +2,7 @@
     <div>
         <Header title="고객사 관리"
                 search-placeholder="고객사 명" :search-key-default="searchKey" @search="search" @reset="search(null)"
-                btn1-text="고객사 등록" @btn1click="createCustomerPage" btn1-variant="success" :btn1-loading="false">
+                btn1-text="고객사 등록" @btn1-click="createCustomerPage" btn1-variant="success" :btn1-loading="false">
         </Header>
 
         <Content>
