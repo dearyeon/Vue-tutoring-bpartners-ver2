@@ -578,7 +578,7 @@ export default {
 				if (status === 'P') return {variant: 'warning', text: '일시 정지', click: this.pausePayment}
 				if (status === 'F') return {variant: 'danger', text: '결제 실패', click: this.paymentFailed}
 				if (status === 'S') return {variant: 'success', text: '결제 성공', click: this.$refs.modalOnSuccess.open}
-				if (status === 'N') return {variant: 'default', text: '대상 아님'}
+				if (status === 'N') return {variant: 'default', text: '대상 아님', disabled:true}
 				if (status === 'R') return {variant: 'info', text: '환불 완료', disabled:true}
 				return {variant: '', text: ''} //status === "R"
 			}

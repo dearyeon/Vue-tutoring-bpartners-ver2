@@ -83,15 +83,18 @@ export default {
 
 
 <style scoped>
+.slide-fade-enter {
+  opacity: 0;
+}
 .slide-fade-enter-active, .slide-fade-leave-active {
-  transition: all .3s ease;
+  transition: all .4s ease;
 }
 .slide-fade-leave-to {
-  transform: translateX(-100px);
   opacity: 0;
+  transform: translateX(-100px);
 }
 .slide-fade-enter {
-  transform: translateX(10px);
   opacity: 0;
+  transform: translateX(0px);
 }
 </style>

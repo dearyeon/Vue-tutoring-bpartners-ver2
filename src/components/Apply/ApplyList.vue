@@ -141,6 +141,7 @@ export default {
 			this.loading2 = true
 			let input = event.target.files[0]
 			let reader = new FileReader()
+    		reader.readAsBinaryString(input)
 			reader.onload = function () {
 				let data = reader.result;
 				let workBook = XLSX.read(data, { type: 'binary' });
@@ -150,7 +151,6 @@ export default {
 					console.log(JSON.stringify(rows));
 				})
 			};
-    		reader.readAsBinaryString(input);
 			this.loading2 = false
 		}, 500),
 		toggleCancel(event){

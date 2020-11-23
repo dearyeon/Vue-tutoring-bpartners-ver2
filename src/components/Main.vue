@@ -5,7 +5,6 @@
 
 		<Menu class="menu" :menuToggle="menuToggle"></Menu>
 		<div :id="menuToggle?'page-wrapper':'container'" class="gray-bg animated">
-			<!-- :class="menuToggle?'':'col-lg-11 col-lg-offset-1'"-->
 			<button @click="menuToggle = !menuToggle"><i class="fa fa-bars"/></button>
 
 			<!-- content begin -->
