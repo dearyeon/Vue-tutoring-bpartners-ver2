@@ -2,7 +2,7 @@
 	<div><!-- v-model:isCancel-->
 		<Header title="신청 관리"
 			:use-batch-selection="true" @changeBatch="refreshData"
-			switch-text="취소포함" @checkchange="changeCancel"
+			switch-text="취소포함" @checkchange="toggleCancel"
 			btn1-text="일괄 신청" @btn1click="$refs.file.click()" btn1-variant="primary" :btn1-loading="loading1"
 			btn2-text="신청엑셀 다운로드" @btn2click="exportFormat" btn2-variant="success" :btn2-loading="loading2">
 		</Header>
@@ -153,7 +153,7 @@ export default {
     		reader.readAsBinaryString(input);
 			this.loading2 = false
 		}, 500),
-		changeCancel(event){
+		toggleCancel(event){
 			this.includeCancel = event;
 			this.refreshData();
 		},

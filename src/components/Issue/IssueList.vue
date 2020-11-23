@@ -3,7 +3,7 @@
 	<Header title="입과 관리"
 			:use-batch-selection="true" @changeBatch="refreshData"
 			search-placeholder="이름 or 이메일 or 고객식별ID" @search="search"
-			switch-text="취소포함" @change="refreshData"
+			switch-text="취소포함" @checkchange="toggleCancel"
 			btn1-text="일괄 입과" @btn1click="alert(1)" btn1-variant="primary" :btn1-loading="false"
 			btn2-text="일괄 취소" @btn2click="alert(1)" btn2-variant="danger" :btn2-loading="false">
 	</Header>
@@ -20,8 +20,8 @@
 			<td>{{ item.apply_dt && moment(item.apply_dt).format('YY-MM-DD HH:mm') }}</td>
 			<td>{{ item.issue_dt && moment(item.issue_dt).format('YY-MM-DD HH:mm') }}</td>
 			<td>{{ item.mt_idx }}</td>
-			<td v-if="item.mt_idx"><ItemButton text="취소" variant="danger" @click="" /></td>
-			<td v-if="!item.mt_idx"><ItemButton text="입과" variant="primary" @click="" /></td>
+			<td v-if="!item.apply_ccl_dt"><ItemButton text="취소" variant="danger" @click="" /></td>
+			<td v-else><ItemButton text="입과" variant="primary" @click="" /></td>
 		</Table>
 	</Content>
 
@@ -55,18 +55,17 @@ export default {
 	data() {
 		return {
 			orders: [],
+			delOrders: [],
 			moment: moment,
 			curBBIdx: 0,
 			showModal: false,
+			includeCancel: false,
 		};
 	},
 	created() {
 		this.refreshData();
 	},
 	methods: {
-		search(sk) {
-			this.refreshData({sk:sk})
-		},
 		async refreshData(params) {
 			if(!params) params = {}
 
@@ -75,11 +74,24 @@ export default {
 
 			const res = await api.get("/partners/issueOrderList", params);
 			const data = res.data;
-			this.orders = data.orders;
+			if(this.includeCancel) {
+				this.orders = data.orders;
+			} else {
+				this.orders = data.orders.filter( (order) => {
+					return order.apply_ccl_dt === null
+				})
+			}
 		},
 		async openUserInfo(item) {
 			this.modalitem = await shared.getUserInfo(item)
 			this.showModal = !this.showModal
+		},
+		search(sk) {
+			this.refreshData({sk:sk})
+		},
+		toggleCancel(event){
+			this.includeCancel = event;
+			this.refreshData();
 		},
 	}
 };
