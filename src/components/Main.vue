@@ -1,5 +1,8 @@
 <template>
 	<div id="wrapper">
+		<input type="text" name="prevent_autofill_id" id="prevent_autofill_id" value="" style="display:none;" />
+		<input type="password" name="prevent_autofill_pw" id="prevent_autofill_pw" value="" style="display:none;" />
+
 		<Menu class="menu" :menuToggle="menuToggle"></Menu>
 		<div :id="menuToggle?'page-wrapper':'container'" class="gray-bg animated">
 			<!-- :class="menuToggle?'':'col-lg-11 col-lg-offset-1'"-->
