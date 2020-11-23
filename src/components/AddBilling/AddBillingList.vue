@@ -7,12 +7,12 @@
 			btn2-text="결제 대기건 일괄 결제" @btn2-click="pChargeBatch" btn2-variant="primary" :btn2-loading="false">
 			<span>
 				<div class="col-lg-12">
-					<h3 class="col-lg-4">추가결제일시</h3>
-					<h4 class="col-lg-8">{{ batch ? batch.pcharge_dt : '-' }}</h4>
+					<h3 class="col-lg-6">추가결제일시</h3>
+					<h4 class="col-lg-6">{{ batch ? moment(batch.pcharge_dt).format('YYYY-MM-DD HH:mm') : '-' }}</h4>
 				</div>
 				<div class="col-lg-12">
-					<h3 class="col-lg-4">기준출석률</h3>
-					<h4 class="col-lg-8">{{ batch ? batch.target_rt + '%' : '-' }}</h4>
+					<h3 class="col-lg-6">기준출석률</h3>
+					<h4 class="col-lg-6">{{ batch ? batch.target_rt + '%' : '-' }}</h4>
 				</div>
 			</span>
 		</Header>

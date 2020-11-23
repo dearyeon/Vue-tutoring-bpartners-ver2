@@ -5,8 +5,10 @@
 			search-placeholder="이름을 입력하세요." @search="setSearch"
 			btn1-text="결제 대기건 일괄 결제" @btn1-click="chargeBatch" btn1-variant="primary" :btn1-loading="false">
 			<span>
-				<h3 class="col-lg-4">정기결제일시</h3>
-				<h4 class="col-lg-8">{{ batch ? batch.charge_dt : '-' }}</h4>
+				<div class="col-lg-12">
+					<h3 class="col-lg-6">정기결제일시</h3>
+					<h4 class="col-lg-6">{{ batch ? moment(batch.charge_dt).format('YYYY-MM-DD HH:mm') : '-' }}</h4>
+				</div>
 			</span>
 		</Header>
 
