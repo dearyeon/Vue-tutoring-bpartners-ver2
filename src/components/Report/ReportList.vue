@@ -11,9 +11,9 @@
 		<Content>
 			<Table :headers="['No','이름','고객식별ID','달성률','수업','전체','학습 레벨','부서','직위(직책)','사번(고유값)','메모1','메모2','수업 히스토리(횟수)']"
 				:data="items"
-					v-slot="{item, i}">
-				<td>{{ i + 1 }}</td>
-				<td @click="openUserInfo(item)">{{ item.user.name }}</td>
+					v-slot="{item}">
+				<td>{{ 1 - ((current_page-1)*per_page) }}</td>
+				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
 				<td>
@@ -98,6 +98,8 @@ export default {
 			items: [],
 			current_page: 1,
 			total_page: 1,
+			per_page: 1,
+			total: 1,
 			moment: moment,
 			memoNum: null,
 			showMemo: false,
@@ -130,10 +132,13 @@ export default {
 		async refresh() {
 			this.curBBIdx = shared.getCurBatch().idx;
 			const res = await api.get('/partners/reportList', {bbIdx:this.curBBIdx})
-			this.current_page = res.data.orders.current_page
-			this.total_page = res.data.orders.last_page
-			this.items = res.data.orders.data
-			this.batch = res.data.batch;
+			const data = res.data
+			this.items = data.orders.data
+			this.batch = data.batch;
+			this.current_page = data.orders.current_page
+			this.total_page = data.orders.last_page
+			this.per_page = data.orders.per_page
+			this.total = data.orders.total
 		},
 		async setSearch(sk) {
 			console.log(sk);
@@ -142,6 +147,7 @@ export default {
 			this.items = res.data.orders.data
 			this.current_page = res.data.orders.current_page
 			this.total_page = res.data.orders.last_page
+			this.per_page = res.data.orders.per_page
 		},
 		calBatchDate() {
 			const a = moment(this.batch.fr_dt);
@@ -248,8 +254,8 @@ export default {
 				cancelButtonText: "Cancel",
 			});
 		},
-		async openUserInfo(item) {
-			this.modalitem = await shared.getUserInfo(item)
+		async openUserInfo(boIdx) {
+			this.modalitem = await shared.getUserInfo(boIdx)
 			this.showModal = !this.showModal
 		},
 		closeModal() {

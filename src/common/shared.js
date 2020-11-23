@@ -72,12 +72,8 @@ const shared = {
             location = '/'
         })
     },
-    async getUserInfo(item) {
-        const res = await api.get('/partners/report', {
-            uIdx: item.user.idx,
-            bIdx: this.getCurBatch().idx,
-            bbgIdx: item.goods.idx
-        })
+    async getUserInfo(boIdx) {
+        const res = await api.get('/partners/report', { boIdx })
         return res.data
     },
 

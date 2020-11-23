@@ -13,7 +13,7 @@
 				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
-				<td @click="openUserInfo(item)">{{ item.user.name }}</td>
+				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.user.company }}</td>
 				<td>{{ item.user.department }}</td>
@@ -157,8 +157,8 @@ export default {
 			this.includeCancel = event;
 			this.refreshData();
 		},
-		async openUserInfo(item) {
-			this.modalitem = await shared.getUserInfo(item)
+		async openUserInfo(boIdx) {
+			this.modalitem = await shared.getUserInfo(boIdx)
 			this.showModal = !this.showModal
 		},
 	},

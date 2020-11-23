@@ -13,7 +13,7 @@
 			   :data="orders"
 			    v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
-			<td @click="openUserInfo(item)">{{ item.user.name }}</td>
+			<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
 			<td><CusIdField :user="item.user"></CusIdField></td>
 			<td>{{ item.charge_plan && item.charge_plan.title }}</td>
 			<td>{{ item.charge_plan && item.charge_plan.idx }}</td>
@@ -82,8 +82,8 @@ export default {
 				})
 			}
 		},
-		async openUserInfo(item) {
-			this.modalitem = await shared.getUserInfo(item)
+		async openUserInfo(boIdx) {
+			this.modalitem = await shared.getUserInfo(boIdx)
 			this.showModal = !this.showModal
 		},
 		search(sk) {

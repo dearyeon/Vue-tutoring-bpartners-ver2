@@ -23,7 +23,7 @@
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td>{{ item.idx }}</td>
-				<td @click="openUserInfo(item)">{{ item.user.name }}</td>
+				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
 				<td>{{ $shared.nf(item.goods.supply_price - item.goods.charge_price) }}</td>
@@ -562,8 +562,8 @@ export default {
 		setSearch(search) {
 			this.refresh(search)
 		},
-		async openUserInfo(item) {
-			this.modalitem = await shared.getUserInfo(item)
+		async openUserInfo(boIdx) {
+			this.modalitem = await shared.getUserInfo(boIdx)
 			this.showModal = !this.showModal
 		},
 	},
