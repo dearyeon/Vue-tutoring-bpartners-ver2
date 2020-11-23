@@ -25,7 +25,7 @@ const routes = [
 			{path: '/billing/list', component: BillingList},
 			{path: '/addBilling/list', component: AddBillingList},
 			{path: "/batch/list", component: BatchList},
-			{path: "/batch/applyNew/:bIdx", name: "applyNew", component: ApplyForm, props: true},
+			{path: "/batch/applyNew/:bIdx/:bsIdx", name: "applyNew", component: ApplyForm, props: true},
 			{path: "/batch/applyEdit/:baIdx", name: "applyEdit", component: ApplyForm, props: true},
 			{path: "/batch/batchNew/:bsIdx/:company", name: "batchNew", component: BatchForm, props: true},
 			{path: "/batch/batchEdit/:bIdx", name: "batchEdit", component: BatchForm, props: true},

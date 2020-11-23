@@ -186,7 +186,7 @@ export default {
 		createApplyPage(bIdx, bsIdx) {
 			this.$router.push({
 				name: 'applyNew',
-				params: { bIdx: bIdx}
+				params: { bIdx: bIdx, bsIdx}
 			})
 		},
 		currentStatus (item, val) {

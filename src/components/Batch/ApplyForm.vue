@@ -97,48 +97,48 @@
 			            <button class="btn btn-success" @click="addFormList">row 추가</button>
 		            </th>
 	              </thead>
-	              <draggable :list="applyerFormList" tag="tbody">
-	                <tr v-for="(item,index) in applyerFormList" :key="item.id">
-		            	<td class="text-center">
-			                {{sortNumber(item,index)}}
-		                </td>
-						<td class="text-center">
-							<input v-model="item.disp_yn" type="checkbox" :checked="item.disp_yn"/>
-						</td>
-		                <td class="text-center">
-			                <input v-model="item.required" type="checkbox" :checked="item.required"/>
-		                </td>
-		                <td>
-			                <input type="text" class="form-control" v-model="item.col_id" readonly placeholder="column Name을 입력해주세요."/>
-						</td>
-						<td>
-							<input type="text" class="form-control" v-model="item.title" placeholder="항목을 입력해주세요."/>
-						</td>
-						<td>
-							<input type="text" class="form-control" v-model="item.description" placeholder="내용을 입력해주세요." />
-						</td>
-		                <td class="text-center">
-			                <div class="col-xs-2">
-				                <select v-model="item.type">
-					                <option value="T">Text</option>
-					                <option value="S">Select</option>
-				                </select>
-			                </div>
+		            <draggable :list="applyerFormList" tag="tbody">
+			            <tr v-for="(item,index) in applyerFormList" :key="item.id">
+				            <td class="text-center">
+					            {{sortNumber(item,index)}}
+				            </td>
+				            <td class="text-center">
+					            <input v-model="item.disp_yn" type="checkbox" :checked="item.disp_yn"/>
+				            </td>
+				            <td class="text-center">
+					            <input v-model="item.required" type="checkbox" :checked="item.required"/>
+				            </td>
+				            <td>
+					            <input type="text" class="form-control" v-model="item.col_id" readonly placeholder="column Name을 입력해주세요."/>
+				            </td>
+				            <td>
+					            <input type="text" class="form-control" v-model="item.title" placeholder="항목을 입력해주세요."/>
+				            </td>
+				            <td>
+					            <input type="text" class="form-control" v-model="item.description" placeholder="내용을 입력해주세요."/>
+				            </td>
+				            <td class="text-center">
+					            <div class="col-xs-2">
+						            <select v-model="item.type">
+							            <option value="T">Text</option>
+							            <option value="S">Select</option>
+						            </select>
+					            </div>
 
-	                    	<div class="col-xs-10" v-if="item.type === 'S'">
+					            <div class="col-xs-10" v-if="item.type === 'S'">
 				                <span class="col-xs-6">
-			                    <input type="text" class="form-control" v-model="item.opts" placeholder="option을 '|' 로 구분해서 작성해 주세요." />
+			                    <input type="text" class="form-control" v-model="item.opts" placeholder="option을 '|' 로 구분해서 작성해 주세요."/>
 				                </span>
-				                <span class="col-xs-6">
-				                  <input type="text" class="form-control" v-model="item.vals" placeholder="value를 '|' 로 구분해서 작성해 주세요." />
+						            <span class="col-xs-6">
+				                  <input type="text" class="form-control" v-model="item.vals" placeholder="value를 '|' 로 구분해서 작성해 주세요."/>
 				                </span>
-			                </div>
-		                </td>
-		                <td class="text-center" v-if="item.isCf">
-			                <button class="btn btn-danger" @click="deleteFormList(item.col_id)">삭제</button>
-		                </td>
-	                </tr>
-	              </draggable>
+					            </div>
+				            </td>
+				            <td class="text-center" v-if="item.isCf">
+					            <button class="btn btn-danger" @click="deleteFormList(item.col_id)">삭제</button>
+				            </td>
+			            </tr>
+		            </draggable>
 	            </table>
 	          </div>
 	        </div>
@@ -199,39 +199,71 @@ export default {
 		draggable, DatePicker
 	},
 	async created () {
-		this.getApplyPageApi()
+		// 수정
+		if(this.$route.params.baIdx) {
+			this.getApplyPageApi(this.$route.params.baIdx)
+		}
+
+		// 생성
+		if(this.$route.params.bIdx && this.$route.params.bsIdx) {
+			this.getApplyPageApi(this.$route.params.bsIdx)
+		}
+
+		// this.getApplyPageApi()
 	},
 	methods: {
 		refresh: async function () {
 			this.getApplyPageApi()
 		},
-		getApplyPageApi: async function () {
-			const applyPageFormParams = []
-			applyPageFormParams['baIdx'] = this.$route.params.bIdx ? this.$route.params.bIdx : this.$route.params.baIdx
-			if (this.$route.params.baIdx) {
-				const res = await api.get('/partners/apply', { idx: this.$route.params.baIdx })
-				const data = res.data
-				this.accessCode = data.access_code
-				this.emailDomain = data.email_domain
-				this.contacts = data.contacts
-				this.notice = data.notice
-				this.billNotice = data.bill_notice
-				this.applyFrDt = data.apply_fr_dt
-				this.applyToDt = data.apply_to_dt
-				this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)]
-				this.openYn = data.open_yn ? true : false
-				this.limitCnt = data.limit_cnt
-				this.applyerFormList = data.user_fields
+		getApplyPageApi: async function (idx) {
 
-				let cfCount = this.cfCnt
-				this.applyerFormList.forEach(function (item) {
-					item['isCf'] = false
-					if (item.col_id.slice(0, 2) === 'cf' && cfCount < item.col_id.charAt(2)) cfCount = item.col_id.charAt(2)
-				})
-				this.cfCnt = parseInt(cfCount)
-				//this.previewSrc = `https://cdn.tutoring.co.kr/uploads/b2b/site/${data.site.ci_img}`
+			// 수정일 경우
+			if (idx === this.$route.params.baIdx) {
+				const {result, data} = await api.get('/partners/apply', { idx: idx }).catch( (e) => { console.log(e) })
+
+				console.log(data);
+				if(result === 2000) {
+					this.accessCode = data.access_code
+					this.emailDomain = data.email_domain
+					this.contacts = data.contacts
+					this.notice = data.notice
+					this.billNotice = data.bill_notice
+					this.applyFrDt = data.apply_fr_dt
+					this.applyToDt = data.apply_to_dt
+					this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)]
+					this.openYn = data.open_yn ? true : false
+					this.limitCnt = data.limit_cnt
+					this.applyerFormList = data.user_fields
+
+					this.applyerFormList.forEach( item => {
+						item['isCf'] = false
+						if (item.col_id.slice(0, 2) === 'cf') this.cfCnt++
+					})
+				}
 			}
-			let cfCount = 0
+			// 생성일 경우
+			else {
+				const { result, data } = await api.get('/partners/apply', { bsIdx : idx }).catch( (e) => { console.log(e) })
+
+				if(result === 2000 && data) {
+					this.accessCode = data.access_code
+					this.emailDomain = data.email_domain
+					this.contacts = data.contacts
+					this.notice = data.notice
+					this.billNotice = data.bill_notice
+					this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)]
+					this.openYn = data.open_yn ? true : false
+					this.limitCnt = data.limit_cnt
+					this.applyerFormList = data.user_fields
+
+					this.applyerFormList.forEach( item => {
+						item['isCf'] = false
+						if (item.col_id.slice(0, 2) === 'cf') this.cfCnt++
+					})
+				}
+			}
+
+
 			if (this.applyerFormList.length === 0) {
 				const col = [
 					{
@@ -297,13 +329,7 @@ export default {
 				]
 				this.applyerFormList = col
 			}
-			this.applyerFormList.forEach(item => {
-				if ((item['isCf'] === undefined || item['isCf'] !== false) && item.col_id.slice(0, 2) === 'cf') {
-					item['isCf'] = true
-					cfCount = item.col_id.charAt(2)
-				} else {item['isCf'] = false}
-			})
-			this.cfCnt = this.cfCnt + parseInt(cfCount)
+
 		},
 		sortNumber: function (item, index) {
 			item.sort_no = index + 1
@@ -322,9 +348,13 @@ export default {
 		sendNum () {
 			let numlist = []
 			this.applyerFormList.forEach(el => numlist.push(el.num))
-			console.log(this.applyerFormList)
 		},
 		setForm: _.debounce(async function () {
+			if (this.applyFrDt === 'Invalid date' || !this.applyFrDt || this.applyToDt === 'Invalid date' || !this.applyToDt) {
+				this.$swal('수강신청 기간을 설정해주세요.')
+				return
+			}
+
 			const idx = this.$route.params.bIdx ? this.$route.params.bIdx : this.$route.params.baIdx
 			const params = {
 				applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm'),
@@ -339,19 +369,12 @@ export default {
 			}
 			if (this.$route.params.bIdx) params.bbIdx = idx
 			else params.idx = idx
-			if (this.applyFrDt === 'Invalid date' || !this.applyFrDt || this.applyToDt === 'Invalid date' || !this.applyToDt) {
-				this.$swal('수강신청 기간을 설정해주세요.')
-				return
-			}
-			//if(this.image) params.ciImage = this.image
-			//const applyPageRes = await api.upload('/partners/applyPage', params);
-			//console.log(applyPageRes);
 
 			const applyPageFormParams = []
 
 			for (const [i, col] of this.applyerFormList.entries()) {
-				if (col.col_id === '' || col.title === '') {
-					this.$swal('column Name과 항목을 모두 채워주세요.')
+				if (!col.title) {
+					this.$swal('항목을 모두 채워주세요.')
 					return
 				}
 				applyPageFormParams['cols[' + i + '][dispYn]'] = col.disp_yn ? 1 : 0
@@ -369,7 +392,7 @@ export default {
 			let applyPageFormRes = await api.post('/partners/applyUserField', applyPageFormParams)
 
 			if (res.result === 2000 && applyPageFormRes.result === 2000) {
-				this.$swal('성공').then(result => {
+				this.$swal('성공').then( result => {
 					this.$router.push('/batch/list')
 				})
 			} else {
@@ -377,24 +400,31 @@ export default {
 			}
 		}, 500),
 		addFormList: function () {
-			this.cfCnt += 1
-			let row = {
-				col_id: 'cf' + this.cfCnt,
-				description: '',
-				disp_yn: 0,
-				isCf: true,
-				opts: null,
-				required: 0,
-				title: '',
-				type: 'T',
-				vals: null
+			if(this.cfCnt >= 2) {
+				this.$swal('최대 2개까지 추가할 수 있습니다.')
+			} else {
+				this.cfCnt += 1
+				let row = {
+					col_id: 'cf' + this.cfCnt,
+					description: '',
+					disp_yn: 0,
+					isCf: true,
+					opts: null,
+					required: 0,
+					title: '',
+					type: 'T',
+					vals: null
+				}
+				this.applyerFormList.push(row)
 			}
-			this.applyerFormList.push(row)
 		},
 		deleteFormList: function (colId) {
-			const itemToFind = this.applyerFormList.find(function (item) {return item.col_id === colId})
+			const itemToFind = this.applyerFormList.find(item => {return item.col_id === colId})
 			const idx = this.applyerFormList.indexOf(itemToFind)
-			if (idx > -1) this.applyerFormList.splice(idx, 1)
+			if (idx > -1) {
+				this.applyerFormList.splice(idx, 1)
+				this.cfCnt--
+			}
 		}
 	},
 	computed: {
