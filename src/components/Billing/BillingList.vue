@@ -33,7 +33,7 @@
 				<td>{{ item.charged_info && item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불")) }}</td>
 				<td :class="{'text-danger':item.charged_bill_dump}">{{ item.charged_t_id ? item.charged_t_id : item.charged_bill_dump }}</td>
 				<td>{{ item.mng_memo }}</td>
-				<td><ItemButton text="수정" variant="default" @click="[setCurrentItem(item), (isPenaltyCharge=false), (memo=(item.mng_memo)), $refs.modalMemo.open()]" /></td>
+				<td><ItemButton text="수정" variant="default" @click="[setCurrentItem(item), (memo=(item.mng_memo)), $refs.modalMemo.open()]" /></td>
 
 			</Table>
 		</Content>
@@ -172,7 +172,6 @@ export default {
 	data() {
 		return {
 			orders: [],
-			isPenaltyCharge: false,
 			search: '',
 			currentItem: {
 				user: {}
@@ -354,7 +353,7 @@ export default {
 					if (r.isConfirmed) {
 						const res = await api.post('/partners/chargeOrder', {
 							boIdx: this.currentItem.idx,
-							isPenaltyCharge: (isPenaltyCharge?1:0),
+							isPenaltyCharge: 0,
 						})
 						if (res.result === 1000) {
 							this.$swal

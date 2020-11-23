@@ -42,10 +42,10 @@
 				<td>{{ item.pcharged_info && item.pcharged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불")) }}</td>
 				<td :class="{'text-danger':item.pcharged_bill_dump}">{{ item.pcharged_t_id ? item.pcharged_t_id : item.pcharged_bill_dump }}</td>
 				<td>{{ item.mng_memo }}</td>
-				<td><ItemButton text="수정" variant="default" @click="[setCurrentItem(item), (isPenaltyCharge=true), (memo=(item.mng_memo)), $refs.modalMemo.open()]" /></td>
+				<td><ItemButton text="수정" variant="default" @click="[setCurrentItem(item), (memo=(item.mng_memo)), $refs.modalMemo.open()]" /></td>
 			</Table>
 		</Content>
-		
+
 		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
 
 		<Modal ref="modalWaitPayment" v-cloak>
@@ -180,7 +180,6 @@ export default {
 	data() {
 		return {
 			orders: [],
-			isPenaltyCharge: false,
 			search: '',
 			currentItem: {
 				user: {}
