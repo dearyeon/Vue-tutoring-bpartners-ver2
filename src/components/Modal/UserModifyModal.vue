@@ -5,7 +5,7 @@
                   <!-- locarStorage 사용할 것 -->
                   <div class="modal-header" style="border-bottom:0px;padding-bottom: 25px;">
                     <button type="button" class="close" data-dismiss="modal">
-                      <span aria-hidden="true" @click="$emit('close')">×</span> <!-- @click="openModify"-->
+                      <span aria-hidden="true" @click="$emit('close')">×</span>
                       <span class="sr-only">Close</span>
                     </button>
                     <br />
@@ -54,7 +54,7 @@
                   </div>
 
                   <div class="modal-footer" style="border-top:0px">
-                    <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button> <!-- @click="closeModify"-->
+                    <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
                     <button type="button" class="btn btn-success" id="userUpdateSubmit" @click="applyModify">변경 완료</button>
                   </div>
                 </div>
@@ -107,6 +107,6 @@ export default {
 
 <style scoped>
 .modal {
-  z-index: 1031 !important;
+  z-index: 2051 !important;
 }
 </style>

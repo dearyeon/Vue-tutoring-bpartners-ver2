@@ -1,6 +1,6 @@
 <template>
 <div>
-    <UserModifyModal :item="userInfo" v-if="modify"/>
+    <UserModifyModal :item="userInfo" v-if="modify" @close="showModify"/>
     <div class="modal inmodal fade in"  style="display: block;">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="width:100%">
@@ -187,9 +187,5 @@ export default {
 
 .vertical-timeline-content {
     display: block;
-}
-
-.modal {
-  z-index: 1;
 }
 </style>
