@@ -2,9 +2,9 @@
 	<div><!-- v-model:isCancel-->
 		<Header title="신청 관리"
 			:use-batch-selection="true" @changeBatch="refreshData"
-			switch-text="취소포함" @checkchange="toggleCancel"
-			btn1-text="일괄 신청" @btn1click="$refs.file.click()" btn1-variant="primary" :btn1-loading="loading1"
-			btn2-text="신청엑셀 다운로드" @btn2click="exportFormat" btn2-variant="success" :btn2-loading="loading2">
+			switch1-text="취소포함" @switch1-change="toggleCancel"
+			btn1-text="일괄 신청" @btn1-click="$refs.file.click()" btn1-variant="primary" :btn1-loading="loading1"
+			btn2-text="신청엑셀 다운로드" @btn2-click="exportFormat" btn2-variant="success" :btn2-loading="loading2">
 		</Header>
 		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="file" @change="importExcel" />
 
