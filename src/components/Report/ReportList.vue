@@ -11,8 +11,8 @@
 		<Content>
 			<Table :headers="['No','이름','고객식별ID','달성률','수업','전체','학습 레벨','부서','직위(직책)','사번(고유값)','메모1','메모2','수업 히스토리(횟수)']"
 				:data="items"
-					v-slot="{item}">
-				<td>{{ 1 - ((current_page-1)*per_page) }}</td>
+					v-slot="{item, i}">
+				<td>{{ total - ((current_page-1)*per_page) - i }}</td>
 				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
