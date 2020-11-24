@@ -4,7 +4,7 @@
 				:use-batch-selection="true" @changeBatch="refresh"
 				@search="setSearch" search-placeholder="이름 or 고객식별ID"
 				btn1-text="학습현황 메일 일괄 발송" @btn1-click="openModal" btn1-variant="success"
-				btn2-text="엑셀 다운로드" @btn2click="exportExcel" btn2-variant="success" :btn2-loading="loading">
+				btn2-text="엑셀 다운로드" @btn2-click="exportExcel" btn2-variant="success" :btn2-loading="loading">
 		</Header>
 
 
