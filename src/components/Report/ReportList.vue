@@ -92,7 +92,6 @@ export default {
 	data() {
 		return {
 			sk: '',
-			company: '',
 			batches: [],
 			batch: null,
 			items: [],
@@ -194,6 +193,7 @@ export default {
 			const calendar = res.data.calendar
 			const batch = res.data.batch
 			const orders = res.data.orders
+			const company = res.data.company
 
 			let dataWs = []
 			orders.forEach((order, index) => {
@@ -201,7 +201,7 @@ export default {
 				let dateInfo = {}
 				calendar.forEach(date => {
 					if (order.use_ticket_info)
-						dateInfo[date] = order.use_ticket_info ? order.use_ticket_info.find(element => date.substring(0, 2) + '-' + date.substring(3, 5) === element.use_dt.substring(5, 10)) ? 'O' : '' : ''
+						dateInfo[date] = order.use_ticket_info ? order.use_ticket_info.find(element => date.substring(0, 2) + '-' + date.substring(3, 5) === element.use_dt.substring(5, 10)) ? order.use_ticket_info.length+'회' : '' : ''
 				})
 
 				dataWs.push(Object.assign(
@@ -236,7 +236,7 @@ export default {
 			var ws = XLSX.utils.json_to_sheet(dataWs);
 			var wb = XLSX.utils.book_new();
 			XLSX.utils.book_append_sheet(wb, ws, '수업현황');
-			const test = XLSX.writeFile(wb, this.company + ' 수업현황 ' + batch.b_no + '주차.xlsx');
+			const test = XLSX.writeFile(wb, company + ' 수업현황 ' + batch.b_no + '주차.xlsx');
 			this.loading = false
 		}, 500),
 		setCycle(type) {

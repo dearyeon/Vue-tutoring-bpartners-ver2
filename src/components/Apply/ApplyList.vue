@@ -114,9 +114,25 @@ export default {
 					this.refreshData();
 				}
 			}
-    	},
+		},
+		importExcel: _.debounce(function (event) {
+			this.loading1 = true
+			let input = event.target.files[0]
+			let reader = new FileReader()
+    		reader.readAsBinaryString(input)
+			reader.onload = function () {
+				let data = reader.result;
+				let workBook = XLSX.read(data, { type: 'binary' });
+				workBook.SheetNames.forEach(function (sheetName) {
+					console.log('SheetName: ' + sheetName);
+					let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
+					console.log(JSON.stringify(rows));
+				})
+			};
+			this.loading1 = false
+		}, 500),
     	exportFormat: _.debounce(async function () {
-		  	this.loading1 = true
+		  	this.loading2 = true
           	let dataWs = []
             dataWs.push(Object.assign({
                 'No': '',
@@ -136,24 +152,8 @@ export default {
 			var wb = XLSX.utils.book_new();
 			XLSX.utils.book_append_sheet(wb, ws, this.company +' '+ shared.getCurBatch().b_no + '주차 신청관리');
 			const test = XLSX.writeFile(wb, this.company +' '+ shared.getCurBatch().b_no + '주차 신청관리.xlsx');
-			this.loading1 = false
-        }, 500),
-		importExcel: _.debounce(function (event) {
-			this.loading2 = true
-			let input = event.target.files[0]
-			let reader = new FileReader()
-    		reader.readAsBinaryString(input)
-			reader.onload = function () {
-				let data = reader.result;
-				let workBook = XLSX.read(data, { type: 'binary' });
-				workBook.SheetNames.forEach(function (sheetName) {
-					console.log('SheetName: ' + sheetName);
-					let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-					console.log(JSON.stringify(rows));
-				})
-			};
 			this.loading2 = false
-		}, 500),
+        }, 500),
 		toggleCancel(event){
 			this.includeCancel = event;
 			this.refreshData();
