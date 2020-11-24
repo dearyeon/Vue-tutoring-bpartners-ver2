@@ -3,7 +3,7 @@
 		<Header title="신청 관리"
 			:use-batch-selection="true" @changeBatch="refreshData"
 			switch1-text="취소포함" @switch1-change="toggleCancel"
-			btn1-text="개별 신청" @btn1-click="exportFormat" btn1-variant="warning"
+			btn1-text="개별 신청" @btn1-click="routeApplyPage" btn1-variant="warning" 
 			btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading1"
 			btn3-text="신청엑셀 다운로드" @btn3-click="exportFormat" btn3-variant="success" :btn3-loading="loading2">
 		</Header>
@@ -123,17 +123,15 @@ export default {
 
 			let input = event.target.files[0]
 			let reader = new FileReader()
-    		reader.readAsBinaryString(input)
-			reader.onload = function () {
+			let value = []
+    		
+			reader.onload = async () => {
 				let data = reader.result;
 				let workBook = XLSX.read(data, { type: 'binary' });
 				workBook.SheetNames.forEach(async function (sheetName) {
-					console.log('SheetName: ' + sheetName);
 					let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-					console.log('rows:',JSON.stringify(rows));
-					let data = []
 					rows.forEach(row =>
-						data.push(Object.assign({
+						value.push(Object.assign({
 							'no': row.No?row.No:'',
 							'name': row.이름?row.이름:'',
 							'email': row.이메일?row.이메일:'',
@@ -148,11 +146,26 @@ export default {
 							'cf2': row.CF2?row.CF2:'',
 						}))
 					)
-					console.log('data:',data);
-					console.log('dataStringify:',JSON.stringify(data));
-					const res = await api.post('/partners/importApplyListToExcel', {bbIdx: shared.getCurBatch().idx , rows:JSON.stringify(data)})
 				})
+				console.log(JSON.stringify(value));
+				const res = await api.post('/partners/importApplyListToExcel', {bbIdx: shared.getCurBatch().idx , rows:JSON.stringify(value)})
+				console.log(res)
+				if(res.result === 2000){
+					this.$swal.fire({
+						title: '일괄 신청이 완료 되었습니다.',
+						confirmButtonText: 'OK',
+					})
+					this.refreshData();
+				} else if (res.result === 1000) {
+					this.$swal.fire({
+						title: res.message,
+						text: res.data.errMsg,
+						icon: "warning",
+						confirmButtonText: "OK"
+					})
+				}
 			};
+			reader.readAsBinaryString(input)
 			this.loading1 = false
 		}, 500),
     	exportFormat: _.debounce(async function () {
@@ -186,6 +199,9 @@ export default {
 			this.modalitem = await shared.getUserInfo(boIdx)
 			this.showModal = !this.showModal
 		},
+		routeApplyPage () {
+
+		}
 	},
 };
 </script>
