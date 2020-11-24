@@ -62,7 +62,7 @@
 			</label>
 
 			<label v-if="btn3Text" :class="'btn btn-w-m btn-'+btn3Variant" @click="$emit('btn3-click')">
-				<div v-if="!btn3Loading">{{ btn2Text }}</div>
+				<div v-if="!btn3Loading">{{ btn3Text }}</div>
 				<clip-loader :loading="btn3Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>
 		</div>

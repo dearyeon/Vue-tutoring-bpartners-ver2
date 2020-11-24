@@ -3,8 +3,9 @@
 		<Header title="신청 관리"
 			:use-batch-selection="true" @changeBatch="refreshData"
 			switch1-text="취소포함" @switch1-change="toggleCancel"
-			btn1-text="일괄 신청" @btn1-click="$refs.file.click()" btn1-variant="primary" :btn1-loading="loading1"
-			btn2-text="신청엑셀 다운로드" @btn2-click="exportFormat" btn2-variant="success" :btn2-loading="loading2">
+			btn1-text="개별 신청" @btn1-click="exportFormat" btn1-variant="warning"
+			btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading1"
+			btn3-text="신청엑셀 다운로드" @btn3-click="exportFormat" btn3-variant="success" :btn3-loading="loading2">
 		</Header>
 		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="file" @change="importExcel" />
 
@@ -116,17 +117,40 @@ export default {
 			}
 		},
 		importExcel: _.debounce(function (event) {
+			//bbIdx = this.$route.params.bbIdx
 			this.loading1 = true
+
+
 			let input = event.target.files[0]
 			let reader = new FileReader()
     		reader.readAsBinaryString(input)
 			reader.onload = function () {
 				let data = reader.result;
 				let workBook = XLSX.read(data, { type: 'binary' });
-				workBook.SheetNames.forEach(function (sheetName) {
+				workBook.SheetNames.forEach(async function (sheetName) {
 					console.log('SheetName: ' + sheetName);
 					let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName]);
-					console.log(JSON.stringify(rows));
+					console.log('rows:',JSON.stringify(rows));
+					let data = []
+					rows.forEach(row =>
+						data.push(Object.assign({
+							'no': row.No?row.No:'',
+							'name': row.이름?row.이름:'',
+							'email': row.이메일?row.이메일:'',
+							'cpIdx': row.수강권idx?row.수강권idx:'',
+							'수강권': row.수강권?row.수강권:'',
+							'company': row.소속?row.소속:'',
+							'department': row.부서?row.부서:'',
+							'position': row.직급?row.직급:'',
+							'empNo': row.사번?row.사번:'',
+							'cel': row.연락처?row.연락처:'',
+							'cf1': row.CF1?row.CF1:'',
+							'cf2': row.CF2?row.CF2:'',
+						}))
+					)
+					console.log('data:',data);
+					console.log('dataStringify:',JSON.stringify(data));
+					const res = await api.post('/partners/importApplyListToExcel', {bbIdx: shared.getCurBatch().idx , rows:JSON.stringify(data)})
 				})
 			};
 			this.loading1 = false
