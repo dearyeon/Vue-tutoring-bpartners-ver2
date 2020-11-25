@@ -5,12 +5,12 @@
 			switch1-text="취소포함" @switch1-change="toggleCancel"
 			btn1-text="개별 신청" @btn1-click="routeIndivApply" btn1-variant="warning" 
 			btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading1"
-			btn3-text="신청엑셀 다운로드" @btn3-click="exportFormat" btn3-variant="success" :btn3-loading="loading2">
+			btn3-text="신청양식 다운로드" @btn3-click="exportFormat" btn3-variant="success" :btn3-loading="loading2">
 		</Header>
 		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="file" @change="importExcel" />
 
 		<Content>
-			<Table :headers="['No','이름','이메일/고객식별ID','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','접수일시','취소일시','취소/복원'])"
+			<Table :headers="['No','이름','이메일/고객식별ID','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','관리메모','관리정보','접수일시','취소일시','취소/복원'])"
 				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
@@ -25,6 +25,14 @@
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price - item.goods.charge_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.charge_price) : '' }}</td>
+				<td>
+					<p v-if="item.mng_memo" @click="openMemoModal(item.idx,item.mng_memo)">{{item.mng_memo}}</p>
+					<button v-else class="btn btn-default" @click="openMemoModal(item.idx)">관리메모</button>
+				</td>
+				<td>
+					<p v-if="item.mng_info" @click="openInfoModal(item.idx,item.mng_info)">{{item.mng_info}}</p>
+					<button v-else class="btn btn-default" @click="openInfoModal(item.idx)">관리정보</button>
+				</td>
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td>{{ item.apply_ccl_dt && moment(item.apply_ccl_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td v-if="!!item.apply_ccl_dt"><ItemButton text="복원" variant="primary" @click="" /></td>
@@ -32,7 +40,10 @@
 			</Table>
 		</Content>
 
-		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
+		<UserInfoModal :data="modalitem" v-if="showUserInfoModal" @close="showUserInfoModal = !showUserInfoModal"/>
+		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = !showMemoModal" @save="updateMemo"/>
+		<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = !showInfoModal" @save="updateInfo"/>
+
 	</div>
 </template>
 
@@ -50,6 +61,7 @@ import Content from "@/components/Common/Content"
 import Table from "@/components/Common/Table"
 import ItemButton from "@/components/Common/ItemButton"
 import UserInfoModal from "@/components/Modal/UserInfoModal"
+import MngTextModal from '../Modal/MngTextModal'
 
 export default {
 	data() {
@@ -59,10 +71,14 @@ export default {
 			cfs: [],
 			orders: [],
 			includeCancel: false,
-      		curBBIdx: 0,
-      		loading1: false,
+      curBBIdx: 0,
+			selectIdx: 0,
+      loading1: false,
 			loading2: false,
-			showModal: false,
+			showUserInfoModal: false,
+			showMemoModal: false,
+			showInfoModal: false,
+			content:'',
 			moment: moment,
 		};
 	},
@@ -74,7 +90,8 @@ export default {
 		Table,
 		ItemButton,
 		ClipLoader,
-		UserInfoModal
+		UserInfoModal,
+		MngTextModal
 	},
 	created() {
 		this.refreshData();
@@ -195,9 +212,34 @@ export default {
 			this.includeCancel = event;
 			this.refreshData();
 		},
+		openMemoModal(idx, content) {
+			this.content = content
+			this.selectIdx = idx
+			this.showMemoModal = !this.showMemoModal
+		},
+		openInfoModal(idx, content) {
+			this.content = content
+			this.selectIdx = idx
+			this.showInfoModal = !this.showInfoModal
+		},
 		async openUserInfo(boIdx) {
 			this.modalitem = await shared.getUserInfo(boIdx)
-			this.showModal = !this.showModal
+			this.showUserInfoModal = !this.showUserInfoModal
+		},
+		async updateMemo(text) {
+			console.log(text);
+			this.showMemoModal = !this.showMemoModal
+			const res = await api.post('/partners/updateMemo', { boIdx: this.selectIdx, memo: text})
+			if(res.result === 2000) {
+				this.refreshData();
+			}
+		},
+		async updateInfo(text) {
+			this.showInfoModal = !this.showInfoModal
+			const res = await api.post('/partners/updateInfo', { boIdx: this.selectIdx, info: text })
+			if(res.result === 2000) {
+				this.refreshData();
+			}
 		},
 		routeIndivApply () {
 			this.$router.push({
