@@ -17,7 +17,7 @@
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
 				<td>
-					{{ item.use_ticket_info && item.ticket_summary ? parseInt(item.goods.charge_plan.secs_per_day/60) * (item.use_ticket_info.length + 1) : '-'}}분/
+					{{ item.use_ticket_info && item.ticket_summary ? parseInt(item.goods.charge_plan.secs_per_day/60) * (item.use_ticket_info.length) : '-'}}분/
 					{{ item.ticket_summary ? item.ticket_summary.use_ticket_cnt : '-' }}회
 				</td>
 				<td>
