@@ -65,6 +65,11 @@
 				<div v-if="!btn3Loading">{{ btn3Text }}</div>
 				<clip-loader :loading="btn3Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>
+
+			<label v-if="btn4Text" :class="'btn btn-w-m btn-'+btn4Variant" @click="$emit('btn4-click')">
+				<div v-if="!btn4Loading">{{ btn4Text }}</div>
+				<clip-loader :loading="btn4Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
+			</label>
 		</div>
 	</div>
 </template>
@@ -100,6 +105,10 @@ export default {
 		btn3Variant: String,
 		btn3Text: String,
 		btn3Loading: Boolean,
+
+		btn4Variant: String,
+		btn4Text: String,
+		btn4Loading: Boolean,
 	},
 	data() {
 		return {
