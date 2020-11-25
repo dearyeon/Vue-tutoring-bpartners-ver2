@@ -92,7 +92,6 @@ export default {
 	data() {
 		return {
 			sk: '',
-			batches: [],
 			batch: null,
 			items: [],
 			current_page: 1,
@@ -107,9 +106,6 @@ export default {
 			loading: false,
 			showModal: false,
 			modalitem: null,
-
-			d_type: "all",
-			showModify: false,
 			curBBIdx: 0
 		};
 	},
