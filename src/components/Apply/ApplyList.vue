@@ -3,7 +3,7 @@
 		<Header title="신청 관리"
 			:use-batch-selection="true" @changeBatch="refreshData"
 			switch1-text="취소포함" @switch1-change="toggleCancel"
-			btn1-text="개별 신청" @btn1-click="routeApplyPage" btn1-variant="warning" 
+			btn1-text="개별 신청" @btn1-click="routeIndivApply" btn1-variant="warning" 
 			btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading1"
 			btn3-text="신청엑셀 다운로드" @btn3-click="exportFormat" btn3-variant="success" :btn3-loading="loading2">
 		</Header>
@@ -199,8 +199,11 @@ export default {
 			this.modalitem = await shared.getUserInfo(boIdx)
 			this.showModal = !this.showModal
 		},
-		routeApplyPage () {
-
+		routeIndivApply () {
+			this.$router.push({
+				name: 'indivApplyNew',
+				params: { bbIdx:shared.getCurBatch().idx }
+			})
 		}
 	},
 };

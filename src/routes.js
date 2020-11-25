@@ -1,4 +1,5 @@
 import ApplyList from "@/components/Apply/ApplyList";
+import IndivApplyForm from "@/components/Apply/IndivApplyForm";
 import ApplyForm from "@/components/Batch/ApplyForm";
 import BatchForm from "@/components/Batch/BatchForm";
 import SiteList from "@/components/Site/SiteList";
@@ -21,6 +22,7 @@ const routes = [
 			{path: "/", redirect: "/report/list"},
 			{path: '/report/list', component: ReportList},
 			{path: '/apply/list', component: ApplyList},
+			{path: "/apply/indivApplyNew/:bbIdx", name: "indivApplyNew", component: IndivApplyForm, props: true},
 			{path: '/issue/list', component: IssueList},
 			{path: '/billing/list', component: BillingList},
 			{path: '/addBilling/list', component: AddBillingList},
