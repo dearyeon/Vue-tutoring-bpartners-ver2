@@ -36,7 +36,7 @@
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td>{{ item.apply_ccl_dt && moment(item.apply_ccl_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td v-if="!!item.apply_ccl_dt"><ItemButton text="복원" variant="primary" @click="" /></td>
-				<td v-else><ItemButton text="취소" variant="danger" @click="" /></td>
+				<td v-else><ItemButton text="취소" variant="danger" @click="cancel(item)" /></td>
 			</Table>
 		</Content>
 
@@ -231,6 +231,38 @@ export default {
 			this.$router.push({
 				name: 'indivApplyNew',
 				params: { bbIdx:shared.getCurBatch().idx }
+			})
+		},
+		async cancel(item) {
+			this.$swal.fire({
+				icon: 'warning',
+				title: '취소 하시겠습니까?',
+				confirmButtonText: 'OK',
+				confirmButtonColor: '#ff7674',
+				showCancelButton: true,
+			})
+			.then(async result => {
+				if (result.isConfirmed) {
+					const res = await api.post('/partners/applyCancel', { boIdx: item.idx, buIdx: item.user.idx })
+					if (res.result === 2000) {
+						this.$swal.fire({
+							text: '취소가 완료되었습니다.',
+							icon: 'success',
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5',
+						})
+						this.refreshData()
+					}
+					else {
+						this.$swal({
+							title: '다시 시도 해주세요',
+							text: res.message.errMsg,
+							icon: 'error',
+							confirmButtonText: '확인',
+							confirmButtonColor: '#8FD0F5',
+						})
+					}
+				}
 			})
 		}
 	},
