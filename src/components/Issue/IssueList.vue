@@ -55,9 +55,7 @@ export default {
 	data() {
 		return {
 			orders: [],
-			delOrders: [],
 			moment: moment,
-			curBBIdx: 0,
 			showModal: false,
 			includeCancel: false,
 		};
@@ -68,9 +66,7 @@ export default {
 	methods: {
 		async refreshData(params) {
 			if(!params) params = {}
-
-			this.curBBIdx = shared.getCurBatch().idx
-			params.bbIdx = this.curBBIdx
+			params.bbIdx = shared.getCurBatch().idx
 
 			const res = await api.get("/partners/issueOrderList", params);
 			const data = res.data;
