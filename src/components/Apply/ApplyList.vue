@@ -122,26 +122,12 @@ export default {
 				return val
 			}
 		},
-		routeDetailPage(event) {
-			if (this.batches.length) {
-				if (parseInt(this.$route.params.bbIdx) !== this.batches[event.target.value].idx) {
-					this.$router.push({
-						name: "applyDetailsList",
-						params: {bbIdx: this.curBBIdx }
-					})
-					this.refreshData();
-				}
-			}
-		},
 		importExcel: _.debounce(function (event) {
-			//bbIdx = this.$route.params.bbIdx
 			this.loading1 = true
-
 
 			let input = event.target.files[0]
 			let reader = new FileReader()
-			let value = []
-    		
+			let value = []	
 			reader.onload = async () => {
 				let data = reader.result;
 				let workBook = XLSX.read(data, { type: 'binary' });
