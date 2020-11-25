@@ -71,9 +71,9 @@ export default {
 			cfs: [],
 			orders: [],
 			includeCancel: false,
-      curBBIdx: 0,
+      		curBBIdx: 0,
 			selectIdx: 0,
-      loading1: false,
+      		loading1: false,
 			loading2: false,
 			showUserInfoModal: false,
 			showMemoModal: false,
@@ -127,7 +127,7 @@ export default {
 				if (parseInt(this.$route.params.bbIdx) !== this.batches[event.target.value].idx) {
 					this.$router.push({
 						name: "applyDetailsList",
-						params: {bbIdx: this.curBBIdx}
+						params: {bbIdx: this.curBBIdx }
 					})
 					this.refreshData();
 				}
