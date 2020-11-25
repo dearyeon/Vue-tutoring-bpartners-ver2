@@ -8,7 +8,7 @@
 			<span>
 				<div class="col-lg-12">
 					<h3 class="col-lg-6">추가결제일시</h3>
-					<h4 class="col-lg-6">{{ batch ? moment(batch.pcharge_dt).format('YYYY-MM-DD HH:mm') : '-' }}</h4>
+					<h4 class="col-lg-6">{{ batch ? batch.pcharge_dt ? moment(batch.pcharge_dt).format('YYYY-MM-DD HH:mm') : '-' : '-' }}</h4>
 				</div>
 				<div class="col-lg-12">
 					<h3 class="col-lg-6">기준출석률</h3>

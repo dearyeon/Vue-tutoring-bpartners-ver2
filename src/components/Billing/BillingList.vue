@@ -7,7 +7,7 @@
 			<span>
 				<div class="col-lg-12">
 					<h3 class="col-lg-6">정기결제일시</h3>
-					<h4 class="col-lg-6">{{ batch ? moment(batch.charge_dt).format('YYYY-MM-DD HH:mm') : '-' }}</h4>
+					<h4 class="col-lg-6">{{ batch ? batch.charge_dt? moment(batch.charge_dt).format('YYYY-MM-DD HH:mm') : '-' : '-' }}</h4>
 				</div>
 			</span>
 		</Header>
@@ -192,12 +192,12 @@ export default {
 	},
 	methods: {
 		refresh: async function (sk) {
-			const bbIdx = shared.getCurBatch().idx;
+			const bbIdx = shared.getCurBatch().idx
 			const params = sk?{bbIdx, sk}:{bbIdx}
 			let res = await api.get('/partners/chargeOrderList',params)
-			this.orders = res.data.orders;
-			this.batch = res.data.batches.find(element => element.idx === bbIdx);
-			this.company = res.data.company;
+			this.orders = res.data.orders
+			this.batch = res.data.batches.find(element => element.idx === bbIdx)
+			this.company = res.data.company
 			this.listInfo = res.data.list
 		},
 		pausePayment: function () {
