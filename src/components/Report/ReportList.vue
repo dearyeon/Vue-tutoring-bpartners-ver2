@@ -239,9 +239,6 @@ export default {
 			const test = XLSX.writeFile(wb, company + ' 수업현황 ' + batch.b_no + '주차.xlsx');
 			this.loading = false
 		}, 500),
-		setCycle(type) {
-			this.d_type = type;
-		},
 		openModal() {
 			this.$swal({
 				title: "학습현황 메일 일괄 발송",
@@ -256,16 +253,6 @@ export default {
 		async openUserInfo(boIdx) {
 			this.modalitem = await shared.getUserInfo(boIdx)
 			this.showModal = !this.showModal
-		},
-		closeModal() {
-			this.showModal = !this.showModal;
-		},
-		openModify() {
-			this.showModify = !this.showModify;
-		},
-		updateItem(item) {
-			this.items[this.UserNum] = JSON.parse(JSON.stringify(item));
-			this.modalitem = this.items[this.UserNum];
 		},
 		setMemo(user) {
 			if (this.memoNum) this.memo = user.memo1;
