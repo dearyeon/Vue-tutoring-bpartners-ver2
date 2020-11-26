@@ -29,11 +29,11 @@
 				<td>{{ item.user.position }}</td>
 				<td>{{ item.user.emp_no }}</td>
 				<td @click="[memoNum=true,setMemo(item.user)]">
-					<div class="memo" v-if="item.user.memo1">{{item.user.memo1.length > 6 ? item.user.memo1.substring(0, 6) + '...' : item.user.memo1}}</div>
+					<div class="mng-text" v-if="item.user.memo1">{{item.user.memo1}}</div>
 					<div v-else><button class="btn-xs btn-default">등록</button></div>
 				</td>
 				<td @click="[memoNum=false,setMemo(item.user)]">
-					<div class="memo" v-if="item.user.memo2">{{item.user.memo2.length > 6 ? item.user.memo2.substring(0, 6) + '...' : item.user.memo2}}</div>
+					<div class="mng-text" v-if="item.user.memo2">{{item.user.memo2}}</div>
 					<div v-else><button class="btn-xs btn-default">등록</button></div>
 				</td>
 				<td>
@@ -286,5 +286,13 @@ export default {
 	z-index: 1031;
 	top: 63px;
 	right: 105px;
+}
+
+
+.mng-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 70px;
+	white-space:nowrap;
 }
 </style>

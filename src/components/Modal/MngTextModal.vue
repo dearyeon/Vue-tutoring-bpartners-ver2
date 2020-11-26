@@ -2,7 +2,6 @@
     <div class="modal inmodal fade in" id="userUpdateModal" style="display: block;">
               <div class="modal-dialog modal-sm">
                 <div class="modal-content" style="width:450px;">
-                  <!-- locarStorage 사용할 것 -->
                   <div class="modal-header" style="border-bottom:0px;padding-bottom: 25px;">
                     <button type="button" class="close" data-dismiss="modal">
                       <span aria-hidden="true" @click="$emit('close')">×</span>
