@@ -33,7 +33,7 @@
                     <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
                       <div class="col-lg-4" style="padding:0;line-height:35px;align-items:flex-end;">부서</div>
                       <div class="col-lg-8">
-                        <input name="ui_part" type="text" class="form-control" v-model="modifyItem.user.part"/>
+                        <input name="ui_part" type="text" class="form-control" v-model="modifyItem.user.department"/>
                       </div>
                     </div>
                     <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
