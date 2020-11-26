@@ -24,13 +24,13 @@ const shared = {
 		return this.getToken()==null ? false : true;
 	},
 	isSupervisor() {
-		this.getAccount().acc_level == consts.ACCOUNT_LEVEL_SUPERVISOR
+		return this.getAccount().acc_level == consts.ACCOUNT_LEVEL_SUPERVISOR
 	},
 	isSiteManager() {
-		this.getAccount().acc_level == consts.ACCOUNT_LEVEL_SITE_MANAGER
+		return this.getAccount().acc_level == consts.ACCOUNT_LEVEL_SITE_MANAGER
 	},
 	isPartnerManger() {
-		this.getAccount().acc_level == consts.ACCOUNT_LEVEL_PARTNER_MANAGER
+		return this.getAccount().acc_level == consts.ACCOUNT_LEVEL_PARTNER_MANAGER
 	},
 	nf(number) {
 		return new Intl.NumberFormat('ko-KR').format(number)

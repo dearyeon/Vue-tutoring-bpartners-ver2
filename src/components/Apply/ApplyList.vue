@@ -14,7 +14,12 @@
 
 		<Content>
 			<Table
-				:headers="['No','이름','고객식별ID','이메일','연락처','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','관리메모','관리정보','접수일시','취소일시','승인일시','취소/복원'].concat( applyBatchError ? '승인결과' : ''))"
+				:headers="['No','이름','고객식별ID','이메일','연락처','소속','부서','직위','사번']
+							.concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금'])
+							.concat($shared.isSupervisor()?'관리메모':null)
+							.concat(['관리정보','접수일시','취소일시','승인일시'])
+							.concat($shared.isSupervisor()?['승인','취소/복원']:null)
+							.concat( applyBatchError ? '승인결과' : null)"
 				:data="orders"
 				v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
@@ -43,19 +48,14 @@
 				</td>
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td>{{ item.apply_ccl_dt && moment(item.apply_ccl_dt).format('YYYY-MM-DD HH:mm') }}</td>
-				<td v-if="!!item.approve_dt">{{
-						item.approve_dt && moment(item.approve_dt).format('YYYY-MM-DD HH:mm')
-					}}
-				</td>
-				<td v-else>
+				<td>{{ item.approve_dt && moment(item.approve_dt).format('YYYY-MM-DD HH:mm') }}</td>
+				<td v-if="$shared.isSupervisor()">
 					<ItemButton text="승인" variant="success btn-outline"
 								@click="approve(item.idx,item.user.name,item.user.email )"/>
 				</td>
-				<td v-if="!!item.apply_ccl_dt">
-					<ItemButton text="복원" variant="primary" @click=""/>
-				</td>
-				<td v-else>
-					<ItemButton text="취소" variant="danger" @click="cancel(item)"/>
+				<td v-if="$shared.isSupervisor()">
+					<ItemButton v-if="!!item.apply_ccl_dt" text="복원" variant="primary" @click=""/>
+					<ItemButton v-else text="취소" variant="danger" @click="cancel(item)"/>
 				</td>
 				<td v-if="applyBatchError"><p>{{ item.applyResultMsg }}</p></td>
 			</Table>
