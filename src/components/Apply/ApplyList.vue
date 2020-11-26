@@ -5,13 +5,13 @@
 			switch1-text="취소포함" @switch1-change="toggleCancel"
 			btn1-text="개별 신청" @btn1-click="routeIndivApply" btn1-variant="warning" 
 			btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading"
-      btn3-text="일괄 승인 검사" @btn3-click="approveBatchCheck" btn3-variant="success btn-outline" :btn3-loading="loading"
+      btn3-text="일괄 승인" @btn3-click="approveBatchCheck" btn3-variant="success btn-outline" :btn3-loading="loading"
 			btn4-text="신청양식 다운로드" @btn4-click="exportFormat" btn4-variant="success" :btn4-loading="loading">
 		</Header>
 		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="file" @change="importExcel" />
 
 		<Content>
-			<Table :headers="['No','이름','이메일/고객식별ID','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','관리메모','관리정보','접수일시','취소일시','승인일시','취소/복원'])"
+			<Table :headers="['No','이름','이메일/고객식별ID','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','관리메모','관리정보','접수일시','취소일시','승인일시','취소/복원'].concat( applyError ? '승인결과' : ''))"
 				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
@@ -42,6 +42,7 @@
 				</td>
 				<td v-if="!!item.apply_ccl_dt"><ItemButton text="복원" variant="primary" @click="" /></td>
 				<td v-else><ItemButton text="취소" variant="danger" @click="cancel(item)" /></td>
+				<td v-if="applyError"><p class="mng-text">{{item.mng_memo}}</p></td>
 			</Table>
 		</Content>
 
@@ -75,6 +76,7 @@ export default {
 			company: '',
 			batches: [],
 			cfs: [],
+			applyError: false,
 			orders: [],
 			includeCancel: false,
 			curBBIdx: 0,
@@ -351,6 +353,9 @@ export default {
 					html: `대상 건수 <strong>${res.data.targetCnt}</strong>건<br/>성공 건수 <strong>${res.data.successCnt}</strong>건<br/>실패 건수 <strong>${res.data.failCnt}</strong>건<br/>`,
 				}).then( r => {
 					if(r.isConfirmed) {
+						if(res.data.errorMsgs) {
+
+						}
 						this.refreshData()
 					}
 				})
@@ -366,5 +371,6 @@ export default {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		width: 70px;
+		white-space:nowrap;
 	}
 </style>

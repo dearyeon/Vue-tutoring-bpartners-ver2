@@ -2,7 +2,7 @@
 	<table class="table table-striped table-hover dataTable">
 		<thead>
 		<tr>
-			<th v-for="(header,i) in headers" :key="i">
+			<th v-for="(header,i) in headers" :key="i" v-if="header">
 				{{header}}
 			</th>
 		</tr>
