@@ -2,6 +2,7 @@
 	<div><!-- v-model:isCancel-->
 		<Header title="신청 관리"
 			:use-batch-selection="true" @changeBatch="refreshData"
+			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
 			switch1-text="취소포함" @switch1-change="toggleCancel"
 			btn1-text="개별 신청" @btn1-click="routeIndivApply" btn1-variant="warning" 
 			btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading"
@@ -109,7 +110,7 @@ export default {
 		this.refreshData()
 	},
 	methods: {
-		async refreshData () {
+		async refreshData (sk) {
 			this.curBBIdx = shared.getCurBatch().idx
 			const res = await api.get('/partners/applyOrderList', {
 				bbIdx: this.curBBIdx
@@ -126,6 +127,8 @@ export default {
 					return order.apply_ccl_dt === null
 				})
 			}
+
+			if(sk) this.orders = this.orders.filter((order) => { return order.user.name.includes(sk) })
 		},
 		getGTP (type, val) {
 			if (type == 'S') {
@@ -360,13 +363,16 @@ export default {
 					}
 				})
 			}
+		},
+		setSearch(sk){
+			this.search = sk
+			this.refreshData(sk)
 		}
 	},
 }
 </script>
 
 <style scoped>
-
 	.mng-text {
 		overflow: hidden;
 		text-overflow: ellipsis;
