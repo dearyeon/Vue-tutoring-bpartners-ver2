@@ -9,7 +9,7 @@
                     </button>
                     <br />
                     <h5 class="modal-title">{{title}}</h5>
-                    <small class="modal-subtitle">{{subtitle}}</small>
+                    <small class="modal-subtitle">{{subtitle?subtitle:title+'를 입력해 주세요.'}}</small>
                 </div>
 
                 <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px; width:100%">
