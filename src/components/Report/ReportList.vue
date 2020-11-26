@@ -240,9 +240,9 @@ export default {
 			this.presentIdx = user.idx;
 			this.showMemo = true;
 		},
-		async applyMemo() {
-			if (this.memoNum) await api.post('/partners/setMemo', {buIdx: this.presentIdx, memo1: this.memo})
-			else await api.post('/partners/setMemo', {buIdx: this.presentIdx, memo2: this.memo})
+		async applyMemo(memo) {
+			const params = this.memoNum ? {buIdx: this.presentIdx, memo1: memo} : {buIdx: this.presentIdx, memo2: memo}
+			await api.post('/partners/setMemo', params)
 			this.showMemo = false;
 			this.refresh();
 		}
