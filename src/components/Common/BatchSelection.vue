@@ -31,8 +31,11 @@
 					검색 결과가 없습니다
 				</div>
 			</template>
-
 		</cool-select>
+
+		<div id="reset-container">
+			<div id="reset" @click="resetFilter">x</div>
+		</div>
 	</div>
 </template>
 
@@ -62,14 +65,22 @@ export default {
 		}
 	},
 	async created() {
-		if(allBatches == null) await refreshAllBatches();
-		this.filteredBatches = allBatches;
+		if(allBatches == null) await refreshAllBatches()
+		this.filteredBatches = allBatches
 
 		this.curBatch = shared.getCurBatch()
-		this.selectedBatch = this.curBatch
-		this.filter(this.curBatch.company)
+		if(this.curBatch.idx) {
+			this.selectedBatch = this.curBatch
+			this.filter(this.curBatch.company)
+		}
 	},
 	methods: {
+		resetFilter() {
+			this.filteredBatches = allBatches
+			setTimeout(()=>{
+				this.onFocus()
+			},300)
+		},
 		onSelected(batch) {
 			console.debug('selected',batch.idx)
 
@@ -128,6 +139,20 @@ export default {
 }
 .item-container {
 
+}
+
+#reset-container {
+	position: relative;
+	z-index: 9999;
+}
+#reset {
+	position: absolute;
+	font-size: 2rem;
+	color: #ccc;
+	z-index: 9999;
+	top: -40px;
+	right: 15px;
+	cursor: pointer;
 }
 </style>
 
