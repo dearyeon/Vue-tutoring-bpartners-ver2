@@ -12,7 +12,7 @@
 		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="file" @change="importExcel" />
 
 		<Content>
-			<Table :headers="['No','이름','이메일/고객식별ID','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','관리메모','관리정보','접수일시','취소일시','승인일시','취소/복원'].concat( applyError ? '승인결과' : ''))"
+			<Table :headers="['No','이름','이메일/고객식별ID','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','관리메모','관리정보','접수일시','취소일시','승인일시','취소/복원'].concat( applyBatchError ? '승인결과' : ''))"
 				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
@@ -43,7 +43,7 @@
 				</td>
 				<td v-if="!!item.apply_ccl_dt"><ItemButton text="복원" variant="primary" @click="" /></td>
 				<td v-else><ItemButton text="취소" variant="danger" @click="cancel(item)" /></td>
-				<td v-if="applyError"><p class="mng-text">{{item.mng_memo}}</p></td>
+				<td v-if="applyBatchError"><p>{{item.applyResultMsg}}</p></td>
 			</Table>
 		</Content>
 
@@ -77,7 +77,8 @@ export default {
 			company: '',
 			batches: [],
 			cfs: [],
-			applyError: false,
+			applyBatchError: false,
+			applyResultMsgs: {},
 			orders: [],
 			includeCancel: false,
 			curBBIdx: 0,
@@ -88,12 +89,7 @@ export default {
 			showInfoModal: false,
 			content: '',
 			sk: '',
-			moment: moment,
-			approveBatchObj: {
-				btnText: '일괄 승인 검사',
-				func: 'approveBatchCheck',
-				btnClass: 'success btn-outline'
-			}
+			moment: moment
 		}
 	},
 	components: {
@@ -121,6 +117,18 @@ export default {
 			this.batches = data.batches
 			this.cfs = data.cfs
 
+			// 일괄승인 결과에 errorMsgs가 있을 때
+			if(this.applyBatchError){
+				data.orders.forEach( item  => {
+					const keys = Object.keys(this.applyResultMsgs)
+					if(keys.indexOf(item.idx.toString()) >= 0) {
+						item.applyResultMsg = this.applyResultMsgs[item.idx]
+					} else {
+						item.applyResultMsg = '승인'
+					}
+				})
+			}
+
 			if (this.includeCancel) {
 				this.orders = data.orders
 			} else {
@@ -128,9 +136,9 @@ export default {
 					return order.apply_ccl_dt === null
 				})
 			}
-			if(this.sk) this.orders = this.orders.filter((order) => { 
-				return !order.user.name.indexOf(this.sk) || 
-						(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) || 
+			if(this.sk) this.orders = this.orders.filter((order) => {
+				return !order.user.name.indexOf(this.sk) ||
+						(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
 						(order.user.email && !order.user.email.indexOf(this.sk))
 			})
 		},
@@ -271,15 +279,14 @@ export default {
 							if (r.isConfirmed) this.refreshData()
 						})
 					} else {
-						this.$swal
-							.fire({
+						this.$swal.fire({
 								html: `<strong>${res.message}</strong>`,
 								icon: 'error',
 								confirmButtonColor: '#8FD0F5',
 								confirmButtonText: '확인',
 								showLoaderOnConfirm: true,
 								reverseButtons: true,
-							})
+						})
 
 					}
 				}
@@ -360,8 +367,12 @@ export default {
 					html: `대상 건수 <strong>${res.data.targetCnt}</strong>건<br/>성공 건수 <strong>${res.data.successCnt}</strong>건<br/>실패 건수 <strong>${res.data.failCnt}</strong>건<br/>`,
 				}).then( r => {
 					if(r.isConfirmed) {
-						if(res.data.errorMsgs) {
-
+						if(res.data.failCnt > 0) {
+							this.applyBatchError = true
+							this.applyResultMsgs = res.data.errorMsgs
+						} else {
+							this.applyBatchError = false
+							this.applyResultMsgs = []
 						}
 						this.refreshData()
 					}

@@ -18,7 +18,10 @@
 			<td>{{ item.charge_plan && item.charge_plan.title }}</td>
 			<td>{{ item.charge_plan && item.charge_plan.idx }}</td>
 			<td>{{ item.apply_dt && moment(item.apply_dt).format('YY-MM-DD HH:mm') }}</td>
-			<td>{{ item.issue_dt && moment(item.issue_dt).format('YY-MM-DD HH:mm') }}</td>
+			<td v-if="item.issue_dt">{{ item.issue_dt && moment(item.issue_dt).format('YY-MM-DD HH:mm') }}</td>
+			<td v-else>
+				<ItemButton text="입과" variant="success btn-outline" @click="issueOrder"/>
+			</td>
 			<td>{{ item.mt_idx }}</td>
 			<td v-if="!item.apply_ccl_dt"><ItemButton text="취소" variant="danger" @click="" /></td>
 			<td v-else><ItemButton text="입과" variant="primary" @click="" /></td>
@@ -92,6 +95,9 @@ export default {
 			this.includeCancel = event;
 			this.refreshData();
 		},
+		async issueOrder() {
+			const res = await api.post("/partners/issueOrder", params);
+		}
 	}
 };
 </script>
