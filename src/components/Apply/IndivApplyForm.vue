@@ -20,12 +20,15 @@
 							<div class="col-lg-6">
 								<table class="table">
 									<tr>
-										<th>이름</th>
-										<td><input type="text" class="form-control" placeholder="이름을 입력해 주세요." v-model="name"/></td>
+										<th>이메일</th>
+										<td>
+                                            <input type="text" class="form-control" placeholder="이메일을 입력해 주세요." v-model="email"/>
+                                            <button class="btn btn-default">조회하기</button>
+                                        </td>
 									</tr>
 									<tr>
-										<th>이메일</th>
-										<td><input type="text" class="form-control" placeholder="이메일을 입력해 주세요." v-model="email"/></td>
+										<th>이름</th>
+										<td><input type="text" class="form-control" placeholder="이름을 입력해 주세요." v-model="name"/></td>
 									</tr>
 									<tr>
 										<th>연락처</th>

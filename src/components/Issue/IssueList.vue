@@ -105,9 +105,9 @@ export default {
 		async issueOrder(fr_dt,to_dt) {
 			let res
 			if(this.curOrder) {
-				res = await api.post("/partners/issueOrder", {boIdx:this.curOrder.idx,frDate:fr_dt,toDate:to_dt});
+				res = await api.post("/partners/issueOrder", {boIdx:this.curOrder.idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
 			} else {
-				res = await api.post("/partners/issueBatch", {bbIdx:shared.getCurBatch().idx,frDate:fr_dt,toDate:to_dt});
+				res = await api.post("/partners/issueBatch", {bbIdx:shared.getCurBatch().idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
 			}
 
 			if (res.result === 2000) {
@@ -120,7 +120,6 @@ export default {
 			} else if (res.result === 1000) {
 				this.$swal.fire({
 					title: res.message,
-					text: res.data.errMsg,
 					icon: 'warning',
 					confirmButtonText: 'OK'
 				})

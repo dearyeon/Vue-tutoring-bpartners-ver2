@@ -19,9 +19,14 @@
                     </span>
                 </div>
 
-                <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:90px; width:100%">
-                    <div>
-                        <date-picker v-model="applyRange" type="date" range placeholder="Select date"></date-picker>
+                <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:70px; width:100%">
+                    <div class="col-lg-12" style="display:inline">
+                        <div class="col-lg-6">
+                            <date-picker v-model="frDt" type="date" placeholder="Select date"></date-picker>
+                        </div>
+                        <div class="col-lg-6">
+                            <date-picker v-model="toDt" type="date" placeholder="Select date"></date-picker>
+                        </div>
                     </div>
                 </div>
 
@@ -60,23 +65,12 @@ export default {
 		DatePicker
     },
     async created() {
-        this.frDt = moment(this.batch.fr_dt).format('YYYY-MM-DD')
-        this.toDt = moment(this.batch.to_dt).format('YYYY-MM-DD')
+        this.frDt = new Date(this.batch.fr_dt)
+        this.toDt = new Date(this.batch.to_dt)
         const bbIdx = shared.getCurBatch().idx
         if(!this.item) {
             const res = await api.get("/partners/issueBatchCheck", {bbIdx});
             this.targetCnt = res.data.targetCnt
-        }
-    },
-    computed: {
-        applyRange: {
-            get() {
-                return [new Date(this.frDt), new Date(this.toDt)];
-            },
-            set(value) {
-                this.frDt = moment(value[0]).format('YYYY-MM-DD');
-                this.toDt = moment(value[1]).format('YYYY-MM-DD');
-            }
         }
     }
 }
