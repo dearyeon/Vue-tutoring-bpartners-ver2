@@ -12,7 +12,7 @@
 					   v-on:keypress.enter="$emit('search',searchModel)"
 					   class="form-control" />
 				<span v-if="searchModel" id="search-reset" @click="searchModel='';$emit('reset')">x</span>
-				<span class="input-group-btn">
+				<span v-if="!searchBtnHide" class="input-group-btn">
 					<button class="btn btn-default" v-on:click="$emit('search', searchModel)">검색</button>
 				</span>
 			</div>
@@ -51,22 +51,22 @@
 			<slot></slot>
 		</div>
 		<div id="buttons">
-			<label v-if="btn1Text" :class="'btn btn-w-m btn-'+btn1Variant" @click="$emit('btn1-click')">
+			<label v-if="btn1Text && !btn1Hide" :class="'btn btn-w-m btn-'+btn1Variant" @click="$emit('btn1-click')">
 				<div v-if="!btn1Loading">{{ btn1Text }}</div>
 				<clip-loader :loading="btn1Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>
 
-			<label v-if="btn2Text" :class="'btn btn-w-m btn-'+btn2Variant" @click="$emit('btn2-click')">
+			<label v-if="btn2Text && !btn2Hide" :class="'btn btn-w-m btn-'+btn2Variant" @click="$emit('btn2-click')">
 				<div v-if="!btn2Loading">{{ btn2Text }}</div>
 				<clip-loader :loading="btn2Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>
 
-			<label v-if="btn3Text" :class="'btn btn-w-m btn-'+btn3Variant" @click="$emit('btn3-click')">
+			<label v-if="btn3Text && !btn3Hide" :class="'btn btn-w-m btn-'+btn3Variant" @click="$emit('btn3-click')">
 				<div v-if="!btn3Loading">{{ btn3Text }}</div>
 				<clip-loader :loading="btn3Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>
 
-			<label v-if="btn4Text" :class="'btn btn-w-m btn-'+btn4Variant" @click="$emit('btn4-click')">
+			<label v-if="btn4Text && !btn4Hide" :class="'btn btn-w-m btn-'+btn4Variant" @click="$emit('btn4-click')">
 				<div v-if="!btn4Loading">{{ btn4Text }}</div>
 				<clip-loader :loading="btn4Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>
@@ -90,6 +90,7 @@ export default {
 
 		searchPlaceholder: String,
 		searchKeyDefault: String,
+		searchBtnHide: Boolean,
 
 		switch1Text: String,
 		switch2Text: String,
@@ -97,18 +98,22 @@ export default {
 		btn1Variant: String,
 		btn1Text: String,
 		btn1Loading: Boolean,
+		btn1Hide: Boolean,
 
 		btn2Variant: String,
 		btn2Text: String,
 		btn2Loading: Boolean,
+		btn2Hide: Boolean,
 
 		btn3Variant: String,
 		btn3Text: String,
 		btn3Loading: Boolean,
+		btn3Hide: Boolean,
 
 		btn4Variant: String,
 		btn4Text: String,
 		btn4Loading: Boolean,
+		btn4Hide: Boolean,
 	},
 	data() {
 		return {

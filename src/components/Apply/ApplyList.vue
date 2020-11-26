@@ -1,28 +1,30 @@
 <template>
 	<div><!-- v-model:isCancel-->
 		<Header title="신청 관리"
-			:use-batch-selection="true" @changeBatch="refreshData"
-			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
-			switch1-text="취소포함" @switch1-change="toggleCancel"
-			btn1-text="개별 신청" @btn1-click="routeIndivApply" btn1-variant="warning" 
-			btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading"
-      btn3-text="일괄 승인" @btn3-click="approveBatchCheck" btn3-variant="success btn-outline" :btn3-loading="loading"
-			btn4-text="신청양식 다운로드" @btn4-click="exportFormat" btn4-variant="success" :btn4-loading="loading">
+				:use-batch-selection="true" @changeBatch="refreshData"
+				search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
+				switch1-text="취소포함" @switch1-change="toggleCancel"
+				btn1-text="개별 신청" @btn1-click="routeIndivApply" btn1-variant="warning" :btn1-hide="!$shared.isSupervisor()"
+				btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading" :btn2-hide="!$shared.isSupervisor()"
+				btn3-text="일괄 승인" @btn3-click="approveBatchCheck" btn3-variant="success btn-outline" :btn3-loading="loading" :btn3-hide="!$shared.isSupervisor()"
+				btn4-text="신청양식 다운로드" @btn4-click="exportFormat" btn4-variant="success" :btn4-loading="loading" :btn4-hide="!$shared.isSupervisor()">
 		</Header>
-		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="file" @change="importExcel" />
+		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+			   ref="file" @change="importExcel"/>
 
 		<Content>
-			<Table :headers="['No','이름','고객식별ID','이메일','연락처','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','관리메모','관리정보','접수일시','취소일시','승인일시','취소/복원'].concat( applyBatchError ? '승인결과' : ''))"
+			<Table
+				:headers="['No','이름','고객식별ID','이메일','연락처','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','관리메모','관리정보','접수일시','취소일시','승인일시','취소/복원'].concat( applyBatchError ? '승인결과' : ''))"
 				:data="orders"
-					v-slot="{item, i}">
+				v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
-				<td>{{item.user.cus_id}}</td>
-				<td>{{item.user.email}}</td>
-				<td>{{item.user.cel}}</td>
+				<td>{{ item.user.cus_id }}</td>
+				<td>{{ item.user.email }}</td>
+				<td>{{ item.user.cel }}</td>
 				<td>{{ item.user.company }}</td>
 				<td>{{ item.user.department }}</td>
-				<td>{{ item.user.position}}</td>
+				<td>{{ item.user.position }}</td>
 				<td>{{ item.user.emp_no }}</td>
 				<td v-for="col in cfs" :key="col.id">{{ getGTP(col.type, item.user[col.col_id]) }}</td>
 				<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
@@ -30,29 +32,41 @@
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price - item.goods.charge_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.charge_price) : '' }}</td>
 				<td>
-					<p v-if="item.mng_memo" class="mng-text" @click="openMemoModal(item.idx,item.mng_memo)">{{item.mng_memo}}</p>
+					<p v-if="item.mng_memo" class="mng-text" @click="openMemoModal(item.idx,item.mng_memo)">
+						{{ item.mng_memo }}</p>
 					<ItemButton v-else text="관리메모" variant="default" @click="openMemoModal(item.idx)"/>
 				</td>
 				<td>
-					<p v-if="item.mng_info" class="mng-text" @click="openInfoModal(item.idx,item.mng_info)">{{item.mng_info}}</p>
+					<p v-if="item.mng_info" class="mng-text" @click="openInfoModal(item.idx,item.mng_info)">
+						{{ item.mng_info }}</p>
 					<ItemButton v-else text="관리정보" variant="default" @click="openInfoModal(item.idx)"/>
 				</td>
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td>{{ item.apply_ccl_dt && moment(item.apply_ccl_dt).format('YYYY-MM-DD HH:mm') }}</td>
-				<td v-if="!!item.approve_dt">{{ item.approve_dt && moment(item.approve_dt).format('YYYY-MM-DD HH:mm') }}</td>
-				<td v-else>
-					<ItemButton text="승인" variant="success btn-outline" @click="approve(item.idx,item.user.name,item.user.email )"/>
+				<td v-if="!!item.approve_dt">{{
+						item.approve_dt && moment(item.approve_dt).format('YYYY-MM-DD HH:mm')
+					}}
 				</td>
-				<td v-if="!!item.apply_ccl_dt"><ItemButton text="복원" variant="primary" @click="" /></td>
-				<td v-else><ItemButton text="취소" variant="danger" @click="cancel(item)" /></td>
-				<td v-if="applyBatchError"><p>{{item.applyResultMsg}}</p></td>
+				<td v-else>
+					<ItemButton text="승인" variant="success btn-outline"
+								@click="approve(item.idx,item.user.name,item.user.email )"/>
+				</td>
+				<td v-if="!!item.apply_ccl_dt">
+					<ItemButton text="복원" variant="primary" @click=""/>
+				</td>
+				<td v-else>
+					<ItemButton text="취소" variant="danger" @click="cancel(item)"/>
+				</td>
+				<td v-if="applyBatchError"><p>{{ item.applyResultMsg }}</p></td>
 			</Table>
 		</Content>
 
 
 		<UserInfoModal :data="modalitem" v-if="showUserInfoModal" @close="showUserInfoModal = !showUserInfoModal"/>
-		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = !showMemoModal" @save="updateMemo"/>
-		<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = !showInfoModal" @save="updateInfo"/>
+		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = !showMemoModal"
+					  @save="updateMemo"/>
+		<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = !showInfoModal"
+					  @save="updateInfo"/>
 
 	</div>
 </template>
@@ -74,7 +88,7 @@ import UserInfoModal from "@/components/Modal/UserInfoModal"
 import MngTextModal from '../Modal/MngTextModal'
 
 export default {
-	data () {
+	data() {
 		return {
 			company: '',
 			batches: [],
@@ -105,11 +119,11 @@ export default {
 		UserInfoModal,
 		MngTextModal
 	},
-	created () {
+	created() {
 		this.refreshData()
 	},
 	methods: {
-		async refreshData () {
+		async refreshData() {
 			this.curBBIdx = shared.getCurBatch().idx
 			const res = await api.get('/partners/applyOrderList', {
 				bbIdx: this.curBBIdx
@@ -120,10 +134,10 @@ export default {
 			this.cfs = data.cfs
 
 			// 일괄승인 결과에 errorMsgs가 있을 때
-			if(this.applyBatchError){
-				data.orders.forEach( item  => {
+			if (this.applyBatchError) {
+				data.orders.forEach(item => {
 					const keys = Object.keys(this.applyResultMsgs)
-					if(keys.indexOf(item.idx.toString()) >= 0) {
+					if (keys.indexOf(item.idx.toString()) >= 0) {
 						item.applyResultMsg = this.applyResultMsgs[item.idx]
 					} else {
 						item.applyResultMsg = '승인'
@@ -138,13 +152,13 @@ export default {
 					return order.apply_ccl_dt === null
 				})
 			}
-			if(this.sk) this.orders = this.orders.filter((order) => {
+			if (this.sk) this.orders = this.orders.filter((order) => {
 				return !order.user.name.indexOf(this.sk) ||
-						(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
-						(order.user.email && !order.user.email.indexOf(this.sk))
+					(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
+					(order.user.email && !order.user.email.indexOf(this.sk))
 			})
 		},
-		getGTP (type, val) {
+		getGTP(type, val) {
 			if (type == 'S') {
 				return val ? this.cfs[1].opts[1] : this.cfs[1].opts[0]
 			} else {
@@ -159,7 +173,7 @@ export default {
 			let value = []
 			reader.onload = async () => {
 				let data = reader.result
-				let workBook = XLSX.read(data, { type: 'binary' })
+				let workBook = XLSX.read(data, {type: 'binary'})
 				workBook.SheetNames.forEach(async function (sheetName) {
 					let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName])
 					rows.forEach(row =>
@@ -224,43 +238,43 @@ export default {
 			const test = XLSX.writeFile(wb, this.company + ' ' + shared.getCurBatch().b_no + '주차 신청관리.xlsx')
 			this.loading = false
 		}, 500),
-		toggleCancel (event) {
+		toggleCancel(event) {
 			this.includeCancel = event
 			this.refreshData()
 		},
-		openMemoModal (idx, content) {
+		openMemoModal(idx, content) {
 			this.content = content
 			this.selectIdx = idx
 			this.showMemoModal = !this.showMemoModal
 		},
-		openInfoModal (idx, content) {
+		openInfoModal(idx, content) {
 			this.content = content
 			this.selectIdx = idx
 			this.showInfoModal = !this.showInfoModal
 		},
-		async openUserInfo (boIdx) {
+		async openUserInfo(boIdx) {
 			this.modalitem = await shared.getUserInfo(boIdx)
 			this.showUserInfoModal = !this.showUserInfoModal
 		},
-		async updateMemo (text) {
+		async updateMemo(text) {
 			this.showMemoModal = !this.showMemoModal
-			const res = await api.post('/partners/updateMemo', { boIdx: this.selectIdx, memo: text }).catch((e) => {
+			const res = await api.post('/partners/updateMemo', {boIdx: this.selectIdx, memo: text}).catch((e) => {
 				console.log('error : updateMemo ' + e)
 			})
 			if (res.result === 2000) {
 				this.refreshData()
 			}
 		},
-		async updateInfo (text) {
+		async updateInfo(text) {
 			this.showInfoModal = !this.showInfoModal
-			const res = await api.post('/partners/updateInfo', { boIdx: this.selectIdx, info: text }).catch((e) => {
+			const res = await api.post('/partners/updateInfo', {boIdx: this.selectIdx, info: text}).catch((e) => {
 				console.log('error : updateInfo ' + e)
 			})
 			if (res.result === 2000) {
 				this.refreshData()
 			}
 		},
-		approve (idx, name, email) {
+		approve(idx, name, email) {
 			this.$swal.fire({
 				html: `<strong>${name}(${email})</strong>님<br/>을 승인 하시겠습니까?`,
 				showCancelButton: true,
@@ -272,7 +286,7 @@ export default {
 				reverseButtons: true,
 			}).then(async (r) => {
 				if (r.isConfirmed) {
-					const res = await api.post('/partners/approveOrder', { boIdx: idx }).catch((e) => {
+					const res = await api.post('/partners/approveOrder', {boIdx: idx}).catch((e) => {
 						console.log('error : approveOrder ' + e)
 					})
 
@@ -282,36 +296,36 @@ export default {
 						})
 					} else {
 						this.$swal.fire({
-								html: `<strong>${res.message}</strong>`,
-								icon: 'error',
-								confirmButtonColor: '#8FD0F5',
-								confirmButtonText: '확인',
-								showLoaderOnConfirm: true,
-								reverseButtons: true,
+							html: `<strong>${res.message}</strong>`,
+							icon: 'error',
+							confirmButtonColor: '#8FD0F5',
+							confirmButtonText: '확인',
+							showLoaderOnConfirm: true,
+							reverseButtons: true,
 						})
 
 					}
 				}
 			})
 		},
-		routeIndivApply () {
+		routeIndivApply() {
 			this.$router.push({
 				name: 'indivApplyNew',
-				params: { bbIdx: shared.getCurBatch().idx }
+				params: {bbIdx: shared.getCurBatch().idx}
 			})
 		},
-		async cancel (item) {
+		async cancel(item) {
 			this.$swal.fire({
-					icon: 'warning',
-					title: '취소 하시겠습니까?',
-					showCancelButton: true,
-					confirmButtonText: 'OK',
-					confirmButtonColor: '#ff7674',
+				icon: 'warning',
+				title: '취소 하시겠습니까?',
+				showCancelButton: true,
+				confirmButtonText: 'OK',
+				confirmButtonColor: '#ff7674',
 
-				})
+			})
 				.then(async result => {
 					if (result.isConfirmed) {
-						const res = await api.post('/partners/applyCancel', { boIdx: item.idx, buIdx: item.user.idx })
+						const res = await api.post('/partners/applyCancel', {boIdx: item.idx, buIdx: item.user.idx})
 						if (res.result === 2000) {
 							this.$swal.fire({
 								text: '취소가 완료되었습니다.',
@@ -333,15 +347,15 @@ export default {
 				})
 		},
 
-		async approveBatchCheck () {
-			const res = await api.get('/partners/approveBatchCheck', { bbIdx: this.curBBIdx }).catch((e) => {
+		async approveBatchCheck() {
+			const res = await api.get('/partners/approveBatchCheck', {bbIdx: this.curBBIdx}).catch((e) => {
 				console.log('error : approveBatchCheck ' + e)
 			})
 
 			if (res.result === 2000) {
 
 				this.$swal.fire({
-					title:`<strong>일괄 승인</strong> 하시겠습니까?`,
+					title: `<strong>일괄 승인</strong> 하시겠습니까?`,
 					html: `대상 건수 <strong>${res.data.targetCnt}</strong>건<br/>`,
 					icon: 'info',
 					confirmButtonText: '일괄 승인하기',
@@ -350,26 +364,26 @@ export default {
 					cancelButtonColor: '#ed5565',
 					cancelButtonText: '취소',
 					reverseButtons: true,
-				}).then( async (r) => {
-					if(r.isConfirmed) {
+				}).then(async (r) => {
+					if (r.isConfirmed) {
 						this.approveBatch();
 					}
 				})
 			}
 		},
 
-		async approveBatch () {
-			const res = await api.post('/partners/approveBatch', { bbIdx: this.curBBIdx }).catch((e) => {
+		async approveBatch() {
+			const res = await api.post('/partners/approveBatch', {bbIdx: this.curBBIdx}).catch((e) => {
 				console.log('error : approveBatch ' + e)
 			})
 
-			if(res.result === 2000) {
+			if (res.result === 2000) {
 				this.$swal.fire({
 					title: `일괄 신청 결과 입니다.`,
 					html: `대상 건수 <strong>${res.data.targetCnt}</strong>건<br/>성공 건수 <strong>${res.data.successCnt}</strong>건<br/>실패 건수 <strong>${res.data.failCnt}</strong>건<br/>`,
-				}).then( r => {
-					if(r.isConfirmed) {
-						if(res.data.failCnt > 0) {
+				}).then(r => {
+					if (r.isConfirmed) {
+						if (res.data.failCnt > 0) {
 							this.applyBatchError = true
 							this.applyResultMsgs = res.data.errorMsgs
 						} else {
@@ -381,7 +395,7 @@ export default {
 				})
 			}
 		},
-		setSearch(sk){
+		setSearch(sk) {
 			this.sk = sk
 			this.refreshData()
 		}
@@ -390,10 +404,10 @@ export default {
 </script>
 
 <style scoped>
-	.mng-text {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		width: 70px;
-		white-space:nowrap;
-	}
+.mng-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 70px;
+	white-space: nowrap;
+}
 </style>
