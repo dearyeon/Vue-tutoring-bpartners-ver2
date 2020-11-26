@@ -45,30 +45,12 @@
 				</td>
 			</Table>
 		</Content>
-
 		<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage"/>
 
 		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
+		<MngTextModal title="메모 입력" subtitle="메모를 입력해 주세요."
+					  :content="memo" v-if="showMemo" @close="showMemo = false" @save="applyMemo"/>
 
-
-		<div class="modal inmodal fade in" id="addSiteModal" style="display: block;" v-show="showMemo">
-			<div class="modal-dialog modal-sm">
-				<div class="modal-content" style="width:350px;">
-					<div class="modal-header" style="border-bottom:0px;padding-bottom: 15px;">
-						<h5 class="modal-title">메모 입력</h5>
-						<small>메모를 입력해 주세요.</small>
-					</div>
-					<div class="col-lg-12" style="margin-bottom:5px;display:inline;">
-						<textarea class="form-control" v-model="memo" style="height:150px"></textarea>
-					</div>
-					<div class="modal-footer" style="border-top:0px">
-						<button type="button" class="btn btn-white" data-dismiss="modal" @click="showMemo = false">닫기
-						</button>
-						<button type="button" class="btn btn-success" id="addSiteSubmit" @click="applyMemo">OK</button>
-					</div>
-				</div>
-			</div>
-		</div>
 	</div>
 </template>
 
@@ -87,6 +69,7 @@ import Header from "@/components/Common/Header"
 import Content from "@/components/Common/Content"
 import Table from "@/components/Common/Table"
 import ItemButton from "@/components/Common/ItemButton"
+import MngTextModal from '../Modal/MngTextModal'
 
 export default {
 	data() {
@@ -118,7 +101,8 @@ export default {
 		CusIdField,
 		BatchSelection,
 		Table,
-		ItemButton
+		ItemButton,
+		MngTextModal
 	},
 	async created() {
 		this.refresh()
@@ -287,7 +271,6 @@ export default {
 	top: 63px;
 	right: 105px;
 }
-
 
 .mng-text {
 	overflow: hidden;

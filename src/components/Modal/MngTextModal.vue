@@ -9,6 +9,7 @@
                     </button>
                     <br />
                     <h5 class="modal-title">{{title}}</h5>
+                    <small class="modal-subtitle">{{subtitle}}</small>
                   </div>
 
                   <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:170px; width:100%">
@@ -36,7 +37,11 @@
 		props: {
 			title: {
 				type: String,
-				default: '관리메모'
+				default: ''
+      },
+      subtitle: {
+				type: String,
+				default: ''
 			},
 			content: {
 				type: String,
