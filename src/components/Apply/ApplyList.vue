@@ -12,12 +12,14 @@
 		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ref="file" @change="importExcel" />
 
 		<Content>
-			<Table :headers="['No','이름','이메일/고객식별ID','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','관리메모','관리정보','접수일시','취소일시','승인일시','취소/복원'].concat( applyBatchError ? '승인결과' : ''))"
+			<Table :headers="['No','이름','고객식별ID','이메일','연락처','소속','부서','직위','사번'].concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금','관리메모','관리정보','접수일시','취소일시','승인일시','취소/복원'].concat( applyBatchError ? '승인결과' : ''))"
 				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
-				<td><CusIdField :user="item.user"></CusIdField></td>
+				<td>{{item.user.cus_id}}</td>
+				<td>{{item.user.email}}</td>
+				<td>{{item.user.cel}}</td>
 				<td>{{ item.user.company }}</td>
 				<td>{{ item.user.department }}</td>
 				<td>{{ item.user.position}}</td>

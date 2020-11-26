@@ -9,12 +9,14 @@
 	</Header>
 
 	<Content>
-		<Table :headers="['No','이름','이메일/고객식별ID','수강권','수강권번호','신청일시','입과일시','입과번호','입과/취소']"
+		<Table :headers="['No','이름','고객식별ID','이메일','연락처','수강권','수강권번호','신청일시','입과일시','입과번호','입과/취소']"
 			   :data="orders"
 			    v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
 			<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
-			<td><CusIdField :user="item.user"></CusIdField></td>
+			<td>{{ item.user.cus_id}}</td>
+			<td>{{ item.user.email}}</td>
+			<td>{{ item.user.cel}}</td>
 			<td>{{ item.charge_plan && item.charge_plan.title }}</td>
 			<td>{{ item.charge_plan && item.charge_plan.idx }}</td>
 			<td>{{ item.apply_dt && moment(item.apply_dt).format('YY-MM-DD HH:mm') }}</td>
@@ -97,6 +99,7 @@ export default {
 		},
 		async issueOrder() {
 			const res = await api.post("/partners/issueOrder", params);
+
 		}
 	}
 };
