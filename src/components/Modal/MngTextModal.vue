@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import DatePicker from 'vue2-datepicker'
 export default {
     props: {
         title: {
@@ -47,9 +48,9 @@ export default {
     },
     data() {
         return {
-            text: this.content
+            text: this.content,
         }
-    },
+    }
 }
 </script>
 

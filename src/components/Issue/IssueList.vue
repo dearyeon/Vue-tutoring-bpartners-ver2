@@ -4,7 +4,7 @@
 			:use-batch-selection="true" @changeBatch="refreshData"
 			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
 			switch1-text="취소포함" @switch1-cahnge="toggleCancel"
-			btn1-text="일괄 입과" @btn1-click="alert(1)" btn1-variant="primary" :btn1-loading="false"
+			btn1-text="일괄 입과" @btn1-click="showApplyModal=true" btn1-variant="primary" :btn1-loading="false"
 			btn2-text="일괄 취소" @btn2-click="alert(1)" btn2-variant="danger" :btn2-loading="false">
 	</Header>
 
@@ -22,15 +22,14 @@
 			<td>{{ item.apply_dt && moment(item.apply_dt).format('YY-MM-DD HH:mm') }}</td>
 			<td v-if="item.issue_dt">{{ item.issue_dt && moment(item.issue_dt).format('YY-MM-DD HH:mm') }}</td>
 			<td v-else>
-				<ItemButton text="입과" variant="success btn-outline" @click="issueOrder"/>
 			</td>
 			<td>{{ item.mt_idx }}</td>
-			<td v-if="!item.apply_ccl_dt"><ItemButton text="취소" variant="danger" @click="" /></td>
-			<td v-else><ItemButton text="입과" variant="primary" @click="" /></td>
+			<td><ItemButton v-if="!item.issue_dt" text="입과" variant="success btn-outline" @click="[showApplyModal=true, curOrder=item]" />
+				<ItemButton v-else text="취소" variant="danger" @click="" /></td>
 		</Table>
 	</Content>
-
-	<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
+	<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal=false"/>
+	<IssueDateModal :item="curOrder" :batch="batch" v-if="showApplyModal" @close="closeApplyModal" @save="issueOrder"/>
 </div>
 </template>
 
@@ -46,6 +45,7 @@ import Content from "@/components/Common/Content"
 import Table from "@/components/Common/Table"
 import ItemButton from "@/components/Common/ItemButton"
 import UserInfoModal from "@/components/Modal/UserInfoModal"
+import IssueDateModal from '../Modal/IssueDateModal'
 
 export default {
 	components: {
@@ -55,14 +55,18 @@ export default {
 		BatchSelection,
 		Table,
 		ItemButton,
-		UserInfoModal
+		UserInfoModal,
+		IssueDateModal
 	},
 	data() {
 		return {
 			orders: [],
 			moment: moment,
 			showModal: false,
+			showApplyModal: false,
 			includeCancel: false,
+			batch: null,
+			curOrder: null
 		};
 	},
 	created() {
@@ -70,7 +74,8 @@ export default {
 	},
 	methods: {
 		async refreshData() {
-			const res = await api.get("/partners/issueOrderList", {bbIdx:shared.getCurBatch().idx});
+			this.batch = shared.getCurBatch()
+			const res = await api.get("/partners/issueOrderList", {bbIdx:this.batch.idx});
 			const data = res.data;
 			if(this.includeCancel) {
 				this.orders = data.orders;
@@ -97,9 +102,35 @@ export default {
 			this.includeCancel = event;
 			this.refreshData();
 		},
-		async issueOrder() {
-			const res = await api.post("/partners/issueOrder", params);
+		async issueOrder(fr_dt,to_dt) {
+			let res
+			if(this.curOrder) {
+				res = await api.post("/partners/issueOrder", {boIdx:this.curOrder.idx,frDate:fr_dt,toDate:to_dt});
+			} else {
+				res = await api.post("/partners/issueBatch", {bbIdx:shared.getCurBatch().idx,frDate:fr_dt,toDate:to_dt});
+			}
 
+			if (res.result === 2000) {
+				this.$swal.fire({
+					title: '입과 완료 되었습니다.',
+					confirmButtonText: 'OK',
+				})
+				this.refreshData()
+				this.showApplyModal = !this.showApplyModal
+			} else if (res.result === 1000) {
+				this.$swal.fire({
+					title: res.message,
+					text: res.data.errMsg,
+					icon: 'warning',
+					confirmButtonText: 'OK'
+				})
+			}
+			this.curOrder = null
+			this.refreshData()
+		},
+		closeApplyModal() {
+			this.curOrder = null
+			this.showApplyModal = !this.showApplyModal
 		}
 	}
 };
