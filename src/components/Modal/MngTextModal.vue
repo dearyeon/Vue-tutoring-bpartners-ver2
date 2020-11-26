@@ -16,7 +16,7 @@
 
                     <div class="col-lg-12" style="margin-bottom:5px;display:inline;">
                       <div class="col-lg-12">
-	                      <textarea type="text" class="form-control" style="height: 165px" v-model="text">{{text}}</textarea>
+	                      <textarea type="text" class="form-control" style="height: 165px" v-model="text"></textarea>
                       </div>
                     </div>
 
