@@ -87,6 +87,7 @@ export default {
 			showMemoModal: false,
 			showInfoModal: false,
 			content: '',
+			sk: '',
 			moment: moment,
 			approveBatchObj: {
 				btnText: '일괄 승인 검사',
@@ -110,7 +111,7 @@ export default {
 		this.refreshData()
 	},
 	methods: {
-		async refreshData (sk) {
+		async refreshData () {
 			this.curBBIdx = shared.getCurBatch().idx
 			const res = await api.get('/partners/applyOrderList', {
 				bbIdx: this.curBBIdx
@@ -127,10 +128,10 @@ export default {
 					return order.apply_ccl_dt === null
 				})
 			}
-			if(sk) this.orders = this.orders.filter((order) => { 
-				return !order.user.name.indexOf(sk) || 
-						(order.user.cus_id && !order.user.cus_id.indexOf(sk)) || 
-						(order.user.email && !order.user.email.indexOf(sk))
+			if(this.sk) this.orders = this.orders.filter((order) => { 
+				return !order.user.name.indexOf(this.sk) || 
+						(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) || 
+						(order.user.email && !order.user.email.indexOf(this.sk))
 			})
 		},
 		getGTP (type, val) {
@@ -368,7 +369,8 @@ export default {
 			}
 		},
 		setSearch(sk){
-			this.refreshData(sk)
+			this.sk = sk
+			this.refreshData()
 		}
 	},
 }
