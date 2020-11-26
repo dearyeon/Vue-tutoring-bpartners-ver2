@@ -127,8 +127,11 @@ export default {
 					return order.apply_ccl_dt === null
 				})
 			}
-
-			if(sk) this.orders = this.orders.filter((order) => { return order.user.name.includes(sk) })
+			if(sk) this.orders = this.orders.filter((order) => { 
+				return !order.user.name.indexOf(sk) || 
+						(order.user.cus_id && !order.user.cus_id.indexOf(sk)) || 
+						(order.user.email && !order.user.email.indexOf(sk))
+			})
 		},
 		getGTP (type, val) {
 			if (type == 'S') {
@@ -365,7 +368,6 @@ export default {
 			}
 		},
 		setSearch(sk){
-			this.search = sk
 			this.refreshData(sk)
 		}
 	},

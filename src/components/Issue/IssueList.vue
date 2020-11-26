@@ -2,7 +2,7 @@
 <div>
 	<Header title="입과 관리"
 			:use-batch-selection="true" @changeBatch="refreshData"
-			search-placeholder="이름 or 이메일 or 고객식별ID" @search="search"
+			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
 			switch1-text="취소포함" @switch1-cahnge="toggleCancel"
 			btn1-text="일괄 입과" @btn1-click="alert(1)" btn1-variant="primary" :btn1-loading="false"
 			btn2-text="일괄 취소" @btn2-click="alert(1)" btn2-variant="danger" :btn2-loading="false">
@@ -64,11 +64,8 @@ export default {
 		this.refreshData();
 	},
 	methods: {
-		async refreshData(params) {
-			if(!params) params = {}
-			params.bbIdx = shared.getCurBatch().idx
-
-			const res = await api.get("/partners/issueOrderList", params);
+		async refreshData(sk) {
+			const res = await api.get("/partners/issueOrderList", {bbIdx:shared.getCurBatch().idx});
 			const data = res.data;
 			if(this.includeCancel) {
 				this.orders = data.orders;
@@ -77,13 +74,18 @@ export default {
 					return order.apply_ccl_dt === null
 				})
 			}
+			if(sk) this.orders = this.orders.filter((order) => { 
+				return !order.user.name.indexOf(sk) || 
+						(order.user.cus_id && !order.user.cus_id.indexOf(sk)) || 
+						(order.user.email && !order.user.email.indexOf(sk))
+			})
 		},
 		async openUserInfo(boIdx) {
 			this.modalitem = await shared.getUserInfo(boIdx)
 			this.showModal = !this.showModal
 		},
-		search(sk) {
-			this.refreshData({sk:sk})
+		setSearch(sk) {
+			this.refreshData(sk)
 		},
 		toggleCancel(event){
 			this.includeCancel = event;
