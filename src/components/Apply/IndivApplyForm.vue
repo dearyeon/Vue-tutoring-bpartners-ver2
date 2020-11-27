@@ -2,7 +2,7 @@
     <div class="row">
 		<div class="col-lg-12">
 			<div class="ibox-title title">
-				<h2 class="pull-left">{{ company+' '+b_no }}차 개별 신청</h2>
+				<h2 class="pull-left">{{ company+' '+b_no }}차 단건 신청</h2>
 				<button class="btn btn-blue-line pull-right" @click="$router.go(-1)">
 					뒤로가기
 				</button>

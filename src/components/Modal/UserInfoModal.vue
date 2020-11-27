@@ -73,7 +73,7 @@
                                     <div class="form-inline" style="display:inline;">
                                         <strong>수업 타임라인</strong>
                                         <button class="btn btn-default btn-xs pull-right exportReviewList">
-                                            <i class="fa fa-download"></i> 리뷰 다운로드  <!-- click event 추가할 것 -->
+                                           <!--  <i class="fa fa-download"></i> 리뷰 다운로드 -->
                                         </button>
                                     </div>
                                 </div>
@@ -100,7 +100,7 @@
                 </div>
 
                 <div class="modal-footer" style="border-top:0px">
-                    <button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;" @click="showModify">학생 수정</button>
+                    <!--<button data-toggle="modal" data-target="#userUpdateModal" class="btn btn-success userUpdate" style="float:left;" @click="showModify">학생 수정</button>-->
                     <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
                 </div>
             </div>

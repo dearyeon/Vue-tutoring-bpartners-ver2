@@ -4,10 +4,10 @@
 				:use-batch-selection="true" @changeBatch="refreshData"
 				search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
 				switch1-text="취소포함" @switch1-change="toggleCancel"
-				btn1-text="개별 신청" @btn1-click="routeIndivApply" btn1-variant="warning" :btn1-hide="!$shared.isSupervisor()"
+				btn1-text="양식 다운로드" @btn1-click="exportFormat" btn1-variant="success" :btn1-loading="loading" :btn1-hide="!$shared.isSupervisor()"
 				btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading" :btn2-hide="!$shared.isSupervisor()"
 				btn3-text="일괄 승인" @btn3-click="approveBatchCheck" btn3-variant="success btn-outline" :btn3-loading="loading" :btn3-hide="!$shared.isSupervisor()"
-				btn4-text="신청양식 다운로드" @btn4-click="exportFormat" btn4-variant="success" :btn4-loading="loading" :btn4-hide="!$shared.isSupervisor()">
+				btn4-text="단건 신청" @btn4-click="routeIndivApply" btn4-variant="warning" :btn4-hide="!$shared.isSupervisor()">
 		</Header>
 		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 			   ref="file" @change="importExcel"/>
