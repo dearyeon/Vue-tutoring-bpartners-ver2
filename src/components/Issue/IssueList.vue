@@ -117,6 +117,8 @@ export default {
 			if (res.result === 2000) {
 				this.$swal.fire({
 					title: '입과 완료 되었습니다.',
+					icon: 'success',
+					html: `대상 건수 <strong>${res.data.targetCnt}</strong>건<br/>성공 건수 <strong>${res.data.successCnt}</strong>건<br/>실패 건수 <strong>${res.data.failCnt}</strong>건<br/>`,
 					confirmButtonText: 'OK',
 				})
 				this.refreshData()

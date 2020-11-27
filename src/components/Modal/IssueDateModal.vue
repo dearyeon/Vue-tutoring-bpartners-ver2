@@ -78,7 +78,7 @@ export default {
 
 <style scoped>
 .modal {
-    z-index: 1000 !important;
+    z-index: 2001 !important;
 }
 .modal-body div {
     align-items: center;

@@ -143,13 +143,13 @@ export default {
 
 #reset-container {
 	position: relative;
-	z-index: 9999;
+	z-index: 1999;
 }
 #reset {
 	position: absolute;
 	font-size: 2rem;
 	color: #ccc;
-	z-index: 9999;
+	z-index: 1999;
 	top: -40px;
 	right: 15px;
 	cursor: pointer;
