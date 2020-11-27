@@ -17,7 +17,7 @@
 				:headers="['No','이름','고객식별ID','이메일','연락처','소속','부서','직위','사번']
 							.concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금'])
 							.concat($shared.isSupervisor()?'관리메모':null)
-							.concat(['관리정보','접수일시','취소일시','승인일시'])
+							.concat(['관리정보','신청번호','신청일시','취소일시','승인일시'])
 							.concat($shared.isSupervisor()?['승인','취소/복원']:null)
 							.concat( applyBatchError ? '승인결과' : null)"
 				:data="orders"
@@ -46,6 +46,7 @@
 						{{ item.mng_info }}</p>
 					<ItemButton v-else text="관리정보" variant="default" @click="openInfoModal(item.idx)"/>
 				</td>
+				<td>{{ item.idx }}</td>
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td>{{ item.apply_ccl_dt && moment(item.apply_ccl_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td>{{ item.approve_dt && moment(item.approve_dt).format('YYYY-MM-DD HH:mm') }}</td>
