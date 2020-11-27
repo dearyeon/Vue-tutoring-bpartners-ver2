@@ -51,22 +51,22 @@
 			<slot></slot>
 		</div>
 		<div id="buttons">
-			<label v-if="btn1Text && !btn1Hide" :class="'btn btn-w-m btn-'+btn1Variant" @click="$emit('btn1-click')">
+			<label v-if="btn1Text && !btn1Hide" :class="'btn btn-w-s btn-'+btn1Variant" @click="$emit('btn1-click')">
 				<div v-if="!btn1Loading">{{ btn1Text }}</div>
 				<clip-loader :loading="btn1Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>
 
-			<label v-if="btn2Text && !btn2Hide" :class="'btn btn-w-m btn-'+btn2Variant" @click="$emit('btn2-click')">
+			<label v-if="btn2Text && !btn2Hide" :class="'btn btn-w-s btn-'+btn2Variant" @click="$emit('btn2-click')">
 				<div v-if="!btn2Loading">{{ btn2Text }}</div>
 				<clip-loader :loading="btn2Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>
 
-			<label v-if="btn3Text && !btn3Hide" :class="'btn btn-w-m btn-'+btn3Variant" @click="$emit('btn3-click')">
+			<label v-if="btn3Text && !btn3Hide" :class="'btn btn-w-s btn-'+btn3Variant" @click="$emit('btn3-click')">
 				<div v-if="!btn3Loading">{{ btn3Text }}</div>
 				<clip-loader :loading="btn3Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>
 
-			<label v-if="btn4Text && !btn4Hide" :class="'btn btn-w-m btn-'+btn4Variant" @click="$emit('btn4-click')">
+			<label v-if="btn4Text && !btn4Hide" :class="'btn btn-w-s btn-'+btn4Variant" @click="$emit('btn4-click')">
 				<div v-if="!btn4Loading">{{ btn4Text }}</div>
 				<clip-loader :loading="btn4Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
 			</label>
