@@ -153,4 +153,8 @@ body .row {
 	overflow-y: auto;
 	z-index: 1;
 }
+
+.swal2-popup {
+	font-size: 13px !important;
+}
 </style>
