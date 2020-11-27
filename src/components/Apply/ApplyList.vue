@@ -24,7 +24,7 @@
 				v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
-				<td>{{ item.user.cus_id }}</td>
+				<td><CusIdField :user="item.user"/></td>
 				<td>{{ item.user.email }}</td>
 				<td>{{ item.user.cel }}</td>
 				<td>{{ item.user.company }}</td>
