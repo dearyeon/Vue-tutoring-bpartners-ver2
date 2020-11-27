@@ -17,7 +17,7 @@
 							<h3 class="col-xs-2 no-margins">기본 정보</h3>
 						</div>
 						<div class="row">
-							<div class="col-lg-4">
+							<div class="col-md-offset-1 col-lg-4">
 								<table class="table">
 									<tr>
 										<th>이메일</th>
