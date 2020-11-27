@@ -2,7 +2,7 @@
 	<div><!-- v-model:isCancel-->
 		<Header title="신청 관리"
 				:use-batch-selection="true" @changeBatch="refreshData"
-				search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
+				search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch" @reset="setSearch"
 				switch1-text="취소포함" @switch1-change="toggleCancel"
 				btn1-text="양식 다운로드" @btn1-click="exportFormat" btn1-variant="success" :btn1-loading="loading" :btn1-hide="!$shared.isSupervisor()"
 				btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading" :btn2-hide="!$shared.isSupervisor()"
@@ -91,10 +91,10 @@ export default {
 	data() {
 		return {
 			company: '',
-			batches: [],
 			cfs: [],
 			applyBatchError: false,
 			applyResultMsgs: {},
+			ordersAll: [],
 			orders: [],
 			includeCancel: false,
 			curBBIdx: 0,
@@ -130,8 +130,9 @@ export default {
 			})
 			const data = res.data
 			this.company = data.company
-			this.batches = data.batches
 			this.cfs = data.cfs
+			this.ordersAll = data.orders
+			this.orders = this.ordersAll
 
 			// 일괄승인 결과에 errorMsgs가 있을 때
 			if (this.applyBatchError) {
@@ -145,18 +146,22 @@ export default {
 				})
 			}
 
-			if (this.includeCancel) {
-				this.orders = data.orders
-			} else {
-				this.orders = data.orders.filter((order) => {
+			this.filteredData()
+		},
+		filteredData() {
+			this.orders = this.ordersAll
+
+			if(!this.includeCancel) {
+				this.orders = this.orders.filter((order) => {
 					return order.apply_ccl_dt === null
 				})
 			}
-			if (this.sk) this.orders = this.orders.filter((order) => {
+
+			if (this.sk) {this.orders = this.orders.filter((order) => {
 				return !order.user.name.indexOf(this.sk) ||
 					(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
 					(order.user.email && !order.user.email.indexOf(this.sk))
-			})
+			})}
 		},
 		getGTP(type, val) {
 			if (type == 'S') {
@@ -240,7 +245,7 @@ export default {
 		}, 500),
 		toggleCancel(event) {
 			this.includeCancel = event
-			this.refreshData()
+			this.filteredData()
 		},
 		openMemoModal(idx, content) {
 			this.content = content
@@ -397,7 +402,7 @@ export default {
 		},
 		setSearch(sk) {
 			this.sk = sk
-			this.refreshData()
+			this.filteredData()
 		}
 	},
 }

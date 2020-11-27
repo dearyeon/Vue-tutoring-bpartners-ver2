@@ -8,7 +8,7 @@
 		</tr>
 		</thead>
 		<tbody>
-		<tr class="hover-pointer" v-for="(item, i) in data" :key="i">
+		<tr class="hover-pointer" v-for="(item, i) in data" :key="i" v-show="!item.hide">
 			<slot :item="item" :i="i"></slot>
 		</tr>
 		</tbody>
