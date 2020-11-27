@@ -4,10 +4,10 @@
 			:use-batch-selection="true" @changeBatch="refreshData"
 			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch" @reset="setSearch"
 			switch1-text="취소포함" @switch1-change="toggleCancel"
-			btn1-text="일괄 입과" @btn1-click="showApplyModal=true" btn1-variant="primary" :btn1-loading="false"
+			btn1-text="일괄 입과" @btn1-click="showBatchIssue=true" btn1-variant="primary" :btn1-loading="false"
 			btn2-text="일괄 수정" @btn2-click="" btn2-variant="warning" :btn2-loading="false"
 			btn3-text="일괄 취소" @btn3-click="alert(1)" btn3-variant="danger" :btn3-loading="false"
-			btn4-text="AI 지급" @btn4-click="alert(1)" btn4-variant="success" :btn4-loading="false">
+			btn4-text="AI 지급" @btn4-click="showAIIssue=true" btn4-variant="success" :btn4-loading="false">
 	</Header>
 
 	<Content>
@@ -26,15 +26,14 @@
 			<td v-else>
 			</td>
 			<td>{{ item.mt_idx }}</td>
-			<td><ItemButton v-if="!item.issue_dt" text="입과" variant="success btn-outline" @click="[showApplyModal=true, curOrder=item]" />
+			<td><ItemButton v-if="!item.issue_dt" text="입과" variant="success btn-outline" @click="[showIndivIssue=true, curOrder=item]" />
 				<ItemButton v-else text="취소" variant="danger" @click="" /></td>
 		</Table>
 	</Content>
 
-	<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal=false"/>
-
-	<IssueDateModal :item="curOrder" :batch="batch" v-if="showApplyModal" @close="closeApplyModal" @save="issueOrder"/>
-
+	<IssueDateModal title="단건 입과" :item="curOrder" :batch="batch" v-if="showIndivIssue" @close="showIndivIssue = !showIndivIssue" @save="issueOrder"/>
+	<IssueDateModal title="일괄 입과" :batch="batch" v-if="showBatchIssue" @close="showBatchIssue = !showBatchIssue" @save="issueOrder"/>
+	<IssueDateModal title="AI 지급"  subtitle="hi" :batch="batch" v-if="showAIIssue" @close="showAIIssue = !showAIIssue" @save="issueOrder"/>
 </div>
 </template>
 
@@ -68,7 +67,9 @@ export default {
 			orders: [],
 			ordersAll: [],
 			moment: moment,
-			showApplyModal: false,
+			showIndivIssue: false,
+			showBatchIssue: false,
+			showAIIssue: false,
 			includeCancel: false,
 			batch: null,
 			curOrder: null

@@ -8,15 +8,19 @@
                         <span class="sr-only">Close</span>
                     </button>
                     <br />
-                    <span v-if="item">
-                        <h6 class="modal-title">개별입과</h6>
+                        <h6 class="modal-title">{{title}}</h6>
+                        <span v-if="title === '단건 입과'" class="modal-subtitle"><strong>{{item.user.name}}({{item.user.email}})</strong>님을 입과 하시겠습니까?</span>
+                        <span v-if="title === '일괄 입과'" class="modal-subtitle">대상 건수 <strong>{{targetCnt}}</strong>건</span>
+                        <span v-else class="modal-subtitle">{{subtitle}}</span>
+                    <!--<span v-if="item">
+                        <h6 class="modal-title">단건 입과</h6>
                         <strong>{{item.user.name}}({{item.user.email}})</strong>
                         <span class="modal-subtitle">님을 입과 하시겠습니까?</span>
                     </span>
                     <span v-else>
                         <h6 class="modal-title"> <strong>일괄 입과 하시겠습니까?</strong></h6>
                         <span class="modal-subtitle">대상 건수 <strong>{{targetCnt}}</strong>건</span>
-                    </span>
+                    </span>-->
                 </div>
 
                 <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:70px; width:100%">
@@ -51,7 +55,15 @@ export default {
         datePicker: {
             type: Boolean,
             default: false
-        }
+        },
+        title: {
+            type: String,
+            default: ''
+        },
+        subtitle: {
+            type: String,
+            default: ''
+        },
     },
     data() {
         return {
@@ -65,6 +77,7 @@ export default {
 		DatePicker
     },
     async created() {
+        console.log('test:',shared.getCurBatch())
         this.frDt = new Date(this.batch.fr_dt)
         this.toDt = new Date(this.batch.to_dt)
         const bbIdx = shared.getCurBatch().idx
