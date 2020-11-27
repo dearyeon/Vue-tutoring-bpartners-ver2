@@ -18,7 +18,7 @@
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td>{{ item.idx }}</td>
-				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
+				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
 				<td>{{ $shared.nf(item.goods.charge_price) }}</td>
@@ -148,6 +148,7 @@ import Dropdown from '../atom/Dropdown'
 import moment from 'moment'
 import shared from "@/common/shared"
 import BatchSelection from "@/components/Common/BatchSelection"
+import NameField from "@/components/Common/NameField"
 import CusIdField from "@/components/Common/CusIdField"
 import Header from "@/components/Common/Header"
 import Content from "@/components/Common/Content"
@@ -158,6 +159,7 @@ export default {
 	components: {
 		Header,
 		Content,
+		NameField,
 		CusIdField,
 		BatchSelection,
 		Table,

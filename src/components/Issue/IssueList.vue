@@ -6,7 +6,8 @@
 			switch1-text="취소포함" @switch1-change="toggleCancel"
 			btn1-text="일괄 입과" @btn1-click="showApplyModal=true" btn1-variant="primary" :btn1-loading="false"
 			btn2-text="일괄 수정" @btn2-click="" btn2-variant="warning" :btn2-loading="false"
-			btn3-text="일괄 취소" @btn3-click="alert(1)" btn3-variant="danger" :btn3-loading="false">
+			btn3-text="일괄 취소" @btn3-click="alert(1)" btn3-variant="danger" :btn3-loading="false"
+			btn4-text="AI 지급" @btn4-click="alert(1)" btn4-variant="success" :btn4-loading="false">
 	</Header>
 
 	<Content>

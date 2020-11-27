@@ -6,11 +6,14 @@
 </template>
 
 <script>
+import api from '@/common/api'
+import shared from "@/common/shared"
 import UserInfoModal from "@/components/Modal/UserInfoModal"
 export default {
     data() {
         return {
-            showModal = false
+            modalitem: [],
+            showModal: false
         }
     },
 	props: {
@@ -21,7 +24,8 @@ export default {
 	},
 	methods: {
 		async openUserInfo() {
-			this.modalitem = await shared.getUserInfo(this.item.idx)
+            console.log(this.item.idx)
+            this.modalitem = await shared.getUserInfo(this.item.idx)
 			this.showUserInfoModal = !this.showUserInfoModal
 		},
 	}
