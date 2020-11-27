@@ -116,7 +116,7 @@
 				cpIdx: '',
 				cf1: '',
 				cf2: '',
-                calEmail: false,
+        callEmail: false,
 			}
 		},
 		created () {
@@ -205,7 +205,7 @@
                     this.cf1 = data.cf1
                     this.cf2 = data.cf2
 				} else {
-					this.$swal(res.message); 
+					this.$swal(res.message);
 				}
 
 			}

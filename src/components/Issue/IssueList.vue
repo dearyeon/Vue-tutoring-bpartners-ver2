@@ -7,11 +7,11 @@
 			btn1-text="일괄 입과" @btn1-click="showBatchIssue=true" btn1-variant="primary" :btn1-loading="false"
 			btn2-text="일괄 수정" @btn2-click="" btn2-variant="warning" :btn2-loading="false"
 			btn3-text="일괄 취소" @btn3-click="alert(1)" btn3-variant="danger" :btn3-loading="false"
-			btn4-text="AI 지급" @btn4-click="showAIIssue=true" btn4-variant="success" :btn4-loading="false">
+			btn4-text="AI 지급" @btn4-click="showAIModal = true" btn4-variant="success" :btn4-loading="false">
 	</Header>
 
 	<Content>
-		<Table :headers="['No','이름','고객식별ID','이메일','연락처','수강권','수강권번호','신청일시','입과일시','입과번호','입과/취소']"
+		<Table :headers="['No','이름','고객식별ID','이메일','연락처','수강권','수강권번호','신청일시','입과일시','입과번호','AI지급일시','AI지급','입과/취소']"
 			   :data="orders"
 			    v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
@@ -26,14 +26,22 @@
 			<td v-else>
 			</td>
 			<td>{{ item.mt_idx }}</td>
-			<td><ItemButton v-if="!item.issue_dt" text="입과" variant="success btn-outline" @click="[showIndivIssue=true, curOrder=item]" />
-				<ItemButton v-else text="취소" variant="danger" @click="" /></td>
+			<td>
+				{{ item.alcpt_issue_dt && moment(item.alcpt_issue_dt).format('YY-MM-DD HH:mm') }}
+			</td>
+			<td>
+				<ItemButton text="AI티켓 지급" variant="success btn-outline" @click="[showAIModal=true, curOrder=item]" />
+			</td>
+			<td>
+				<ItemButton v-if="!item.issue_dt" text="입과" variant="success btn-outline" @click="[showIndivIssue=true, curOrder=item]" />
+				<ItemButton v-else text="취소" variant="danger" @click="" />
+			</td>
 		</Table>
 	</Content>
 
 	<IssueDateModal title="단건 입과" :item="curOrder" v-if="showIndivIssue" @close="[showIndivIssue=false,curOrder=null]" @save="issueOrder"/>
 	<IssueDateModal title="일괄 입과" v-if="showBatchIssue" @close="showBatchIssue=false" @save="issueOrder"/>
-	<IssueDateModal title="AI 지급"  subtitle="hi" v-if="showAIIssue" @close="showAIIssue = !showAIIssue" @save=""/>
+	<IssueDateModal title="AI 지급"  subtitle="hi" :item="curOrder" v-if="showAIModal" @close="showAIModal = !showAIModal" @save="issueAILeveltestTicket"/>
 </div>
 </template>
 
@@ -69,7 +77,7 @@ export default {
 			moment: moment,
 			showIndivIssue: false,
 			showBatchIssue: false,
-			showAIIssue: false,
+			showAIModal: false,
 			includeCancel: false,
 			batch: null,
 			curOrder: null
@@ -135,6 +143,18 @@ export default {
 					confirmButtonText: 'OK'
 				})
 			}
+		},
+		async issueAILeveltestTicket(fr_dt,to_dt) {
+			this.showAIModal = false
+
+			const res = await api.post("/partners/aiLevelOrder", {boIdx:this.curOrder.idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
+
+			if(res.result === 2000) {
+				this.$swal.fire({
+					title:`${this.curOrder.user.name}님에게 AI 레벨테스트 티켓이 지급 되었습니다.`
+				})
+			}
+
 		},
 	}
 };
