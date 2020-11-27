@@ -18,7 +18,7 @@
                         <span class="modal-subtitle">님을 입과 하시겠습니까?</span>
                     </span>
                     <span v-else>
-                        <h6 class="modal-title"> <strong>일괄 입과 하시겠습니까?</strong></h6>
+                        <h6 class="modal-title"> <strong>{{title}}</strong></h6>
                         <span class="modal-subtitle">대상 건수 <strong>{{targetCnt}}</strong>건</span>
                     </span>-->
                 </div>
