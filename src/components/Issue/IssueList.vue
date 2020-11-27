@@ -110,6 +110,8 @@ export default {
 			this.filteredData();
 		},
 		async issueOrder(fr_dt,to_dt) {
+			this.showIndivIssue = false
+			this.showBatchIssue = false
 			let res
 			if(this.curOrder) {
 				res = await api.post("/partners/issueOrder", {boIdx:this.curOrder.idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
@@ -126,7 +128,6 @@ export default {
 				})
 				this.refreshData()
 				this.curOrder = null
-				this.showApplyModal = !this.showApplyModal
 			} else if (res.result === 1000) {
 				this.$swal.fire({
 					title: res.message,
@@ -142,4 +143,7 @@ export default {
 
 
 <style scoped>
+.swal2-container {
+	z-index: 300000 !important;
+}
 </style>
