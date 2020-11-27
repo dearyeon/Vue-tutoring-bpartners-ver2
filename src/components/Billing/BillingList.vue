@@ -2,7 +2,7 @@
 	<div>
 		<Header title="정기 결제 관리"
 			:use-batch-selection="true" @changeBatch="refresh"
-			search-placeholder="이름을 입력하세요." @search="setSearch"
+			search-placeholder="이름을 입력하세요." @search="setSearch" @reset="setSearch"
 			btn1-text="결제 대기건 일괄 결제" @btn1-click="chargeBatch" btn1-variant="primary" :btn1-loading="false">
 			<span>
 				<div class="col-lg-12">
@@ -175,6 +175,7 @@ export default {
 	data() {
 		return {
 			orders: [],
+			ordersAll: [],
 			search: '',
 			currentItem: {
 				user: {}
@@ -188,17 +189,31 @@ export default {
 			targetCountCheck: false,
 			cardTypeLabel: ['신용', '직불'],
 			showModal: false,
+			sk: ''
 		}
 	},
 	methods: {
 		refresh: async function (sk) {
 			const bbIdx = shared.getCurBatch().idx
 			const params = sk?{bbIdx, sk}:{bbIdx}
-			let res = await api.get('/partners/chargeOrderList',params)
-			this.orders = res.data.orders
-			this.batch = res.data.batches.find(element => element.idx === bbIdx)
-			this.company = res.data.company
-			this.listInfo = res.data.list
+			const res = await api.get('/partners/chargeOrderList',params)
+			const data = res.data
+			this.ordersAll = data.orders
+			this.orders = this.ordersAll
+			this.batch = data.batches.find(element => element.idx === bbIdx)
+			this.company = data.company
+			this.listInfo = data.list
+
+			this.filteredData()
+		},
+		filteredData() {
+			this.orders = this.ordersAll
+
+			if (this.sk) {this.orders = this.orders.filter((order) => {
+				return !order.user.name.indexOf(this.sk) ||
+					(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
+					(order.user.email && !order.user.email.indexOf(this.sk))
+			})}
 		},
 		pausePayment: function () {
 			this.$swal
@@ -556,8 +571,9 @@ export default {
 				}
 			})
 		},
-		setSearch(search) {
-			this.refresh(search)
+		setSearch(sk) {
+			this.sk = sk
+			this.filteredData()
 		},
 		async openUserInfo(boIdx) {
 			this.modalitem = await shared.getUserInfo(boIdx)

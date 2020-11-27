@@ -2,8 +2,8 @@
 <div>
 	<Header title="입과 관리"
 			:use-batch-selection="true" @changeBatch="refreshData"
-			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
-			switch1-text="취소포함" @switch1-cahnge="toggleCancel"
+			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch" @reset="setSearch"
+			switch1-text="취소포함" @switch1-change="toggleCancel"
 			btn1-text="일괄 입과" @btn1-click="showApplyModal=true" btn1-variant="primary" :btn1-loading="false"
 			btn2-text="일괄 수정" @btn2-click="" btn2-variant="warning" :btn2-loading="false"
 			btn3-text="일괄 취소" @btn3-click="alert(1)" btn3-variant="danger" :btn3-loading="false">
@@ -65,6 +65,7 @@ export default {
 	data() {
 		return {
 			orders: [],
+			ordersAll: [],
 			moment: moment,
 			showModal: false,
 			showApplyModal: false,
@@ -79,20 +80,26 @@ export default {
 	methods: {
 		async refreshData() {
 			this.batch = shared.getCurBatch()
-			const res = await api.get("/partners/issueOrderList", {bbIdx:this.batch.idx});
-			const data = res.data;
-			if(this.includeCancel) {
-				this.orders = data.orders;
-			} else {
-				this.orders = data.orders.filter( (order) => {
-					return order.apply_ccl_dt === null
+			const res = await api.get("/partners/issueOrderList", {bbIdx:this.batch.idx})
+			const data = res.data
+			this.ordersAll = data.orders
+			this.orders = this.ordersAll
+			
+			this.filteredData()
+		},
+		filteredData() {
+			this.orders = this.ordersAll
+			if(!this.includeCancel) {
+				this.orders = this.orders.filter((order) => {
+					return order.issue_dt !== null
 				})
 			}
-			if(this.sk) this.orders = this.orders.filter((order) => { 
-				return !order.user.name.indexOf(this.sk) || 
-						(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) || 
-						(order.user.email && !order.user.email.indexOf(this.sk))
-			})
+
+			if (this.sk) {this.orders = this.orders.filter((order) => {
+				return !order.user.name.indexOf(this.sk) ||
+					(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
+					(order.user.email && !order.user.email.indexOf(this.sk))
+			})}
 		},
 		async openUserInfo(boIdx) {
 			this.modalitem = await shared.getUserInfo(boIdx)
@@ -100,11 +107,11 @@ export default {
 		},
 		setSearch(sk) {
 			this.sk = sk
-			this.refreshData()
+			this.filteredData()
 		},
 		toggleCancel(event){
 			this.includeCancel = event;
-			this.refreshData();
+			this.filteredData();
 		},
 		async issueOrder(fr_dt,to_dt) {
 			let res
