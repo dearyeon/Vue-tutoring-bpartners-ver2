@@ -22,6 +22,7 @@
 									<tr>
 										<th>이메일</th>
 										<td>
+<<<<<<< HEAD
                                             <div class="col-lg-12 pull-right" style="display: contents">
                                                 <div class="col-lg-10 pull-left" style="background-color:black">
                                                     <input type="text" class="form-control" placeholder="이메일을 입력해 주세요." v-model="email"/>
@@ -31,6 +32,11 @@
                                                 </div>
                                             </div>
                                         </td>
+=======
+											<input type="text" class="form-control" placeholder="이메일을 입력해 주세요." v-model="email"/>
+											<button class="btn btn-default" @click="checkUser">조회하기</button>
+										</td>
+>>>>>>> baaf14a0974852a662e537add10dbe7faaf038e8
 									</tr>
 									<tr>
 										<th>이름</th>
@@ -42,13 +48,13 @@
 											<input type="text" class="form-control" placeholder="연락처를 입력해 주세요." v-model="cel"/>
 										</td>
 									</tr>
-                                    <tr>
+									<tr>
 										<th>cf1</th>
 										<td>
 											<input type="text" class="form-control" placeholder="cf1을 입력해 주세요." v-model="cf1"/>
 										</td>
 									</tr>
-                                    <tr>
+									<tr>
 										<th>cf2</th>
 										<td>
 											<input type="text" class="form-control" placeholder="cf2를 입력해 주세요." v-model="cf2"/>
@@ -72,7 +78,7 @@
 											<input type="text" class="form-control" placeholder="직급을 입력해 주세요." v-model="position"/>
 										</td>
 									</tr>
-                                    <tr>
+									<tr>
 										<th>사번</th>
 										<td><input type="text" class="form-control" placeholder="사번을 입력해 주세요." v-model="empNo"/></td>
 									</tr>
@@ -103,75 +109,87 @@
 </template>
 
 <script>
-import api from "@/common/api"
-export default {
-    data() {
-        return {
-            company: '',
-            b_no: '',
-            goods: [],
-            
-            name: '',
-            email: '',
-            cel: '',
-            affiliation: '',
-            department: '',
-            position: '',
-            empNo: '',
-            cpIdx: '',
-            cf1: '',
-            cf2: '',
-            planTitle: '',
-        }
-    },
-	created() {
-		this.refresh();
-    },
-    methods: {
-		async refresh() {
-            const res = await api.get("/partners/batch", {idx:this.$route.params.bbIdx});
-            const data = res.data
-            this.company = data.site.company
-            this.b_no = data.b_no
-            this.goods = data.goods
-            console.log(this.goods)
-        },
-        SelectedGoods (event) {
-            this.cpIdx = event.target.value
-        },
-        async setIndivApply() {
-            const form = {
-                bbIdx: this.$route.params.bbIdx,
-                email: this.email,
-                cpIdx: this.cpIdx,
-                name: this.name,
-                company: this.affiliation,
-                department: this.department,
-                position: this.position,
-                empNo: this.empNo,
-                cel: this.cel,
-                cf1: this.cf1,
-                cf2: this.cf2
-            }
-            console.log(form)
-            const res = await api.post("/partners/importApply", form);
-            if(res.result === 2000){
-                this.$swal.fire({
-                    title: '개별 신청이 완료 되었습니다.',
-                    confirmButtonText: 'OK',
-                })
-                this.$router.go(-1)
-            } else if (res.result === 1000) {
-                this.$swal.fire({
-                    title: res.message,
-                    text: res.data.errMsg,
-                    icon: "warning",
-                    confirmButtonText: "OK"
-                })
-            }
-        }
-    }
-}
+	import api from '@/common/api'
+
+	export default {
+		data () {
+			return {
+				company: '',
+				b_no: '',
+				goods: [],
+				name: '',
+				email: '',
+				cel: '',
+				affiliation: '',
+				department: '',
+				position: '',
+				empNo: '',
+				cpIdx: '',
+				cf1: '',
+				cf2: '',
+				planTitle: '',
+			}
+		},
+		created () {
+			this.refresh()
+		},
+		methods: {
+			async refresh () {
+				const res = await api.get('/partners/batch', { idx: this.$route.params.bbIdx })
+				const data = res.data
+				this.company = data.site.company
+				this.b_no = data.b_no
+				this.goods = data.goods
+				console.log(this.goods)
+			},
+			SelectedGoods (event) {
+				this.cpIdx = event.target.value
+			},
+			async setIndivApply () {
+				const form = {
+					bbIdx: this.$route.params.bbIdx,
+					email: this.email,
+					cpIdx: this.cpIdx,
+					name: this.name,
+					company: this.affiliation,
+					department: this.department,
+					position: this.position,
+					empNo: this.empNo,
+					cel: this.cel,
+					cf1: this.cf1,
+					cf2: this.cf2
+				}
+				console.log(form)
+				const res = await api.post('/partners/importApply', form)
+				if (res.result === 2000) {
+					this.$swal.fire({
+						title: '개별 신청이 완료 되었습니다.',
+						confirmButtonText: 'OK',
+					})
+					this.$router.go(-1)
+				} else if (res.result === 1000) {
+					this.$swal.fire({
+						title: res.message,
+						text: res.data.errMsg,
+						icon: 'warning',
+						confirmButtonText: 'OK'
+					})
+				}
+			},
+			async checkUser () {
+				const res = await api.get('/partners/checkUser',{email : this.email}).catch( e => {
+					console.log('error checkUser : ' + e )
+				})
+
+				if( res.result === 2000 ) {
+
+				} else {
+					this.$swal(res.message);
+				}
+
+			}
+		}
+	}
 </script>
 
 <style scoped>

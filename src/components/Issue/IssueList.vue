@@ -5,7 +5,8 @@
 			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch"
 			switch1-text="취소포함" @switch1-cahnge="toggleCancel"
 			btn1-text="일괄 입과" @btn1-click="showApplyModal=true" btn1-variant="primary" :btn1-loading="false"
-			btn2-text="일괄 취소" @btn2-click="alert(1)" btn2-variant="danger" :btn2-loading="false">
+			btn2-text="일괄 수정" @btn2-click="" btn2-variant="warning" :btn2-loading="false"
+			btn3-text="일괄 취소" @btn3-click="alert(1)" btn3-variant="danger" :btn3-loading="false">
 	</Header>
 
 	<Content>
@@ -28,8 +29,11 @@
 				<ItemButton v-else text="취소" variant="danger" @click="" /></td>
 		</Table>
 	</Content>
+
 	<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal=false"/>
+
 	<IssueDateModal :item="curOrder" :batch="batch" v-if="showApplyModal" @close="closeApplyModal" @save="issueOrder"/>
+
 </div>
 </template>
 

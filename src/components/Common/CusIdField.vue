@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
-		<span class="cusId" v-if="user.cus_id" @click="gotoAdmin">{{user.cus_id}}</span>
-		<span v-if="!user.cus_id">{{user.email}}</span>
+		<span v-if="$shared.isSupervisor()" class="cusId" @click="gotoAdmin">{{user.cus_id}}</span>
+		<span v-if="!$shared.isSupervisor()">{{user.cus_id}}</span>
 	</div>
 </template>
 
@@ -10,8 +10,7 @@ export default {
 	props: {
 		user: {
 			u_idx: 0,
-			cus_id: null,
-			email: null
+			cus_id: null
 		}
 	},
 	methods: {
