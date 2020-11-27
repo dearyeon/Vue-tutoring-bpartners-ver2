@@ -80,7 +80,7 @@
 						<div class="row">
 							<div class="col-xs-4">
 								<strong class="col-xs-12">수강권 선택</strong>
-								<select class="col-xs-12" @change="SelectedGoods($event)">
+								<select class="col-xs-12" style="font-size:15px" @change="SelectedGoods($event)">
 									<option value="">-- 수강권을 선택하세요. --</option>
 									<option v-for="(item,index) in goods" :key="index" :value="item.charge_plan.idx">{{item.charge_plan.title}}</option>
 								</select>
