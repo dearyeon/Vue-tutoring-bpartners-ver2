@@ -49,8 +49,8 @@
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td>{{ item.apply_ccl_dt && moment(item.apply_ccl_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td>{{ item.approve_dt && moment(item.approve_dt).format('YYYY-MM-DD HH:mm') }}</td>
-				<td v-if="$shared.isSupervisor()">
-					<ItemButton text="승인" variant="success btn-outline"
+				<td>
+					<ItemButton v-if="$shared.isSupervisor() && !item.approve_dt" text="승인" variant="success btn-outline"
 								@click="approve(item.idx,item.user.name,item.user.email )"/>
 				</td>
 				<td v-if="$shared.isSupervisor()">
