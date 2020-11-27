@@ -15,7 +15,7 @@
 			   :data="orders"
 			    v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
-			<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
+			<td><NameField :item="item"></NameField></td>
 			<td><CusIdField :user="item.user"/></td>
 			<td>{{ item.user.email}}</td>
 			<td>{{ item.user.cel}}</td>
@@ -44,23 +44,23 @@ import api from "@/common/api"
 import moment from 'moment'
 import shared from "@/common/shared"
 import BatchSelection from "@/components/Common/BatchSelection"
+import NameField from "@/components/Common/NameField"
 import CusIdField from "@/components/Common/CusIdField"
 import Header from "@/components/Common/Header"
 import Content from "@/components/Common/Content"
 import Table from "@/components/Common/Table"
 import ItemButton from "@/components/Common/ItemButton"
-import UserInfoModal from "@/components/Modal/UserInfoModal"
 import IssueDateModal from '../Modal/IssueDateModal'
 
 export default {
 	components: {
 		Header,
 		Content,
+		NameField,
 		CusIdField,
 		BatchSelection,
 		Table,
 		ItemButton,
-		UserInfoModal,
 		IssueDateModal
 	},
 	data() {
@@ -68,7 +68,6 @@ export default {
 			orders: [],
 			ordersAll: [],
 			moment: moment,
-			showModal: false,
 			showApplyModal: false,
 			includeCancel: false,
 			batch: null,
@@ -100,10 +99,6 @@ export default {
 						(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
 						(order.user.email && !order.user.email.indexOf(this.sk))
 			})
-		},
-		async openUserInfo(boIdx) {
-			this.modalitem = await shared.getUserInfo(boIdx)
-			this.showModal = !this.showModal
 		},
 		setSearch(sk) {
 			this.sk = sk

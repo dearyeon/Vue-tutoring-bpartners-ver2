@@ -23,7 +23,7 @@
 				:data="orders"
 				v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
-				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
+				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"/></td>
 				<td>{{ item.user.email }}</td>
 				<td>{{ item.user.cel }}</td>
@@ -61,8 +61,6 @@
 			</Table>
 		</Content>
 
-
-		<UserInfoModal :data="modalitem" v-if="showUserInfoModal" @close="showUserInfoModal = !showUserInfoModal"/>
 		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = !showMemoModal"
 					  @save="updateMemo"/>
 		<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = !showInfoModal"
@@ -79,12 +77,12 @@ import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 import XLSX from 'xlsx'
 import _ from 'lodash'
 import BatchSelection from "@/components/Common/BatchSelection"
+import NameField from "@/components/Common/NameField"
 import CusIdField from "@/components/Common/CusIdField"
 import Header from "@/components/Common/Header"
 import Content from "@/components/Common/Content"
 import Table from "@/components/Common/Table"
 import ItemButton from "@/components/Common/ItemButton"
-import UserInfoModal from "@/components/Modal/UserInfoModal"
 import MngTextModal from '../Modal/MngTextModal'
 
 export default {
@@ -100,7 +98,6 @@ export default {
 			curBBIdx: 0,
 			selectIdx: 0,
 			loading: false,
-			showUserInfoModal: false,
 			showMemoModal: false,
 			showInfoModal: false,
 			content: '',
@@ -111,12 +108,12 @@ export default {
 	components: {
 		Header,
 		Content,
+		NameField,
 		CusIdField,
 		BatchSelection,
 		Table,
 		ItemButton,
 		ClipLoader,
-		UserInfoModal,
 		MngTextModal
 	},
 	created() {
@@ -256,10 +253,6 @@ export default {
 			this.content = content
 			this.selectIdx = idx
 			this.showInfoModal = !this.showInfoModal
-		},
-		async openUserInfo(boIdx) {
-			this.modalitem = await shared.getUserInfo(boIdx)
-			this.showUserInfoModal = !this.showUserInfoModal
 		},
 		async updateMemo(text) {
 			this.showMemoModal = !this.showMemoModal

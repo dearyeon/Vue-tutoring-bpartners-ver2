@@ -13,7 +13,7 @@
 				:data="items"
 					v-slot="{item, i}">
 				<td>{{ sk?i+1:total - ((current_page-1)*per_page) - i }}</td>
-				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
+				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
 				<td>
@@ -47,7 +47,6 @@
 		</Content>
 		<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage"/>
 
-		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
 		<MngTextModal title="메모 입력" subtitle="메모를 입력해 주세요."
 					  :content="memo" v-if="showMemo" @close="showMemo = false" @save="applyMemo"/>
 
@@ -56,7 +55,6 @@
 
 <script>
 import api from "@/common/api"
-import UserInfoModal from "@/components/Modal/UserInfoModal"
 import Pagination from "@/components/atom/Pagination"
 import moment from 'moment'
 import XLSX from 'xlsx'
@@ -64,6 +62,7 @@ import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 import _ from 'lodash'
 import shared from "@/common/shared"
 import BatchSelection from "@/components/Common/BatchSelection"
+import NameField from "@/components/Common/NameField"
 import CusIdField from "@/components/Common/CusIdField"
 import Header from "@/components/Common/Header"
 import Content from "@/components/Common/Content"
@@ -87,17 +86,15 @@ export default {
 			memo: '',
 			presentIdx: '',
 			loading: false,
-			showModal: false,
-			modalitem: null,
 			curBBIdx: 0
 		};
 	},
 	components: {
-		UserInfoModal,
 		Pagination,
 		ClipLoader,
 		Header,
 		Content,
+		NameField,
 		CusIdField,
 		BatchSelection,
 		Table,
@@ -228,10 +225,6 @@ export default {
 				confirmButtonText: "OK",
 				cancelButtonText: "Cancel",
 			});
-		},
-		async openUserInfo(boIdx) {
-			this.modalitem = await shared.getUserInfo(boIdx)
-			this.showModal = !this.showModal
 		},
 		setMemo(user) {
 			if (this.memoNum) this.memo = user.memo1;
