@@ -31,8 +31,8 @@
 		</Table>
 	</Content>
 
-	<IssueDateModal title="단건 입과" :item="curOrder" v-if="showIndivIssue" @close="showIndivIssue = !showIndivIssue" @save="issueOrder"/>
-	<IssueDateModal title="일괄 입과" v-if="showBatchIssue" @close="showBatchIssue = !showBatchIssue" @save="issueOrder"/>
+	<IssueDateModal title="단건 입과" :item="curOrder" v-if="showIndivIssue" @close="[showIndivIssue=false,curOrder=null]" @save="issueOrder"/>
+	<IssueDateModal title="일괄 입과" v-if="showBatchIssue" @close="showBatchIssue=false" @save="issueOrder"/>
 	<IssueDateModal title="AI 지급"  subtitle="hi" v-if="showAIIssue" @close="showAIIssue = !showAIIssue" @save=""/>
 </div>
 </template>
@@ -135,10 +135,6 @@ export default {
 				})
 			}
 		},
-		closeApplyModal() {
-			this.curOrder = null
-			this.showApplyModal = !this.showApplyModal
-		}
 	}
 };
 </script>
