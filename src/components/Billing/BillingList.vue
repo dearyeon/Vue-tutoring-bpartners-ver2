@@ -41,8 +41,6 @@
 			</Table>
 		</Content>
 
-		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
-
 		<Modal ref="modalWaitPayment" v-cloak>
 			<div slot="body" style="align-items:center">
 				<h1><strong>작업을 선택해주세요.</strong></h1>
@@ -155,7 +153,6 @@ import Header from "@/components/Common/Header"
 import Content from "@/components/Common/Content"
 import Table from "@/components/Common/Table"
 import ItemButton from "@/components/Common/ItemButton"
-import UserInfoModal from "@/components/Modal/UserInfoModal"
 
 export default {
 	components: {
@@ -167,7 +164,6 @@ export default {
 		ItemButton,
 		Modal,
 		Dropdown,
-		UserInfoModal
 	},
 	async created() {
 		this.refresh();
@@ -188,7 +184,6 @@ export default {
 			newCardInfo: {cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: ''},
 			targetCountCheck: false,
 			cardTypeLabel: ['신용', '직불'],
-			showModal: false,
 			sk: ''
 		}
 	},
@@ -574,10 +569,6 @@ export default {
 		setSearch(sk) {
 			this.sk = sk
 			this.filteredData()
-		},
-		async openUserInfo(boIdx) {
-			this.modalitem = await shared.getUserInfo(boIdx)
-			this.showModal = !this.showModal
 		},
 	},
 	computed: {

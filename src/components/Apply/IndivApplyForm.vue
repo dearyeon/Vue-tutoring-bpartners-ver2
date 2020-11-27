@@ -23,7 +23,7 @@
 										<th>이메일</th>
 										<td>
 											<input type="text" class="form-control" placeholder="이메일을 입력해 주세요." v-model="email"/>
-											<button class="btn btn-default" @click="checkUser">조회하기</button>
+											<button class="btn btn-default" @click="checkUser">불러오기</button>
 										</td>
 									</tr>
 									<tr>
