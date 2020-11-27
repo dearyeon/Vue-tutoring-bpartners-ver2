@@ -17,11 +17,11 @@
 							<h3 class="col-xs-2 no-margins">기본 정보</h3>
 						</div>
 						<div class="row">
-							<div class="col-lg-6">
+							<div class="col-lg-4">
 								<table class="table">
 									<tr>
 										<th>이메일</th>
-										<td>
+										<td style="display:flex">
 											<input type="text" class="form-control" placeholder="이메일을 입력해 주세요." v-model="email"/>
 											<button class="btn btn-default" @click="checkUser">불러오기</button>
 										</td>
@@ -50,7 +50,7 @@
 									</tr>
 								</table>
 							</div>
-							<div class="col-lg-6">
+							<div class="col-md-offset-2 col-lg-4">
 								<table class="table">
 									<tr>
 										<th>소속(회사)</th>
@@ -78,7 +78,7 @@
 					<div class="form-group">
 						<h3 class="well">수강권 선택</h3>
 						<div class="row">
-							<div class="col-xs-6">
+							<div class="col-xs-4">
 								<strong class="col-xs-12">수강권 선택</strong>
 								<select class="col-xs-12" @change="SelectedGoods($event)">
 									<option value="">-- 수강권을 선택하세요. --</option>
@@ -88,7 +88,7 @@
 						</div>
 					</div>
 					<div class="col-xs-6 pull-right p-h-xl">
-						<button class="pull-right col-xs-8 col-xs-offset-1 btn btn-lg btn-primary" @click="setIndivApply">저장</button>
+						<button class="pull-right col-xs-3 col-xs-offset-1 btn btn-lg btn-primary" @click="setIndivApply">저장</button>
 					</div>
 
 				</div>
