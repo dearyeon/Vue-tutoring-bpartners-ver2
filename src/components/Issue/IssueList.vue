@@ -15,7 +15,7 @@
 			    v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
 			<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
-			<td>{{ item.user.cus_id}}</td>
+			<td><CusIdField :user="item.user"/></td>
 			<td>{{ item.user.email}}</td>
 			<td>{{ item.user.cel}}</td>
 			<td>{{ item.charge_plan && item.charge_plan.title }}</td>
@@ -88,9 +88,9 @@ export default {
 					return order.apply_ccl_dt === null
 				})
 			}
-			if(this.sk) this.orders = this.orders.filter((order) => { 
-				return !order.user.name.indexOf(this.sk) || 
-						(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) || 
+			if(this.sk) this.orders = this.orders.filter((order) => {
+				return !order.user.name.indexOf(this.sk) ||
+						(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
 						(order.user.email && !order.user.email.indexOf(this.sk))
 			})
 		},
