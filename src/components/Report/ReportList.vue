@@ -173,7 +173,6 @@ export default {
 			const calendar = res.data.calendar
 			const batch = res.data.batch
 			const orders = res.data.orders
-			const company = res.data.company
 
 			let dataWs = []
 			orders.forEach((order, index) => {
@@ -216,7 +215,7 @@ export default {
 			var ws = XLSX.utils.json_to_sheet(dataWs);
 			var wb = XLSX.utils.book_new();
 			XLSX.utils.book_append_sheet(wb, ws, '수업현황');
-			const test = XLSX.writeFile(wb, company + ' 수업현황 ' + batch.b_no + '주차.xlsx');
+			const test = XLSX.writeFile(wb, shared.getCurBatch().company + ' 수업현황 ' + shared.getCurBatch().b_no + '회차.xlsx');
 			this.loading = false
 		}, 500),
 		openModal() {

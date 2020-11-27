@@ -239,8 +239,8 @@ export default {
 			}))
 			var ws = XLSX.utils.json_to_sheet(dataWs)
 			var wb = XLSX.utils.book_new()
-			XLSX.utils.book_append_sheet(wb, ws, this.company + ' ' + shared.getCurBatch().b_no + '주차 신청관리')
-			const test = XLSX.writeFile(wb, this.company + ' ' + shared.getCurBatch().b_no + '주차 신청관리.xlsx')
+			XLSX.utils.book_append_sheet(wb, ws, shared.getCurBatch().company + ' ' + shared.getCurBatch().b_no + '회차 신청관리')
+			const test = XLSX.writeFile(wb, shared.getCurBatch().company + ' ' + shared.getCurBatch().b_no + '회차 신청관리.xlsx')
 			this.loading = false
 		}, 500),
 		toggleCancel(event) {
