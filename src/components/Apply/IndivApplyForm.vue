@@ -81,6 +81,7 @@
 							<div class="col-xs-6">
 								<strong class="col-xs-12">수강권 선택</strong>
 								<select class="col-xs-12" @change="SelectedGoods($event)">
+									<option value="">-- 수강권을 선택하세요. --</option>
 									<option v-for="(item,index) in goods" :key="index" :value="item.charge_plan.idx">{{item.charge_plan.title}}</option>
 								</select>
 							</div>
@@ -115,7 +116,7 @@
 				cpIdx: '',
 				cf1: '',
 				cf2: '',
-				planTitle: '',
+                calEmail: false,
 			}
 		},
 		created () {
@@ -146,25 +147,49 @@
 					cel: this.cel,
 					cf1: this.cf1,
 					cf2: this.cf2
-				}
-				console.log(form)
-				const res = await api.post('/partners/importApply', form)
-				if (res.result === 2000) {
-					this.$swal.fire({
-						title: '개별 신청이 완료 되었습니다.',
-						confirmButtonText: 'OK',
-					})
-					this.$router.go(-1)
-				} else if (res.result === 1000) {
-					this.$swal.fire({
-						title: res.message,
-						text: res.data.errMsg,
-						icon: 'warning',
-						confirmButtonText: 'OK'
-					})
-				}
+                }
+                if(!this.calEmail) {
+                    this.$swal.fire({
+                        title: '신청 실패',
+                        text: '이메일을 조회해 주세요.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                } else if(!this.email || !this.name || !this.cpIdx) {
+                    this.$swal.fire({
+                        title: '신청 실패',
+                        text: '이메일, 이름, 수강권은 필수 항목 입니다.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                } else {
+                    const res = await api.post('/partners/importApply', form)
+                    if (res.result === 2000) {
+                        this.$swal.fire({
+                            title: '단건 신청이 완료 되었습니다.',
+                            confirmButtonText: 'OK',
+                        })
+                        this.$router.go(-1)
+                    } else if (res.result === 1000) {
+                        this.$swal.fire({
+                            title: res.message,
+                            text: res.data.errMsg,
+                            icon: 'warning',
+                            confirmButtonText: 'OK'
+                        })
+                    }
+                }
 			},
 			async checkUser () {
+                if(!this.email) {
+                    this.$swal.fire({
+                        title: '이메일을 입력하세요.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    })
+                    return
+                }
+                this.calEmail = true
 				const res = await api.get('/partners/checkUser',{email : this.email}).catch( e => {
 					console.log('error checkUser : ' + e )
 				})
@@ -176,11 +201,11 @@
                     this.affiliation = data.company
                     this.department = data.department
                     this.position = data.position
-                    this.empNo = data.cus_id
+                    this.empNo = data.emp_no
                     this.cf1 = data.cf1
                     this.cf2 = data.cf2
 				} else {
-					this.$swal(res.message);
+					this.$swal(res.message); 
 				}
 
 			}
