@@ -12,7 +12,7 @@
 					   v-on:keypress.enter="$emit('search',searchModel)"
 					   class="form-control" />
 				<span v-if="searchModel" id="search-reset" @click="searchModel='';$emit('reset')">x</span>
-				<span v-if="!searchBtnHide" class="input-group-btn">
+				<span class="input-group-btn">
 					<button class="btn btn-default" v-on:click="$emit('search', searchModel)">검색</button>
 				</span>
 			</div>
@@ -90,7 +90,6 @@ export default {
 
 		searchPlaceholder: String,
 		searchKeyDefault: String,
-		searchBtnHide: Boolean,
 
 		switch1Text: String,
 		switch2Text: String,
