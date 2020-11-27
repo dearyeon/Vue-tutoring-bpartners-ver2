@@ -31,9 +31,9 @@
 		</Table>
 	</Content>
 
-	<IssueDateModal title="단건 입과" :item="curOrder" :batch="batch" v-if="showIndivIssue" @close="showIndivIssue = !showIndivIssue" @save="issueOrder"/>
-	<IssueDateModal title="일괄 입과" :batch="batch" v-if="showBatchIssue" @close="showBatchIssue = !showBatchIssue" @save="issueOrder"/>
-	<IssueDateModal title="AI 지급"  subtitle="hi" :batch="batch" v-if="showAIIssue" @close="showAIIssue = !showAIIssue" @save="issueOrder"/>
+	<IssueDateModal title="단건 입과" :item="curOrder" v-if="showIndivIssue" @close="showIndivIssue = !showIndivIssue" @save="issueOrder"/>
+	<IssueDateModal title="일괄 입과" v-if="showBatchIssue" @close="showBatchIssue = !showBatchIssue" @save="issueOrder"/>
+	<IssueDateModal title="AI 지급"  subtitle="hi" v-if="showAIIssue" @close="showAIIssue = !showAIIssue" @save=""/>
 </div>
 </template>
 

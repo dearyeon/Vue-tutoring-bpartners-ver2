@@ -51,7 +51,6 @@ import moment from "moment"
 export default {
     props: {
         item: Object,
-        batch: Object,
         datePicker: {
             type: Boolean,
             default: false
@@ -77,9 +76,8 @@ export default {
 		DatePicker
     },
     async created() {
-        console.log('test:',shared.getCurBatch())
-        this.frDt = new Date(this.batch.fr_dt)
-        this.toDt = new Date(this.batch.to_dt)
+        this.frDt = new Date(shared.getCurBatch().fr_dt)
+        this.toDt = new Date(shared.getCurBatch().to_dt)
         const bbIdx = shared.getCurBatch().idx
         if(!this.item) {
             const res = await api.get("/partners/issueBatchCheck", {bbIdx});
