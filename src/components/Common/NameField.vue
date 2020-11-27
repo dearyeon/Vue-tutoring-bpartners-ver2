@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<span class="name" @click="openUserInfo">{{item.user.name}}</span>
-	    <UserInfoModal :data="item" v-if="showModal" @close="showModal = !showModal"/>
+	    <UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
 	</div>
 </template>
 
@@ -24,9 +24,8 @@ export default {
 	},
 	methods: {
 		async openUserInfo() {
-            console.log(this.item.idx)
             this.modalitem = await shared.getUserInfo(this.item.idx)
-			this.showUserInfoModal = !this.showUserInfoModal
+			this.showModal = !this.showModal
 		},
 	}
 };
