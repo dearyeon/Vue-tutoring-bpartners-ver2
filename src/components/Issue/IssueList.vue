@@ -120,6 +120,7 @@ export default {
 					confirmButtonText: 'OK',
 				})
 				this.refreshData()
+				this.curOrder = null
 				this.showApplyModal = !this.showApplyModal
 			} else if (res.result === 1000) {
 				this.$swal.fire({
@@ -128,8 +129,6 @@ export default {
 					confirmButtonText: 'OK'
 				})
 			}
-			this.curOrder = null
-			this.refreshData()
 		},
 		closeApplyModal() {
 			this.curOrder = null
