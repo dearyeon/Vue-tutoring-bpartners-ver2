@@ -23,7 +23,7 @@
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td>{{ item.idx }}</td>
-				<td @click="openUserInfo(item.idx)">{{ item.user.name }}</td>
+				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
 				<td>{{ $shared.nf(item.goods.supply_price - item.goods.charge_price) }}</td>
@@ -46,8 +46,6 @@
 				<td><ItemButton text="수정" variant="default" @click="[setCurrentItem(item), (memo=(item.mng_memo)), $refs.modalMemo.open()]" /></td>
 			</Table>
 		</Content>
-
-		<UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
 
 		<Modal ref="modalWaitPayment" v-cloak>
 			<div slot="body" style="align-items:center">
@@ -156,24 +154,24 @@ import Dropdown from '../atom/Dropdown'
 import moment from 'moment'
 import shared from "@/common/shared"
 import BatchSelection from "@/components/Common/BatchSelection"
+import NameField from "@/components/Common/NameField"
 import CusIdField from "@/components/Common/CusIdField"
 import Header from "@/components/Common/Header"
 import Content from "@/components/Common/Content"
 import Table from "@/components/Common/Table"
 import ItemButton from "@/components/Common/ItemButton"
-import UserInfoModal from "@/components/Modal/UserInfoModal"
 
 export default {
 	components: {
 		Header,
 		Content,
+		NameField,
 		CusIdField,
 		BatchSelection,
 		Table,
 		ItemButton,
 		Modal,
-		Dropdown,
-		UserInfoModal
+		Dropdown
 	},
 	async created() {
 		this.refresh();
@@ -194,7 +192,6 @@ export default {
 			newCardInfo: {cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: ''},
 			targetCountCheck: false,
 			cardTypeLabel: ['신용', '직불'],
-			showModal: false,
 			sk: ''
 		}
 	},
@@ -575,10 +572,6 @@ export default {
 		setSearch(sk) {
 			this.sk = sk
 			this.filteredData()
-		},
-		async openUserInfo(boIdx) {
-			this.modalitem = await shared.getUserInfo(boIdx)
-			this.showModal = !this.showModal
 		},
 	},
 	computed: {
