@@ -168,9 +168,17 @@
 				const res = await api.get('/partners/checkUser',{email : this.email}).catch( e => {
 					console.log('error checkUser : ' + e )
 				})
-
 				if( res.result === 2000 ) {
-
+                    const data = res.data
+                    this.name = data.name
+                    this.email = data.email
+                    this.cel = data.cel
+                    this.affiliation = data.company
+                    this.department = data.department
+                    this.position = data.position
+                    this.empNo = data.cus_id
+                    this.cf1 = data.cf1
+                    this.cf2 = data.cf2
 				} else {
 					this.$swal(res.message);
 				}
