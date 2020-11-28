@@ -37,14 +37,14 @@
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price - item.goods.charge_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.charge_price) : '' }}</td>
 				<td>
-					<p v-if="item.mng_memo" class="mng-text" @click="openMemoModal(item.idx,item.mng_memo)">
+					<p v-if="item.mng_memo" class="mng-text" @click="memoModalOpen(item,item.mng_memo)">
 						{{ item.mng_memo }}</p>
-					<ItemButton v-else text="관리메모" variant="default" @click="openMemoModal(item.idx)"/>
+					<ItemButton v-else text="관리메모" variant="default" @click="memoModalOpen(item)"/>
 				</td>
 				<td>
-					<p v-if="item.mng_info" class="mng-text" @click="openInfoModal(item.idx,item.mng_info)">
+					<p v-if="item.mng_info" class="mng-text" @click="infoModalOpen(item.idx,item.mng_info)">
 						{{ item.mng_info }}</p>
-					<ItemButton v-else text="관리정보" variant="default" @click="openInfoModal(item.idx)"/>
+					<ItemButton v-else text="관리정보" variant="default" @click="infoModalOpen(item.idx)"/>
 				</td>
 				<td>{{ item.idx }}</td>
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
@@ -62,10 +62,8 @@
 			</Table>
 		</Content>
 
-		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = !showMemoModal"
-					  @save="updateMemo"/>
-		<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = !showInfoModal"
-					  @save="updateInfo"/>
+		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = !showMemoModal" @save="updateMemo"/>
+		<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = !showInfoModal" @save="updateInfo"/>
 
 	</div>
 </template>
@@ -89,7 +87,6 @@ import MngTextModal from '../Modal/MngTextModal'
 export default {
 	data() {
 		return {
-			company: '',
 			cfs: [],
 			applyBatchError: false,
 			applyResultMsgs: {},
@@ -97,7 +94,7 @@ export default {
 			orders: [],
 			includeCancel: false,
 			curBBIdx: 0,
-			selectIdx: 0,
+			curOrder: 0,
 			loading: false,
 			showMemoModal: false,
 			showInfoModal: false,
@@ -127,7 +124,6 @@ export default {
 				bbIdx: this.curBBIdx
 			})
 			const data = res.data
-			this.company = data.company
 			this.cfs = data.cfs
 			this.ordersAll = data.orders
 			this.orders = this.ordersAll
@@ -146,6 +142,7 @@ export default {
 
 			this.filteredData()
 		},
+
 		filteredData() {
 			this.orders = this.ordersAll
 
@@ -161,6 +158,7 @@ export default {
 					(order.user.email && !order.user.email.indexOf(this.sk))
 			})}
 		},
+
 		getGTP(type, val) {
 			if (type == 'S') {
 				return val ? this.cfs[1].opts[1] : this.cfs[1].opts[0]
@@ -168,6 +166,7 @@ export default {
 				return val
 			}
 		},
+
 		importExcel: _.debounce(function (event) {
 			this.loading = true
 
@@ -177,9 +176,10 @@ export default {
 			reader.onload = async () => {
 				let data = reader.result
 				let workBook = XLSX.read(data, {type: 'binary'})
+				let cnt = 0
 				workBook.SheetNames.forEach(async function (sheetName) {
 					let rows = XLSX.utils.sheet_to_json(workBook.Sheets[sheetName])
-					rows.forEach(row =>
+					rows.forEach( row => {
 						value.push(Object.assign({
 							'no': row.No ? row.No : '',
 							'name': row.이름 ? row.이름 : '',
@@ -194,30 +194,46 @@ export default {
 							'cf1': row.CF1 ? row.CF1 : '',
 							'cf2': row.CF2 ? row.CF2 : '',
 						}))
+						cnt++
+						}
 					)
 				})
-				const res = await api.post('/partners/importApplyListToExcel', {
-					bbIdx: shared.getCurBatch().idx,
-					rows: JSON.stringify(value)
+
+				this.$swal.fire({
+					title: `${cnt} 명을 일괄 신청하시겠습니까?`,
+					showCancelButton: true,
+					cancelButtonColor: "#ed5565",
+					cancelButtonText: "아니오",
+					confirmButtonColor: '#8FD0F5',
+					confirmButtonText: "네!",
+					reverseButtons: true,
+				}).then( async r => {
+					if(r.isConfirmed) {
+						const res = await api.post('/partners/importApplyListToExcel', {
+							bbIdx: shared.getCurBatch().idx,
+							rows: JSON.stringify(value)
+						})
+						if (res.result === 2000) {
+							this.$swal.fire({
+								title: `${cnt}명 일괄 신청이 완료 되었습니다.`,
+								confirmButtonText: 'OK',
+							})
+							this.refreshData()
+						} else if (res.result === 1000) {
+							this.$swal.fire({
+								title: res.message,
+								text: res.data.errMsg,
+								icon: 'warning',
+								confirmButtonText: 'OK'
+							})
+						}
+					}
 				})
-				if (res.result === 2000) {
-					this.$swal.fire({
-						title: '일괄 신청이 완료 되었습니다.',
-						confirmButtonText: 'OK',
-					})
-					this.refreshData()
-				} else if (res.result === 1000) {
-					this.$swal.fire({
-						title: res.message,
-						text: res.data.errMsg,
-						icon: 'warning',
-						confirmButtonText: 'OK'
-					})
-				}
 			}
 			reader.readAsBinaryString(input)
 			this.loading = false
 		}, 500),
+
 		exportFormat: _.debounce(async function () {
 			this.loading = true
 			let dataWs = []
@@ -238,41 +254,47 @@ export default {
 			var ws = XLSX.utils.json_to_sheet(dataWs)
 			var wb = XLSX.utils.book_new()
 			XLSX.utils.book_append_sheet(wb, ws, shared.getCurBatch().company + ' ' + shared.getCurBatch().b_no + '회차 신청관리')
-			const test = XLSX.writeFile(wb, shared.getCurBatch().company + ' ' + shared.getCurBatch().b_no + '회차 신청관리.xlsx')
+			XLSX.writeFile(wb, shared.getCurBatch().company + ' ' + shared.getCurBatch().b_no + '회차 신청관리.xlsx')
 			this.loading = false
 		}, 500),
+
 		toggleCancel(event) {
 			this.includeCancel = event
 			this.filteredData()
 		},
-		openMemoModal(idx, content) {
+
+		memoModalOpen(order, content) {
 			this.content = content
-			this.selectIdx = idx
+			this.curOrder = order
 			this.showMemoModal = !this.showMemoModal
 		},
-		openInfoModal(idx, content) {
+
+		infoModalOpen(order, content) {
 			this.content = content
-			this.selectIdx = idx
+			this.curOrder = order
 			this.showInfoModal = !this.showInfoModal
 		},
+
 		async updateMemo(text) {
 			this.showMemoModal = !this.showMemoModal
-			const res = await api.post('/partners/updateMemo', {boIdx: this.selectIdx, memo: text}).catch((e) => {
+			const res = await api.post('/partners/updateMemo', {boIdx: this.curOrder.idx, memo: text}).catch((e) => {
 				console.log('error : updateMemo ' + e)
 			})
 			if (res.result === 2000) {
 				this.refreshData()
 			}
 		},
+
 		async updateInfo(text) {
 			this.showInfoModal = !this.showInfoModal
-			const res = await api.post('/partners/updateInfo', {boIdx: this.selectIdx, info: text}).catch((e) => {
+			const res = await api.post('/partners/updateInfo', {boIdx: this.curOrder.idx, info: text}).catch((e) => {
 				console.log('error : updateInfo ' + e)
 			})
 			if (res.result === 2000) {
 				this.refreshData()
 			}
 		},
+
 		approve(idx, name, email) {
 			this.$swal.fire({
 				html: `<strong>${name}(${email})</strong>님<br/>을 승인 하시겠습니까?`,
@@ -307,12 +329,14 @@ export default {
 				}
 			})
 		},
+
 		routeIndivApply() {
 			this.$router.push({
 				name: 'indivApplyNew',
 				params: {bbIdx: shared.getCurBatch().idx}
 			})
 		},
+
 		async cancel(item) {
 			this.$swal.fire({
 				icon: 'warning',
@@ -347,15 +371,14 @@ export default {
 		},
 
 		async approveBatchCheck() {
-			const res = await api.get('/partners/approveBatchCheck', {bbIdx: this.curBBIdx}).catch((e) => {
+			const {result, data} = await api.get('/partners/approveBatchCheck', {bbIdx: this.curBBIdx}).catch((e) => {
 				console.log('error : approveBatchCheck ' + e)
 			})
 
-			if (res.result === 2000) {
-
+			if (result === 2000) {
 				this.$swal.fire({
 					title: `<strong>일괄 승인</strong> 하시겠습니까?`,
-					html: `대상 건수 <strong>${res.data.targetCnt}</strong>건<br/>`,
+					html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>`,
 					icon: 'info',
 					confirmButtonText: '일괄 승인하기',
 					confirmButtonColor: '#8FD0F5',
@@ -372,19 +395,19 @@ export default {
 		},
 
 		async approveBatch() {
-			const res = await api.post('/partners/approveBatch', {bbIdx: this.curBBIdx}).catch((e) => {
+			const { result, data } = await api.post('/partners/approveBatch', {bbIdx: this.curBBIdx}).catch((e) => {
 				console.log('error : approveBatch ' + e)
 			})
 
-			if (res.result === 2000) {
+			if (result === 2000) {
 				this.$swal.fire({
 					title: `일괄 신청 결과 입니다.`,
-					html: `대상 건수 <strong>${res.data.targetCnt}</strong>건<br/>성공 건수 <strong>${res.data.successCnt}</strong>건<br/>실패 건수 <strong>${res.data.failCnt}</strong>건<br/>`,
+					html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>성공 건수 <strong>${data.successCnt}</strong>건<br/>실패 건수 <strong>${data.failCnt}</strong>건<br/>`,
 				}).then(r => {
 					if (r.isConfirmed) {
-						if (res.data.failCnt > 0) {
+						if (data.failCnt > 0) {
 							this.applyBatchError = true
-							this.applyResultMsgs = res.data.errorMsgs
+							this.applyResultMsgs = data.errorMsgs
 						} else {
 							this.applyBatchError = false
 							this.applyResultMsgs = []
@@ -394,6 +417,7 @@ export default {
 				})
 			}
 		},
+
 		setSearch(sk) {
 			this.sk = sk
 			this.filteredData()
