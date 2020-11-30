@@ -146,22 +146,16 @@ export default {
 
 		async issueOrder(fr_dt,to_dt) {
 			this.showIssueModal = false
-			const { result, data, errorMsgs } = await api.post("/partners/issueOrder", {boIdx:this.curOrder.idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
+			const { result } = await api.post("/partners/issueOrder", {boIdx:this.curOrder.idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
 
 			if (result === 2000) {
 				this.$swal.fire({
-					title: '입과 완료 되었습니다.',
-					icon: 'success',
-					html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>성공 건수 <strong>${data.successCnt}</strong>건<br/>실패 건수 <strong>${data.failCnt}</strong>건<br/>`,
-					confirmButtonText: 'OK',
-				})
-				this.refreshData()
-				this.curOrder = null
-			} else if (result === 1000) {
-				this.$swal.fire({
-					title: errorMsgs,
-					icon: 'warning',
-					confirmButtonText: 'OK'
+					title: `${this.curOrder.user.name}님에게 입과 완료 되었습니다.`,
+				}).then( r => {
+					if(r.isConfirmed) {
+						this.refreshData()
+						this.curOrder = null
+					}
 				})
 			}
 		},
@@ -197,6 +191,10 @@ export default {
 			if(res.result === 2000) {
 				this.$swal.fire({
 					title:`${this.curOrder.user.name}님에게 AI 레벨테스트 티켓이 지급 되었습니다.`
+				}).then( r => {
+					if(r.isCinfirmed) {
+						this.refreshData()
+					}
 				})
 			}
 
