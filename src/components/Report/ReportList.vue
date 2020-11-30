@@ -9,7 +9,7 @@
 
 
 		<Content>
-			<Table :headers="['No','이름','고객식별ID','달성률','수업','전체','학습 레벨','부서','직위(직책)','사번(고유값)','메모1','메모2','수업 히스토리(횟수)']"
+			<Table :headers="['No','이름','고객식별ID','달성률','수업','전체','학습 레벨','부서','직위','사번','메모1','메모2','수업 히스토리(횟수)']"
 				:data="items"
 					v-slot="{item, i}">
 				<td>{{ sk?i+1:total - ((current_page-1)*per_page) - i }}</td>
@@ -185,8 +185,8 @@ export default {
 						'번호': index + 1,
 						'소속': order.user.company,
 						'부서': order.user.part,
-						'직위(직책)': order.user.position,
-						'사번(고유값)': order.user.emp_no,
+						'직위': order.user.position,
+						'사번': order.user.emp_no,
 						'성명': order.user.name,
 						'학습 레벨': order.user.app_user ? order.user.app_user.level : '',
 						'차수': batch.b_no,
