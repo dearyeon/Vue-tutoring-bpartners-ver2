@@ -88,9 +88,8 @@
 						</div>
 					</div>
 					<div class="col-xs-6 pull-right p-h-xl">
-						<button class="pull-right col-xs-3 col-xs-offset-1 btn btn-lg btn-primary" @click="setIndivApply">저장</button>
+						<button class="pull-right col-xs-3 col-xs-offset-1 btn btn-lg btn-primary" @click="setIndivApply" :disabled="isDisabled()">저장</button>
 					</div>
-
 				</div>
 			</div>
 		</div>
@@ -208,7 +207,11 @@
 					this.$swal(res.message);
 				}
 
-			}
+            },
+            isDisabled() {
+                if(this.email && this.name && this.cel && this.cpIdx) return false
+                else return true
+            }
 		}
 	}
 </script>
