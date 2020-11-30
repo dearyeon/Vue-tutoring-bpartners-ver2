@@ -28,7 +28,7 @@
 
                 <div class="modal-footer" style="border-top:0px">
                     <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
-                    <button type="button" class="btn btn-success" id="userUpdateSubmit" @click="$emit('save',frDt,toDt)">입과</button>
+                    <button type="button" class="btn btn-success" id="userUpdateSubmit" @click="$emit('save',frDt,toDt)">{{buttonText}}</button>
                 </div>
             </div>
         </div>
@@ -54,6 +54,14 @@ export default {
             type: String,
             default: ''
         },
+	      buttonText: {
+        	type: String,
+		      default: "지급"
+	      },
+				isAi: {
+        	type: Boolean,
+					default: false
+				}
     },
     data() {
         return {
@@ -68,7 +76,11 @@ export default {
     },
     async created() {
         this.frDt = new Date(shared.getCurBatch().fr_dt)
-        this.toDt = new Date(shared.getCurBatch().to_dt)
+
+		    const frDt = new Date(shared.getCurBatch().fr_dt)
+	      const aiToDt = new Date(frDt.setDate(frDt.getDay() +10))
+
+        this.toDt = this.isAi ? aiToDt : new Date(shared.getCurBatch().to_dt)
     }
 }
 </script>

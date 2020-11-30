@@ -39,13 +39,13 @@
 	</Content>
 
 
-	<IssueDateModal v-if="showIssueModal" title="단건 입과" :subtitle="`${curOrder.user.name} ( ${curOrder.user.email}) 님을 입과 하시겠습니까?`"  @close="[showIssueModal=false,curOrder=null]" @save="issueOrder"/>
+	<IssueDateModal v-if="showIssueModal" title="단건 입과" button-text="입과" :subtitle="`${curOrder.user.name} ( ${curOrder.user.email}) 님을 입과 하시겠습니까?`"  @close="[showIssueModal=false,curOrder=null]" @save="issueOrder"/>
 
-	<IssueDateModal v-if="showIssueBatchModal" title="일괄 입과" :subtitle="`대상 건수 ${targetCnt}건`" @close="showIssueBatchModal=false" @save="issueBatch"/>
+	<IssueDateModal v-if="showIssueBatchModal" button-text="입과" title="일괄 입과" :subtitle="`대상 건수 ${targetCnt}건`" @close="showIssueBatchModal=false" @save="issueBatch"/>
 
-	<IssueDateModal v-if="showAIModal" title="AI 지급"  :subtitle="`${curOrder.user.name} ( ${curOrder.user.email}) 님에게 AI 티켓을 입과 하시겠습니까?`" :item="curOrder"  @close="showAIModal = false" @save="issueAILeveltestTicket"/>
+	<IssueDateModal v-if="showAIModal" title="AI 지급" button-text="지급" :is-ai="true" :subtitle="`${curOrder.user.name} ( ${curOrder.user.email}) 님에게 AI 티켓을 입과 하시겠습니까?`" :item="curOrder"  @close="showAIModal = false" @save="issueAILeveltestTicket"/>
 
-	<IssueDateModal v-if="showAIBatchModal" title="AI 일괄 지급"  :subtitle="`대상 건수 ${targetCnt}건`" :item="curOrder"  @close="showAIBatchModal = false" @save="issueAILeveltestTicketBatch"/>
+	<IssueDateModal v-if="showAIBatchModal" title="AI 일괄 지급" button-text="지급" :is-ai="true" :subtitle="`대상 건수 ${targetCnt}건`" :item="curOrder"  @close="showAIBatchModal = false" @save="issueAILeveltestTicketBatch"/>
 </div>
 </template>
 

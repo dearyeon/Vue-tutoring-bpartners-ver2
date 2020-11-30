@@ -11,10 +11,12 @@ import BatchList from "@/components/Batch/BatchList";
 import BillingList from "@/components/Billing/BillingList";
 import AddBillingList from "@/components/AddBilling/AddBillingList";
 import IssueList from "@/components/Issue/IssueList";
+import Register from "@/components/Register/Register";
 
 const routes = [
 	{path: "", redirect: "/login"},
 	{path: "/login", component: Login},
+	{path: "/register", component: Register},
 	{
 		path: "/main",
 		component: Main,
