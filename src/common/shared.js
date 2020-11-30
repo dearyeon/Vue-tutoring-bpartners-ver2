@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import api from "@/common/api";
 
-let allBatches = null
-
 const shared = {
 	bast: null,
 	sortKey: '',
@@ -14,12 +12,22 @@ const shared = {
 	getToken() {
 		return this.bast ? this.bast : sessionStorage.getItem('bat')
 	},
+	removeToken() {
+		sessionStorage.removeItem('bat')
+		this.bast = null
+	},
+
+
 	setAccount(account) {
 		sessionStorage.setItem('account', JSON.stringify(account))
 	},
 	getAccount() {
 		return JSON.parse(sessionStorage.getItem('account'))
 	},
+	removeAccount() {
+		sessionStorage.removeItem('account')
+	},
+
 	isLoggedIn() {
 		return this.getToken()==null ? false : true;
 	},
@@ -53,12 +61,19 @@ const shared = {
 	setCurBatch(batch) {
 		localStorage.setItem('curBatch', JSON.stringify(batch))
 	},
+	removeCurBatch() {
+		localStorage.removeItem('curBatch')
+	},
+
 	getCurSite() {
 		const json = localStorage.getItem('curSite')
 		return json ? JSON.parse(json) : {}
 	},
 	setCurSite(site) {
 		localStorage.setItem('curSite', JSON.stringify(site))
+	},
+	removeCurSite() {
+		localStorage.removeItem('curSite')
 	},
 
 
@@ -75,9 +90,16 @@ const shared = {
 		}
 		this.sortKey = sortKey1
 	},
-	logout(msg) {
-		shared.setToken(null)
+	logout(msg, isError) {
+		shared.removeToken()
+		shared.removeAccount()
 		Vue.swal(msg).then(()=>{
+			if(isError) {
+				//에러에 의한 로그아웃인 경우에만, 모든 세션정보 초기화
+				shared.removeCurBatch()
+				shared.removeCurSite()
+			}
+
 			location = '/'
 		})
 	},
