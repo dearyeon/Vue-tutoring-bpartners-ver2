@@ -3,8 +3,8 @@
 		<Header title="수업 현황"
 				:use-batch-selection="true" @changeBatch="refresh"
 				search-placeholder="이름 or 고객식별ID" @search="setSearch" @reset="setSearch" 
-				btn1-text="학습현황 메일 일괄 발송" @btn1-click="openModal" btn1-variant="success" :btn1-hide="!$shared.isSupervisor()"
-				btn2-text="엑셀 다운로드" @btn2-click="exportExcel" btn2-variant="success" :btn2-loading="loading"  :btn2-hide="!$shared.isSupervisor()">
+				btn1-text="학습현황 메일 일괄 발송" @btn1-click="openModal" btn1-variant="success"
+				btn2-text="엑셀 다운로드" @btn2-click="exportExcel" btn2-variant="success" :btn2-loading="loading">
 		</Header>
 
 
