@@ -4,10 +4,10 @@
 			:use-batch-selection="true" @changeBatch="refreshData"
 			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch" @reset="setSearch"
 			switch1-text="취소포함" @switch1-change="toggleCancel"
-			btn1-text="일괄 입과" @btn1-click="issueBatchCheck" btn1-variant="primary" :btn1-loading="false"
+			btn1-text="일괄 입과" @btn1-click="issueBatchCheck" btn1-variant="primary" :btn1-loading="loading1"
 			btn2-text="일괄 수정" @btn2-click="" btn2-variant="warning" :btn2-loading="false"
 			btn3-text="일괄 취소" @btn3-click="alert(1)" btn3-variant="danger" :btn3-loading="false"
-			btn4-text="AI 일괄 지급" @btn4-click="aiLevelBatchCheck" btn4-variant="success" :btn4-loading="false">
+			btn4-text="AI 일괄 지급" @btn4-click="aiLevelBatchCheck" btn4-variant="success" :btn4-loading="loading4">
 	</Header>
 
 
@@ -87,6 +87,10 @@ export default {
 			batch: null,
 			curOrder: null,
 			targetCnt: 0,
+			loading1:false,
+			loading2:false,
+			loading3:false,
+			loading4:false,
 		};
 	},
 	created() {
@@ -163,6 +167,7 @@ export default {
 		},
 
 		async issueBatch(fr_dt,to_dt) {
+			this.loading1 = true
 			this.showIssueBatchModal = false
 			const { result, data, errorMsgs} = await api.post("/partners/issueBatch", {bbIdx:shared.getCurBatch().idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
 			if (result === 2000) {
@@ -180,6 +185,8 @@ export default {
 					confirmButtonText: 'OK'
 				})
 			}
+			this.loading1 = false
+
 		},
 
 		async issueAILeveltestTicket(fr_dt,to_dt) {
@@ -196,6 +203,7 @@ export default {
 		},
 
 		async issueAILeveltestTicketBatch(fr_dt,to_dt) {
+			this.loading4 = true;
 			this.showAIBatchModal = false
 
 			const { result, data } = await api.post("/partners/aiLevelBatch", {bbIdx:shared.getCurBatch().idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
@@ -209,7 +217,7 @@ export default {
 				})
 				this.refreshData()
 			}
-
+			this.loading4= false
 		},
 
 		async issueBatchCheck() {
