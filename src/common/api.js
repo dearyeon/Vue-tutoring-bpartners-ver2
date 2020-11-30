@@ -5,7 +5,7 @@ import {config} from "../../deploy.config"
 
 const hostId = window.location.hostname.split('.')[0];
 let server = 'https://bapi-dev.tutoring.co.kr';
-if(hostId=='partners2') {
+if(hostId=='partners') {
     server = 'https://bapi.tutoring.co.kr';
 }
 else if(hostId=='partners-st') {

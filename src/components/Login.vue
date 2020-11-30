@@ -20,20 +20,20 @@
           <small>Forgot your password?</small>
         </a>
         <br>
-        <button class="btn btn-sm btn-white btn-block" @click="goToRegister" >B2B 파트너 신청하기</button>
+<!--        <button class="btn btn-sm btn-white btn-block" @click="goToRegister" >B2B 파트너 신청하기</button>-->
       </div>
       <div class="brochure-box">
         <div class="row text-center">
           <strong>튜터링은<br>함께하고<br>싶습니다</strong>
         </div>
         <div class="row">
-          <a class="btn btn-xs btn-outline btn-brochure" href="https://partners.tutoring.co.kr/pdfViewer" target="_blank">
+          <a class="btn btn-xs btn-outline btn-brochure" href="https://partners1.tutoring.co.kr/pdfViewer" target="_blank">
           회사 소개서다운로드<div class="down-icon pull-right"></div></a>
         </div>
       </div>
     </div>
     <div class="fixed-bottom text-center">
-      <small>&copy;2018<strong>TUTORING</strong> All Rights Reserved.</small>
+      <small>&copy;2020<strong>TUTORING</strong> All Rights Reserved.</small>
     </div>
   </div>
 </template>
