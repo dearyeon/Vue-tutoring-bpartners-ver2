@@ -69,12 +69,22 @@ export default {
 		this.filteredBatches = allBatches
 
 		this.curBatch = shared.getCurBatch()
+
+		if(!this.curBatch.idx) {
+			this.setCurBatch(allBatches[0])
+		}
+
 		if(this.curBatch.idx) {
 			this.selectedBatch = this.curBatch
 			this.filter(this.curBatch.company)
 		}
 	},
 	methods: {
+		setCurBatch(batch) {
+			this.curBatch = batch
+			shared.setCurBatch(batch)
+			this.$emit('change')
+		},
 		resetFilter() {
 			this.filteredBatches = allBatches
 			setTimeout(()=>{
@@ -84,9 +94,7 @@ export default {
 		onSelected(batch) {
 			console.debug('selected',batch.idx)
 
-			this.curBatch = batch
-			shared.setCurBatch(batch)
-			this.$emit('change')
+			this.setCurBatch(batch)
 
 			this.filter(batch.company)
 			document.getElementById('cool-input').blur();
