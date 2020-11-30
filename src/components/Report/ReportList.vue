@@ -3,13 +3,15 @@
 		<Header title="수업 현황"
 				:use-batch-selection="true" @changeBatch="refresh"
 				search-placeholder="이름 or 고객식별ID" @search="setSearch" @reset="setSearch" 
-				btn1-text="학습현황 메일 일괄 발송" @btn1-click="openModal" btn1-variant="success" :btn1-hide="!$shared.isSupervisor()"
-				btn2-text="엑셀 다운로드" @btn2-click="exportExcel" btn2-variant="success" :btn2-loading="loading"  :btn2-hide="!$shared.isSupervisor()">
+				btn1-text="학습현황 메일 일괄 발송" @btn1-click="openModal" btn1-variant="success"
+				btn2-text="엑셀 다운로드" @btn2-click="exportExcel" btn2-variant="success" :btn2-loading="loading">
 		</Header>
 
 
 		<Content>
-			<Table :headers="['No','이름','고객식별ID','달성률','수업','전체','학습 레벨','부서','직위','사번','메모1','메모2','수업 히스토리(횟수)']"
+			<Table :headers="['No','이름','고객식별ID','달성률','수업','전체','학습 레벨','부서','직위','사번']
+							.concat($shared.isSupervisor()?['메모1','메모2']:null)
+							.concat(['수업 히스토리(횟수)'])"
 				:data="items"
 					v-slot="{item, i}">
 				<td>{{ ((current_page-1)*per_page + i)+1 }}</td>
@@ -28,11 +30,11 @@
 				<td>{{ item.user.department }}</td>
 				<td>{{ item.user.position }}</td>
 				<td>{{ item.user.emp_no }}</td>
-				<td @click="[memoNum=true,setMemo(item.user)]">
+				<td v-if="$shared.isSupervisor()" @click="[memoNum=true,setMemo(item.user)]">
 					<div class="mng-text" v-if="item.user.memo1">{{item.user.memo1}}</div>
 					<div v-else><button class="btn-xs btn-default">등록</button></div>
 				</td>
-				<td @click="[memoNum=false,setMemo(item.user)]">
+				<td v-if="$shared.isSupervisor()" @click="[memoNum=false,setMemo(item.user)]">
 					<div class="mng-text" v-if="item.user.memo2">{{item.user.memo2}}</div>
 					<div v-else><button class="btn-xs btn-default">등록</button></div>
 				</td>
