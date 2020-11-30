@@ -6,7 +6,7 @@
 		</Header>
 
 		<Content>
-			<Table :headers="['','고객사 명','담당자 이름','부서','전화번호','이메일','등록일자','수정일자','고객사수정']"
+			<Table :headers="[' ','고객사 명','담당자 이름','부서','전화번호','이메일','등록일자','수정일자','고객사수정']"
 				:data="items"
 				v-slot="{item}">
 				<td><img alt="image" class="img-rounded" :src="$shared.getSiteImgThumbnailUrl(item.ci_img)"
