@@ -4,9 +4,9 @@
 				:use-batch-selection="true" @changeBatch="refreshData"
 				search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch" @reset="setSearch"
 				switch1-text="취소포함" @switch1-change="toggleCancel"
-				btn1-text="양식 다운로드" @btn1-click="exportFormat" btn1-variant="success" :btn1-loading="loading" :btn1-hide="!$shared.isSupervisor()"
-				btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading" :btn2-hide="!$shared.isSupervisor()"
-				btn3-text="일괄 승인" @btn3-click="approveBatchCheck" btn3-variant="success btn-outline" :btn3-loading="loading" :btn3-hide="!$shared.isSupervisor()"
+				btn1-text="양식 다운로드" @btn1-click="exportFormat" btn1-variant="success" :btn1-loading="loading1" :btn1-hide="!$shared.isSupervisor()"
+				btn2-text="일괄 신청" @btn2-click="$refs.file.click()" btn2-variant="primary" :btn2-loading="loading2" :btn2-hide="!$shared.isSupervisor()"
+				btn3-text="일괄 승인" @btn3-click="approveBatchCheck" btn3-variant="success btn-outline" :btn3-loading="loading3" :btn3-hide="!$shared.isSupervisor()"
 				btn4-text="단건 신청" @btn4-click="routeIndivApply" btn4-variant="warning" :btn4-hide="!$shared.isSupervisor()">
 		</Header>
 		<input type="file" id="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -95,12 +95,14 @@ export default {
 			includeCancel: false,
 			curBBIdx: 0,
 			curOrder: 0,
-			loading: false,
 			showMemoModal: false,
 			showInfoModal: false,
 			content: '',
 			sk: '',
-			moment: moment
+			moment: moment,
+			loading1:false,
+			loading2:false,
+			loading3:false,
 		}
 	},
 	components: {
@@ -168,7 +170,7 @@ export default {
 		},
 
 		importExcel: _.debounce(function (event) {
-			this.loading = true
+			this.loading2 = true
 
 			let input = event.target.files[0]
 			let reader = new FileReader()
@@ -231,11 +233,11 @@ export default {
 				})
 			}
 			reader.readAsBinaryString(input)
-			this.loading = false
+			this.loading2 = false
 		}, 500),
 
 		exportFormat: _.debounce(async function () {
-			this.loading = true
+			this.loading1 = true
 			let dataWs = []
 			dataWs.push(Object.assign({
 				'No': '',
@@ -255,7 +257,7 @@ export default {
 			var wb = XLSX.utils.book_new()
 			XLSX.utils.book_append_sheet(wb, ws, shared.getCurBatch().company + ' ' + shared.getCurBatch().b_no + '회차 신청관리')
 			XLSX.writeFile(wb, shared.getCurBatch().company + ' ' + shared.getCurBatch().b_no + '회차 신청관리.xlsx')
-			this.loading = false
+			this.loading1 = false
 		}, 500),
 
 		toggleCancel(event) {
@@ -395,6 +397,7 @@ export default {
 		},
 
 		async approveBatch() {
+			this.loading3 = true
 			const { result, data } = await api.post('/partners/approveBatch', {bbIdx: this.curBBIdx}).catch((e) => {
 				console.log('error : approveBatch ' + e)
 			})
@@ -416,6 +419,7 @@ export default {
 					}
 				})
 			}
+			this.loading3 = false
 		},
 
 		setSearch(sk) {
