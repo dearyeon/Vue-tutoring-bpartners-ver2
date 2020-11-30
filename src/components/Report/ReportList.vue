@@ -219,7 +219,6 @@ export default {
 			this.$swal({
 				title: "학습현황 메일 일괄 발송",
 				text: "발송 하시겠습니까? (한번만 누르고 기다려 주세요)",
-				icon: "warning",
 				showCancelButton: true,
 				showCloseButton: true,
 				confirmButtonText: "OK",

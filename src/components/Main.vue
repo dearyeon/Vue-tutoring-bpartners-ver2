@@ -157,4 +157,7 @@ body .row {
 .swal2-popup {
 	font-size: 13px !important;
 }
+.swal2-content {
+	font-size: 18px !important;
+}
 </style>

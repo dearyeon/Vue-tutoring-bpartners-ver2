@@ -379,9 +379,8 @@ export default {
 
 			if (result === 2000) {
 				this.$swal.fire({
-					title: `<strong>일괄 승인</strong> 하시겠습니까?`,
-					html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>`,
-					icon: 'info',
+					title: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>`,
+					html: `<strong>일괄 승인</strong> 하시겠습니까?`,
 					confirmButtonText: '일괄 승인하기',
 					confirmButtonColor: '#8FD0F5',
 					showCancelButton: true,
