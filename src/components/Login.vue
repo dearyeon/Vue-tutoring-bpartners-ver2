@@ -16,10 +16,10 @@
           />
         </div>
         <button type="submit" class="btn btn-success block full-width m-b" v-on:click="loginSubmit">로그인</button>
-        <a class="btn-block btn-password text-center" href="#">
-          <small>Forgot your password?</small>
-        </a>
-        <br>
+<!--        <a class="btn-block btn-password text-center" href="#">-->
+<!--          <small>Forgot your password?</small>-->
+<!--        </a>-->
+<!--        <br>-->
 <!--        <button class="btn btn-sm btn-white btn-block" @click="goToRegister" >B2B 파트너 신청하기</button>-->
       </div>
       <div class="brochure-box">
