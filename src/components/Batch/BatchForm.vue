@@ -31,7 +31,7 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-lg-6">
+							<div class="col-md-offset-1 col-lg-4">
 								<table class="table">
 									<tr>
 										<th>BTB 사이트 선택</th>
@@ -49,14 +49,15 @@
 									</tr>
 								</table>
 							</div>
-							<div class="col-lg-6">
+							<div class="col-md-offset-1 col-lg-4">
 								<table class="table">
 									<tr style="height:50px;">
 										<table>
 											<tr>
-												<th>수강기간</th>
-												<td>
-													<date-picker v-model="applyRange" type="date" range placeholder="Select date"></date-picker>
+												<th style="display:flex">수강기간</th>
+												<td style="display:flex">
+													<date-picker v-model="batchFrDt" type="date" placeholder="Select date"></date-picker>
+													<date-picker v-model="batchToDt" type="date" placeholder="Select date"></date-picker>
 												</td>
 											</tr>
 										</table>
@@ -252,6 +253,8 @@
 
 		methods: {
 			async setBatchInfo(isNew) {
+				this.batchFrDt = moment(this.batchFrDt).format('YYYY-MM-DD')
+				this.batchToDt = moment(this.batchToDt).format('YYYY-MM-DD')
 				if (this.batchFrDt === "Invalid date" || this.batchToDt === "Invalid date" || !this.batchFrDt || !this.batchToDt) {
 					this.$swal('수강 기간을 선택 해주세요.')
 					return;
@@ -330,8 +333,8 @@
 					const {result, data} = await api.get('/partners/batch', { idx: idx })
 					if(result === 2000) {
 						this.company = data.site.company
-						this.batchFrDt = moment(data.fr_dt).format('YYYY-MM-DD')
-						this.batchToDt = moment(data.to_dt).format('YYYY-MM-DD')
+						this.batchFrDt = new Date(data.fr_dt)
+						this.batchToDt = new Date(data.to_dt)
 						this.targetRt = data.target_rt
 						this.selfChargeRt = data.self_charge_rt
 						this.useBilling = data.use_billing
@@ -347,8 +350,8 @@
 					const {result, data} = await api.get('/partners/batch', { bsIdx: idx })
 					if(result === 2000) {
 						this.company = data.site.company
-						this.batchFrDt = moment(data.fr_dt).format('YYYY-MM-DD')
-						this.batchToDt = moment(data.to_dt).format('YYYY-MM-DD')
+						this.batchFrDt = new Date(data.fr_dt)
+						this.batchToDt = new Date(data.to_dt)
 						this.targetRt = data.target_rt
 						this.selfChargeRt = data.self_charge_rt
 						this.useBilling = data.use_billing
@@ -394,16 +397,6 @@
 		},
 
 		computed: {
-			applyRange: {
-				get() {
-					return [new Date(this.batchFrDt), new Date(this.batchToDt)];
-				},
-				set(value) {
-					this.batchFrDt = moment(value[0]).format('YYYY-MM-DD');
-					this.batchToDt = moment(value[1]).format('YYYY-MM-DD');
-				}
-			},
-
 			filterdChargePlanList: function () {
 				return (chargePlanList) => {
 
