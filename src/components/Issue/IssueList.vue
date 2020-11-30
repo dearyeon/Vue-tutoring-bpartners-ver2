@@ -110,7 +110,7 @@ export default {
 			this.orders = this.ordersAll
 			if(!this.includeCancel) {
 				this.orders = this.orders.filter((order) => {
-					return order.issue_dt !== null
+					return order.issue_ccl_dt !== null
 				})
 			}
 			if(this.sk) this.orders = this.orders.filter((order) => {
