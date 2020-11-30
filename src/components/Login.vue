@@ -1,7 +1,7 @@
 <template>
-  <div class="middle-box text-center loginscreen animated fadeInDown">
+  <div class="middle-box loginscreen animated fadeInDown">
     <div class="row">
-      <div class="login-box">
+      <div class="login-box text-center">
         <div class="logo"></div>
         <div class="logo-title">모바일 원어민 회화 1위</div>
         <h2 class="welcome-text">어서오세요!</h2>
@@ -16,14 +16,14 @@
           />
         </div>
         <button type="submit" class="btn btn-success block full-width m-b" v-on:click="loginSubmit">로그인</button>
-        <a class="btn-block btn-password" href="#">
+        <a class="btn-block btn-password text-center" href="#">
           <small>Forgot your password?</small>
         </a>
         <br>
         <a class="btn btn-sm btn-white btn-block" href="#" >B2B 파트너 신청하기</a>
       </div>
       <div class="brochure-box">
-        <div class="row">
+        <div class="row text-center">
           <strong>튜터링은<br>함께하고<br>싶습니다</strong>
         </div>
         <div class="row">
@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <div class="fixed-bottom">
+    <div class="fixed-bottom text-center">
       <small>&copy;2018<strong>TUTORING</strong> All Rights Reserved.</small>
     </div>
   </div>
