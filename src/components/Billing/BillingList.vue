@@ -4,9 +4,9 @@
 			:use-batch-selection="true" @changeBatch="refresh"
 			search-placeholder="이름을 입력하세요." @search="setSearch" @reset="setSearch"
 			btn1-text="결제 대기건 일괄 결제" @btn1-click="chargeBatch" btn1-variant="primary" :btn1-loading="false">
-			<span class="row">
-				<h3 class="col-xs-6">정기결제일시</h3>
-				<h4 class="col-xs-6">{{ batch ? batch.charge_dt? moment(batch.charge_dt).format('YYYY-MM-DD HH:mm') : '-' : '-' }}</h4>
+			<span style="display:flex">
+				<h3>정기결제일시</h3>
+				<h4 style="margin-left:30px;">{{ batch ? batch.charge_dt? moment(batch.charge_dt).format('YYYY-MM-DD HH:mm') : '-' : '-' }}</h4>
 			</span>
 		</Header>
 
