@@ -78,7 +78,7 @@ export default {
         this.frDt = new Date(shared.getCurBatch().fr_dt)
 
 		    const frDt = new Date(shared.getCurBatch().fr_dt)
-	      const aiToDt = new Date(frDt.setDate(frDt.getDay() +10))
+	      const aiToDt = new Date(frDt.setDate(frDt.getDay() + 8))
 
         this.toDt = this.isAi ? aiToDt : new Date(shared.getCurBatch().to_dt)
     }

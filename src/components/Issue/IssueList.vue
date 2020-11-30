@@ -192,7 +192,7 @@ export default {
 				this.$swal.fire({
 					title:`${this.curOrder.user.name}님에게 AI 레벨테스트 티켓이 지급 되었습니다.`
 				}).then( r => {
-					if(r.isCinfirmed) {
+					if(r.isConfirmed) {
 						this.refreshData()
 					}
 				})
