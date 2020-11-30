@@ -12,7 +12,7 @@
 			<Table :headers="['No','이름','고객식별ID','달성률','수업','전체','학습 레벨','부서','직위','사번','메모1','메모2','수업 히스토리(횟수)']"
 				:data="items"
 					v-slot="{item, i}">
-				<td>{{ sk?i+1:total - ((current_page-1)*per_page) - i }}</td>
+				<td>{{ ((current_page-1)*per_page + i)+1 }}</td>
 				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
@@ -157,10 +157,13 @@ export default {
 		},
 		async setCurrentPage(data) {
 			this.current_page = data;
-			const res = await api.get('/partners/reportList', {
-				page: this.current_page,
-				bbIdx: this.curBBIdx
-			})
+			let params
+			if(this.sk) {
+				params = {bbIdx:this.curBBIdx, page: this.current_page, sk:this.sk} 
+			} else {
+				params = {bbIdx:this.curBBIdx, page: this.current_page}
+			}
+			const res = await api.get('/partners/reportList', params)
 			this.items = res.data.orders.data
 			this.batch = res.data.batch
 		},
