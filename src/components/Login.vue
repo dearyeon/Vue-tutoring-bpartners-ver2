@@ -27,7 +27,8 @@
           <strong>튜터링은<br>함께하고<br>싶습니다</strong>
         </div>
         <div class="row">
-          <a class="btn btn-xs btn-outline btn-brochure" href="#" target="_blank">회사 소개서다운로드<div class="down-icon pull-right"></div></a>
+          <a class="btn btn-xs btn-outline btn-brochure" href="#" target="_blank" onClick="location.href='https://partners.tutoring.co.kr/pdfViewer'">
+          회사 소개서다운로드<div class="down-icon pull-right"></div></a>
         </div>
       </div>
     </div>
@@ -114,7 +115,7 @@ export default {
 
 .login-box{
   width:320px;
-  padding:30px;
+  padding:40px;
   margin-left:180px;
   background-color: #ffffff;
   border-radius: 5px;
@@ -122,7 +123,6 @@ export default {
 }
 .brochure-box{
   position: absolute;
-  right:0;
   margin-top : 320px;
   width: 169px;
   height: 169px;
@@ -131,6 +131,8 @@ export default {
   padding : 20px;
   font-size: 22px;
   background-color: rgb(38, 57, 73);
+  display: inline;
+  float:left;
 }
 .fixed-bottom {
   margin-top:20px;
@@ -139,6 +141,7 @@ export default {
 .btn-brochure{
   color : rgb(168, 168, 168);
   border: 1px solid;
+  display: flex;
 }
 .btn-brochure:hover{
   color : white;
