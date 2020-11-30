@@ -197,7 +197,7 @@ export default {
 						'전체수업수': order.goods ? order.goods.charge_plan.ticket_cnt + '회' : '',
 						'전체수업시간': order.goods ? order.goods.charge_plan.ticket_cnt * order.goods.charge_plan.secs_per_day / 60 + '분' : '',
 						'학습 횟수': order.ticket_summary ? order.ticket_summary.use_ticket_cnt + '회' : '',
-						'학습 시간': order.use_ticket_info && order.ticket_summary && order.goods ? order.goods.charge_plan.secs_per_day * (order.use_ticket_info.length + 1) - order.ticket_summary.sum_remain_secs / 60 + '분' : '',
+						'학습 시간': order.use_ticket_info && order.goods ? parseInt(order.goods.charge_plan.secs_per_day/60) * (order.use_ticket_info.length) + '분' : '',
 						'학습률': order.attend_pct,
 						'학습 목표율': batch.target_rt,
 						'메모1': order.user.memo1,
