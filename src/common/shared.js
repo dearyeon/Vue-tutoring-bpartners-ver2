@@ -32,13 +32,13 @@ const shared = {
 		return this.getToken()==null ? false : true;
 	},
 	isSupervisor() {
-		return this.getAccount().acc_level == consts.ACCOUNT_LEVEL_SUPERVISOR
+		return this.getAccount() ? this.getAccount().acc_level == consts.ACCOUNT_LEVEL_SUPERVISOR : false;
 	},
 	isSiteManager() {
-		return this.getAccount().acc_level == consts.ACCOUNT_LEVEL_SITE_MANAGER
+		return this.getAccount() ? this.getAccount().acc_level == consts.ACCOUNT_LEVEL_SITE_MANAGER : false;
 	},
 	isPartnerManger() {
-		return this.getAccount().acc_level == consts.ACCOUNT_LEVEL_PARTNER_MANAGER
+		return this.getAccount() ? this.getAccount().acc_level == consts.ACCOUNT_LEVEL_PARTNER_MANAGER : false;
 	},
 	nf(number) {
 		return new Intl.NumberFormat('ko-KR').format(number)
