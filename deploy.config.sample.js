@@ -2,6 +2,6 @@
 exports.config = {
   "projectId" : "PARTNERS",
   "developer" : "_input_your_id_here_",
-  "realHost" : "partners2.tutoring.co.kr",
+  "realHost" : "partners.tutoring.co.kr",
   "testHost" : "partners-st.tutoring.co.kr"
 }
