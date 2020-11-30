@@ -27,7 +27,7 @@
           <strong>튜터링은<br>함께하고<br>싶습니다</strong>
         </div>
         <div class="row">
-          <a class="btn btn-xs btn-outline btn-brochure" href="#" target="_blank" onClick="location.href='https://partners.tutoring.co.kr/pdfViewer'">
+          <a class="btn btn-xs btn-outline btn-brochure" href="https://partners.tutoring.co.kr/pdfViewer" target="_blank">
           회사 소개서다운로드<div class="down-icon pull-right"></div></a>
         </div>
       </div>
