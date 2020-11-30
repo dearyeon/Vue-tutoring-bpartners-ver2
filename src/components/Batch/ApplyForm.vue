@@ -30,7 +30,7 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-lg-6">
+							<div class="col-md-offset-1 col-lg-4">
 								<table class="table">
 									<tr>
 										<th>Access code</th>
@@ -45,20 +45,23 @@
 										<td><input type="text" class="form-control" placeholder="제한 인원수를 입력해 주세요." v-model="limitCnt"/></td>
 									</tr>
 								</table>
+								<table class="table">
+									<tr>
+										<th style="display:flex;">수강신청기간</th>
+										<td style="display:flex;">
+											<date-picker v-model="applyFrDt" type="datetime"  format="YYYY-MM-DD HH:mm" placeholder="Select date"></date-picker>
+											<date-picker v-model="applyToDt" type="datetime"  format="YYYY-MM-DD HH:mm" placeholder="Select date"></date-picker>
+										</td>
+									</tr>
+								</table>
 							</div>
-							<div class="col-lg-6">
+							<div class="col-md-offset-1 col-lg-5">
 								<table class="table">
 									<tr>
 									<th style="vertical-align: top; padding-top: 12px; width:20%">수강신청 문의</th>
 									<td>
 										<textarea class="form-control" v-model="contacts" style="height:250px"></textarea>
 									</td>
-									</tr>
-									<tr>
-										<th>수강신청기간</th>
-										<td>
-											<date-picker v-model="applyRange" type="datetime"  format="YYYY-MM-DD HH:mm" range placeholder="Select date"></date-picker>
-										</td>
 									</tr>
 								</table>
 							</div>
@@ -228,9 +231,8 @@ export default {
 					this.contacts = data.contacts
 					this.notice = data.notice
 					this.billNotice = data.bill_notice
-					this.applyFrDt = data.apply_fr_dt
-					this.applyToDt = data.apply_to_dt
-					this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)]
+					this.applyFrDt = new Date(data.apply_fr_dt)
+					this.applyToDt = new Date(data.apply_to_dt)
 					this.openYn = data.open_yn ? true : false
 					this.limitCnt = data.limit_cnt
 					this.applyerFormList = data.user_fields
@@ -251,7 +253,8 @@ export default {
 					this.contacts = data.contacts
 					this.notice = data.notice
 					this.billNotice = data.bill_notice
-					this.applyRange = [new Date(this.applyFrDt), new Date(this.applyToDt)]
+					this.applyFrDt = new Date(data.apply_fr_dt)
+					this.applyToDt = new Date(data.apply_to_dt)
 					this.openYn = data.open_yn ? true : false
 					this.limitCnt = data.limit_cnt
 					this.applyerFormList = data.user_fields
@@ -350,6 +353,8 @@ export default {
 			this.applyerFormList.forEach(el => numlist.push(el.num))
 		},
 		setForm: _.debounce(async function () {
+			this.applyFrDt = moment(this.applyFrDt).format('YYYY-MM-DD HH:mm')
+			this.applyToDt = moment(this.applyToDt).format('YYYY-MM-DD HH:mm')
 			if (this.applyFrDt === 'Invalid date' || !this.applyFrDt || this.applyToDt === 'Invalid date' || !this.applyToDt) {
 				this.$swal('수강신청 기간을 설정해주세요.')
 				return
@@ -357,8 +362,8 @@ export default {
 
 			const idx = this.$route.params.bIdx ? this.$route.params.bIdx : this.$route.params.baIdx
 			const params = {
-				applyFrDt: moment(this.applyFrDt).format('YYYY-MM-DD HH:mm'),
-				applyToDt: moment(this.applyToDt).format('YYYY-MM-DD HH:mm'),
+				applyFrDt: this.applyFrDt,
+				applyToDt: this.applyToDt,
 				openYn: this.openYn ? 1 : 0,
 				accessCode: this.accessCode,
 				emailDomain: this.emailDomain,
@@ -424,17 +429,6 @@ export default {
 			if (idx > -1) {
 				this.applyerFormList.splice(idx, 1)
 				this.cfCnt--
-			}
-		}
-	},
-	computed: {
-		applyRange: {
-			get () {
-				return [new Date(this.applyFrDt), new Date(this.applyToDt)]
-			},
-			set (value) {
-				this.applyFrDt = moment(value[0]).format('YYYY-MM-DD HH:mm')
-				this.applyToDt = moment(value[1]).format('YYYY-MM-DD HH:mm')
 			}
 		}
 	}
