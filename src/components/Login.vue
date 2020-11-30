@@ -20,7 +20,7 @@
           <small>Forgot your password?</small>
         </a>
         <br>
-        <a class="btn btn-sm btn-white btn-block" href="#" >B2B 파트너 신청하기</a>
+        <button class="btn btn-sm btn-white btn-block" @click="goToRegister" >B2B 파트너 신청하기</button>
       </div>
       <div class="brochure-box">
         <div class="row text-center">
@@ -65,7 +65,10 @@ export default {
         shared.setAccount(res.data.account)
         await this.$router.push('/main')
       }
-    }
+    },
+	  goToRegister() {
+		  this.$router.push('/register')
+	  }
   },
 
   created() {
