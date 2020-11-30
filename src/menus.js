@@ -4,7 +4,7 @@ const menus = [
     {name:'입과 관리', id:'issue', path:'/issue/list', accLevel:'', icon:'calendar-check-o'},
     {name:'정기 결제 관리', id:'billing', path:'/billing/list', accLevel:'', icon:'credit-card'},
     {name:'추가 결제 관리', id:'addbilling', path:'/addBilling/list', accLevel:'', icon:'credit-card-alt'},
-    {name:'차수 관리', id:'batch', path:'/batch/list', accLevel:'', icon:'list'},
+    {name:'차수 관리', id:'batch', path:'/batch/list', accLevel:'P', icon:'list'},
     {name:'사이트 관리', id:'customer', path:'/site/list', accLevel:'P', icon:'handshake-o'},
 ]
 

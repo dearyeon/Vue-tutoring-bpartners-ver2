@@ -6,7 +6,8 @@
 		</Header>
 
 		<Content>
-			<Table :headers="['No','고객사','담당자','회차','달성률','빌링','현재상태','신청시작일시','신청종료일시','수정일시','차수관리','신청양식설정','','URL']"
+			<Table :headers="['No','고객사','담당자','회차','달성률','빌링','현재상태','신청시작일시','신청종료일시','수정일시']
+							.concat($shared.isSupervisor()?['차수관리','신청양식설정','','URL']:null)"
 					:data="list"
 					v-slot="{item, i}">
 				<td>{{ total - ((current_page-1)*per_page) - i }}</td>
@@ -25,21 +26,21 @@
 				<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].fr_dt?moment(item.batches[item.selectedApplyIdx].fr_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
 				<td>{{ item.batches.length?(item.batches[item.selectedApplyIdx].to_dt?moment(item.batches[item.selectedApplyIdx].to_dt).format('YY-MM-DD HH:MM'):''):'' }}</td>
 				<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM'):'' }}</td>
-				<td class="text-left" style='white-space: nowrap;'>
+				<td v-if="$shared.isSupervisor()" class="text-left" style='white-space: nowrap;'>
 					<ItemButton text="추가" variant="page-set" @click="createBatchPage(item.idx,item.company)" />
 					<ItemButton v-if="item.batches.length?(!!item.batches[item.selectedApplyIdx].idx):0" text="수정" variant="page-set" @click="editBatchPage(item.batches[item.selectedApplyIdx].idx)" />
 				</td>
 
-				<td style='white-space: nowrap'>
+				<td v-if="$shared.isSupervisor()" style='white-space: nowrap'>
 					<div v-if="item.batches.length">
 						<ItemButton v-if="!!item.batches[item.selectedApplyIdx].apply" text="페이지 수정" variant="page-set" @click="editApplyPage(item.batches[item.selectedApplyIdx].apply.idx)" />
 						<ItemButton v-else text="페이지 등록" variant="page-set" @click="createApplyPage(item.batches[item.selectedApplyIdx].idx, item.idx)" />
 					</div>
 				</td>
-				<td>
+				<td v-if="$shared.isSupervisor()">
 					<ItemButton v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" text="신청 페이지" variant="primary" @click="goToApplyPage(applyPageUrl(item,item.selectedApplyIdx)+'/7788')" />
 				</td>
-				<td>
+				<td v-if="$shared.isSupervisor()">
 					<a v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" @click="copyText($event,i)">{{applyPageUrl(item,item.selectedApplyIdx)}}</a>
 					<div class="alert alert-success no-padding" role="alert" v-show="item.isCopy" :id="'clipBoardAlert'+i">
 						<a href="#" class="alert-link">클립보드에 복사되었습니다.</a>

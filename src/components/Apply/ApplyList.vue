@@ -16,8 +16,8 @@
 			<Table
 				:headers="['No','이름','고객식별ID','이메일','연락처','소속','부서','직위','사번']
 							.concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금'])
-							.concat($shared.isSupervisor()?'관리메모':null)
-							.concat(['관리정보','신청번호','신청일시','취소일시','승인일시'])
+							.concat($shared.isSupervisor()?['관리메모','관리정보']:null)
+							.concat(['신청번호','신청일시','취소일시','승인일시'])
 							.concat($shared.isSupervisor()?['승인','취소/복원']:null)
 							.concat( applyBatchError ? '승인결과' : null)"
 				:data="orders"
@@ -36,12 +36,12 @@
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price - item.goods.charge_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.charge_price) : '' }}</td>
-				<td>
+				<td v-if="$shared.isSupervisor()">
 					<p v-if="item.mng_memo" class="mng-text" @click="memoModalOpen(item,item.mng_memo)">
 						{{ item.mng_memo }}</p>
 					<ItemButton v-else text="관리메모" variant="default" @click="memoModalOpen(item)"/>
 				</td>
-				<td>
+				<td v-if="$shared.isSupervisor()">
 					<p v-if="item.mng_info" class="mng-text" @click="infoModalOpen(item.idx,item.mng_info)">
 						{{ item.mng_info }}</p>
 					<ItemButton v-else text="관리정보" variant="default" @click="infoModalOpen(item.idx)"/>
