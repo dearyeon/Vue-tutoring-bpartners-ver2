@@ -106,10 +106,10 @@
 											{{sortNumber(item,index)}}
 										</td>
 										<td class="text-center">
-											<input v-model="item.disp_yn" type="checkbox" :checked="item.disp_yn"/>
+											<input v-model="item.disp_yn" type="checkbox"/>
 										</td>
 										<td class="text-center">
-											<input v-model="item.required" type="checkbox" :checked="item.required"/>
+											<input v-model="item.required" type="checkbox"/>
 										</td>
 										<td>
 											<input type="text" class="form-control" v-model="item.col_id" readonly placeholder="column Name을 입력해주세요."/>
