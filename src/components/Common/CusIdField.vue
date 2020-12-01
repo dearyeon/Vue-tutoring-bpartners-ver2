@@ -22,14 +22,4 @@ export default {
 </script>
 
 <style scoped>
-.container {
-	/*display: contents;*/
-}
-.cusId {
-	font-family: monospace;
-	color: #1a7bb9;
-}
-.cusId:hover {
-	color: #9c0000;
-}
 </style>
