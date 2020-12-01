@@ -144,9 +144,9 @@ export default {
 			this.showIssueModal = true
 		},
 
-		async issueOrder(fr_dt,to_dt) {
+		async issueOrder(frDt, toDt) {
 			this.showIssueModal = false
-			const { result } = await api.post("/partners/issueOrder", {boIdx:this.curOrder.idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
+			const { result } = await api.post("/partners/issueOrder", {boIdx:this.curOrder.idx,frDate:frDt,toDate:toDt});
 
 			if (result === 2000) {
 				this.$swal.fire({
@@ -160,10 +160,10 @@ export default {
 			}
 		},
 
-		async issueBatch(fr_dt,to_dt) {
+		async issueBatch(frDt, toDt) {
 			this.loading1 = true
 			this.showIssueBatchModal = false
-			const { result, data, errorMsgs} = await api.post("/partners/issueBatch", {bbIdx:shared.getCurBatch().idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
+			const { result, data, errorMsgs} = await api.post("/partners/issueBatch", {bbIdx:shared.getCurBatch().idx, frDate:frDt, toDate:toDt});
 			if (result === 2000) {
 				this.$swal.fire({
 					title: '입과 완료 되었습니다.',
@@ -183,10 +183,10 @@ export default {
 
 		},
 
-		async issueAILeveltestTicket(fr_dt,to_dt) {
+		async issueAILeveltestTicket(frDt, toDt) {
 			this.showAIModal = false
 
-			const res = await api.post("/partners/aiLevelOrder", {boIdx:this.curOrder.idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
+			const res = await api.post("/partners/aiLevelOrder", {boIdx:this.curOrder.idx, frDate: frDt, toDate: toDt});
 
 			if(res.result === 2000) {
 				this.$swal.fire({
@@ -200,11 +200,11 @@ export default {
 
 		},
 
-		async issueAILeveltestTicketBatch(fr_dt,to_dt) {
+		async issueAILeveltestTicketBatch(frDt, toDt) {
 			this.loading4 = true;
 			this.showAIBatchModal = false
 
-			const { result, data } = await api.post("/partners/aiLevelBatch", {bbIdx:shared.getCurBatch().idx,frDate:moment(fr_dt).format('YYYY-MM-DD'),toDate:moment(to_dt).format('YYYY-MM-DD')});
+			const { result, data } = await api.post("/partners/aiLevelBatch", {bbIdx:shared.getCurBatch().idx, frDate: frDt, toDate: toDt});
 
 			if(result === 2000) {
 				this.$swal.fire({

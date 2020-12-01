@@ -18,10 +18,10 @@
                 <div class="modal-body" style="background:#FFFFFF;padding:0;min-height:70px; width:100%">
                     <div class="col-lg-12" style="display:inline">
                         <div class="col-lg-6">
-                            <date-picker v-model="frDt" type="date" placeholder="Select date"></date-picker>
+                            <date-picker v-model="frDt" value-type="format" type="date" placeholder="Select date" format="YYYY-MM-DD"></date-picker>
                         </div>
                         <div class="col-lg-6">
-                            <date-picker v-model="toDt" type="date" placeholder="Select date"></date-picker>
+                            <date-picker v-model="toDt" value-type="format" type="date" placeholder="Select date" format="YYYY-MM-DD"></date-picker>
                         </div>
                     </div>
                 </div>
@@ -75,12 +75,11 @@ export default {
 			DatePicker
     },
     async created() {
-        this.frDt = new Date(shared.getCurBatch().fr_dt)
+        this.frDt = moment(shared.getCurBatch().fr_dt).format('YYYY-MM-DD');
 
-		    const frDt = new Date(shared.getCurBatch().fr_dt)
-	      const aiToDt = new Date(frDt.setDate(frDt.getDay() + 8))
+	      const aiToDt =  moment(shared.getCurBatch().fr_dt).add(9, 'days').format('YYYY-MM-DD');
 
-        this.toDt = this.isAi ? aiToDt : new Date(shared.getCurBatch().to_dt)
+        this.toDt = this.isAi ? aiToDt : moment(shared.getCurBatch().to_dt).format('YYYY-MM-DD');
     }
 }
 </script>
