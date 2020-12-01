@@ -32,8 +32,8 @@
 				<ItemButton text="AI티켓 지급" variant="success btn-outline" @click="aiModalOpen(item)" />
 			</td>
 			<td>
-				<ItemButton v-if="!item.issue_ccl_dt" text="취소" variant="danger" @click="issueCancel(item)" />
-				<ItemButton v-else text="입과" variant="success btn-outline" @click="issueModalOpen(item)" />
+				<ItemButton v-if="!item.issue_dt" text="입과" variant="success btn-outline" @click="issueModalOpen(item)" />
+				<ItemButton v-if="item.issue_dt && !item.issue_ccl_dt" text="취소" variant="danger" @click="issueCancel(item)" />
 			</td>
 		</Table>
 	</Content>
@@ -69,7 +69,6 @@ export default {
 		Content,
 		NameField,
 		CusIdField,
-		BatchSelection,
 		Table,
 		ItemButton,
 		IssueDateModal
@@ -242,16 +241,17 @@ export default {
 				cancelButtonText: 'Cancel',
 			}).then( async r => {
 				if(r.isConfirmed) {
-					const res = await api.post("/partners/issueCancel", {boIdx:item.idx});
-					if(res.result === 2000) {
+					const {result,message} = await api.post("/partners/issueCancel", {boIdx:item.idx});
+					if(result === 2000) {
 						this.$swal.fire({
-							title:`${item.user.name}님 입과 취소 완료되었습니다.`,
+							title:`${item.user.name}님 입과 취소가 완료되었습니다.`,
 							confirmButtonText: 'OK',
 						})
-					} else if(res.result === 1000) {
+						this.refreshData()
+					} else if(result === 1000) {
 							this.$swal.fire({
-								title: res.message,
-								text: res.data.errMsg,
+								title: '취소 실패',
+								text: message,
 								icon: 'warning',
 								confirmButtonText: 'OK'
 						})
