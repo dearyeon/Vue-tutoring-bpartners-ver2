@@ -12,19 +12,19 @@
 
 
 	<Content>
-		<Table :headers="['No','이름','고객식별ID','이메일','연락처','수강권','수강권번호','입과일시','입과취소일시','입과번호','AI지급일시','AI지급','입과/취소']"
+		<Table :headers="['No','이름','고객식별ID','입과번호','이메일','연락처','수강권','수강권번호','입과일시','입과취소일시','AI지급일시','AI지급','입과/취소']"
 			   :data="orders"
 			    v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
 			<td><NameField :item="item"></NameField></td>
 			<td><CusIdField :user="item.user"/></td>
+			<td>{{ item.mt_idx }}</td>
 			<td>{{ item.user.email}}</td>
 			<td>{{ item.user.cel}}</td>
 			<td>{{ item.charge_plan && item.charge_plan.title }}</td>
 			<td>{{ item.charge_plan && item.charge_plan.idx }}</td>
 			<td>{{ item.issue_dt && moment(item.issue_dt).format('YY-MM-DD HH:mm') }}</td>
 			<td>{{ item.issue_ccl_dt && moment(item.issue_ccl_dt).format('YY-MM-DD HH:mm') }}</td>
-			<td>{{ item.mt_idx }}</td>
 			<td>
 				{{ item.alcpt_issue_dt && moment(item.alcpt_issue_dt).format('YY-MM-DD HH:mm') }}
 			</td>
