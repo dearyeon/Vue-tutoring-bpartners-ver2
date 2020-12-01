@@ -12,8 +12,8 @@
 
 	<Content>
 		<Table :headers="['No','이름','고객식별ID','입과번호','이메일','연락처','수강권','수강권번호','입과일시','입과취소일시','AI지급일시','AI지급','입과/취소']"
-			   :data="orders"
-			    v-slot="{item, i}">
+			:data="orders"
+			v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
 			<td><NameField :item="item"></NameField></td>
 			<td><CusIdField :user="item.user"/></td>
