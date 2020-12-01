@@ -1,8 +1,8 @@
 <template>
-	<div class="container">
+	<span class="container">
 		<span class="name" @click="openUserInfo">{{item.user.name}}</span>
 	    <UserInfoModal :data="modalitem" v-if="showModal" @close="showModal = !showModal"/>
-	</div>
+	</span>
 </template>
 
 <script>
@@ -33,7 +33,7 @@ export default {
 
 <style scoped>
 .container {
-	display: contents;
+
 }
 .cusId {
 	font-family: monospace;
