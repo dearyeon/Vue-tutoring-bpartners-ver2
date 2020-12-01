@@ -32,8 +32,8 @@
 				<ItemButton text="AI티켓 지급" variant="success btn-outline" @click="aiModalOpen(item)" />
 			</td>
 			<td>
-				<ItemButton v-if="!item.issue_dt" text="입과" variant="success btn-outline" @click="issueModalOpen(item)" />
-				<ItemButton v-else text="취소" variant="danger" @click="" />
+				<ItemButton v-if="!item.issue_ccl_dt" text="취소" variant="danger" @click="" />
+				<ItemButton v-else text="입과" variant="success btn-outline" @click="issueModalOpen(item)" />
 			</td>
 		</Table>
 	</Content>
@@ -114,7 +114,7 @@ export default {
 			this.orders = this.ordersAll
 			if(!this.includeCancel) {
 				this.orders = this.orders.filter((order) => {
-					return order.issue_ccl_dt !== null
+					return order.issue_ccl_dt === null
 				})
 			}
 			if(this.sk) this.orders = this.orders.filter((order) => {
