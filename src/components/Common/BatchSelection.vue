@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<span class="container">
 		<cool-select v-model="selectedBatch"
 					 :items="filteredBatches"
 					 placeholder="사이트 이름으로 검색"
@@ -36,7 +36,7 @@
 		<div id="reset-container">
 			<div id="reset" @click="resetFilter">x</div>
 		</div>
-	</div>
+	</span>
 </template>
 
 <script>
@@ -131,7 +131,7 @@ export default {
 
 <style scoped>
 .container {
-	display: contents;
+	/*display: contents;*/
 }
 .ci-img {
 	width: 22px;

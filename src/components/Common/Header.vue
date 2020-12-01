@@ -1,12 +1,12 @@
 <template>
 	<div id="header" class="ibox-title">
-		<div id="title">
+		<div id="title" class="pull-left">
 			{{title}}
 		</div>
-		<div v-if="useBatchSelection" id="batch">
+		<div v-if="useBatchSelection" id="batch" class="pull-left">
 			<BatchSelection @change="$emit('changeBatch')" />
 		</div>
-		<div id="search" v-if="searchPlaceholder">
+		<div id="search" v-if="searchPlaceholder" class="pull-left col-lg-3">
 			<div class="input-group">
 				<input type="text" :placeholder="searchPlaceholder" v-model="searchModel"
 					   v-on:keypress.enter="$emit('search',searchModel)"
@@ -17,10 +17,10 @@
 				</span>
 			</div>
 		</div>
-		<div id="switches">
+		<div id="switches" class="pull-left">
 			<div class="switch" v-if="switch1Text">
 				<div class="switch-text">
-					{{ switch1Text }}
+					<strong>{{ switch1Text }}</strong>
 				</div>
 				<div>
 					<div class="onoffswitch">
@@ -34,7 +34,7 @@
 			</div>
 			<div class="switch" v-if="switch2Text">
 				<div class="switch-text">
-					{{ switch2Text }}
+					<strong>{{ switch2Text }}</strong>
 				</div>
 				<div>
 					<div class="onoffswitch">
@@ -50,7 +50,7 @@
 		<div id="custom">
 			<slot></slot>
 		</div>
-		<div id="buttons">
+		<div id="buttons" class="text-right">
 			<label v-if="btn1Text && !btn1Hide" :class="'btn btn-w-s btn-'+btn1Variant" @click="$emit('btn1-click')">
 				<div v-if="!btn1Loading">{{ btn1Text }}</div>
 				<clip-loader :loading="btn1Loading" color="rgba(255, 255, 255, 0.7)" size="15px"></clip-loader>
@@ -125,7 +125,7 @@ export default {
 
 <style scoped>
 #header {
-	display: flex;
+	/*display: flex;*/
 	line-height: 1.8;
 	padding: 12px 15px;
 	margin: 0px 10px;
@@ -159,7 +159,7 @@ export default {
 	margin-top: 12px;
 }
 .switch {
-	display: flex;
+	/*display: flex;*/
 	line-height: 1.5;
 }
 .switch-text {
