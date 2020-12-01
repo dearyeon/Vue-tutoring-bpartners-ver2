@@ -192,13 +192,13 @@ export default {
 		},
 		currentStatus (item, val) {
 			const date = moment().format('YYYY-MM-DD')
-			if (item.batches.length && date < item.batches[0].fr_dt) {
+			if (item.batches.length && date < item.batches[item.selectedApplyIdx].fr_dt) {
 				return val ? 'b-r-sm bg-warning' : '대기중'
 			} else if (item.apply && date >= item.apply.apply_fr_dt && date <= item.apply.apply_to_dt) {
 				return val ? 'b-r-sm btn-apply' : '신청중'
-			} else if (item.batches.length && date >= item.batches[0].fr_dt && date <= item.batches[0].to_dt) {
+			} else if (item.batches.length && date >= item.batches[item.selectedApplyIdx].fr_dt && date <= item.batches[item.selectedApplyIdx].to_dt) {
 				return val ? 'b-r-sm bg-primary' : '진행중'
-			} else if (item.batches.length && date > item.batches[0].to_dt) {
+			} else if (item.batches.length && date > item.batches[item.selectedApplyIdx].to_dt) {
 				return val ? 'b-r-sm bg-success' : '완료'
 			}
     	},
