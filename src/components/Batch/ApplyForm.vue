@@ -46,12 +46,10 @@
 									</tr>
 								</table>
 								<table class="table">
+									<tr><strong>수강신청기간</strong></tr>
 									<tr>
-										<th style="display:flex;">수강신청기간</th>
-										<td style="display:flex;">
-											<date-picker v-model="applyFrDt" type="datetime"  format="YYYY-MM-DD HH:mm" placeholder="Select date"></date-picker>
-											<date-picker v-model="applyToDt" type="datetime"  format="YYYY-MM-DD HH:mm" placeholder="Select date"></date-picker>
-										</td>
+										<date-picker v-model="applyFrDt" type="datetime"  format="YYYY-MM-DD HH:mm" placeholder="Select date"></date-picker>
+										<date-picker v-model="applyToDt" type="datetime"  format="YYYY-MM-DD HH:mm" placeholder="Select date"></date-picker>
 									</tr>
 								</table>
 							</div>
@@ -470,14 +468,6 @@ export default {
 }
 #step-title:nth-child(1) {
   margin: 0px auto 20px;
-}
-.save {
-  display: flex;
-  width: 250px;
-  justify-content: space-between;
-}
-.save .btn {
-  width: 100px;
 }
 .label-w-checkbox {
   margin: 0px;

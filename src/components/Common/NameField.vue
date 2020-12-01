@@ -32,6 +32,12 @@ export default {
 </script>
 
 <style scoped>
+<<<<<<< HEAD
+=======
+.container {
+
+}
+>>>>>>> 7e4d1e08ed33aefda9dc3a787523e5cb0adcada7
 .cusId {
 	font-family: monospace;
 	color: #1a7bb9;

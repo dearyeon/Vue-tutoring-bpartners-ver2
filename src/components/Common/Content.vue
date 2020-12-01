@@ -11,7 +11,6 @@ export default {
 
 <style scoped>
 #content {
-	display: flex;
 	line-height: 1.8;
 	padding: 12px 15px;
 	margin: 0px 10px;
