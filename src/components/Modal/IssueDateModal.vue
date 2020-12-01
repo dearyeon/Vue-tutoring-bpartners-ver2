@@ -92,4 +92,7 @@ export default {
 .modal-body div {
     align-items: center;
 }
+.modal-subtitle {
+    font-size: 25px;
+}
 </style>
