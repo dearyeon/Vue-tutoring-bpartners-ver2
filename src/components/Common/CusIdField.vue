@@ -1,8 +1,8 @@
 <template>
-	<div class="container">
+	<span class="container">
 		<span v-if="$shared.isSupervisor()" class="cusId" @click="gotoAdmin">{{user.cus_id}}</span>
 		<span v-if="!$shared.isSupervisor()">{{user.cus_id}}</span>
-	</div>
+	</span>
 </template>
 
 <script>
@@ -23,7 +23,7 @@ export default {
 
 <style scoped>
 .container {
-	display: contents;
+	/*display: contents;*/
 }
 .cusId {
 	font-family: monospace;
