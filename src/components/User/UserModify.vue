@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div class="col-md-offset-3">
-                    <span>
+                    <span class="notice">
                         ❊ 비밀번호는 대,소문자,숫자,특수기호 조합으로 10글자 이상으로 설정하셔야 합니다.<br/>
                         ❊ 본 시스템은 개인정보등 민감한 정보를 취급하므로 비밀번호가 유출되지 않도록 각별히 주의 바랍니다.<br/>
                         ❊ 비밀번호 등 접속 계정 정보 관리 소홀로 발생하는 민형사상 모든 책임은 계정 담당자에게 있습니다.<br/>
@@ -100,5 +100,7 @@ export default {
 </script>
 
 <style scoped>
-
+.notice {
+    color: red;
+}
 </style>
