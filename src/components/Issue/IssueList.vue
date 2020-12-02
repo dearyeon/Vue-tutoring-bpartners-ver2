@@ -5,8 +5,8 @@
 			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch" @reset="setSearch"
 			switch1-text="취소포함" @switch1-change="toggleCancel"
 			btn1-text="일괄 입과" @btn1-click="issueBatchCheck" btn1-variant="primary" :btn1-loading="loading1"
-			btn2-text="일괄 취소" @btn2-click="issueCancelBatchCheck" btn2-variant="danger" :btn2-loading="false"
-			btn3-text="AI 일괄 지급" @btn3-click="aiLevelBatchCheck" btn3-variant="success" :btn3-loading="loading4">
+			btn2-text="일괄 취소" @btn2-click="issueCancelBatchCheck" btn2-variant="danger" :btn2-loading="loading2"
+			btn3-text="AI 일괄 지급" @btn3-click="aiLevelBatchCheck" btn3-variant="success" :btn3-loading="loading3">
 	</Header>
 
 
@@ -88,7 +88,6 @@ export default {
 			loading1:false,
 			loading2:false,
 			loading3:false,
-			loading4:false,
 		};
 	},
 	created() {
@@ -144,7 +143,7 @@ export default {
 
 		async issueOrder(frDt, toDt) {
 			this.showIssueModal = false
-			const { result } = await api.post("/partners/issueOrder", {boIdx:this.curOrder.idx,frDate:frDt,toDate:toDt});
+			const { result,message } = await api.post("/partners/issueOrder", {boIdx:this.curOrder.idx,frDate:frDt,toDate:toDt});
 
 			if (result === 2000) {
 				this.$swal.fire({
@@ -154,6 +153,12 @@ export default {
 						this.refreshData()
 						this.curOrder = null
 					}
+				})
+			} else if (result === 1000) {
+				this.$swal.fire({
+					title: message,
+					icon: 'warning',
+					confirmButtonText: 'OK'
 				})
 			}
 		},
@@ -184,9 +189,9 @@ export default {
 		async issueAILeveltestTicket(frDt, toDt) {
 			this.showAIModal = false
 
-			const res = await api.post("/partners/aiLevelOrder", {boIdx:this.curOrder.idx, frDate: frDt, toDate: toDt});
+			const { result, message } = await api.post("/partners/aiLevelOrder", {boIdx:this.curOrder.idx, frDate: frDt, toDate: toDt});
 
-			if(res.result === 2000) {
+			if(result === 2000) {
 				this.$swal.fire({
 					title:`${this.curOrder.user.name}님에게 AI 레벨테스트 티켓이 지급 되었습니다.`
 				}).then( r => {
@@ -194,12 +199,19 @@ export default {
 						this.refreshData()
 					}
 				})
+			} else if(result === 1000) {
+				this.$swal.fire({
+					title: '취소 실패',
+					icon: 'warning',
+					text: message,
+					confirmButtonText: 'OK'
+				})
 			}
 
 		},
 
 		async issueAILeveltestTicketBatch(frDt, toDt) {
-			this.loading4 = true;
+			this.loading3 = true;
 			this.showAIBatchModal = false
 
 			const { result, data } = await api.post("/partners/aiLevelBatch", {bbIdx:shared.getCurBatch().idx, frDate: frDt, toDate: toDt});
@@ -213,7 +225,7 @@ export default {
 				})
 				this.refreshData()
 			}
-			this.loading4= false
+			this.loading3 = false
 		},
 
 		async issueBatchCheck() {
@@ -279,6 +291,7 @@ export default {
 			}
 		},
 		async issueCancelBatch() {
+			this.loading2 = true
 			const {result,data} = await api.post("/partners/issueCancelBatch", {bbIdx:shared.getCurBatch().idx});
 			console.log(result)
 			if (result === 2000) {
@@ -294,6 +307,7 @@ export default {
 					confirmButtonText: 'OK'
 				})
 			}
+			this.loading2 = false
 		}
 
 	}
