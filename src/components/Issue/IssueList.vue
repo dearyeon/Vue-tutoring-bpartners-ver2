@@ -252,7 +252,7 @@ export default {
 				cancelButtonText: 'Cancel',
 			}).then( async r => {
 				if(r.isConfirmed) {
-					const {result,data} = await api.post("/partners/issueCancel", {boIdx:item.idx});
+					const {result,message} = await api.post("/partners/issueCancel", {boIdx:item.idx});
 					if(result === 2000) {
 						this.$swal.fire({
 							title:`${item.user.name}님 입과 취소가 완료되었습니다.`,
