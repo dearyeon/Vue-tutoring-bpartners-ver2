@@ -11,7 +11,8 @@
 
 
 	<Content>
-		<Table :headers="['No','이름','고객식별ID','입과번호','이메일','연락처','수강권','수강권번호','입과일시','입과취소일시','AI지급일시','AI지급','입과/취소']"
+		<Table :headers="['No','이름','고객식별ID','입과번호','이메일','연락처','수강권','수강권번호','입과일시','입과취소일시','AI지급일시','AI지급','입과/취소']
+							.concat( issueBatchError ? '입과결과' : null)"
 			:data="orders"
 			v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
@@ -34,6 +35,7 @@
 				<ItemButton v-if="!item.issue_dt" text="입과" variant="success btn-outline" @click="issueModalOpen(item)" />
 				<ItemButton v-if="item.issue_dt && !item.issue_ccl_dt" text="취소" variant="danger" @click="issueCancel(item)" />
 			</td>
+			<td v-if="issueBatchError"><p>{{ item.issueResultMsgs }}</p></td>
 		</Table>
 	</Content>
 
@@ -88,6 +90,8 @@ export default {
 			loading1:false,
 			loading2:false,
 			loading3:false,
+			issueBatchError: false,
+			issueResultMsgs: {},
 		};
 	},
 	created() {
@@ -103,6 +107,19 @@ export default {
 				this.orders = this.ordersAll
 
 				this.filteredData()
+			}
+
+			// 일괄승인 결과에 errorMsgs가 있을 때
+			if (this.issueBatchError) {
+				data.orders.forEach(item => {
+					const keys = Object.keys(this.issueResultMsgs)
+					if (keys.indexOf(item.idx.toString()) >= 0) {
+						item.issueResultMsgs = this.issueResultMsgs[item.idx]
+					} else {
+						item.issueResultMsgs = '승인'
+					}
+				})
+				console.log(data.orders)
 			}
 
 		},
@@ -166,18 +183,28 @@ export default {
 		async issueBatch(frDt, toDt) {
 			this.loading1 = true
 			this.showIssueBatchModal = false
-			const { result, data, errorMsgs} = await api.post("/partners/issueBatch", {bbIdx:shared.getCurBatch().idx, frDate:frDt, toDate:toDt});
+			const { result, data, message} = await api.post("/partners/issueBatch", {bbIdx:shared.getCurBatch().idx, frDate:frDt, toDate:toDt});
 			if (result === 2000) {
 				this.$swal.fire({
 					title: '입과 완료 되었습니다.',
 					icon: 'success',
 					html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>성공 건수 <strong>${data.successCnt}</strong>건<br/>실패 건수 <strong>${data.failCnt}</strong>건<br/>`,
 					confirmButtonText: 'OK',
+				}).then (r => {
+					if (r.isConfirmed) {
+						if (data.failCnt > 0) {
+							this.issueBatchError = true
+							this.issueResultMsgs = data.errorMsgs
+						} else {
+							this.issueBatchError = false
+							this.issueResultMsgs = []
+						}
+						this.refreshData()
+					}
 				})
-				this.refreshData()
 			} else if (result === 1000) {
 				this.$swal.fire({
-					title: errorMsgs,
+					title: data.errorMsgs,
 					icon: 'warning',
 					confirmButtonText: 'OK'
 				})
@@ -298,8 +325,18 @@ export default {
 				this.$swal.fire({
 					title: `일괄 취소 결과 입니다.`,
 					html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>성공 건수 <strong>${data.successCnt}</strong>건<br/>실패 건수 <strong>${data.failCnt}</strong>건<br/>`,
+				}).then (r => {
+					if (r.isConfirmed) {
+						if (data.failCnt > 0) {
+							this.issueBatchError = true
+							this.issueResultMsgs = data.errorMsgs
+						} else {
+							this.issueBatchError = false
+							this.issueResultMsgs = []
+						}
+						this.refreshData()
+					}
 				})
-				this.refreshData()
 			} else if(result === 1000) {
 				this.$swal.fire({
 					title: '취소 실패',
