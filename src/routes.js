@@ -12,6 +12,7 @@ import BillingList from "@/components/Billing/BillingList";
 import AddBillingList from "@/components/AddBilling/AddBillingList";
 import IssueList from "@/components/Issue/IssueList";
 import Register from "@/components/Register/Register";
+import User from "@/components/User/UserModify";
 
 const routes = [
 	{path: "", redirect: "/login"},
@@ -36,6 +37,7 @@ const routes = [
 			{path: '/site/list', name: "siteList", component: SiteList},
 			{path: "/site/siteNew", name: "siteNew", component: SiteForm, props: true},
 			{path: "/site/siteEdit/:idx", name: "siteEdit", component: SiteForm, props: true},
+			{path: "/user", name: "userModify", component: User},
 		],
 	},
 ];
