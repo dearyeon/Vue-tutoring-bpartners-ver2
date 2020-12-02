@@ -5,7 +5,7 @@
 			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch" @reset="setSearch"
 			switch1-text="취소포함" @switch1-change="toggleCancel"
 			btn1-text="일괄 입과" @btn1-click="issueBatchCheck" btn1-variant="primary" :btn1-loading="loading1"
-			btn2-text="일괄 취소" @btn2-click="issueCancel" btn2-variant="danger" :btn2-loading="false"
+			btn2-text="일괄 취소" @btn2-click="issueCancelBatchCheck" btn2-variant="danger" :btn2-loading="false"
 			btn3-text="AI 일괄 지급" @btn3-click="aiLevelBatchCheck" btn3-variant="success" :btn3-loading="loading4">
 	</Header>
 
@@ -240,7 +240,7 @@ export default {
 				cancelButtonText: 'Cancel',
 			}).then( async r => {
 				if(r.isConfirmed) {
-					const {result,message} = await api.post("/partners/issueCancel", {boIdx:item.idx});
+					const {result,data} = await api.post("/partners/issueCancel", {boIdx:item.idx});
 					if(result === 2000) {
 						this.$swal.fire({
 							title:`${item.user.name}님 입과 취소가 완료되었습니다.`,
@@ -248,22 +248,20 @@ export default {
 						})
 						this.refreshData()
 					} else if(result === 1000) {
-							this.$swal.fire({
-								title: '취소 실패',
-								text: message,
-								icon: 'warning',
-								confirmButtonText: 'OK'
+						this.$swal.fire({
+							title: '취소 실패',
+							text: message,
+							icon: 'warning',
+							confirmButtonText: 'OK'
 						})
 					}
 				}
 			})
 			
 		},
-		async issueCancel () {
-			const res = await api.get("/partners/issueCancelBatchCheck", {bbIdx:shared.getCurBatch().idx});
-			const data = res.data
-			console.log(res)
-			if (res.result === 2000) {
+		async issueCancelBatchCheck () {
+			const {result, data} = await api.get("/partners/issueCancelBatchCheck", {bbIdx:shared.getCurBatch().idx});
+			if (result === 2000) {
 				this.$swal.fire({
 					title: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>`,
 					html: `<strong>일괄 취소</strong> 하시겠습니까?`,
@@ -273,29 +271,29 @@ export default {
 					cancelButtonColor: '#ed5565',
 					cancelButtonText: '취소',
 					reverseButtons: true,
-				}).then(async (r) => {
+				}).then((r) => {
 					if (r.isConfirmed) {
-						if (res.result === 2000) {
-							this.$swal.fire({
-								title: `일괄 취소 결과 입니다.`,
-								html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>성공 건수 <strong>${data.successCnt}</strong>건<br/>실패 건수 <strong>${data.failCnt}</strong>건<br/>`,
-							}).then(async r => {
-								if (r.isConfirmed) {
-									if (data.failCnt > 0) {
-										this.applyBatchError = true
-										this.applyResultMsgs = data.errorMsgs
-									} else {
-										this.applyBatchError = false
-										this.applyResultMsgs = []
-									}
-									this.refreshData()
-								}
-							})
-						}
+						this.issueCancelBatch()
 					}
 				})
 			}
-			console.log(res)
+		},
+		async issueCancelBatch() {
+			const {result,data} = await api.post("/partners/issueCancelBatch", {bbIdx:shared.getCurBatch().idx});
+			console.log(result)
+			if (result === 2000) {
+				this.$swal.fire({
+					title: `일괄 취소 결과 입니다.`,
+					html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>성공 건수 <strong>${data.successCnt}</strong>건<br/>실패 건수 <strong>${data.failCnt}</strong>건<br/>`,
+				})
+				this.refreshData()
+			} else if(result === 1000) {
+				this.$swal.fire({
+					title: '취소 실패',
+					icon: 'warning',
+					confirmButtonText: 'OK'
+				})
+			}
 		}
 
 	}
