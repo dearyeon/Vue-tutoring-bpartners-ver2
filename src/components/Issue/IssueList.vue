@@ -5,16 +5,15 @@
 			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch" @reset="setSearch"
 			switch1-text="취소포함" @switch1-change="toggleCancel"
 			btn1-text="일괄 입과" @btn1-click="issueBatchCheck" btn1-variant="primary" :btn1-loading="loading1"
-			btn2-text="일괄 수정" @btn2-click="" btn2-variant="warning" :btn2-loading="false"
-			btn3-text="일괄 취소" @btn3-click="issueCancel" btn3-variant="danger" :btn3-loading="false"
-			btn4-text="AI 일괄 지급" @btn4-click="aiLevelBatchCheck" btn4-variant="success" :btn4-loading="loading4">
+			btn2-text="일괄 취소" @btn2-click="issueCancel" btn2-variant="danger" :btn2-loading="false"
+			btn3-text="AI 일괄 지급" @btn3-click="aiLevelBatchCheck" btn3-variant="success" :btn3-loading="loading4">
 	</Header>
 
 
 	<Content>
 		<Table :headers="['No','이름','고객식별ID','입과번호','이메일','연락처','수강권','수강권번호','입과일시','입과취소일시','AI지급일시','AI지급','입과/취소']"
-			   :data="orders"
-			    v-slot="{item, i}">
+			:data="orders"
+			v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
 			<td><NameField :item="item"></NameField></td>
 			<td><CusIdField :user="item.user"/></td>
@@ -32,8 +31,8 @@
 				<ItemButton text="AI티켓 지급" variant="success btn-outline" @click="aiModalOpen(item)" />
 			</td>
 			<td>
-				<ItemButton v-if="!item.issue_ccl_dt" text="취소" variant="danger" @click="issueCancel(item)" />
-				<ItemButton v-else text="입과" variant="success btn-outline" @click="issueModalOpen(item)" />
+				<ItemButton v-if="!item.issue_dt" text="입과" variant="success btn-outline" @click="issueModalOpen(item)" />
+				<ItemButton v-if="item.issue_dt && !item.issue_ccl_dt" text="취소" variant="danger" @click="issueCancel(item)" />
 			</td>
 		</Table>
 	</Content>
@@ -69,7 +68,6 @@ export default {
 		Content,
 		NameField,
 		CusIdField,
-		BatchSelection,
 		Table,
 		ItemButton,
 		IssueDateModal
@@ -242,16 +240,17 @@ export default {
 				cancelButtonText: 'Cancel',
 			}).then( async r => {
 				if(r.isConfirmed) {
-					const res = await api.post("/partners/issueCancel", {boIdx:item.idx});
-					if(res.result === 2000) {
+					const {result,message} = await api.post("/partners/issueCancel", {boIdx:item.idx});
+					if(result === 2000) {
 						this.$swal.fire({
-							title:`${item.user.name}님 입과 취소 완료되었습니다.`,
+							title:`${item.user.name}님 입과 취소가 완료되었습니다.`,
 							confirmButtonText: 'OK',
 						})
-					} else if(res.result === 1000) {
+						this.refreshData()
+					} else if(result === 1000) {
 							this.$swal.fire({
-								title: res.message,
-								text: res.data.errMsg,
+								title: '취소 실패',
+								text: message,
 								icon: 'warning',
 								confirmButtonText: 'OK'
 						})
