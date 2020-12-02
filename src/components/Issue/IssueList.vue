@@ -183,7 +183,7 @@ export default {
 		async issueBatch(frDt, toDt) {
 			this.loading1 = true
 			this.showIssueBatchModal = false
-			const { result, data, message} = await api.post("/partners/issueBatch", {bbIdx:shared.getCurBatch().idx, frDate:frDt, toDate:toDt});
+			const { result, data, message} = await api.post("/partners/issueBatch", {bbIdx:shared.getCurBatch().idx, frDate:frDt, toDate:toDt });
 			if (result === 2000) {
 				this.$swal.fire({
 					title: '입과 완료 되었습니다.',

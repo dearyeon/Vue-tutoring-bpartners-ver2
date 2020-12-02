@@ -51,16 +51,10 @@
 							</div>
 							<div class="col-md-offset-1 col-lg-4">
 								<table class="table">
-									<tr style="height:50px;">
-										<table>
-											<tr>
-												<th style="display:flex">수강기간</th>
-												<td style="display:flex">
-													<date-picker v-model="batchFrDt" type="date" placeholder="Select date"></date-picker>
-													<date-picker v-model="batchToDt" type="date" placeholder="Select date"></date-picker>
-												</td>
-											</tr>
-										</table>
+									<tr><strong>수강기간</strong></tr>
+									<tr>
+										<date-picker v-model="batchFrDt" type="datetime"  format="YYYY-MM-DD HH:mm" placeholder="Select date"></date-picker>
+										<date-picker v-model="batchToDt" type="datetime"  format="YYYY-MM-DD HH:mm" placeholder="Select date"></date-picker>
 									</tr>
 								</table>
 							</div>
