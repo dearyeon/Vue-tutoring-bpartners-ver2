@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div class="text-center">
-                    <br/><br/><a class="btn btn-success">수정</a>
+                    <br/><br/><a class="btn btn-success" @click="save">수정</a>
                 </div>
 
             </div>
@@ -70,9 +70,9 @@ import Header from "@/components/Common/Header"
 export default {
     data() {
         return {
-            newPassword: '',
             oldPassword: '',
-            oldPasswordCheck: '',
+            newPassword: '',
+            newPasswordCheck: '',
             name: '',
             email: '',
             cel: '',
@@ -80,6 +80,21 @@ export default {
     },
     components: {
         Header
+    },
+    methods: {
+        save() {
+            this.$swal.fire({
+                title: `수정하시겠습니까?`,
+                icon: 'warning',
+				showCancelButton: true,
+            }).then (r => {
+                this.$swal.fire({
+                    title: `수정되었습니다.`,
+                    icon: 'success'
+                })
+            })
+
+        }
     }
 }
 </script>
