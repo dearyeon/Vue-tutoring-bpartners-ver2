@@ -1,5 +1,5 @@
 <template>
-	<span class="container">
+	<span>
 		<cool-select v-model="selectedBatch"
 					 :items="filteredBatches"
 					 placeholder="사이트 이름으로 검색"

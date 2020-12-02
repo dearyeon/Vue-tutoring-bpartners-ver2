@@ -19,10 +19,10 @@
 		</div>
 		<div id="switches" class="pull-left">
 			<div class="switch" v-if="switch1Text">
-				<div class="switch-text">
+				<span class="switch-text pull-left">
 					<strong>{{ switch1Text }}</strong>
-				</div>
-				<div>
+				</span>
+				<span class="pull-left">
 					<div class="onoffswitch">
 						<input class="onoffswitch-checkbox form-control" id="switch1-input" type="checkbox" v-model="switchModel" @change="$emit('switch1-change', switchModel)"/>
 						<label class="onoffswitch-label" for="switch1-input">
@@ -30,7 +30,7 @@
 							<span class="onoffswitch-switch"></span>
 						</label>
 					</div>
-				</div>
+				</span>
 			</div>
 			<div class="switch" v-if="switch2Text">
 				<div class="switch-text">
@@ -47,7 +47,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="custom">
+		<div id="custom" class="pull-left">
 			<slot></slot>
 		</div>
 		<div id="buttons" class="text-right">
@@ -129,6 +129,7 @@ export default {
 	line-height: 1.8;
 	padding: 12px 15px;
 	margin: 0px 10px;
+	min-height: 65px;
 }
 
 #title {
@@ -170,7 +171,7 @@ export default {
 
 
 #custom {
-	margin-top: 10px;
+	margin-top: 5px;
 	margin-left: auto;
 	margin-right: auto;
 	font-size: 1.5rem;

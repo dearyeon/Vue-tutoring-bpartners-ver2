@@ -5,16 +5,16 @@
 			search-placeholder="이름을 입력하세요." @search="setSearch" @reset="setSearch"
 			btn1-text="결제대상 판정" @btn1-click="updatePChargeTarget" btn1-variant="success" :btn1-loading="false"
 			btn2-text="결제 대기건 일괄 결제" @btn2-click="pChargeBatch" btn2-variant="primary" :btn2-loading="false">
-			<span>
-				<div class="col-lg-12">
-					<h3 class="col-lg-5">추가결제일시</h3>
-					<h4 class="col-lg-7">{{ batch ? batch.pcharge_dt ? moment(batch.pcharge_dt).format('YYYY-MM-DD HH:mm') : '-' : '-' }}</h4>
+			<div>
+				<div class="row" style="margin-top:-10px">
+					<h3 class="pull-left">추가결제일시</h3>
+					<h4 class="pull-left" style="margin-left:30px;">{{ batch ? batch.pcharge_dt ? moment(batch.pcharge_dt).format('YYYY-MM-DD HH:mm') : '-' : '-' }}</h4>
 				</div>
-				<div class="col-lg-12">
-					<h3 class="col-lg-5">기준출석률</h3>
-					<h4 class="col-lg-7">{{ batch ? batch.target_rt + '%' : '-' }}</h4>
+				<div class="row">
+					<h3 class="pull-left">기준출석률</h3>
+					<h4 class="pull-left" style="margin-left:30px;">{{ batch ? batch.target_rt + '%' : '-' }}</h4>
 				</div>
-			</span>
+			</div>
 		</Header>
 
 		<Content>
