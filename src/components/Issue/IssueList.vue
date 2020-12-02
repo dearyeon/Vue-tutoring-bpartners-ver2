@@ -274,9 +274,12 @@ export default {
 			console.log(item)
 			this.$swal.fire({
 				title:`${item.user.name}님 입과 취소하시겠습니까?`,
-				confirmButtonText: 'OK',
 				showCancelButton: true,
-				cancelButtonText: 'Cancel',
+				cancelButtonText: '닫기',
+				cancelButtonColor: '#808080',
+				confirmButtonText: '확인',
+				confirmButtonColor: '#ed5565',
+				reverseButtons: true,
 			}).then( async r => {
 				if(r.isConfirmed) {
 					const {result,message} = await api.post("/partners/issueCancel", {boIdx:item.idx});
@@ -305,10 +308,10 @@ export default {
 					title: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>`,
 					html: `<strong>일괄 취소</strong> 하시겠습니까?`,
 					confirmButtonText: '일괄 취소하기',
-					confirmButtonColor: '#8FD0F5',
+					confirmButtonColor: '#ed5565',
 					showCancelButton: true,
-					cancelButtonColor: '#ed5565',
-					cancelButtonText: '취소',
+					cancelButtonText: '닫기',
+					cancelButtonColor: '#808080',
 					reverseButtons: true,
 				}).then((r) => {
 					if (r.isConfirmed) {

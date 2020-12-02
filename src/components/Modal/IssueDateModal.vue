@@ -27,8 +27,8 @@
                 </div>
 
                 <div class="modal-footer" style="border-top:0px">
-                    <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
-                    <button type="button" class="btn btn-success" id="userUpdateSubmit" @click="$emit('save',frDt,toDt)">{{buttonText}}</button>
+                    <button type="button" class="btn btn-cancel" data-dismiss="modal" @click="$emit('close')">닫기</button>
+                    <button type="button" class="btn btn-save" id="userUpdateSubmit" @click="$emit('save',frDt,toDt)">{{buttonText}}</button>
                 </div>
             </div>
         </div>
@@ -93,5 +93,13 @@ export default {
 }
 .modal-subtitle {
     font-size: 25px;
+}
+.btn-cancel {
+    color: #ffffff;
+    background-color: #808080;
+}
+.btn-save {
+    color: #ffffff;
+    background-color: #ed5565;
 }
 </style>
