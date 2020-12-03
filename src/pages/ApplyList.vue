@@ -200,10 +200,10 @@ export default {
 				this.$swal.fire({
 					title: `${cnt} 명을 일괄 신청하시겠습니까?`,
 					showCancelButton: true,
-					cancelButtonColor: "#ed5565",
-					cancelButtonText: "아니오",
-					confirmButtonColor: '#8FD0F5',
-					confirmButtonText: "네!",
+					confirmButtonText: '일괄 신청하기',
+					confirmButtonColor: '#ed5565',
+					cancelButtonText: '닫기',
+					cancelButtonColor: '#808080',
 					reverseButtons: true,
 				}).then( async r => {
 					if(r.isConfirmed) {
@@ -297,10 +297,10 @@ export default {
 			this.$swal.fire({
 				html: `<strong>${name}(${email})</strong>님<br/>을 승인 하시겠습니까?`,
 				showCancelButton: true,
-				cancelButtonColor: '#ed5565',
-				cancelButtonText: '취소',
-				confirmButtonColor: '#8FD0F5',
-				confirmButtonText: '확인',
+				confirmButtonText: '승인',
+				confirmButtonColor: '#ed5565',
+				cancelButtonText: '닫기',
+				cancelButtonColor: '#808080',
 				showLoaderOnConfirm: true,
 				reverseButtons: true,
 			}).then(async (r) => {
@@ -341,7 +341,10 @@ export default {
 				title: '취소 하시겠습니까?',
 				showCancelButton: true,
 				confirmButtonText: 'OK',
-				confirmButtonColor: '#ff7674',
+				confirmButtonColor: '#ed5565',
+				cancelButtonText: '닫기',
+				cancelButtonColor: '#808080',
+				reverseButtons: true,
 
 			})
 				.then(async result => {
@@ -378,10 +381,10 @@ export default {
 					title: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>`,
 					html: `<strong>일괄 승인</strong> 하시겠습니까?`,
 					confirmButtonText: '일괄 승인하기',
-					confirmButtonColor: '#8FD0F5',
+					confirmButtonColor: '#ed5565',
+					cancelButtonText: '닫기',
+					cancelButtonColor: '#808080',
 					showCancelButton: true,
-					cancelButtonColor: '#ed5565',
-					cancelButtonText: '취소',
 					reverseButtons: true,
 				}).then(async (r) => {
 					if (r.isConfirmed) {
