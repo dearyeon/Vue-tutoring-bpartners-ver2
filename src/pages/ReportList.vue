@@ -13,7 +13,7 @@
 							.concat($shared.isSupervisor()?['메모1','메모2']:null)
 							.concat(['수업 히스토리(횟수)'])"
 				:data="orders"
-					v-slot="{item, i}">
+					v-slot="{item, i}" @sort="sort">
 				<td>{{ i+1 }}</td>
 				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
@@ -222,6 +222,9 @@ export default {
 			await api.post('/partners/setMemo', params)
 			this.showMemo = false;
 			this.refresh();
+		},
+		sort() {
+			this.orders.reverse()
 		}
 	}
 };

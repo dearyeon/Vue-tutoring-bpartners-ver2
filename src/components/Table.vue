@@ -3,8 +3,8 @@
 		<thead>
 		<tr>
 			<th v-for="(header,i) in headers" :key="i" v-if="header">
-				<span v-if="header === '학습률'">학습률</span>
-				<span v-else>{{header}}</span>
+				<div v-if="header === '학습률'" class="sorting" @click="$emit('sort')">{{header}}</div>
+				<div v-else>{{header}}</div>
 			</th>
 		</tr>
 		</thead>
