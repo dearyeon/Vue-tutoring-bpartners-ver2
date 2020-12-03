@@ -55,14 +55,13 @@
 import api from "@/common/api"
 import moment from 'moment'
 import shared from "@/common/shared"
-import BatchSelection from "@/components/Common/BatchSelection"
-import NameField from "@/components/Common/NameField"
-import CusIdField from "@/components/Common/CusIdField"
-import Header from "@/components/Common/Header"
-import Content from "@/components/Common/Content"
-import Table from "@/components/Common/Table"
-import ItemButton from "@/components/Common/ItemButton"
-import IssueDateModal from '../Modal/IssueDateModal'
+import IssueDateModal from "@/modals/IssueDateModal.vue";
+import Header from "@/components/Header.vue";
+import Content from "@/components/Content.vue";
+import NameField from "@/components/NameField.vue";
+import CusIdField from "@/components/CusIdField.vue";
+import Table from "@/components/Table.vue";
+import ItemButton from "@/components/ItemButton.vue";
 
 export default {
 	components: {

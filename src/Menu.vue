@@ -1,7 +1,7 @@
 <template>
 	<transition name="slide-fade">
 		<nav class="navbar-default navbar-toggleable-lg navbar-static-side" style="height: 100%;" role="navigation"
-			 v-show="menuToggle">
+			v-show="menuToggle">
 
 			<div class="sidebar-collapse">
 				<ul class="nav metismenu" id="side-menu">
@@ -19,7 +19,7 @@
 						</div>
 					</li>
 
-					<li v-for="m in menus" v-if="permitted(m)" :key="m.id" :class="{active: m.isActive}" v-on:click="selectMenu(m.id)">
+					<li v-for="m in menus" v-if="permitted(m)" :key="m.id" :class="{active: m.isActive}">
 						<router-link :to="m.path">
 							<span class="nav-label">
 							  <i :class="['fa', 'fa-'+m.icon]"/><span>{{ m.name }}</span>
@@ -51,12 +51,6 @@ import {consts} from "@/common/shared";
 export default {
 	name: "Menu",
 	data() {
-		for (const i in menus) {
-			const menu = menus[i]
-			const m = menu.path.split('/')
-			const r = this.$route.path.split('/')
-			menu.isActive = (m[1] == r[1])
-		}
 		return {
 			menus,
 			account: this.$shared.getAccount()
@@ -69,15 +63,18 @@ export default {
 		}
 	},
 	methods: {
-		selectMenu(menuId) {
+		selectMenu(route) {
+			const r = route.path.split('/')
 			for (const i in menus) {
-				const m = menus[i]
-				m.isActive = (m.id == menuId)
+				const menu = menus[i]
+				const m = menu.path.split('/')
+				menu.isActive = (m[1] == r[1])
 			}
+			console.log(menus)
 		}
 	},
 	computed: {
-		permitted()  {
+		permitted() {
 			return menu => {
 				if (this.account.acc_level == consts.ACCOUNT_LEVEL_SUPERVISOR) {
 					return true
@@ -86,6 +83,15 @@ export default {
 				}
 			}
 		}
+	},
+	watch: {
+		$route(to) {
+			this.selectMenu(to)
+			this.$forceUpdate()
+		}
+	},
+	created() {
+		this.selectMenu(this.$route)
 	}
 }
 </script>

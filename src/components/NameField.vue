@@ -6,9 +6,9 @@
 </template>
 
 <script>
-import api from '@/common/api'
 import shared from "@/common/shared"
-import UserInfoModal from "@/components/Modal/UserInfoModal"
+import UserInfoModal from "@/modals/UserInfoModal.vue";
+
 export default {
     data() {
         return {

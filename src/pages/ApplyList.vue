@@ -72,17 +72,15 @@
 import api from "@/common/api";
 import moment from 'moment'
 import shared from "@/common/shared";
-import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
 import XLSX from 'xlsx'
 import _ from 'lodash'
-import BatchSelection from "@/components/Common/BatchSelection"
-import NameField from "@/components/Common/NameField"
-import CusIdField from "@/components/Common/CusIdField"
-import Header from "@/components/Common/Header"
-import Content from "@/components/Common/Content"
-import Table from "@/components/Common/Table"
-import ItemButton from "@/components/Common/ItemButton"
-import MngTextModal from '../Modal/MngTextModal'
+import Header from "@/components/Header.vue";
+import Content from "@/components/Content.vue";
+import NameField from "@/components/NameField.vue";
+import CusIdField from "@/components/CusIdField.vue";
+import Table from "@/components/Table.vue";
+import ItemButton from "@/components/ItemButton.vue";
+import MngTextModal from "@/modals/MngTextModal.vue";
 
 export default {
 	data() {
@@ -110,10 +108,8 @@ export default {
 		Content,
 		NameField,
 		CusIdField,
-		BatchSelection,
 		Table,
 		ItemButton,
-		ClipLoader,
 		MngTextModal
 	},
 	created() {
@@ -334,7 +330,7 @@ export default {
 
 		routeIndivApply() {
 			this.$router.push({
-				name: 'indivApplyNew',
+				name: 'applyForm',
 				params: {bbIdx: shared.getCurBatch().idx}
 			})
 		},

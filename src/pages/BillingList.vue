@@ -143,17 +143,15 @@
 
 <script>
 import api from '@/common/api'
-import Modal from '../atom/Modal'
-import Dropdown from '../atom/Dropdown'
 import moment from 'moment'
 import shared from "@/common/shared"
-import BatchSelection from "@/components/Common/BatchSelection"
-import NameField from "@/components/Common/NameField"
-import CusIdField from "@/components/Common/CusIdField"
-import Header from "@/components/Common/Header"
-import Content from "@/components/Common/Content"
-import Table from "@/components/Common/Table"
-import ItemButton from "@/components/Common/ItemButton"
+import Header from "@/components/Header.vue";
+import Content from "@/components/Content.vue";
+import NameField from "@/components/NameField.vue";
+import CusIdField from "@/components/CusIdField.vue";
+import Table from "@/components/Table.vue";
+import ItemButton from "@/components/ItemButton.vue";
+import Modal from "@/modals/Modal.vue";
 
 export default {
 	components: {
@@ -161,11 +159,9 @@ export default {
 		Content,
 		NameField,
 		CusIdField,
-		BatchSelection,
 		Table,
 		ItemButton,
-		Modal,
-		Dropdown,
+		Modal
 	},
 	async created() {
 		this.refresh();

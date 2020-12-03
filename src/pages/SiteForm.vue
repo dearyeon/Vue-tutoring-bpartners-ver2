@@ -87,7 +87,7 @@ export default {
             email: '',
             previewSrc: '',
             image: '',
-						ciImg: ''
+			ciImg: ''
         }
     },
     async created() {

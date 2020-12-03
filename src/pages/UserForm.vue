@@ -58,8 +58,8 @@
 </template>
 
 <script>
-import api from "@/common/api"
-import Header from "@/components/Common/Header"
+import Header from "@/components/Header.vue";
+
 export default {
     data() {
         return {

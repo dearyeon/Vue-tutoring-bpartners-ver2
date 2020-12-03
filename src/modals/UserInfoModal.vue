@@ -110,8 +110,9 @@
 </template>
 
 <script>
-import UserModifyModal from "@/components/Modal/UserModifyModal"
 import moment from 'moment'
+import UserModifyModal from "@/modals/UserModifyModal.vue";
+
 export default {
     data() {
         return {

@@ -34,12 +34,12 @@
 <script>
 import api from '@/common/api'
 import moment from 'moment'
-import Pagination from '@/components/atom/Pagination'
-import AddSiteModal from '../Site/AddSiteModal'
-import Header from "@/components/Common/Header"
-import Content from "@/components/Common/Content"
-import Table from "@/components/Common/Table"
-import ItemButton from "@/components/Common/ItemButton"
+import Header from "@/components/Header.vue";
+import Content from "@/components/Content.vue";
+import Table from "@/components/Table.vue";
+import ItemButton from "@/components/ItemButton.vue";
+import Pagination from "@/components/Pagination.vue";
+import AddSiteModal from "@/modals/AddSiteModal.vue";
 
 export default {
 	data() {
@@ -90,7 +90,7 @@ export default {
 		},
 		editCustomerPage(idx) {
 			this.$router.push({
-				name: 'siteEdit',
+				name: 'siteForm',
 				params: {idx: idx}
 			})
 		},

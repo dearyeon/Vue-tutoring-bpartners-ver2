@@ -75,8 +75,8 @@
 </template>
 
 <script>
-import BatchSelection from "@/components/Common/BatchSelection";
 import ClipLoader from "vue-spinner/src/ClipLoader";
+import BatchSelection from "@/components/BatchSelection.vue";
 
 export default {
 	components: {
