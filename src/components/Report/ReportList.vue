@@ -9,12 +9,12 @@
 
 
 		<Content>
-			<Table :headers="['No','이름','고객식별ID','달성률','수업','전체','학습 레벨','부서','직위','사번']
+			<Table :headers="['No','이름','고객식별ID','학습률','수업','전체','학습 레벨','부서','직위','사번']
 							.concat($shared.isSupervisor()?['메모1','메모2']:null)
 							.concat(['수업 히스토리(횟수)'])"
 				:data="items"
 					v-slot="{item, i}">
-				<td>{{ ((current_page-1)*per_page + i)+1 }}</td>
+				<td>{{ i+1 }}</td>
 				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
@@ -47,7 +47,6 @@
 				</td>
 			</Table>
 		</Content>
-		<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)" @returnPage="setCurrentPage"/>
 
 		<MngTextModal title="메모 입력" subtitle="메모를 입력해 주세요."
 					  :content="memo" v-if="showMemo" @close="showMemo = false" @save="applyMemo"/>
@@ -78,10 +77,6 @@ export default {
 			sk: '',
 			batch: null,
 			items: [],
-			current_page: 1,
-			total_page: 1,
-			per_page: 1,
-			total: 1,
 			moment: moment,
 			memoNum: null,
 			showMemo: false,
@@ -111,20 +106,12 @@ export default {
 			this.curBBIdx = shared.getCurBatch().idx;
 			const res = await api.get('/partners/reportList', {bbIdx:this.curBBIdx})
 			const data = res.data
-			this.items = data.orders.data
-			this.batch = data.batch;
-			this.current_page = data.orders.current_page
-			this.total_page = data.orders.last_page
-			this.per_page = data.orders.per_page
-			this.total = data.orders.total
+			this.items = data.orders
+			this.batch = data.batch
 		},
 		async setSearch(sk) {
 			this.sk = sk
-			const res = await api.get('/partners/reportList', {bbIdx: this.curBBIdx, sk:this.sk})
 			this.items = res.data.orders.data
-			this.current_page = res.data.orders.current_page
-			this.total_page = res.data.orders.last_page
-			this.per_page = res.data.orders.per_page
 		},
 		calBatchDate() {
 			const a = moment(this.batch.fr_dt);
@@ -156,18 +143,6 @@ export default {
 				str += '\n' + count + '회 - ' + min + '분 ' + secs + '초'
 				return str;
 			}
-		},
-		async setCurrentPage(data) {
-			this.current_page = data;
-			let params
-			if(this.sk) {
-				params = {bbIdx:this.curBBIdx, page: this.current_page, sk:this.sk} 
-			} else {
-				params = {bbIdx:this.curBBIdx, page: this.current_page}
-			}
-			const res = await api.get('/partners/reportList', params)
-			this.items = res.data.orders.data
-			this.batch = res.data.batch
 		},
 		exportExcel: _.debounce(async function () {
 			this.loading = true
