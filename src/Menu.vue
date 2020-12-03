@@ -70,7 +70,6 @@ export default {
 				const m = menu.path.split('/')
 				menu.isActive = (m[1] == r[1])
 			}
-			console.log(menus)
 		}
 	},
 	computed: {

@@ -75,8 +75,21 @@ const shared = {
 	removeCurSite() {
 		localStorage.removeItem('curSite')
 	},
-
-
+	
+	async updateMemo(boIdx, memo) {
+		const res = await api.post('/partners/updateMemo', {boIdx, memo}).catch((e) => {
+			console.log('error : updateMemo ' + e)
+		})
+		return res.result;
+	},
+	
+	async updateInfo(boIdx, info){
+		const res = await api.post('/partners/updateInfo', {boIdx, info}).catch((e) => {
+			console.log('error : updateInfo ' + e)
+		})
+		return res.result;
+	},
+	
 	sortBy (items, sortKey1, sortKey2) {
 		if(this.items !== items) this.sortKey = '', this.items=items
 		if(sortKey2) {
