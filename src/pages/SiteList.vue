@@ -6,10 +6,11 @@
 		</Header>
 
 		<Content>
-			<Table :headers="[' ','고객사 명','담당자 이름','부서','전화번호','이메일','등록일자','수정일자']
+			<Table :headers="['No',' ','고객사 명','담당자 이름','부서','전화번호','이메일','등록일자','수정일자']
 							.concat($shared.isSupervisor()?['고객사수정']:null)"
 				:data="items"
-				v-slot="{item}">
+				v-slot="{item, i}">
+				<td>{{ total - ((current_page - 1) * per_page) - i }}</td>
 				<td><img alt="image" class="img-rounded" :src="$shared.getSiteImgThumbnailUrl(item.ci_img)"
 					style="width:20px;height:20px;"></td>
 				<td>{{ item.company }}</td>
@@ -49,7 +50,8 @@ export default {
 			searchKey: '삼성',
 			current_page: 1,
 			total_page: 1,
-			per_page: '',
+			per_page: 1,
+			total: 0,
 			showModal: false,
 			moment: moment
 		};
@@ -73,6 +75,7 @@ export default {
 			this.total_page = res.data.last_page
 			this.per_page = res.data.per_page
 			this.items = res.data.data
+			this.total = res.data.total
 		},
 		async search(searchKey) {
 			this.searchKey = searchKey
