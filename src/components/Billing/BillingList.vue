@@ -23,7 +23,9 @@
 				<td><ItemButton :text="item.user.card_name?'변경':'등록'"
 								:variant="item.user.card_name?'default':'danger'"
 								@click="[setCurrentItem(item), (newCardInfo = {}), $refs.modalCardEdit.open()]" />
-					<span>{{ item.user.card_name }}{{ item.user.card_no_masked }}/{{ cardTypeLabel[item.user.card_type] }}</span>
+					<span v-if="item.user.card_no_masked">
+						{{ item.user.card_name }}{{ item.user.card_no_masked }}/{{ cardTypeLabel[item.user.card_type] }}
+					</span>
 				</td>
 				<td><ItemButton v-if="item.charge_status" :text="chargeBtnStatus(item.charge_status).text"
 								:variant="chargeBtnStatus(item.charge_status).variant"
