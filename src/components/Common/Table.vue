@@ -3,7 +3,8 @@
 		<thead>
 		<tr>
 			<th v-for="(header,i) in headers" :key="i" v-if="header">
-				{{header}}
+				<span v-if="header === '학습률'">학습률</span>
+				<span v-else>{{header}}</span>
 			</th>
 		</tr>
 		</thead>
