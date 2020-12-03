@@ -12,7 +12,7 @@
 			<Table :headers="['No','이름','고객식별ID','학습률','수업','전체','학습 레벨','부서','직위','사번']
 							.concat($shared.isSupervisor()?['메모1','메모2']:null)
 							.concat(['수업 히스토리(횟수)'])"
-				:data="items"
+				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i+1 }}</td>
 				<td><NameField :item="item"></NameField></td>
@@ -76,7 +76,8 @@ export default {
 		return {
 			sk: '',
 			batch: null,
-			items: [],
+			ordersAll: [],
+			orders: [],
 			moment: moment,
 			memoNum: null,
 			showMemo: false,
@@ -106,12 +107,22 @@ export default {
 			this.curBBIdx = shared.getCurBatch().idx;
 			const res = await api.get('/partners/reportList', {bbIdx:this.curBBIdx})
 			const data = res.data
-			this.items = data.orders
+			this.ordersAll = data.orders
+			this.orders = this.ordersAll
 			this.batch = data.batch
+			this.filteredData()
 		},
 		async setSearch(sk) {
 			this.sk = sk
-			this.items = res.data.orders.data
+			this.filteredData()
+		},
+		filteredData() {
+			this.orders = this.ordersAll
+			if (this.sk) {this.orders = this.orders.filter((order) => {
+				return !order.user.name.indexOf(this.sk) ||
+					(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
+					(order.user.email && !order.user.email.indexOf(this.sk))
+			})}
 		},
 		calBatchDate() {
 			const a = moment(this.batch.fr_dt);
