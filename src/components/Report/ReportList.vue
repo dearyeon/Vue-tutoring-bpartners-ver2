@@ -107,7 +107,9 @@ export default {
 			this.curBBIdx = shared.getCurBatch().idx;
 			const res = await api.get('/partners/reportList', {bbIdx:this.curBBIdx})
 			const data = res.data
-			this.ordersAll = data.orders
+			this.ordersAll = data.orders.sort(function (a, b) {
+				return !a['attend_pct'] ? 1 : !b['attend_pct'] ? -1 : a['attend_pct'] > b['attend_pct'] ? -1 : a['attend_pct'] < b['attend_pct'] ? 1 : 0
+			})
 			this.orders = this.ordersAll
 			this.batch = data.batch
 			this.filteredData()
