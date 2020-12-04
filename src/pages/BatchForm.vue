@@ -306,7 +306,7 @@ export default {
 				}
 
 				const batchApiRes = await api.post('/partners/batch', batchData)
-
+				// const batchApiRes = { result: 2000, data: {idx: 732} }
 
 				if (this.goodsList.length !== 0 && batchApiRes.result === 2000) {
 					const goodsParams = []
@@ -331,12 +331,12 @@ export default {
 					}
 
 					batchGoodsApiRes = await api.post('/partners/batchGoods', goodsParams)
+					// batchGoodsApiRes = { result: 2000 }
 				}
 
 
-				refreshAllBatches();
-
 				if (batchGoodsApiRes ? batchGoodsApiRes.result === 2000 : 'true' && batchApiRes.result === 2000) {
+					console.log('aaa');
 					this.$swal('성공')
 					this.$router.go(-1)
 				}
