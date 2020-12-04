@@ -166,7 +166,10 @@ export default {
 			const res = await api.get('/partners/exportReportToExcel', {bbIdx: this.curBBIdx})
 			const calendar = res.data.calendar
 			const batch = res.data.batch
-			const orders = res.data.orders
+			const orders = res.data.orders.sort(function (a, b) {
+				return !a['attend_pct'] ? 1 : !b['attend_pct'] ? -1 : a['attend_pct'] > b['attend_pct'] ? -1 : a['attend_pct'] < b['attend_pct'] ? 1 : 0
+			})
+
 
 			let dataWs = []
 			orders.forEach((order, index) => {
