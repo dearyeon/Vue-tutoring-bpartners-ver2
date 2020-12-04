@@ -152,14 +152,16 @@
                         title: '신청 실패',
                         text: '이메일을 조회해 주세요.',
                         icon: 'warning',
-                        confirmButtonText: 'OK'
+						confirmButtonText: 'OK',
+						confirmButtonColor: '#ed5565',
                     })
                 } else if(!this.email || !this.name || !this.cpIdx) {
                     this.$swal.fire({
                         title: '신청 실패',
                         text: '이메일, 이름, 수강권은 필수 항목 입니다.',
                         icon: 'warning',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'OK',
+						confirmButtonColor: '#ed5565',
                     })
                 } else {
                     const res = await api.post('/partners/importApply', form)
@@ -167,6 +169,7 @@
                         this.$swal.fire({
                             title: '단건 신청이 완료 되었습니다.',
                             confirmButtonText: 'OK',
+							confirmButtonColor: '#ed5565',
                         })
                         this.$router.go(-1)
                     } else if (res.result === 1000) {
@@ -174,7 +177,8 @@
                             title: res.message,
                             text: res.data.errMsg,
                             icon: 'warning',
-                            confirmButtonText: 'OK'
+                            confirmButtonText: 'OK',
+							confirmButtonColor: '#ed5565',
                         })
                     }
                 }
@@ -184,7 +188,8 @@
                     this.$swal.fire({
                         title: '이메일을 입력하세요.',
                         icon: 'warning',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'OK',
+						confirmButtonColor: '#ed5565',
                     })
                     return
                 }

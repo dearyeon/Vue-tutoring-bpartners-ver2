@@ -201,7 +201,10 @@ export default {
 			this.loading = false
 		}, 500),
 		openModal() {
-			this.$swal('개발 진행중인 기능입니다.')
+			this.$swal({
+				title:'개발 진행중인 기능입니다.',
+				confirmButtonColor: '#ed5565'
+			});
 			// this.$swal({
 			// 	title: "학습현황 메일 일괄 발송",
 			// 	text: "발송 하시겠습니까? (한번만 누르고 기다려 주세요)",

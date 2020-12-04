@@ -57,9 +57,9 @@
 								<table class="table">
 									<tr><strong>수강기간</strong></tr>
 									<tr>
-										<date-picker v-model="batchFrDt" type="datetime" format="YYYY-MM-DD HH:mm"
+										<date-picker v-model="batchFrDt" type="date" format="YYYY-MM-DD"
 											placeholder="Select date"></date-picker>
-										<date-picker v-model="batchToDt" type="datetime" format="YYYY-MM-DD HH:mm"
+										<date-picker v-model="batchToDt" type="date" format="YYYY-MM-DD"
 											placeholder="Select date"></date-picker>
 									</tr>
 								</table>
