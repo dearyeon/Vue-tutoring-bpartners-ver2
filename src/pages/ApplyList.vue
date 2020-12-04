@@ -36,15 +36,13 @@
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price - item.goods.charge_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.charge_price) : '' }}</td>
-				<td v-if="$shared.isSupervisor()">
-					<p v-if="item.mng_memo" class="mng-text" @click="memoModalOpen(item,item.mng_memo)">
-						{{ item.mng_memo }}</p>
-					<ItemButton v-else text="관리메모" variant="default" @click="memoModalOpen(item)"/>
+				<td @click="$shared.isSupervisor() && memoModalOpen(item,item.mng_memo)">
+					<div class="mng-text" v-if="item.mng_memo">{{item.mng_memo}}</div>
+					<ItemButton v-if="!item.mng_memo && $shared.isSupervisor()" text="관리메모" variant="default" />
 				</td>
-				<td v-if="$shared.isSupervisor()">
-					<p v-if="item.mng_info" class="mng-text" @click="infoModalOpen(item.idx,item.mng_info)">
-						{{ item.mng_info }}</p>
-					<ItemButton v-else text="관리정보" variant="default" @click="infoModalOpen(item.idx)"/>
+				<td @click="$shared.isSupervisor() && infoModalOpen(item,item.mng_info)">
+					<div class="mng-text" v-if="item.mng_info">{{item.mng_info}}</div>
+					<ItemButton v-if="!item.mng_info && $shared.isSupervisor()" text="관리정보" variant="default" />
 				</td>
 				<td>{{ item.idx }}</td>
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
@@ -275,20 +273,16 @@ export default {
 
 		async updateMemo(text) {
 			this.showMemoModal = !this.showMemoModal
-			const res = await api.post('/partners/updateMemo', {boIdx: this.curOrder.idx, memo: text}).catch((e) => {
-				console.log('error : updateMemo ' + e)
-			})
-			if (res.result === 2000) {
+			const response = await shared.updateMemo(this.curOrder.idx,text);
+			if (response === 2000) {
 				this.refreshData()
 			}
 		},
 
 		async updateInfo(text) {
 			this.showInfoModal = !this.showInfoModal
-			const res = await api.post('/partners/updateInfo', {boIdx: this.curOrder.idx, info: text}).catch((e) => {
-				console.log('error : updateInfo ' + e)
-			})
-			if (res.result === 2000) {
+			const response = await shared.updateInfo(this.curOrder.idx, text)
+			if (response === 2000)  {
 				this.refreshData()
 			}
 		},

@@ -9,9 +9,7 @@
 
 
 		<Content>
-			<Table :headers="['No','이름','고객식별ID','학습률','수업','전체','학습 레벨','부서','직위','사번']
-							.concat($shared.isSupervisor()?['메모1','메모2']:null)
-							.concat(['수업 히스토리(횟수)'])"
+			<Table :headers="['No','이름','고객식별ID','학습률','수업','전체','학습 레벨','부서','직위','사번','관리메모','관리정보'].concat(['수업 히스토리(횟수)'])"
 				:data="orders"
 					v-slot="{item, i}" @sort="sort">
 				<td>{{ i+1 }}</td>
@@ -30,13 +28,13 @@
 				<td>{{ item.user.department }}</td>
 				<td>{{ item.user.position }}</td>
 				<td>{{ item.user.emp_no }}</td>
-				<td v-if="$shared.isSupervisor()" @click="[memoNum=true,setMemo(item.user)]">
-					<div class="mng-text" v-if="item.user.memo1">{{item.user.memo1}}</div>
-					<div v-else><button class="btn-xs btn-default">등록</button></div>
+				<td @click="$shared.isSupervisor() && memoModalOpen(item,item.mng_memo)">
+					<div class="mng-text" v-if="item.mng_memo">{{item.mng_memo}}</div>
+					<ItemButton v-if="!item.mng_memo && $shared.isSupervisor()" text="관리메모" variant="default" />
 				</td>
-				<td v-if="$shared.isSupervisor()" @click="[memoNum=false,setMemo(item.user)]">
-					<div class="mng-text" v-if="item.user.memo2">{{item.user.memo2}}</div>
-					<div v-else><button class="btn-xs btn-default">등록</button></div>
+				<td @click="$shared.isSupervisor() && infoModalOpen(item,item.mng_info)">
+					<div class="mng-text" v-if="item.mng_info">{{item.mng_info}}</div>
+					<ItemButton v-if="!item.mng_info && $shared.isSupervisor()" text="관리정보" variant="default" />
 				</td>
 				<td>
 					<div v-for="i in calBatchDate()" :key="i.id">
@@ -48,8 +46,10 @@
 			</Table>
 		</Content>
 
-		<MngTextModal title="메모 입력" subtitle="메모를 입력해 주세요."
-					  :content="memo" v-if="showMemo" @close="showMemo = false" @save="applyMemo"/>
+		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = false" @save="updateMemo"/>
+		<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = false" @save="updateInfo"/>
+
+
 
 	</div>
 </template>
@@ -66,6 +66,8 @@ import NameField from "@/components/NameField.vue";
 import CusIdField from "@/components/CusIdField.vue";
 import Table from "@/components/Table.vue";
 import MngTextModal from "@/modals/MngTextModal.vue";
+import ItemButton from "@/components/ItemButton.vue";
+
 
 export default {
 	data() {
@@ -76,9 +78,10 @@ export default {
 			orders: [],
 			moment: moment,
 			memoNum: null,
-			showMemo: false,
-			memo: '',
-			presentIdx: '',
+			showMemoModal: false,
+			showInfoModal: false,
+			content:'',
+			curOrderIdx: '',
 			loading: false,
 			curBBIdx: 0
 		};
@@ -89,7 +92,8 @@ export default {
 		NameField,
 		CusIdField,
 		Table,
-		MngTextModal
+		MngTextModal,
+		ItemButton
 	},
 	async created() {
 		this.refresh()
@@ -106,26 +110,32 @@ export default {
 			this.batch = data.batch
 			this.filteredData()
 		},
+
 		async setSearch(sk) {
 			this.sk = sk
 			this.filteredData()
 		},
+
 		filteredData() {
 			this.orders = this.ordersAll
-			if (this.sk) {this.orders = this.orders.filter((order) => {
-				return !order.user.name.indexOf(this.sk) ||
-					(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
-					(order.user.email && !order.user.email.indexOf(this.sk))
-			})}
+			if (this.sk) {
+				this.orders = this.orders.filter((order) => {
+					return !order.user.name.indexOf(this.sk) ||
+						(order.user.cus_id && !order.user.cus_id.indexOf(this.sk)) ||
+						(order.user.email && !order.user.email.indexOf(this.sk))
+				})
+			}
 		},
+
 		calBatchDate() {
 			const a = moment(this.batch.fr_dt);
 			const b = moment(this.batch.to_dt);
 			return b.diff(a, 'days') + 1;
 		},
+
 		isUseDt(i, use_ticket_info) {
 			if (use_ticket_info.length) {
-				for (var element of use_ticket_info) {
+				for (let element of use_ticket_info) {
 					if (moment(this.batch.fr_dt).add(i, "days").isSame(element.use_dt, 'day')) {
 						return true;
 					}
@@ -133,11 +143,12 @@ export default {
 				return false;
 			} else return false;
 		},
+
 		useDtTooltip(i, item) {
 			if (item.use_ticket_info.length) {
 				let str = moment(this.batch.fr_dt).add(i, "days").format('YYYY-MM-DD')
 				let count = 0, total = 0, min, secs;
-				for (var element of item.use_ticket_info) {
+				for (let element of item.use_ticket_info) {
 					if (moment(this.batch.fr_dt).add(i, "days").isSame(element.use_dt, 'day')) {
 						total += item.goods.charge_plan.secs_per_day - element.remain_secs
 						count++
@@ -149,6 +160,7 @@ export default {
 				return str;
 			}
 		},
+
 		exportExcel: _.debounce(async function () {
 			this.loading = true
 			const res = await api.get('/partners/exportReportToExcel', {bbIdx: this.curBBIdx})
@@ -185,8 +197,8 @@ export default {
 						'학습 시간': order.use_ticket_info && order.goods ? parseInt(order.goods.charge_plan.secs_per_day/60) * (order.use_ticket_info.length) + '분' : '',
 						'학습률': order.attend_pct+'%',
 						'학습 목표율': batch.target_rt+'%',
-						'메모1': order.user.memo1,
-						'메모2': order.user.memo2,
+						'관리메모': order.mng_memo,
+						'관리정보': order.mng_info,
 						'고객식별ID': order.user.app_user ? order.user.app_user.cus_id : '',
 						'코멘트_1': order.first_lesson_review ? order.first_lesson_review.comment : '',
 						'코멘트_2': order.last_lesson_review ? order.last_lesson_review.comment : '',
@@ -200,6 +212,7 @@ export default {
 			const test = XLSX.writeFile(wb, shared.getCurBatch().company + ' 수업현황 ' + shared.getCurBatch().b_no + '회차.xlsx');
 			this.loading = false
 		}, 500),
+
 		openModal() {
 			this.$swal({
 				title:'개발 진행중인 기능입니다.',
@@ -214,18 +227,35 @@ export default {
 			// 	cancelButtonText: "Cancel",
 			// });
 		},
-		setMemo(user) {
-			if (this.memoNum) this.memo = user.memo1;
-			else this.memo = user.memo2;
-			this.presentIdx = user.idx;
-			this.showMemo = true;
+
+		memoModalOpen(order, content) {
+			this.content = content
+			this.curOrder = order
+			this.showMemoModal = !this.showMemoModal
 		},
-		async applyMemo(memo) {
-			const params = this.memoNum ? {buIdx: this.presentIdx, memo1: memo} : {buIdx: this.presentIdx, memo2: memo}
-			await api.post('/partners/setMemo', params)
-			this.showMemo = false;
-			this.refresh();
+
+		infoModalOpen(order, content) {
+			this.content = content
+			this.curOrder = order
+			this.showInfoModal = !this.showInfoModal
 		},
+
+		async updateMemo(text) {
+			this.showMemoModal = !this.showMemoModal
+			const response = await shared.updateMemo(this.curOrder.idx,text);
+			if (response === 2000) {
+				this.refresh()
+			}
+		},
+
+		async updateInfo(text) {
+			this.showInfoModal = !this.showInfoModal
+			const response = await shared.updateInfo(this.curOrder.idx, text)
+			if (response === 2000) {
+				this.refresh()
+			}
+		},
+
 		sort() {
 			this.orders.reverse()
 		}
