@@ -96,11 +96,11 @@ export default {
                     self.$emit("update", self.modifyItem);
                     self.modifyItem.length = 0;
                     self.$swal({
-                        title: "정보 변경",
-                        text: "정보가 변경 됐습니다.",
-                        icon: "success",
-                        confirmButtonText: "OK",
-                        confirmButtonColor: '#ed5565',
+                      title: "정보 변경",
+                      text: "정보가 변경 됐습니다.",
+                      icon: "success",
+                      confirmButtonText: "OK",
+                      confirmButtonColor: '#ed5565',
                     })
                 }
             });
