@@ -9,7 +9,7 @@
 
 
 		<Content>
-			<Table :headers="['No','이름','고객식별ID','학습률','수업','전체','학습 레벨','부서','직위','사번','관리메모','관리정보'].concat(['수업 히스토리(횟수)'])"
+			<Table :headers="['No','이름','고객식별ID','학습률','수업','전체','학습 레벨','부서','직위','사번','관리정보','관리메모'].concat(['수업 히스토리(횟수)'])"
 				:data="orders"
 					v-slot="{item, i}" @sort="sort">
 				<td>{{ i+1 }}</td>
@@ -28,13 +28,11 @@
 				<td>{{ item.user.department }}</td>
 				<td>{{ item.user.position }}</td>
 				<td>{{ item.user.emp_no }}</td>
-				<td @click="$shared.isSupervisor() && memoModalOpen(item,item.mng_memo)">
-					<div class="mng-text" v-if="item.mng_memo">{{item.mng_memo}}</div>
-					<ItemButton v-if="!item.mng_memo && $shared.isSupervisor()" text="관리메모" variant="default" />
+				<td>
+					<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
 				</td>
-				<td @click="$shared.isSupervisor() && infoModalOpen(item,item.mng_info)">
-					<div class="mng-text" v-if="item.mng_info">{{item.mng_info}}</div>
-					<ItemButton v-if="!item.mng_info && $shared.isSupervisor()" text="관리정보" variant="default" />
+				<td>
+					<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
 				</td>
 				<td>
 					<div v-for="i in calBatchDate()" :key="i.id">
@@ -46,8 +44,9 @@
 			</Table>
 		</Content>
 
-		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = false" @save="updateMemo"/>
 		<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = false" @save="updateInfo"/>
+
+		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = false" @save="updateMemo"/>
 
 
 
@@ -67,6 +66,7 @@ import CusIdField from "@/components/CusIdField.vue";
 import Table from "@/components/Table.vue";
 import MngTextModal from "@/modals/MngTextModal.vue";
 import ItemButton from "@/components/ItemButton.vue";
+import MngField from '../components/MngField'
 
 
 export default {
@@ -93,7 +93,8 @@ export default {
 		CusIdField,
 		Table,
 		MngTextModal,
-		ItemButton
+		ItemButton,
+		MngField
 	},
 	async created() {
 		this.refresh()
@@ -200,8 +201,8 @@ export default {
 						'학습 시간': order.use_ticket_info && order.goods ? parseInt(order.goods.charge_plan.secs_per_day/60) * (order.use_ticket_info.length) + '분' : '',
 						'학습률': order.attend_pct+'%',
 						'학습 목표율': batch.target_rt+'%',
-						'관리메모': order.mng_memo,
 						'관리정보': order.mng_info,
+						'관리메모': order.mng_memo,
 						'고객식별ID': order.user.app_user ? order.user.app_user.cus_id : '',
 						'코멘트_1': order.first_lesson_review ? order.first_lesson_review.comment : '',
 						'코멘트_2': order.last_lesson_review ? order.last_lesson_review.comment : '',
@@ -288,10 +289,4 @@ export default {
 	right: 105px;
 }
 
-.mng-text {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	width: 70px;
-	white-space:nowrap;
-}
 </style>

@@ -11,7 +11,7 @@
 		</Header>
 
 		<Content>
-			<Table :headers="['No','주문번호','학생','고객식별ID','수강권','결제금액','사용될카드','상태','집행일시','집행카드','집행TID/실패사유','관리메모','메모수정']"
+			<Table :headers="['No','주문번호','학생','고객식별ID','수강권','결제금액','사용될카드','상태','집행일시','집행카드','집행TID/실패사유','관리정보','관리메모']"
 				:data="orders"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
@@ -35,9 +35,12 @@
 				<td>{{ item.charged_dt }}</td>
 				<td>{{ item.charged_info && item.charged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불")) }}</td>
 				<td :class="{'text-danger':item.charged_bill_dump}">{{ item.charged_t_id ? item.charged_t_id : item.charged_bill_dump }}</td>
-				<td>{{ item.mng_memo }}</td>
-				<td><ItemButton text="수정" variant="default" @click="[setCurrentItem(item), (memo=(item.mng_memo)), $refs.modalMemo.open()]" /></td>
-
+				<td>
+					<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
+				</td>
+				<td>
+					<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
+				</td>
 			</Table>
 		</Content>
 
@@ -118,25 +121,10 @@
 				<button class="btn btn-success" @click="editCardInfo(currentItem.user.idx)">수정</button>
 			</div>
 		</Modal>
-		<Modal ref="modalMemo" v-cloak>
-			<div slot="header">
-				<h1>관리메모 입력</h1>
-				<p>관리메모를 입력해 주세요.</p>
-			</div>
-			<div slot="body">
-				<table class="table">
-					<tr>
-						<th style="vertical-align: top; padding-top:12px;">관리메모</th>
-						<td>
-							<textarea class="form-control" rows="3" placeholder="내용을 입력해 주세요." v-model="memo"></textarea>
-						</td>
-					</tr>
-				</table>
-			</div>
-			<div slot="footer" class="pull-right">
-				<button class="btn btn-success" @click="[$refs.modalMemo.close(), editMemo()]">저장</button>
-			</div>
-		</Modal>
+
+		<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = false" @save="updateInfo"/>
+
+		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = false" @save="updateMemo"/>
 
 	</div>
 </template>
@@ -152,6 +140,8 @@ import CusIdField from "@/components/CusIdField.vue";
 import Table from "@/components/Table.vue";
 import ItemButton from "@/components/ItemButton.vue";
 import Modal from "@/modals/Modal.vue";
+import MngField from '../components/MngField'
+import MngTextModal from '../modals/MngTextModal'
 
 export default {
 	components: {
@@ -161,7 +151,9 @@ export default {
 		CusIdField,
 		Table,
 		ItemButton,
-		Modal
+		Modal,
+		MngField,
+		MngTextModal
 	},
 	async created() {
 		this.refresh();
@@ -176,13 +168,15 @@ export default {
 			},
 			batch: null,
 			company: '',
-			memo: '',
+			content: '',
 			moment: moment,
 			listInfo: '',
 			newCardInfo: {cardNo: '', yy: '', mm: '', pw: '', birthYYMMDD: ''},
 			targetCountCheck: false,
 			cardTypeLabel: ['신용', '직불'],
-			sk: ''
+			sk: '',
+			showMemoModal:false,
+			showInfoModal: false
 		}
 	},
 	methods: {
@@ -310,11 +304,6 @@ export default {
 						}
 					}
 				})
-		},
-		editMemo: async function () {
-			const params = {boIdx: this.currentItem.idx, memo: this.memo}
-			const res = await api.post('/partners/updateMemo', params)
-			if (res) this.refresh()
 		},
 		refund: function () {
 			this.$swal
@@ -590,6 +579,33 @@ export default {
 		setSearch(sk) {
 			this.sk = sk
 			this.filteredData()
+		},
+		memoModalOpen(order, content) {
+			this.content = content
+			this.currentItem = order
+			this.showMemoModal = !this.showMemoModal
+		},
+
+		infoModalOpen(order, content) {
+			this.content = content
+			this.currentItem = order
+			this.showInfoModal = !this.showInfoModal
+		},
+
+		async updateMemo(text) {
+			this.showMemoModal = !this.showMemoModal
+			const response = await shared.updateMemo(this.currentItem.idx,text);
+			if (response === 2000) {
+				this.refresh()
+			}
+		},
+
+		async updateInfo(text) {
+			this.showInfoModal = !this.showInfoModal
+			const response = await shared.updateInfo(this.currentItem.idx, text)
+			if (response === 2000) {
+				this.refresh()
+			}
 		},
 	},
 	computed: {

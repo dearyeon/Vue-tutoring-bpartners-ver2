@@ -16,7 +16,7 @@
 			<Table
 				:headers="['No','이름','고객식별ID','이메일','연락처','소속','부서','직위','사번']
 							.concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금'])
-							.concat($shared.isSupervisor()?['관리메모','관리정보']:null)
+							.concat(['관리정보','관리메모'])
 							.concat(['신청번호','신청일시','취소일시','승인일시'])
 							.concat($shared.isSupervisor()?['승인','취소/복원']:null)
 							.concat( applyBatchError ? '승인결과' : null)"
@@ -36,13 +36,11 @@
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price - item.goods.charge_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.charge_price) : '' }}</td>
-				<td @click="$shared.isSupervisor() && memoModalOpen(item,item.mng_memo)">
-					<div class="mng-text" v-if="item.mng_memo">{{item.mng_memo}}</div>
-					<ItemButton v-if="!item.mng_memo && $shared.isSupervisor()" text="관리메모" variant="default" />
+				<td>
+					<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
 				</td>
-				<td @click="$shared.isSupervisor() && infoModalOpen(item,item.mng_info)">
-					<div class="mng-text" v-if="item.mng_info">{{item.mng_info}}</div>
-					<ItemButton v-if="!item.mng_info && $shared.isSupervisor()" text="관리정보" variant="default" />
+				<td>
+					<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
 				</td>
 				<td>{{ item.idx }}</td>
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>
@@ -60,8 +58,9 @@
 			</Table>
 		</Content>
 
-		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = !showMemoModal" @save="updateMemo"/>
 		<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = !showInfoModal" @save="updateInfo"/>
+
+		<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = !showMemoModal" @save="updateMemo"/>
 
 	</div>
 </template>
