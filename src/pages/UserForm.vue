@@ -7,16 +7,16 @@
                 <table class="table">
                     <tr>
                         <th>현재 비밀번호</th>
-                        <td><input type="text" class="form-control" v-model="oldPassword"/></td>
+                        <td><input type="password" class="form-control" v-model="oldPassword"/></td>
                     </tr>
                     <tr>
                         <th>새 비밀번호</th>
-                        <td><input type="number" class="form-control" v-model="newPassword"/></td>
+                        <td><input type="password" class="form-control" v-model="newPassword"/></td>
                     </tr>
                     <tr>
                         <th>새 비밀번호 확인</th>
                         <td>
-                            <input type="text" class="form-control" v-model="newPasswordCheck"/>
+                            <input type="password" class="form-control" v-model="newPasswordCheck"/>
                         </td>
                     </tr>
                 </table>
@@ -39,7 +39,7 @@
                     </tr>
                     <tr>
                         <th>이메일</th>
-                        <td><input type="number" class="form-control" v-model="email"/></td>
+                        <td><input type="text" class="form-control" v-model="email"/></td>
                     </tr>
                     <tr>
                         <th>전화/휴대폰</th>
@@ -76,21 +76,38 @@ export default {
     },
     methods: {
         save() {
-            this.$swal.fire({
-                title: `수정하시겠습니까?`,
-                icon: 'warning',
-				showCancelButton: true,
-                cancelButtonText: '닫기',
-                cancelButtonColor: '#808080',
-                confirmButtonColor: '#ed5565',
-                reverseButtons: true,
-            }).then (r => {
+            const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{10,}$/;
+            if(this.newPassword !== this.newPasswordCheck) {
                 this.$swal.fire({
-                    title: `수정되었습니다.`,
-                    icon: 'success',
-                    confirmButtonColor: '#ed5565',
+                    title: `새 비밀번호가 서로 일치하지 않습니다.`,
+                    icon: 'warning',
+                    confirmButtonColor: '#ed5565'
                 })
-            })
+            } else if (false === reg.test(this.newPassword)) {
+                this.$swal.fire({
+                    title: `비밀번호는 10자 이상이어야 하며, 숫자/대문자/소문자/특수문자를 모두 포함해야 합니다.`,
+                    icon: 'warning',
+                    confirmButtonColor: '#ed5565'
+                })
+            } else {
+                this.$swal.fire({
+                    title: `수정하시겠습니까?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonText: '닫기',
+                    cancelButtonColor: '#808080',
+                    confirmButtonColor: '#ed5565',
+                    reverseButtons: true,
+                }).then (r => {
+					if (r.isConfirmed) {
+                        this.$swal.fire({
+                            title: `수정되었습니다.`,
+                            icon: 'success',
+                            confirmButtonColor: '#ed5565',
+                        })
+                    }
+                })
+            }
 
         }
     }
