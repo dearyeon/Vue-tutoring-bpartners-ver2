@@ -53,7 +53,7 @@
 								@click="approve(item.idx,item.user.name,item.user.email )"/>
 				</td>
 				<td v-if="$shared.isSupervisor()">
-					<ItemButton v-if="!!item.apply_ccl_dt" text="복원" variant="primary" @click=""/>
+					<ItemButton v-if="!!item.apply_ccl_dt" text="복원" variant="primary" @click="applyReviveCheck(item)"/>
 					<ItemButton v-else text="취소" variant="danger" @click="cancel(item)"/>
 				</td>
 				<td v-if="applyBatchError"><p>{{ item.applyResultMsg }}</p></td>
@@ -311,7 +311,7 @@ export default {
 						this.$swal.fire({
 							html: `<strong>${res.message}</strong>`,
 							icon: 'error',
-							confirmButtonColor: '#8FD0F5',
+							confirmButtonColor: '#ed5565',
 							confirmButtonText: '확인',
 							showLoaderOnConfirm: true,
 							reverseButtons: true,
@@ -349,7 +349,7 @@ export default {
 								text: '취소가 완료되었습니다.',
 								icon: 'success',
 								confirmButtonText: '확인',
-								confirmButtonColor: '#8FD0F5',
+								confirmButtonColor: '#ed5565',
 							})
 							this.refreshData()
 						} else {
@@ -358,7 +358,7 @@ export default {
 								text: res.message.errMsg,
 								icon: 'error',
 								confirmButtonText: '확인',
-								confirmButtonColor: '#8FD0F5',
+								confirmButtonColor: '#ed5565',
 							})
 						}
 					}
@@ -413,10 +413,47 @@ export default {
 			}
 			this.loading3 = false
 		},
-
 		setSearch(sk) {
 			this.sk = sk
 			this.filteredData()
+		},
+		applyReviveCheck(item) {
+			this.$swal.fire({
+				html: `<strong>${item.user.name}(${item.user.email})</strong>님<br/>을 복원 하시겠습니까?`,
+				showCancelButton: true,
+				confirmButtonText: '복원',
+				confirmButtonColor: '#ed5565',
+				cancelButtonText: '닫기',
+				cancelButtonColor: '#808080',
+				showLoaderOnConfirm: true,
+				reverseButtons: true,
+			}).then(r => {
+				if (r.isConfirmed) {
+					this.applyRevive(item.idx);
+				}
+			})
+		},
+		async applyRevive(boIdx) {
+			const res = await api.post('/partners/applyRevive', {boIdx}).catch((e) => {
+				console.log('error : approveOrder ' + e)
+			})
+
+			if (res.result === 2000) {
+				this.$swal.fire({
+					title:'복원이 완료되었습니다.',
+					confirmButtonColor: '#ed5565',
+				}).then(r => {
+					if (r.isConfirmed) this.refreshData()
+				})
+			} else if (res.result === 1000) {
+				this.$swal.fire({
+					html: `<strong>${res.message}</strong>`,
+					icon: 'error',
+					confirmButtonColor: '#ed5565',
+					confirmButtonText: '확인'
+				})
+
+			}
 		}
 	},
 }
