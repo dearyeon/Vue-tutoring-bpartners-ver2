@@ -343,7 +343,7 @@ export default {
 			})
 				.then(async result => {
 					if (result.isConfirmed) {
-						const res = await api.post('/partners/applyCancel', {boIdx: item.idx, buIdx: item.user.idx})
+						const res = await api.post('/partners/applyCancel', {boIdx: item.idx})
 						if (res.result === 2000) {
 							this.$swal.fire({
 								text: '취소가 완료되었습니다.',
