@@ -7,22 +7,22 @@
 				<ul class="nav metismenu" id="side-menu">
 					<li class="nav-header">
 						<div class="dropdown profile-element">
-							  <span class="clear">
-								  <span class="block m-t-xs" style="color:white"> <strong class="font-bold"> {{
-										  (account.site && account.site.company) || (account.partner && account.partner.company)
-									  }} </strong></span>
-								  <span class="text-muted text-xs block"> {{ account.name }} </span>
-							  </span>
+							<span class="clear">
+								<span class="block m-t-xs" style="color:white"> <strong class="font-bold"> {{
+										(account.site && account.site.company) || (account.partner && account.partner.company)
+									}} </strong></span>
+								<span class="text-muted text-xs block"> {{ account.name }} </span>
+								</span>
 						</div>
 						<div class="logo-element">
 							M
 						</div>
 					</li>
 
-					<li v-for="m in menus" v-if="permitted(m)" :key="m.id" :class="{active: m.isActive}">
+					<li v-for="(m,i) in menus" v-show="permitted(m)" :key="i" :class="{active: m.isActive}">
 						<router-link :to="m.path">
 							<span class="nav-label">
-							  <i :class="['fa', 'fa-'+m.icon]"/><span>{{ m.name }}</span>
+								<i :class="['fa', 'fa-'+m.icon]"/><span>{{ m.name }}</span>
 							</span>
 						</router-link>
 					</li>
