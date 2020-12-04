@@ -186,13 +186,13 @@ export default {
 		},
 		editApplyPage(baIdx) {
 			this.$router.push({
-				name: 'batchApplyForm',
+				name: 'batchApplyPageForm',
 				params: {baIdx: baIdx}
 			})
 		},
 		createApplyPage(bIdx, bsIdx) {
 			this.$router.push({
-				name: 'batchApplyNew',
+				name: 'batchApplyPageNew',
 				params: {bIdx: bIdx, bsIdx}
 			})
 		},

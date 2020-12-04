@@ -8,11 +8,11 @@ import IssueList from "@/pages/IssueList.vue";
 import BillingList from "@/pages/BillingList.vue";
 import BillingPenaltyList from "@/pages/BillingPenaltyList.vue";
 import BatchList from "@/pages/BatchList.vue";
-import BatchApplyForm from "@/pages/BatchApplyForm.vue";
 import BatchForm from "@/pages/BatchForm.vue";
 import SiteList from "@/pages/SiteList.vue";
 import SiteForm from "@/pages/SiteForm.vue";
 import UserForm from "@/pages/UserForm.vue";
+import BatchApplyPageForm from "@/pages/BatchApplyPageForm.vue";
 
 const routes = [
 	{path: "", redirect: "/login"},
@@ -30,8 +30,8 @@ const routes = [
 			{path: '/billing/list', component: BillingList},
 			{path: '/billingP/list', component: BillingPenaltyList},
 			{path: "/batch/list", component: BatchList},
-			{path: "/batch/form/:bIdx/:bsIdx", name: "batchApplyNew", component: BatchApplyForm, props: true},
-			{path: "/batch/form/:baIdx", name: "batchApplyForm", component: BatchApplyForm, props: true},
+			{path: "/batch/applyPageForm/:bIdx/:bsIdx", name: "batchApplyPageNew", component: BatchApplyPageForm, props: true},
+			{path: "/batch/applyPageForm/:baIdx", name: "batchApplyPageForm", component: BatchApplyPageForm, props: true},
 			{path: "/batch/form/:bsIdx/:company", name: "batchNew", component: BatchForm, props: true},
 			{path: "/batch/form/:bIdx", name: "batchEdit", component: BatchForm, props: true},
 			{path: '/site/list', name: "siteList", component: SiteList},

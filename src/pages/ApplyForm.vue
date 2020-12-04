@@ -22,8 +22,8 @@
 									<tr>
 										<th>이메일</th>
 										<td style="display:flex">
-											<input type="text" class="form-control" placeholder="이메일을 입력해 주세요." v-model="email"/>
-											<button class="btn btn-default" @click="checkUser">불러오기</button>
+											<input type="text" class="form-control" placeholder="이메일을 입력해 주세요." v-model="email" :readonly="emailCheck"/>
+											<button class="btn btn-default" @click="checkUser" :disabled="emailCheck">불러오기</button>
 										</td>
 									</tr>
 									<tr>
@@ -107,6 +107,7 @@
 				goods: [],
 				name: '',
 				email: '',
+				emailCheck: false,
 				cel: '',
 				affiliation: '',
 				department: '',
@@ -115,7 +116,7 @@
 				cpIdx: '',
 				cf1: '',
 				cf2: '',
-        callEmail: false,
+				callEmail: false,
 			}
 		},
 		created () {
@@ -146,77 +147,79 @@
 					cel: this.cel,
 					cf1: this.cf1,
 					cf2: this.cf2
-                }
-                if(!this.calEmail) {
-                    this.$swal.fire({
-                        title: '승인 실패',
-                        text: '이메일을 조회해 주세요.',
-                        icon: 'warning',
+				}
+				if (!this.calEmail) {
+					this.$swal.fire({
+						title: '승인 실패',
+						text: '이메일을 조회해 주세요.',
+						icon: 'warning',
 						confirmButtonText: 'OK',
 						confirmButtonColor: '#ed5565',
-                    })
-                } else if(!this.email || !this.name || !this.cpIdx) {
-                    this.$swal.fire({
-                        title: '승인 실패',
-                        text: '이메일, 이름, 수강권은 필수 항목 입니다.',
-                        icon: 'warning',
-                        confirmButtonText: 'OK',
+					})
+				} else if (!this.email || !this.name || !this.cpIdx) {
+					this.$swal.fire({
+						title: '승인 실패',
+						text: '이메일, 이름, 수강권은 필수 항목 입니다.',
+						icon: 'warning',
+						confirmButtonText: 'OK',
 						confirmButtonColor: '#ed5565',
-                    })
-                } else {
-                    const res = await api.post('/partners/importApply', form)
-                    if (res.result === 2000) {
-                        this.$swal.fire({
-                            title: '단건 승인이 완료 되었습니다.',
-                            confirmButtonText: 'OK',
+					})
+				} else {
+					const res = await api.post('/partners/importApply', form)
+					if (res.result === 2000) {
+						this.$swal.fire({
+							title: '단건 승인이 완료 되었습니다.',
+							confirmButtonText: 'OK',
 							confirmButtonColor: '#ed5565',
-                        })
-                        this.$router.go(-1)
-                    } else if (res.result === 1000) {
-                        this.$swal.fire({
-                            title: res.message,
-                            text: res.data.errMsg,
-                            icon: 'warning',
-                            confirmButtonText: 'OK',
+						})
+						this.$router.go(-1)
+					} else if (res.result === 1000) {
+						this.$swal.fire({
+							title: res.message,
+							text: res.data.errMsg,
+							icon: 'warning',
+							confirmButtonText: 'OK',
 							confirmButtonColor: '#ed5565',
-                        })
-                    }
-                }
+						})
+					}
+				}
 			},
 			async checkUser () {
-                if(!this.email) {
-                    this.$swal.fire({
-                        title: '이메일을 입력하세요.',
-                        icon: 'warning',
-                        confirmButtonText: 'OK',
+				if (!this.email) {
+					this.$swal.fire({
+						title: '이메일을 입력하세요.',
+						icon: 'warning',
+						confirmButtonText: 'OK',
 						confirmButtonColor: '#ed5565',
-                    })
-                    return
-                }
-                this.calEmail = true
-				const res = await api.get('/partners/checkUser',{email : this.email}).catch( e => {
-					console.log('error checkUser : ' + e )
+					})
+					return
+				}
+				this.calEmail = true
+				const res = await api.get('/partners/checkUser', { email: this.email }).catch(e => {
+					console.log('error checkUser : ' + e)
 				})
-				if( res.result === 2000 ) {
-                    const data = res.data
-                    this.name = data.name
-                    this.email = data.email
-                    this.cel = data.cel
-                    this.affiliation = data.company
-                    this.department = data.department
-                    this.position = data.position
-                    this.empNo = data.emp_no
-                    this.cf1 = data.cf1
-                    this.cf2 = data.cf2
+				if (res.result === 2000) {
+					const data = res.data
+					this.name = data.name
+					// 승인된 유저의 경우 이메일 정보가 없음. => input에 email을 입력값 그대로 read only 로 해야함.
+					this.cel = data.cel
+					this.affiliation = data.company
+					this.department = data.department
+					this.position = data.position
+					this.empNo = data.emp_no
+					this.cf1 = data.cf1
+					this.cf2 = data.cf2
+
+					this.emailCheck = true
 				} else {
-					this.$swal(res.message);
+					this.$swal(res.message)
 				}
 
-            },
-            isDisabled() {
-                if(this.email && this.name && this.cel && this.cpIdx) return false
-                else return true
-            }
+			},
+			isDisabled () {
+				if (this.email && this.name && this.cpIdx) return false
+				else return true
+			}
 		}
 	}
 </script>
