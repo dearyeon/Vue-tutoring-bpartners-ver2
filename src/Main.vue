@@ -161,4 +161,13 @@ body .row {
 .swal2-content {
 	font-size: 18px !important;
 }
+
+.btn-close {
+    color: #ffffff;
+    background-color: #808080;
+}
+.btn-save {
+    color: #ffffff;
+    background-color: #ed5565;
+}
 </style>

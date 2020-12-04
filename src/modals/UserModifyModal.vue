@@ -53,8 +53,8 @@
                   </div>
 
                   <div class="modal-footer" style="border-top:0px">
-                    <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
-                    <button type="button" class="btn btn-success" id="userUpdateSubmit" @click="applyModify">변경 완료</button>
+                    <button type="button" class="btn btn-close" data-dismiss="modal" @click="$emit('close')">닫기</button>
+                    <button type="button" class="btn btn-save" id="userUpdateSubmit" @click="applyModify">변경 완료</button>
                   </div>
                 </div>
               </div>
@@ -85,8 +85,12 @@ export default {
                 title: "정보 변경",
                 text: "학습자 정보를 변경 하시겠습니까?",
                 icon: "warning",
-                showCancelButton: true,
                 confirmButtonText: "OK",
+                confirmButtonColor: '#ed5565',
+                showCancelButton: true,
+                cancelButtonText: '닫기',
+                cancelButtonColor: '#808080',
+                reverseButtons: true,
             }).then((isConfirmed) => {
                 if(isConfirmed.isConfirmed){
                     self.$emit("update", self.modifyItem);
@@ -96,6 +100,7 @@ export default {
                         text: "정보가 변경 됐습니다.",
                         icon: "success",
                         confirmButtonText: "OK",
+                        confirmButtonColor: '#ed5565',
                     })
                 }
             });

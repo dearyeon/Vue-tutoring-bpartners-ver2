@@ -80,10 +80,15 @@ export default {
                 title: `수정하시겠습니까?`,
                 icon: 'warning',
 				showCancelButton: true,
+                cancelButtonText: '닫기',
+                cancelButtonColor: '#808080',
+                confirmButtonColor: '#ed5565',
+                reverseButtons: true,
             }).then (r => {
                 this.$swal.fire({
                     title: `수정되었습니다.`,
-                    icon: 'success'
+                    icon: 'success',
+                    confirmButtonColor: '#ed5565',
                 })
             })
 

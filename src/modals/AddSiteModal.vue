@@ -93,8 +93,8 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top:0px">
-                    <button type="button" class="btn btn-white" data-dismiss="modal" @click="$emit('close')">닫기</button>
-                    <button type="button" class="btn btn-success" id="addSiteSubmit" @click="registerModal">고객사 등록</button>
+                    <button type="button" class="btn btn-close" data-dismiss="modal" @click="$emit('close')">닫기</button>
+                    <button type="button" class="btn btn-save" id="addSiteSubmit" @click="registerModal">고객사 등록</button>
                 </div>
             </div>
         </div>

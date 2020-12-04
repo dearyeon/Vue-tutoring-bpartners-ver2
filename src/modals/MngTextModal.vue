@@ -58,12 +58,4 @@ export default {
 .modal {
     z-index: 2051 !important;
 }
-.btn-close{
-    background: #808080;
-    color: #ffffff;
-}
-.btn-save {
-    background: #ed5565;
-    color: #ffffff;
-}
 </style>

@@ -217,11 +217,12 @@ export default {
 			this.$swal
 				.fire({
 					title: '일시 정지를 해제하시겠습니까?',
-					confirmButtonColor: '#8FD0F5',
+					confirmButtonColor: '#ed5565',
 					confirmButtonText: '확인',
 					showCancelButton: true,
-					cancelButtonText: '취소',
-					cancelButtonColor: '#d8d8d8',
+					cancelButtonText: '닫기',
+					cancelButtonColor: '#808080',
+                    reverseButtons: true,
 				})
 				.then(async result => {
 					if (result.isConfirmed) {
@@ -238,7 +239,7 @@ export default {
 				.fire({
 					title: '수정 하시겠습니까?',
 					confirmButtonText: '확인',
-					confirmButtonColor: '#8FD0F5',
+					confirmButtonColor: '#ed5565',
 				})
 				.then(async result => {
 					if (result.isConfirmed) {
@@ -249,7 +250,7 @@ export default {
 									text: '결제 카드 정보가 수정되었습니다',
 									icon: 'success',
 									confirmButtonText: '확인',
-									confirmButtonColor: '#8FD0F5',
+									confirmButtonColor: '#ed5565',
 								})
 								.then(result => {
 									if (result.isConfirmed) {
@@ -263,7 +264,7 @@ export default {
 								text: res.message.errMsg,
 								icon: 'error',
 								confirmButtonText: '확인',
-								confirmButtonColor: '#8FD0F5',
+								confirmButtonColor: '#ed5565',
 							})
 					}
 				})
@@ -273,7 +274,7 @@ export default {
 				.fire({
 					title: '삭제 하시겠습니까?',
 					confirmButtonText: '확인',
-					confirmButtonColor: '#8FD0F5',
+					confirmButtonColor: '#ed5565',
 				})
 				.then(async result => {
 					if (result.isConfirmed) {
@@ -284,7 +285,7 @@ export default {
 									text: '결제 카드 정보가 삭제되었습니다',
 									icon: 'success',
 									confirmButtonText: '확인',
-									confirmButtonColor: '#8FD0F5',
+									confirmButtonColor: '#ed5565',
 								})
 								.then(result => {
 									if (result.isConfirmed) {
@@ -310,9 +311,9 @@ export default {
 						+ `<br/>환불 처리 하시겠습니까?`,
 					icon: 'warning',
 					showCancelButton: true,
-					cancelButtonColor: '#d8d8d8',
-					cancelButtonText: '취소',
-					confirmButtonColor: '#8FD0F5',
+					cancelButtonColor: '#808080',
+					cancelButtonText: '닫기',
+					confirmButtonColor: '#ed5565',
 					confirmButtonText: '확인',
 					showLoaderOnConfirm: true,
 					reverseButtons: true,
@@ -329,7 +330,7 @@ export default {
 									html: '환불 처리에 실패하였습니다.<br/>' + res.message,
 									icon: 'error',
 									confirmButtonText: '확인',
-									confirmButtonColor: '#8FD0F5',
+									confirmButtonColor: '#ed5565',
 								})
 								.then(result => {
 									if (result.isConfirmed) this.refresh()
@@ -340,7 +341,7 @@ export default {
 									text: '환불 처리 되었습니다',
 									icon: 'success',
 									confirmButtonText: '확인',
-									confirmButtonColor: '#8FD0F5',
+									confirmButtonColor: '#ed5565',
 								})
 								.then(result => {
 									if (result.isConfirmed) this.refresh()
@@ -359,9 +360,9 @@ export default {
 						+ `<br/>결제 진행 하시겠습니까?`,
 					icon: 'warning',
 					showCancelButton: true,
-					cancelButtonColor: '#d8d8d8',
-					cancelButtonText: '취소',
-					confirmButtonColor: '#8FD0F5',
+					cancelButtonColor: '#808080',
+					cancelButtonText: '닫기',
+					confirmButtonColor: '#ed5565',
 					confirmButtonText: '확인',
 					showLoaderOnConfirm: true,
 					reverseButtons: true,
@@ -378,7 +379,7 @@ export default {
 									html: '결제 처리에 실패하였습니다.<br/>' + res.message,
 									icon: 'error',
 									confirmButtonText: '확인',
-									confirmButtonColor: '#8FD0F5',
+									confirmButtonColor: '#ed5565',
 								})
 								.then(result => {
 									if (result.isConfirmed) this.refresh()
@@ -389,7 +390,7 @@ export default {
 									text: '결제 처리 되었습니다',
 									icon: 'success',
 									confirmButtonText: '확인',
-									confirmButtonColor: '#8FD0F5',
+									confirmButtonColor: '#ed5565',
 								})
 								.then(result => {
 									if (result.isConfirmed) this.refresh()
@@ -404,10 +405,10 @@ export default {
 				.fire({
 					html: `실패사유: ${info}`,
 					confirmButtonText: '수동 재결제',
-					confirmButtonColor: '#8FD0F5',
+					confirmButtonColor: '#ed5565',
 					showCancelButton: true,
-					cancelButtonColor: '#d8d8d8',
-					cancelButtonText: '취소',
+					cancelButtonColor: '#808080',
+					cancelButtonText: '닫기',
 					reverseButtons: true,
 				})
 				.then(result => {
@@ -432,10 +433,11 @@ export default {
 					this.$swal.fire({
 						title: '총 ' + res.data.targetCnt + '명의 일괄결제가 진행 됩니다.',
 						confirmButtonText: '확인',
-						confirmButtonColor: '#8FD0F5',
+						confirmButtonColor: '#ed5565',
 						showCancelButton: true,
-						cancelButtonText: '취소',
-						cancelButtonColor: '#ff7674'
+						cancelButtonText: '닫기',
+						cancelButtonColor: '#808080',
+                    	reverseButtons: true,
 					}).then(result => {
 						if (result.isConfirmed) {
 							this.targetCountCheck = true
@@ -446,13 +448,13 @@ export default {
 					this.$swal.fire({
 						title: '결제할 인원이 없습니다.',
 						confirmButtonText: '확인',
-						confirmButtonColor: '#8FD0F5'
+						confirmButtonColor: '#ed5565'
 					})
 				} else {
 					this.$swal.fire({
 						title: '성공건수:' + res.data.successCnt + '<br/>실패건수:' + res.data.failCnt,
 						confirmButtonText: '확인',
-						confirmButtonColor: '#8FD0F5'
+						confirmButtonColor: '#ed5565'
 					}).then(result => {
 						if (result.isConfirmed) {
 							this.targetCountCheck = false
@@ -465,7 +467,7 @@ export default {
 					.fire({
 						title: res.message,
 						confirmButtonText: '확인',
-						confirmButtonColor: '#8FD0F5',
+						confirmButtonColor: '#ed5565',
 					})
 			}
 		},
@@ -487,10 +489,11 @@ export default {
 					this.$swal.fire({
 						title: '총 ' + res.data.targetCnt + '명의 일괄결제가 진행 됩니다.',
 						confirmButtonText: '확인',
-						confirmButtonColor: '#8FD0F5',
+						confirmButtonColor: '#ed5565',
 						showCancelButton: true,
 						cancelButtonText: '취소',
-						cancelButtonColor: '#ff7674'
+						cancelButtonColor: '#808080',
+                    	reverseButtons: true,
 					}).then(result => {
 						if (result.isConfirmed) {
 							this.targetCountCheck = true
@@ -501,13 +504,13 @@ export default {
 					this.$swal.fire({
 						title: '결제할 인원이 없습니다.',
 						confirmButtonText: '확인',
-						confirmButtonColor: '#8FD0F5'
+						confirmButtonColor: '#ed5565'
 					})
 				} else {
 					this.$swal.fire({
 						title: '성공건수:' + res.data.successCnt + '<br/>실패건수:' + res.data.failCnt,
 						confirmButtonText: '확인',
-						confirmButtonColor: '#8FD0F5'
+						confirmButtonColor: '#ed5565'
 					}).then(result => {
 						if (result.isConfirmed) {
 							this.targetCountCheck = false
@@ -520,7 +523,7 @@ export default {
 					.fire({
 						title: res.message,
 						confirmButtonText: '확인',
-						confirmButtonColor: '#8FD0F5',
+						confirmButtonColor: '#ed5565',
 					})
 			}
 
@@ -533,7 +536,7 @@ export default {
 				this.$swal.fire({
 					title: 'success',
 					confirmButtonText: '확인',
-					confirmButtonColor: '#8FD0F5',
+					confirmButtonColor: '#ed5565',
 				}).then(result => {
 					if (result.isConfirmed) {
 						this.refresh();
@@ -544,7 +547,7 @@ export default {
 					.fire({
 						title: res.message,
 						confirmButtonText: '확인',
-						confirmButtonColor: '#8FD0F5',
+						confirmButtonColor: '#ed5565',
 					})
 			}
 
@@ -555,10 +558,11 @@ export default {
 			this.$swal.fire({
 				title: text + ' 하시겠습니까?',
 				confirmButtonText: '확인',
-				confirmButtonColor: '#8FD0F5',
+				confirmButtonColor: '#ed5565',
 				showCancelButton: true,
-				cancelButtonText: '취소',
-				cancelButtonColor: '#d8d8d8',
+				cancelButtonText: '닫기',
+				cancelButtonColor: '#808080',
+                reverseButtons: true,
 			}).then(async result => {
 				if (result.isConfirmed) {
 					await api.post('/partners/pchargeStatus', {boIdx: this.currentItem.idx, status: val})

@@ -164,6 +164,7 @@ export default {
 			if (result === 2000) {
 				this.$swal.fire({
 					title: `${this.curOrder.user.name}님에게 입과 완료 되었습니다.`,
+                    confirmButtonColor: '#ed5565',
 				}).then( r => {
 					if(r.isConfirmed) {
 						this.refreshData()
@@ -174,7 +175,8 @@ export default {
 				this.$swal.fire({
 					title: message,
 					icon: 'warning',
-					confirmButtonText: 'OK'
+					confirmButtonText: 'OK',
+                    confirmButtonColor: '#ed5565',
 				})
 			}
 		},
@@ -189,6 +191,7 @@ export default {
 					icon: 'success',
 					html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>성공 건수 <strong>${data.successCnt}</strong>건<br/>실패 건수 <strong>${data.failCnt}</strong>건<br/>`,
 					confirmButtonText: 'OK',
+                    confirmButtonColor: '#ed5565',
 				}).then (r => {
 					if (r.isConfirmed) {
 						if (data.failCnt > 0) {
@@ -205,7 +208,8 @@ export default {
 				this.$swal.fire({
 					title: data.errorMsgs,
 					icon: 'warning',
-					confirmButtonText: 'OK'
+					confirmButtonText: 'OK',
+                    confirmButtonColor: '#ed5565',
 				})
 			}
 			this.loading1 = false
@@ -219,7 +223,8 @@ export default {
 
 			if(result === 2000) {
 				this.$swal.fire({
-					title:`${this.curOrder.user.name}님에게 AI 레벨테스트 티켓이 지급 되었습니다.`
+					title:`${this.curOrder.user.name}님에게 AI 레벨테스트 티켓이 지급 되었습니다.`,
+                    confirmButtonColor: '#ed5565',
 				}).then( r => {
 					if(r.isConfirmed) {
 						this.refreshData()
@@ -230,7 +235,8 @@ export default {
 					title: '취소 실패',
 					icon: 'warning',
 					text: message,
-					confirmButtonText: 'OK'
+					confirmButtonText: 'OK',
+                    confirmButtonColor: '#ed5565',
 				})
 			}
 
@@ -248,6 +254,7 @@ export default {
 					icon: 'success',
 					html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>성공 건수 <strong>${data.successCnt}</strong>건<br/>실패 건수 <strong>${data.failCnt}</strong>건<br/>`,
 					confirmButtonText: 'OK',
+                    confirmButtonColor: '#ed5565',
 				})
 				this.refreshData()
 			}
@@ -286,6 +293,7 @@ export default {
 						this.$swal.fire({
 							title:`${item.user.name}님 입과 취소가 완료되었습니다.`,
 							confirmButtonText: 'OK',
+                    		confirmButtonColor: '#ed5565',
 						})
 						this.refreshData()
 					} else if(result === 1000) {
@@ -293,7 +301,8 @@ export default {
 							title: '취소 실패',
 							text: message,
 							icon: 'warning',
-							confirmButtonText: 'OK'
+							confirmButtonText: 'OK',
+                    		confirmButtonColor: '#ed5565',
 						})
 					}
 				}
@@ -327,6 +336,7 @@ export default {
 				this.$swal.fire({
 					title: `일괄 취소 결과 입니다.`,
 					html: `대상 건수 <strong>${data.targetCnt}</strong>건<br/>성공 건수 <strong>${data.successCnt}</strong>건<br/>실패 건수 <strong>${data.failCnt}</strong>건<br/>`,
+                    confirmButtonColor: '#ed5565',
 				}).then (r => {
 					if (r.isConfirmed) {
 						if (data.failCnt > 0) {
@@ -343,7 +353,8 @@ export default {
 				this.$swal.fire({
 					title: '취소 실패',
 					icon: 'warning',
-					confirmButtonText: 'OK'
+					confirmButtonText: 'OK',
+                    confirmButtonColor: '#ed5565',
 				})
 			}
 			this.loading2 = false
