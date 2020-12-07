@@ -78,6 +78,7 @@ import CusIdField from "@/components/CusIdField.vue";
 import Table from "@/components/Table.vue";
 import ItemButton from "@/components/ItemButton.vue";
 import MngTextModal from "@/modals/MngTextModal.vue";
+import MngField from "@/components/MngField";
 
 export default {
 	data() {
@@ -107,7 +108,8 @@ export default {
 		CusIdField,
 		Table,
 		ItemButton,
-		MngTextModal
+		MngTextModal,
+		MngField
 	},
 	created() {
 		this.refreshData()
