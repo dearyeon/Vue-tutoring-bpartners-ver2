@@ -25,7 +25,7 @@
 					{{ item.goods ? item.goods.charge_plan.ticket_cnt : '' }}회
 				</td>
 				<td>{{ item.user.app_user ? item.user.app_user.level : '' }}</td>
-				<td>{{ item.user.department }}</td>
+				<td><div class="department">{{ item.user.department }}</div></td>
 				<td>{{ item.user.position }}</td>
 				<td>{{ item.user.emp_no }}</td>
 				<td>
@@ -289,4 +289,10 @@ export default {
 	right: 105px;
 }
 
+.department {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 80px;
+	white-space: nowrap;
+}
 </style>
