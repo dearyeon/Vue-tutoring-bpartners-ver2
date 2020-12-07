@@ -28,7 +28,7 @@
 				<td>{{ item.user.email }}</td>
 				<td>{{ item.user.cel }}</td>
 				<td>{{ item.user.company }}</td>
-				<td>{{ item.user.department }}</td>
+				<td><div class="department">{{ item.user.department }}</div></td>
 				<td>{{ item.user.position }}</td>
 				<td>{{ item.user.emp_no }}</td>
 				<td v-for="col in cfs" :key="col.id">{{ getGTP(col.type, item.user[col.col_id]) }}</td>
@@ -465,6 +465,12 @@ export default {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	width: 70px;
+	white-space: nowrap;
+}
+.department {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 80px;
 	white-space: nowrap;
 }
 </style>
