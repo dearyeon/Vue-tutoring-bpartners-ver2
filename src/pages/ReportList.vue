@@ -17,7 +17,7 @@
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
 				<td>
-					{{ item.use_ticket_info && item.ticket_summary ? parseInt(item.goods.charge_plan.secs_per_day/60) * (item.use_ticket_info.length) : '-'}}분/
+					{{ item.use_ticket_info && item.ticket_summary ? totalLessonMin(item) : '-'}}분/
 					{{ item.ticket_summary ? item.ticket_summary.use_ticket_cnt : '-' }}회
 				</td>
 				<td>
@@ -265,6 +265,14 @@ export default {
 
 		sort() {
 			this.orders.reverse()
+		}
+	},
+	computed: {
+		totalLessonMin:() => {
+			return (item) => {
+				const {ticket_summary} = item
+				return parseInt((ticket_summary.ticket_cnt * 1200 - ticket_summary.sum_remain_secs)/60);
+			}
 		}
 	}
 };
