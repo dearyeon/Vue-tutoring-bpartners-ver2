@@ -177,10 +177,16 @@ export default {
 
 				let dateInfo = {}
 				calendar.forEach(date => {
-					if (order.use_ticket_info)
-						dateInfo[date] = order.use_ticket_info ? order.use_ticket_info.find(element => date.substring(0, 2) + '-' + date.substring(3, 5) === element.use_dt.substring(5, 10)) ? order.use_ticket_info.length+'회' : '' : ''
+					let count = 0
+					if (order.use_ticket_info) {
+						order.use_ticket_info.find(element => {
+							if (date.substring(0, 2) + '-' + date.substring(3, 5) === element.use_dt.substring(5, 10)) {
+								count++
+							}
+						})
+						dateInfo[date] = count ? count + '회' : ''
+					}
 				})
-
 				dataWs.push(Object.assign(
 					{
 						'번호': index + 1,
