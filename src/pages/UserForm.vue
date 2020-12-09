@@ -36,16 +36,17 @@
                     <tr>
                         <th>이름</th>
                         <td><input type="text" class="form-control" v-model="name"/></td>
+                        <span v-if="!name">이름을 입력해 주세요.</span>
                     </tr>
                     <tr>
                         <th>이메일</th>
                         <td><input type="text" class="form-control" v-model="email"/></td>
+                        <span v-if="!email">이메일을 입력해 주세요.</span>
                     </tr>
                     <tr>
                         <th>전화/휴대폰</th>
-                        <td>
-                            <input type="text" class="form-control" v-model="cel"/>
-                        </td>
+                        <td><input type="text" class="form-control" v-model="cel"/></td>
+                        <span v-if="!cel">전화/휴대폰을 입력해 주세요.</span>
                     </tr>
                 </table>
             </div>
@@ -80,6 +81,12 @@ export default {
             if(this.newPassword !== this.newPasswordCheck) {
                 this.$swal.fire({
                     title: `새 비밀번호가 서로 일치하지 않습니다.`,
+                    icon: 'warning',
+                    confirmButtonColor: '#ed5565'
+                })
+            } else if (!this.name || !this.email || !this.cel) {
+                this.$swal.fire({
+                    title: `비밀번호는 10자 이상이어야 하며, 숫자/대문자/소문자/특수문자를 모두 포함해야 합니다.`,
                     icon: 'warning',
                     confirmButtonColor: '#ed5565'
                 })

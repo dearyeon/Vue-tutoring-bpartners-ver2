@@ -75,6 +75,7 @@ import Header from "@/components/Header.vue";
 import Content from "@/components/Content.vue";
 import NameField from "@/components/NameField.vue";
 import CusIdField from "@/components/CusIdField.vue";
+import ModalField from "@/components/CusIdField.vue";
 import Table from "@/components/Table.vue";
 import ItemButton from "@/components/ItemButton.vue";
 import MngTextModal from "@/modals/MngTextModal.vue";
@@ -106,6 +107,7 @@ export default {
 		Content,
 		NameField,
 		CusIdField,
+		ModalField,
 		Table,
 		ItemButton,
 		MngTextModal,
@@ -333,7 +335,7 @@ export default {
 		async cancel(item) {
 			this.$swal.fire({
 				icon: 'warning',
-				title: '취소 하시겠습니까?',
+				html: `<strong>${item.user.name}(${item.user.email?item.user.email:item.user.cus_id})</strong>님<br/>을 취소 하시겠습니까?`,
 				showCancelButton: true,
 				confirmButtonText: 'OK',
 				confirmButtonColor: '#ed5565',
