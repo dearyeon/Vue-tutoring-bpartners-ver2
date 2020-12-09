@@ -48,7 +48,7 @@
 				<td>{{ item.approve_dt && moment(item.approve_dt).format('YYYY-MM-DD HH:mm') }}</td>
 				<td>
 					<ItemButton v-if="$shared.isSupervisor() && !item.approve_dt && !item.apply_ccl_dt" text="승인" variant="success btn-outline"
-								@click="approve(item.idx,item.user.name,item.user.email )"/>
+								@click="approve(item)"/>
 				</td>
 				<td v-if="$shared.isSupervisor()">
 					<ItemButton v-if="!!item.apply_ccl_dt" text="복원" variant="primary" @click="applyReviveCheck(item)"/>
@@ -288,9 +288,9 @@ export default {
 			}
 		},
 
-		approve(idx, name, email) {
+		approve(item) {
 			this.$swal.fire({
-				html: `<strong>${name}(${email})</strong>님<br/>을 승인 하시겠습니까?`,
+				html: `<strong>${item.user.name}(${item.user.email?item.user.email:item.user.cus_id})</strong>님<br/>을 승인 하시겠습니까?`,
 				showCancelButton: true,
 				confirmButtonText: '승인',
 				confirmButtonColor: '#ed5565',
@@ -300,7 +300,7 @@ export default {
 				reverseButtons: true,
 			}).then(async (r) => {
 				if (r.isConfirmed) {
-					const res = await api.post('/partners/approveOrder', {boIdx: idx}).catch((e) => {
+					const res = await api.post('/partners/approveOrder', {boIdx: item.idx}).catch((e) => {
 						console.log('error : approveOrder ' + e)
 					})
 
@@ -420,7 +420,7 @@ export default {
 		},
 		applyReviveCheck(item) {
 			this.$swal.fire({
-				html: `<strong>${item.user.name}(${item.user.email})</strong>님<br/>을 복원 하시겠습니까?`,
+				html: `<strong>${item.user.name}(${item.user.email?item.user.email:item.user.cus_id})</strong>님<br/>을 복원 하시겠습니까?`,
 				showCancelButton: true,
 				confirmButtonText: '복원',
 				confirmButtonColor: '#ed5565',

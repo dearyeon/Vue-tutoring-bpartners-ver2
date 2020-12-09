@@ -46,7 +46,7 @@
 	</Content>
 
 
-	<IssueDateModal v-if="showIssueModal" title="단건 입과" button-text="입과" :subtitle="`${curOrder.user.name} ( ${curOrder.user.email}) 님을 입과 하시겠습니까?`"  @close="[showIssueModal=false,curOrder=null]" @save="issueOrder"/>
+	<IssueDateModal v-if="showIssueModal" title="단건 입과" button-text="입과" :subtitle="`${curOrder.user.name} (${curOrder.user.email?curOrder.user.email:curOrder.user.cus_id}) 님을 입과 하시겠습니까?`"  @close="[showIssueModal=false,curOrder=null]" @save="issueOrder"/>
 
 	<IssueDateModal v-if="showIssueBatchModal" button-text="입과" title="일괄 입과" :subtitle="`대상 건수 ${targetCnt}건`" @close="showIssueBatchModal=false" @save="issueBatch"/>
 
