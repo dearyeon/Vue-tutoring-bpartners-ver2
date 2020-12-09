@@ -305,7 +305,7 @@ export default {
 					})
 
 					if (res.result === 2000) {
-						this.$swal('신청이 완료되었습니다.').then(r => {
+						this.$swal('승인이 완료되었습니다.').then(r => {
 							if (r.isConfirmed) this.refreshData()
 						})
 					} else {

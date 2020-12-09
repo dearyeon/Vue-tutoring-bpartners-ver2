@@ -150,7 +150,7 @@
 				}
 				if (!this.calEmail) {
 					this.$swal.fire({
-						title: '승인 실패',
+						title: '신청 실패',
 						text: '이메일을 조회해 주세요.',
 						icon: 'warning',
 						confirmButtonText: 'OK',
@@ -158,7 +158,7 @@
 					})
 				} else if (!this.email || !this.name || !this.cpIdx) {
 					this.$swal.fire({
-						title: '승인 실패',
+						title: '신청 실패',
 						text: '이메일, 이름, 수강권은 필수 항목 입니다.',
 						icon: 'warning',
 						confirmButtonText: 'OK',
@@ -168,7 +168,7 @@
 					const res = await api.post('/partners/importApply', form)
 					if (res.result === 2000) {
 						this.$swal.fire({
-							title: '단건 승인이 완료 되었습니다.',
+							title: '단건 신청이 완료 되었습니다.',
 							confirmButtonText: 'OK',
 							confirmButtonColor: '#ed5565',
 						})

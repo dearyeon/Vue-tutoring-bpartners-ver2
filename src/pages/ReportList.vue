@@ -217,9 +217,19 @@ export default {
 				));
 			});
 			var ws = XLSX.utils.json_to_sheet(dataWs);
+			for (const key in ws) {
+				if(key !== '!ref') {
+					ws[key].s = {
+						font: {
+							sz: 11, // font size
+							bold: true // bold
+						}
+					}
+				}
+				console.log(ws[key])
+			}
 			var wb = XLSX.utils.book_new();
-			//console.log(XLSX)	
-			//wb.add_format({'bold': True})	
+			wb.add_format({'bold': true})
 			const test1 = XLSX.utils.book_append_sheet(wb, ws, '수업현황');
 			const test = XLSX.writeFile(wb, shared.getCurBatch().company + ' 수업현황 ' + shared.getCurBatch().b_no + '회차.xlsx');
 			//console.log(test1,test)
