@@ -155,7 +155,7 @@ export default {
 						count++
 					}
 				}
-				min = parseInt(total / 60)
+				min = Math.round(total / 60)
 				secs = total - min * 60
 				str += '\n' + count + '회 - ' + min + '분 ' + secs + '초'
 				return str;
@@ -204,7 +204,7 @@ export default {
 						'전체수업수': order.goods ? order.goods.charge_plan.ticket_cnt + '회' : '',
 						'전체수업시간': order.goods ? order.goods.charge_plan.ticket_cnt * order.goods.charge_plan.secs_per_day / 60 + '분' : '',
 						'학습 횟수': order.ticket_summary ? order.ticket_summary.use_ticket_cnt + '회' : '',
-						'학습 시간': order.use_ticket_info && order.goods ? parseInt(order.goods.charge_plan.secs_per_day/60) * (order.use_ticket_info.length) + '분' : '',
+						'학습 시간': order.use_ticket_info && order.goods ? Math.round((order.ticket_summary.ticket_cnt * order.goods.charge_plan.secs_per_day - order.ticket_summary.sum_remain_secs)/60) + '분' : '',
 						'학습률': order.attend_pct+'%',
 						'학습 목표율': batch.target_rt+'%',
 						'관리정보': order.mng_info,
@@ -286,8 +286,8 @@ export default {
 	computed: {
 		totalLessonMin:() => {
 			return (item) => {
-				const {ticket_summary} = item
-				return parseInt((ticket_summary.ticket_cnt * 1200 - ticket_summary.sum_remain_secs)/60);
+				const {ticket_summary, goods} = item
+				return Math.round((ticket_summary.ticket_cnt * goods.charge_plan.secs_per_day - ticket_summary.sum_remain_secs)/60);
 			}
 		}
 	}
