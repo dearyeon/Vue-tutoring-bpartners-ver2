@@ -11,7 +11,7 @@
 
 
 	<Content>
-		<Table :headers="['No','이름','고객식별ID','입과번호','이메일','연락처','수강권','수강권번호','입과일시','입과취소일시','AI지급일시','AI지급','입과/취소']
+		<Table :headers="['No','이름','고객식별ID','입과번호','이메일','연락처','수강권','수강권번호','입과일시','입과취소일시','AI지급일시','관리정보','관리메모','AI지급','입과/취소']
 							.concat( issueBatchError ? '입과결과' : null)"
 			:data="orders"
 			v-slot="{item, i}">
@@ -27,6 +27,12 @@
 			<td>{{ item.issue_ccl_dt && moment(item.issue_ccl_dt).format('YY-MM-DD HH:mm') }}</td>
 			<td>
 				{{ item.alcpt_issue_dt && moment(item.alcpt_issue_dt).format('YY-MM-DD HH:mm') }}
+			</td>
+			<td>
+				<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
+			</td>
+			<td>
+				<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
 			</td>
 			<td>
 				<ItemButton text="AI티켓 지급" variant="success btn-outline" @click="aiModalOpen(item)" />
@@ -47,6 +53,11 @@
 	<IssueDateModal v-if="showAIModal" title="AI 지급" button-text="지급" :is-ai="true" :subtitle="`${curOrder.user.name} ( ${curOrder.user.email}) 님에게 AI 티켓을 입과 하시겠습니까?`" :item="curOrder"  @close="showAIModal = false" @save="issueAILeveltestTicket"/>
 
 	<IssueDateModal v-if="showAIBatchModal" title="AI 일괄 지급" button-text="지급" :is-ai="true" :subtitle="`대상 건수 ${targetCnt}건`" :item="curOrder"  @close="showAIBatchModal = false" @save="issueAILeveltestTicketBatch"/>
+
+	<MngTextModal title="관리정보" :content="content" v-if="showInfoModal" @close="showInfoModal = !showInfoModal" @save="updateInfo"/>
+
+	<MngTextModal title="관리메모" :content="content" v-if="showMemoModal" @close="showMemoModal = !showMemoModal" @save="updateMemo"/>
+
 </div>
 </template>
 
@@ -62,6 +73,8 @@ import NameField from "@/components/NameField.vue";
 import CusIdField from "@/components/CusIdField.vue";
 import Table from "@/components/Table.vue";
 import ItemButton from "@/components/ItemButton.vue";
+import MngTextModal from "@/modals/MngTextModal.vue";
+import MngField from "@/components/MngField";
 
 export default {
 	components: {
@@ -71,7 +84,9 @@ export default {
 		CusIdField,
 		Table,
 		ItemButton,
-		IssueDateModal
+		IssueDateModal,
+		MngTextModal,
+		MngField
 	},
 	data() {
 		return {
@@ -82,6 +97,8 @@ export default {
 			showIssueBatchModal: false,
 			showAIModal: false,
 			showAIBatchModal: false,
+			showMemoModal: false,
+			showInfoModal: false,
 			includeCancel: false,
 			batch: null,
 			curOrder: null,
@@ -266,6 +283,34 @@ export default {
 			if(result === 2000) {
 				this.targetCnt =  data.targetCnt
 				this.showIssueBatchModal = true
+			}
+		},
+
+		memoModalOpen(order, content) {
+			this.content = content
+			this.curOrder = order
+			this.showMemoModal = !this.showMemoModal
+		},
+
+		infoModalOpen(order, content) {
+			this.content = content
+			this.curOrder = order
+			this.showInfoModal = !this.showInfoModal
+		},
+
+		async updateMemo(text) {
+			this.showMemoModal = !this.showMemoModal
+			const response = await shared.updateMemo(this.curOrder.idx,text);
+			if (response === 2000) {
+				this.refreshData()
+			}
+		},
+
+		async updateInfo(text) {
+			this.showInfoModal = !this.showInfoModal
+			const response = await shared.updateInfo(this.curOrder.idx, text)
+			if (response === 2000)  {
+				this.refreshData()
 			}
 		},
 

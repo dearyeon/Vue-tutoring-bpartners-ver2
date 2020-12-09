@@ -1,6 +1,6 @@
 <template>
 	<span @click="$shared.isSupervisor() && $emit('click',item,data)">
-		<div class="mng-text" v-if="data">{{data}}</div>
+		<div :class="$shared.isSupervisor() && 'mng-text'" v-if="data">{{data}}</div>
 		<ItemButton v-if="!data && $shared.isSupervisor()" :text="btnTitle" variant="default" />
 	</span>
 </template>
