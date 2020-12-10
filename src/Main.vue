@@ -1,7 +1,9 @@
 <template>
 	<div id="wrapper">
-		<input type="text" name="prevent_autofill_id" id="prevent_autofill_id" value="" style="display:none;" />
-		<input type="password" name="prevent_autofill_pw" id="prevent_autofill_pw" value="" style="display:none;" />
+		<form>
+			<input type="text" name="prevent_autofill_id" id="prevent_autofill_id" value="" style="display:none;" />
+			<input type="password" name="prevent_autofill_pw" id="prevent_autofill_pw" value="" style="display:none;" />
+		</form>
 
 		<Menu class="menu" :menuToggle="menuToggle"></Menu>
 		<div :id="menuToggle?'page-wrapper':'container'" class="gray-bg animated">
