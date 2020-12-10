@@ -8,16 +8,17 @@
                     <div class="field">
                         <th>현재 비밀번호</th>
                         <td><input type="password" class="form-control" v-model="curPw"/></td>
+                        <span class="notice" v-if="newPw?!curPw:false" style="margin-left:25px;">현재 비밀번호를 입력해 주세요.</span>
                     </div><br/>
                     <div class="field" style="margin-top:10px">
                         <th>새 비밀번호</th>
                         <td><input type="password" class="form-control" v-model="newPw"/></td>
-                        <span v-if="curPw?!newPw:false" :style="notice?'color:red':''" style="margin-left:25px;">새 비밀번호를 입력해 주세요.</span>
+                        <span class="notice" v-if="curPw?!newPw:false" style="margin-left:25px;">새 비밀번호를 입력해 주세요.</span>
                     </div><br/>
                     <div class="field">
                         <th>새 비밀번호 확인</th>
                         <td><input type="password" class="form-control" v-model="newPwCheck"/></td>
-                        <span v-if="newPw !== newPwCheck" :style="notice?'color:red':''" style="margin-left:25px;">새 비밀번호가 서로 일치하지 않습니다.</span>
+                        <span class="notice" v-if="newPw !== newPwCheck" style="margin-left:25px;">새 비밀번호가 서로 일치하지 않습니다.</span>
                     </div><br/>
                 </div>
             </div>
@@ -36,23 +37,23 @@
                     <div class="field">
                         <th>이름</th>
                         <td><input type="text" class="form-control" v-model="name"/></td>
-                        <span v-if="!name" :style="notice?'color:red':''" style="margin-left:25px;">이름을 입력해 주세요.</span>
+                        <span class="notice" v-if="!name" style="margin-left:25px;">이름을 입력해 주세요.</span>
                     </div><br/>
                     <div class="field">
                         <th>이메일</th>
                         <td><input type="text" class="form-control" v-model="email"/></td>
-                        <span v-if="!email" :style="notice?'color:red':''" style="margin-left:25px;">이메일을 입력해 주세요.</span>
+                        <span class="notice" v-if="!email" style="margin-left:25px;">이메일을 입력해 주세요.</span>
                     </div><br/>
                     <div class="field">
                         <th>전화/휴대폰</th>
                         <td><input type="text" class="form-control" v-model="tel"/></td>
-                        <span v-if="!tel" :style="notice?'color:red':''" style="margin-left:25px;">전화/휴대폰을 입력해 주세요.</span>
+                        <span class="notice" v-if="!tel" style="margin-left:25px;">전화/휴대폰을 입력해 주세요.</span>
                     </div><br/>
                 </div>
             </div>
         </div>
         <div class="text-center">
-            <br/><br/><a class="btn btn-success" @click="save">수정</a>
+            <br/><br/><a class="btn btn-primary" @click="save" :disabled="!isSave()">수정</a>
         </div>
     </div>
 </div>
@@ -84,10 +85,11 @@ export default {
         this.tel = this.$shared.getAccount().tel
     },
     methods: {
+        isSave() {
+            return this.name && this.email && this.tel && (this.curPw?this.newPw:true) && (this.newPw?this.curPw:true) && (this.newPw === this.newPwCheck)
+        },
         save() {
-            if(!this.name || !this.email || !this.tel || this.curPw ?!this.newPw:false || this.newPw !== this.newPwCheck) {
-                this.notice = true
-            } else {
+            if(this.isSave()) {
                 this.$swal.fire({
                     title: `수정하시겠습니까?`,
                     icon: 'warning',
@@ -127,7 +129,17 @@ export default {
             }
 
         }
-    }
+    },
+    /*watch: {
+        notice() {
+            console.log('@@@',this.curPw?(this.newPw&&this.newPwCheck):true)
+            console.log(this.newPw === this.newPwCheck)
+             console.log(this.name,'@@@')
+            if(this.curPw?(this.newPw&&this.newPwCheck):true && this.newPw === this.newPwCheck && this.name && this.email && this.tel)
+            console.log('213213')
+            return false
+        }
+    }*/
 }
 </script>
 
