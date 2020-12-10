@@ -7,15 +7,15 @@
                 <div>
                     <div class="field">
                         <th>현재 비밀번호</th>
-                        <td><input type="password" class="form-control" v-model="oldPassword"/></td>
+                        <td><input type="password" class="form-control" v-model="curPw"/></td>
                     </div><br/>
                     <div class="field" style="margin-top:10px">
                         <th>새 비밀번호</th>
-                        <td><input type="password" class="form-control" v-model="newPassword"/></td>
+                        <td><input type="password" class="form-control" v-model="newPw"/></td>
                     </div><br/>
                     <div class="field">
                         <th>새 비밀번호 확인</th>
-                        <td><input type="password" class="form-control" v-model="newPasswordCheck"/></td>
+                        <td><input type="password" class="form-control" v-model="newPwCheck"/></td>
                     </div><br/>
                 </div>
             </div>
@@ -81,13 +81,14 @@
 <script>
 import Header from "@/components/Header.vue";
 import shared from "@/common/shared";
+import api from "@/common/api";
 
 export default {
     data() {
         return {
-            oldPassword: '',
-            newPassword: '',
-            newPasswordCheck: '',
+            curPw: '',
+            newPw: '',
+            newPwCheck: '',
             name: '',
             email: '',
             tel: '',
@@ -104,18 +105,11 @@ export default {
     },
     methods: {
         save() {
-            const reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{10,}$/;
             if(!this.name || !this.email || !this.tel) {
                 this.notice = true
-            } else if(this.newPassword !== this.newPasswordCheck) {
+            } else if(this.newPw !== this.newPwCheck) {
                 this.$swal.fire({
                     title: `새 비밀번호가 서로 일치하지 않습니다.`,
-                    icon: 'warning',
-                    confirmButtonColor: '#ed5565'
-                })
-            } else if (false === reg.test(this.newPassword)) {
-                this.$swal.fire({
-                    title: `비밀번호는 10자 이상이어야 하며, 숫자/대문자/소문자/특수문자를 모두 포함해야 합니다.`,
                     icon: 'warning',
                     confirmButtonColor: '#ed5565'
                 })
@@ -128,13 +122,32 @@ export default {
                     cancelButtonColor: '#808080',
                     confirmButtonColor: '#ed5565',
                     reverseButtons: true,
-                }).then (r => {
+                }).then (async r => {
 					if (r.isConfirmed) {
-                        this.$swal.fire({
-                            title: `수정되었습니다.`,
-                            icon: 'success',
-                            confirmButtonColor: '#ed5565',
-                        })
+                        let params
+                        if(this.newPwCheck) params = { name:this.name, email:this.email, tel:this.tel, curPw:this.curPw, newPw:this.newPw }
+                        else params = { name:this.name, email:this.email, tel:this.tel }
+
+                        const { result, message } = await api.post("/partners/account", params );
+                        if(result === 2000) {
+                            let account = this.$shared.getAccount()
+                            account.name = this.name
+                            account.email = this.email
+                            account.tel = this.tel
+                            this.$shared.setAccount(account)
+                            this.$swal.fire({
+                                title: `수정되었습니다.`,
+                                icon: 'success',
+                                confirmButtonColor: '#ed5565',
+                            })
+                        } else if(result === 1000) {
+                            this.$swal.fire({
+                                title: message,
+                                icon: 'warning',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#ed5565',
+                            })
+                        }
                     }
                 })
             }

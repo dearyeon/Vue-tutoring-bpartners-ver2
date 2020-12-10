@@ -197,7 +197,6 @@ export default {
 				})
 			}
 		},
-
 		async issueBatch(frDt, toDt) {
 			this.loading1 = true
 			this.showIssueBatchModal = false

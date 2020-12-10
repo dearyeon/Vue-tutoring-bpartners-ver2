@@ -237,6 +237,7 @@ export default {
 		}, 500),
 
 		openModal() {
+			//this.$shared.swal('개발 진행중인 기능입니다.')
 			this.$swal({
 				title:'개발 진행중인 기능입니다.',
 				confirmButtonColor: '#ed5565'
