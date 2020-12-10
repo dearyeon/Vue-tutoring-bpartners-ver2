@@ -12,10 +12,12 @@
                     <div class="field" style="margin-top:10px">
                         <th>새 비밀번호</th>
                         <td><input type="password" class="form-control" v-model="newPw"/></td>
+                        <span v-if="curPw?!newPw:false" :style="notice?'color:red':''" style="margin-left:25px;">새 비밀번호를 입력해 주세요.</span>
                     </div><br/>
                     <div class="field">
                         <th>새 비밀번호 확인</th>
                         <td><input type="password" class="form-control" v-model="newPwCheck"/></td>
+                        <span v-if="newPw !== newPwCheck" :style="notice?'color:red':''" style="margin-left:25px;">새 비밀번호가 서로 일치하지 않습니다.</span>
                     </div><br/>
                 </div>
             </div>
@@ -83,20 +85,8 @@ export default {
     },
     methods: {
         save() {
-            if(!this.name || !this.email || !this.tel) {
+            if(!this.name || !this.email || !this.tel || this.curPw ?!this.newPw:false || this.newPw !== this.newPwCheck) {
                 this.notice = true
-            } else if(this.curPw || !this.newPw) {
-                this.$swal.fire({
-                    title: `새 비밀번호를 입력해 주세요.`,
-                    icon: 'warning',
-                    confirmButtonColor: '#ed5565'
-                })
-            } else if(this.newPw !== this.newPwCheck) {
-                this.$swal.fire({
-                    title: `새 비밀번호가 서로 일치하지 않습니다.`,
-                    icon: 'warning',
-                    confirmButtonColor: '#ed5565'
-                })
             } else {
                 this.$swal.fire({
                     title: `수정하시겠습니까?`,
