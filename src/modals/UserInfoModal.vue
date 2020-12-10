@@ -31,8 +31,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-12" style="margin-top:20px; display:inline;">
-                                    수업시간 : <span class="s_lesson_time">{{ userInfo.use_ticket_info && userInfo.ticket_summary && userInfo.goods.charge_plan?
-                                        parseInt(userInfo.goods.charge_plan.secs_per_day/60)*(userInfo.use_ticket_info.length+1) :'-' }}분/
+                                    수업시간 : <span class="s_lesson_time">{{ userInfo.use_ticket_minutes}}분/
                                         {{ userInfo.ticket_summary?userInfo.ticket_summary.use_ticket_cnt:'-'}}회</span>
                                     <strong><div class="stat-percent s_stat_percent">{{ userInfo.attend_pct }}%</div></strong> 
                                     <progress :value="userInfo.attend_pct" max="100" style="width:100%"></progress>
@@ -164,7 +163,7 @@ export default {
                         count++
                     }
                 }
-                min = parseInt(total/60)
+                min = Math.round(total/60)
                 secs = total - min*60
                 str+='\n'+count+'회 - '+min+'분 '+secs+'초'
                 return str;

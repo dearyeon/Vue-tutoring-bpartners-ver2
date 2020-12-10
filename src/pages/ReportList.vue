@@ -17,7 +17,7 @@
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.attend_pct }}%</td>
 				<td>
-					{{ item.use_ticket_info && item.ticket_summary ? totalLessonMin(item) : '-'}}분/
+					{{ item.use_ticket_minutes}}분/
 					{{ item.ticket_summary ? item.ticket_summary.use_ticket_cnt : '-' }}회
 				</td>
 				<td>
@@ -204,7 +204,7 @@ export default {
 						'전체수업수': order.goods ? order.goods.charge_plan.ticket_cnt + '회' : '',
 						'전체수업시간': order.goods ? order.goods.charge_plan.ticket_cnt * order.goods.charge_plan.secs_per_day / 60 + '분' : '',
 						'학습 횟수': order.ticket_summary ? order.ticket_summary.use_ticket_cnt + '회' : '',
-						'학습 시간': order.use_ticket_info && order.goods ? Math.round((order.ticket_summary.ticket_cnt * order.goods.charge_plan.secs_per_day - order.ticket_summary.sum_remain_secs)/60) + '분' : '',
+						'학습 시간': order.use_ticket_minutes + '분',
 						'학습률': order.attend_pct+'%',
 						'학습 목표율': batch.target_rt+'%',
 						'관리정보': order.mng_info,
@@ -226,7 +226,7 @@ export default {
 						}
 					}
 				}
-				console.log(ws[key])
+				// console.log(ws[key])
 			}
 			var wb = XLSX.utils.book_new();
 			//wb.add_format({'bold': true})
@@ -283,14 +283,6 @@ export default {
 			this.orders.reverse()
 		}
 	},
-	computed: {
-		totalLessonMin:() => {
-			return (item) => {
-				const {ticket_summary, goods} = item
-				return Math.round((ticket_summary.ticket_cnt * goods.charge_plan.secs_per_day - ticket_summary.sum_remain_secs)/60);
-			}
-		}
-	}
 };
 </script>
 
