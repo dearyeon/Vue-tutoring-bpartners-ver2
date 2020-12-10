@@ -47,28 +47,6 @@
                         <span v-if="!tel" :style="notice?'color:red':''" style="margin-left:25px;">전화/휴대폰을 입력해 주세요.</span>
                     </div><br/>
                 </div>
-                <!--
-                <table class="table">
-                    <tr>
-                        <th>이름</th>
-                        <td><input type="text" class="form-control" :placeholder="$shared.getAccount().name" v-model="name"/></td>
-                    </tr>
-                    <span v-if="!name" :style="notice?'color:red':''">이름을 입력해 주세요.</span>
-                </table>
-                </div>
-                <table class="table">
-                    <tr>
-                        <th>이메일</th>
-                        <td><input type="text" class="form-control" :placeholder="$shared.getAccount().email" v-model="email"/></td>
-                        <span v-if="!email" :style="notice?'color:red':''">이메일을 입력해 주세요.</span>
-                    </tr>
-                    <tr>
-                        <th>전화/휴대폰</th>
-                        <td><input type="text" class="form-control" :placeholder="$shared.getAccount().tel" v-model="tel"/></td>
-                        <span v-if="!tel" :style="notice?'color:red':''">전화/휴대폰을 입력해 주세요.</span>
-                    </tr>
-                </table>
-                -->
             </div>
         </div>
         <div class="text-center">
@@ -107,6 +85,12 @@ export default {
         save() {
             if(!this.name || !this.email || !this.tel) {
                 this.notice = true
+            } else if(this.curPw || !this.newPw) {
+                this.$swal.fire({
+                    title: `새 비밀번호를 입력해 주세요.`,
+                    icon: 'warning',
+                    confirmButtonColor: '#ed5565'
+                })
             } else if(this.newPw !== this.newPwCheck) {
                 this.$swal.fire({
                     title: `새 비밀번호가 서로 일치하지 않습니다.`,
