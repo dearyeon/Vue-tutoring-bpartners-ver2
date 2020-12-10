@@ -35,7 +35,7 @@
 				<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
 			</td>
 			<td>
-				<ItemButton text="AI티켓 지급" variant="success btn-outline" @click="aiModalOpen(item)" />
+				<ItemButton v-if="item.charge_plan.mode==$shared.consts.MODE_ENGLISH && !item.issue_ccl_dt" text="AI티켓 지급" variant="success btn-outline" @click="aiModalOpen(item)" />
 			</td>
 			<td>
 				<ItemButton v-if="!item.issue_dt" text="입과" variant="success btn-outline" @click="issueModalOpen(item)" />
