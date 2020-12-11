@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import api from "@/common/api";
+import swal from 'vue-sweetalert2';
 
 const shared = {
 	bast: null,
@@ -126,10 +127,11 @@ const shared = {
 		if (idx > -1) arr.splice(idx, 1)
 	},
 	swal(title, html, confirmButtonText, showCancelButton, icon) {
-		this.$swal({
+		console.log('1')
+		return $swal({
 			title: 'title',
 		})
-		return this.$swal.fire({
+		/*return this.$swal.fire({
 			title: title,
 			html: html, 
 			icon: icon,
@@ -139,7 +141,7 @@ const shared = {
 			cancelButtonText: '닫기',
 			cancelButtonColor: '#808080',
 			reverseButtons: true,
-		})
+		})*/
 	}
 }
 

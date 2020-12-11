@@ -72,8 +72,7 @@ export default {
             newPwCheck: '',
             name: '',
             email: '',
-            tel: '',
-            notice: false
+            tel: ''
         }
     },
     components: {
@@ -115,6 +114,10 @@ export default {
                                 title: `수정되었습니다.`,
                                 icon: 'success',
                                 confirmButtonColor: '#ed5565',
+                            }).then(r => {
+                                if (r.isConfirmed) {
+                                    this.curPw='', this.newPw='', this.newPwCheck=''
+                                }
                             })
                         } else if(result === 1000) {
                             this.$swal.fire({
