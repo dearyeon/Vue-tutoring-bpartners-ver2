@@ -80,6 +80,7 @@ import Table from "@/components/Table.vue";
 import ItemButton from "@/components/ItemButton.vue";
 import MngTextModal from "@/modals/MngTextModal.vue";
 import MngField from "@/components/MngField";
+import modal from "@/common/modal.js";
 
 export default {
 	data() {
@@ -333,39 +334,11 @@ export default {
 		},
 
 		async cancel(item) {
-			this.$swal.fire({
-				icon: 'warning',
-				html: `<strong>${item.user.name}(${item.user.email?item.user.email:item.user.cus_id})</strong>님<br/>을 취소 하시겠습니까?`,
-				showCancelButton: true,
-				confirmButtonText: 'OK',
-				confirmButtonColor: '#ed5565',
-				cancelButtonText: '닫기',
-				cancelButtonColor: '#808080',
-				reverseButtons: true,
-
+			modal.confirm(item.user.name, item.user.email, item.user.cus_id, '취소', async()=>{
+				return await api.post('/partners/applyCancel', {boIdx:item.idx})
+			}, ()=>{
+				this.refreshData()
 			})
-				.then(async result => {
-					if (result.isConfirmed) {
-						const res = await api.post('/partners/applyCancel', {boIdx: item.idx})
-						if (res.result === 2000) {
-							this.$swal.fire({
-								text: '취소가 완료되었습니다.',
-								icon: 'success',
-								confirmButtonText: '확인',
-								confirmButtonColor: '#ed5565',
-							})
-							this.refreshData()
-						} else {
-							this.$swal({
-								title: '다시 시도 해주세요',
-								text: res.message.errMsg,
-								icon: 'error',
-								confirmButtonText: '확인',
-								confirmButtonColor: '#ed5565',
-							})
-						}
-					}
-				})
 		},
 
 		async approveBatchCheck() {
@@ -421,43 +394,12 @@ export default {
 			this.filteredData()
 		},
 		applyReviveCheck(item) {
-			this.$swal.fire({
-				html: `<strong>${item.user.name}(${item.user.email?item.user.email:item.user.cus_id})</strong>님<br/>을 복원 하시겠습니까?`,
-				showCancelButton: true,
-				confirmButtonText: '복원',
-				confirmButtonColor: '#ed5565',
-				cancelButtonText: '닫기',
-				cancelButtonColor: '#808080',
-				showLoaderOnConfirm: true,
-				reverseButtons: true,
-			}).then(r => {
-				if (r.isConfirmed) {
-					this.applyRevive(item.idx);
-				}
+			modal.confirm(item.user.name, item.user.email, item.user.cus_id, '복원', async()=>{
+				return await api.post('/partners/applyRevive', {boIdx:item.idx})
+			}, ()=>{
+				this.refreshData()
 			})
 		},
-		async applyRevive(boIdx) {
-			const res = await api.post('/partners/applyRevive', {boIdx}).catch((e) => {
-				console.log('error : approveOrder ' + e)
-			})
-
-			if (res.result === 2000) {
-				this.$swal.fire({
-					title:'복원이 완료되었습니다.',
-					confirmButtonColor: '#ed5565',
-				}).then(r => {
-					if (r.isConfirmed) this.refreshData()
-				})
-			} else if (res.result === 1000) {
-				this.$swal.fire({
-					html: `<strong>${res.message}</strong>`,
-					icon: 'error',
-					confirmButtonColor: '#ed5565',
-					confirmButtonText: '확인'
-				})
-
-			}
-		}
 	},
 }
 </script>
