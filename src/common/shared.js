@@ -127,11 +127,7 @@ const shared = {
 		if (idx > -1) arr.splice(idx, 1)
 	},
 	swal(title, html, confirmButtonText, showCancelButton, icon) {
-		console.log('1')
-		return $swal({
-			title: 'title',
-		})
-		/*return this.$swal.fire({
+		return swal({
 			title: title,
 			html: html, 
 			icon: icon,
@@ -141,7 +137,7 @@ const shared = {
 			cancelButtonText: '닫기',
 			cancelButtonColor: '#808080',
 			reverseButtons: true,
-		})*/
+		})
 	}
 }
 
