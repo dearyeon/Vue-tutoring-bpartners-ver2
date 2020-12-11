@@ -2,7 +2,17 @@ import Vue from 'vue'
 import api from "@/common/api";
 import swal from 'vue-sweetalert2';
 
+export const consts = {
+	ACCOUNT_LEVEL_SITE_MANAGER : 'S',
+	ACCOUNT_LEVEL_PARTNER_MANAGER : 'P',
+	ACCOUNT_LEVEL_SUPERVISOR : 'V',
+
+	MODE_ENGLISH : 'E',   //영어
+	MODE_CHINESE : 'C',   //중국어
+}
+
 const shared = {
+	consts: consts,
 	bast: null,
 	sortKey: '',
 	items: [],
@@ -139,12 +149,6 @@ const shared = {
 			reverseButtons: true,
 		})
 	}
-}
-
-export const consts = {
-	ACCOUNT_LEVEL_SITE_MANAGER : 'S',
-	ACCOUNT_LEVEL_PARTNER_MANAGER : 'P',
-	ACCOUNT_LEVEL_SUPERVISOR : 'V'
 }
 
 Object.defineProperty(Vue.prototype,'$shared', {
