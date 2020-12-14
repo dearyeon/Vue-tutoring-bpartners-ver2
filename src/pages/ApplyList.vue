@@ -15,12 +15,13 @@
 		<Content>
 			<Table
 				:headers="['No','이름','고객식별ID','이메일','연락처','소속','부서','직위','사번']
-							.concat(cfs.map(a => a.title), ['수강권','제공가','회사지원금','자기부담금'])
-							.concat(['관리정보','관리메모'])
-							.concat(['신청번호','신청일시','취소일시','승인일시'])
+							.concat(cfs.map(a => a.title))
+							.concat([{column:'수강권',default:false,var:{var1:'goods',var2:'charge_plan',var3:'title'}},
+							'제공가','회사지원금','자기부담금','관리정보','관리메모','신청번호',
+							{column:'신청일시',default:true,var:{var1:'apply_dt'}},'취소일시','승인일시'])
 							.concat($shared.isSupervisor()?['승인','취소/복원']:null)
 							.concat( applyBatchError ? '승인결과' : null)"
-				:data="orders"
+				:data="orders" @sort="sort"
 				v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td><NameField :item="item"></NameField></td>
@@ -86,6 +87,7 @@ export default {
 	data() {
 		return {
 			cfs: [],
+			cfsHeader: [],
 			applyBatchError: false,
 			applyResultMsgs: {},
 			ordersAll: [],
@@ -141,6 +143,7 @@ export default {
 			}
 
 			this.filteredData()
+			this.$shared.sortBy(this.orders,'apply_dt')
 		},
 
 		filteredData() {
@@ -400,6 +403,9 @@ export default {
 				this.refreshData()
 			})
 		},
+		sort(sortKey) {
+			this.$shared.sortBy(this.orders,sortKey.var1,sortKey.var2)
+		}
 	},
 }
 </script>

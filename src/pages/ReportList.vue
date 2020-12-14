@@ -9,9 +9,11 @@
 
 
 		<Content>
-			<Table :headers="['No',{column:'이름',sort:false,var1:'user',var2:'name'},'고객식별ID',{column:'학습률',sort:true,var1:'attend_pct'},
+			<Table :headers="['No',{column:'이름',sort:false,var:{var1:'user',var2:'name'}},'고객식별ID',
+					{column:'학습률',default:true,var:{var1:'attend_pct'}},
 					'수업','전체','학습 레벨','부서','직위','사번',
-					{column:'관리정보',sort:false,var1:'mng_info'},{column:'관리메모',sort:false,var1:'mng_memo'}].concat(['수업 히스토리(횟수)'])"
+					{column:'관리정보',default:false,var:{var1:'mng_info'}},
+					{column:'관리메모',default:false,var:{var1:'mng_memo'}},'수업 히스토리(횟수)']"
 				:data="orders"
 					v-slot="{item, i}" @sort="sort">
 				<td>{{ i+1 }}</td>
@@ -281,9 +283,8 @@ export default {
 				this.refresh()
 			}
 		},
-
-		sort(sortKey1,sortKey2) {
-			this.$shared.sortBy(this.orders,sortKey1,sortKey2)
+		sort(sortKey) {
+			this.$shared.sortBy(this.orders,sortKey.var1,sortKey.var2)
 		}
 	},
 };

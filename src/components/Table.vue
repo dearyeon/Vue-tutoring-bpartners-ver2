@@ -1,9 +1,10 @@
 <template>
     <table class="table table-striped table-hover dataTable">
         <thead>
+			{{$shared.sortKey}}
         <tr>
-            <th v-for="(header,i) in columns" :key="i" v-if="header">
-                <div v-if="typeof header === 'object'" class="sort" @click="[$emit('sort',header.var1,header.var2),sorting(header)]">{{header.column}}<i :class="header.i"></i></div>
+            <th v-for="(header,i) in headers" :key="i" v-show="header">
+                <div v-if="typeof header==='object'&&header" class="sort" @click="[$emit('sort',header.var),sorting(header,i)]">{{header.column}}<i :class="isSort[i]"></i></div>
                 <div v-else>{{header}}</div>
             </th>
         </tr>
@@ -24,36 +25,33 @@ export default {
     },
     data() {
         return {
-			columns:[],
+			isSort:[],
 			sortKey:''
         }
 	},
 	created() {
-		this.columns = this.headers
-		this.columns.forEach(header => {
-			if(typeof header === 'object' && header!==null) {
-				if(header.sort===true) {
-					(header.column==='학습률')? header.i='fa fa-sort-desc':header.i='fa fa-sort-asc'
+		this.headers.forEach((header,i) => {
+			if(typeof header==='object'&&header) {
+				if(header.default===true) {
+					(header.column==='학습률')? this.isSort[i]='fa fa-sort-desc':this.isSort[i]='fa fa-sort-asc'
 					this.sortKey = header.column
-					console.log(header.i)
-				} else header.i='fa fa-sort'
+				} else this.isSort[i]='fa fa-sort'
 			}
 		})
-		console.log(this.headers)
 	},
     methods: {
-        sorting (header) {
+        sorting (header,i) {
 			if(this.sortKey === header.column) {
-				if (header.i==='fa fa-sort-desc') header.i='fa fa-sort-asc'
-				else if(header.i==='fa fa-sort-asc') header.i='fa fa-sort-desc'
+				if (this.isSort[i]==='fa fa-sort-desc') this.isSort[i]='fa fa-sort-asc'
+				else if(this.isSort[i]==='fa fa-sort-asc') this.isSort[i]='fa fa-sort-desc'
 			} else {
-				this.sorKey = header.column
-				this.columns.forEach(header => {
-					if(typeof header === 'object' && header!==null && header.i!=='fa fa-sort') {
-						header.i='fa fa-sort'
+				this.sortKey = header.column
+				this.headers.forEach((header,i) => {
+					if(header.column && this.isSort[i]!=='fa fa-sort') {
+						this.isSort[i]='fa fa-sort'
 					}
 				})
-				header.i = 'fa fa-sort-asc'
+				this.isSort[i] = 'fa fa-sort-asc'
 			}
         }
     }
