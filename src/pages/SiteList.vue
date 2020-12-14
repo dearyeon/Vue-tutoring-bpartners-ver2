@@ -6,9 +6,11 @@
 		</Header>
 
 		<Content>
-			<Table :headers="['No',' ','고객사 명','담당자 이름','부서','전화번호','이메일','등록일자','수정일자']
+			<Table :headers="['No',' ',{column:'고객사 명',default:true,var:{var1:'company'}},
+							  '담당자 이름','부서','전화번호','이메일',
+							  {column:'등록일자',default:false,var:{var1:'reg_dt'}},'수정일자']
 							.concat($shared.isSupervisor()?['고객사수정']:null)"
-				:data="items"
+				:data="items" @sort="sort"
 				v-slot="{item, i}">
 				<td>{{ total - ((current_page - 1) * per_page) - i }}</td>
 				<td><img alt="image" class="img-rounded" :src="$shared.getSiteImgThumbnailUrl(item.ci_img)"
@@ -76,6 +78,7 @@ export default {
 			this.per_page = res.data.per_page
 			this.items = res.data.data
 			this.total = res.data.total
+			this.$shared.sortBy(this.items,'company')
 		},
 		async search(searchKey) {
 			this.searchKey = searchKey
@@ -102,6 +105,9 @@ export default {
 		},
 		updateItem() {
 			////
+		},
+		sort(sortKey) {
+			this.$shared.sortBy(this.items,sortKey.var1,sortKey.var2,sortKey.var3)
 		}
 	}
 }

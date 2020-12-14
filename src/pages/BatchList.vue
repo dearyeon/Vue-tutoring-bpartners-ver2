@@ -6,9 +6,13 @@
 		</Header>
 
 		<Content>
-			<Table :headers="['No','고객사','담당자','회차','달성률','빌링','현재상태','신청시작일시','신청종료일시','수정일시']
+			<Table :headers="['No',{column:'고객사',default:false,var:{var1:'company'}},
+							  '담당자','회차','달성률','빌링',
+							  {column:'현재상태',default:true,var:{}},
+							  {column:'신청시작일시',default:false,var:{}},
+							  {column:'신청종료일시',default:false,var:{}},'수정일시']
 							.concat($shared.isSupervisor()?['차수관리','신청양식설정','','URL']:null)"
-				:data="list"
+				:data="list" @sort="sort"
 				v-slot="{item, i}">
 				<td>{{ total - ((current_page - 1) * per_page) - i }}</td>
 				<td>{{ item.company }}</td>
@@ -134,6 +138,8 @@ export default {
 			this.total_page = data.last_page
 			this.per_page = data.per_page
 			this.total = data.total
+
+			this.$shared.sortBy(this.list,'apply','apply_fr_dt')
 		},
 		async search(searchKey) {
 			this.searchKey = searchKey
@@ -208,6 +214,9 @@ export default {
 				return val ? 'b-r-sm bg-success' : '완료'
 			}
 		},
+		sort(sortKey) {
+			this.$shared.sortBy(this.list,sortKey.var1,sortKey.var2,sortKey.var3)
+		}
 	}
 }
 </script>
