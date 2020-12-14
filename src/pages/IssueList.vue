@@ -11,9 +11,15 @@
 
 
 	<Content>
-		<Table :headers="['No','이름','고객식별ID','입과번호','이메일','연락처','수강권','수강권번호','입과일시','입과취소일시','AI지급일시','관리정보','관리메모','AI지급','입과/취소']
+		<Table :headers="['No',{column:'이름',default:true,var:{var1:'user',var2:'name'}},
+						  '고객식별ID','입과번호','이메일','연락처',
+						  {column:'수강권',default:false,var:{var1:'charge_plan',var2:'title'}},'수강권번호',
+						  {column:'입과일시',default:false,var:{var1:'issue_dt'}},
+						  {column:'입과취소일시',default:false,var:{var1:'issue_ccl_dt'}},
+						  {column:'AI지급일시',default:false,var:{var1:'alcpt_issue_dt'}},
+						  '관리정보','관리메모','AI지급','입과/취소']
 							.concat( issueBatchError ? '입과결과' : null)"
-			:data="orders"
+			:data="orders" @sort="sort"
 			v-slot="{item, i}">
 			<td>{{ i + 1 }}</td>
 			<td><NameField :item="item"></NameField></td>
@@ -138,6 +144,7 @@ export default {
 				console.log(data.orders)
 			}
 
+			this.$shared.sortBy(this.orders,'user','name')
 		},
 
 		filteredData() {
@@ -402,8 +409,10 @@ export default {
 				})
 			}
 			this.loading2 = false
+		},
+		sort(sortKey) {
+			this.$shared.sortBy(this.orders,sortKey.var1,sortKey.var2,sortKey.var3)
 		}
-
 	}
 };
 </script>

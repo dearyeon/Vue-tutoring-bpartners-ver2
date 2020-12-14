@@ -1,7 +1,6 @@
 <template>
     <table class="table table-striped table-hover dataTable">
         <thead>
-			{{$shared.sortKey}}
         <tr>
             <th v-for="(header,i) in headers" :key="i" v-show="header">
                 <div v-if="typeof header==='object'&&header" class="sort" @click="[$emit('sort',header.var),sorting(header)]">{{header.column}}<i :class="isSort[header.column]"></i></div>
