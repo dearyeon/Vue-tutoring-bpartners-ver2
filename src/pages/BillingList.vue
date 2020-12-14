@@ -11,8 +11,14 @@
 		</Header>
 
 		<Content>
-			<Table :headers="['No','주문번호','학생','고객식별ID','수강권','결제금액','사용될카드','상태','집행일시','집행카드','집행TID/실패사유','관리정보','관리메모']"
-				:data="orders"
+			<Table :headers="['No','주문번호',{column:'학생',default:true,var:{var1:'user',var2:'name'}},
+							  '고객식별ID',{column:'수강권',default:false,var:{var1:'goods',var2:'charge_plan',var3:'title'}},
+							  '결제금액','사용될카드',{column:'상태',default:false,var:{var1:'charge_status'}},
+							  {column:'집행일시',default:false,var:{var1:'charged_dt'}},'집행카드',
+							  {column:'집행TID/실패사유',default:false,var:{var1:'charged_t_id'}},
+							  {column:'관리정보',default:false,var:{var1:'mng_info'}},
+							  {column:'관리메모',default:false,var:{var1:'mng_memo'}}]"
+				:data="orders" @sort="sort"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
 				<td>{{ item.idx }}</td>
@@ -192,6 +198,7 @@ export default {
 			this.listInfo = data.list
 
 			this.filteredData()
+			this.$shared.sortBy(this.orders,'user','name')
 		},
 		filteredData() {
 			this.orders = this.ordersAll
@@ -607,6 +614,9 @@ export default {
 				this.refresh()
 			}
 		},
+		sort(sortKey) {
+			this.$shared.sortBy(this.orders,sortKey.var1,sortKey.var2,sortKey.var3)
+		}
 	},
 	computed: {
 		chargeBtnStatus() {
