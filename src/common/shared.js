@@ -101,9 +101,14 @@ const shared = {
 		return res.result;
 	},
 	
-	sortBy (items, sortKey1, sortKey2) {
+	sortBy (items, sortKey1, sortKey2, sortKey3) {
 		if(this.items !== items) this.sortKey = '', this.items=items
-		if(sortKey2) {
+		if(sortKey3) {
+			(this.sortKey === sortKey3) ? items.reverse() : (items.sort(function (a, b) {
+				return !a[sortKey1] ? -1 : !b[sortKey1] ? 1 : !a[sortKey1][sortKey2] ? -1 : !b[sortKey1][sortKey2] ? 1 : a[sortKey1][sortKey2][sortKey3] < b[sortKey1][sortKey2][sortKey3] ? -1 : a[sortKey1][sortKey2][sortKey3] > b[sortKey1][sortKey2][sortKey3] ? 1 : 0
+			}))
+			this.sortKey = sortKey3
+		} else if(sortKey2) {
 			(this.sortKey === sortKey2) ? items.reverse() : (items.sort(function (a, b) {
 				return !a[sortKey1] ? -1 : !b[sortKey1] ? 1 : a[sortKey1][sortKey2] < b[sortKey1][sortKey2] ? -1 : a[sortKey1][sortKey2] > b[sortKey1][sortKey2] ? 1 : 0
 			}))

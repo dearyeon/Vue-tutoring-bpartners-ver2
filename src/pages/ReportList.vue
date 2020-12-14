@@ -9,7 +9,7 @@
 
 
 		<Content>
-			<Table :headers="['No',{column:'이름',sort:false,var:{var1:'user',var2:'name'}},'고객식별ID',
+			<Table :headers="['No',{column:'이름',default:false,var:{var1:'user',var2:'name'}},'고객식별ID',
 					{column:'학습률',default:true,var:{var1:'attend_pct'}},
 					'수업','전체','학습 레벨','부서','직위','사번',
 					{column:'관리정보',default:false,var:{var1:'mng_info'}},
