@@ -86,21 +86,21 @@ const shared = {
 	removeCurSite() {
 		localStorage.removeItem('curSite')
 	},
-	
+
 	async updateMemo(boIdx, memo) {
 		const res = await api.post('/partners/updateMemo', {boIdx, memo}).catch((e) => {
 			console.log('error : updateMemo ' + e)
 		})
 		return res.result;
 	},
-	
+
 	async updateInfo(boIdx, info){
 		const res = await api.post('/partners/updateInfo', {boIdx, info}).catch((e) => {
 			console.log('error : updateInfo ' + e)
 		})
 		return res.result;
 	},
-	
+
 	sortBy (items, sortKey1, sortKey2, sortKey3) {
 		if(this.items !== items) this.sortKey = '', this.items=items
 		if(sortKey3) {
@@ -123,15 +123,19 @@ const shared = {
 	logout(msg, isError) {
 		shared.removeToken()
 		shared.removeAccount()
-		Vue.swal(msg).then(()=>{
-			if(isError) {
-				//에러에 의한 로그아웃인 경우에만, 모든 세션정보 초기화
-				shared.removeCurBatch()
-				shared.removeCurSite()
-			}
+		if(msg) {
+			Vue.swal(msg).then(()=>{
+				if(isError) {
+					//에러에 의한 로그아웃인 경우에만, 모든 세션정보 초기화
+					shared.removeCurBatch()
+					shared.removeCurSite()
+				}
 
+				location = '/'
+			})
+		}else {
 			location = '/'
-		})
+		}
 	},
 	async getUserInfo(boIdx) {
 		const res = await api.get('/partners/report', { boIdx })

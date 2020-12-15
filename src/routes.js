@@ -11,7 +11,7 @@ import BatchList from "@/pages/BatchList.vue";
 import BatchForm from "@/pages/BatchForm.vue";
 import SiteList from "@/pages/SiteList.vue";
 import SiteForm from "@/pages/SiteForm.vue";
-import UserForm from "@/pages/UserForm.vue";
+import AccountForm from "@/pages/AccountForm.vue";
 import BatchApplyPageForm from "@/pages/BatchApplyPageForm.vue";
 
 const routes = [
@@ -37,7 +37,7 @@ const routes = [
 			{path: '/site/list', name: "siteList", component: SiteList},
 			{path: "/site/form", name: "siteNew", component: SiteForm, props: true},
 			{path: "/site/form/:idx", name: "siteForm", component: SiteForm, props: true},
-			{path: "/user/form", component: UserForm},
+			{path: "/account", component: AccountForm},
 		],
 	},
 ];

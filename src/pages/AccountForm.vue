@@ -7,18 +7,22 @@
                 <div>
                     <div class="field">
                         <th>현재 비밀번호</th>
-                        <td><input type="password" class="form-control" v-model="curPw"/></td>
+                        <td><input type="password" class="form-control" v-model="curPw" ref="curPw"/></td>
                         <span class="notice" v-if="newPw?!curPw:false" style="margin-left:25px;">현재 비밀번호를 입력해 주세요.</span>
                     </div><br/>
                     <div class="field" style="margin-top:10px">
                         <th>새 비밀번호</th>
                         <td><input type="password" class="form-control" v-model="newPw"/></td>
                         <span class="notice" v-if="curPw?!newPw:false" style="margin-left:25px;">새 비밀번호를 입력해 주세요.</span>
+                        <span class="notice" v-if="curPw && newPw && curPw==newPw" style="margin-left:25px;">현재 비밀번호와 동일합니다. 다르게 입력해 주세요.</span>
                     </div><br/>
                     <div class="field">
                         <th>새 비밀번호 확인</th>
                         <td><input type="password" class="form-control" v-model="newPwCheck"/></td>
-                        <span class="notice" v-if="newPw !== newPwCheck" style="margin-left:25px;">새 비밀번호가 서로 일치하지 않습니다.</span>
+                        <span class="notice" v-if="newPw !== newPwCheck" style="margin-left:25px;">
+							<span v-if="newPwCheck">새 비밀번호 확인과 서로 일치하지 않습니다.</span>
+							<span v-else>새 비밀번호 확인을 입력해 주세요.</span>
+						</span>
                     </div><br/>
                 </div>
             </div>
@@ -79,13 +83,23 @@ export default {
         Header
     },
     created() {
-        this.name = this.$shared.getAccount().name
-        this.email = this.$shared.getAccount().email
-        this.tel = this.$shared.getAccount().tel
+        const me = this.$shared.getAccount()
+    	this.name = me.name
+        this.email = me.email
+        this.tel = me.tel
+
+		if(me.needChangePw) {
+			this.$swal.fire({
+				title: '비밀번호 변경 안내',
+				html: '보안 강화를 위해 최초 1회<br/>직접 비밀번호를 변경하셔야 합니다.'
+			}).then(()=>{
+				this.$refs.curPw.focus()
+			})
+		}
     },
     methods: {
         isSave() {
-            return this.name && this.email && this.tel && (this.curPw?this.newPw:true) && (this.newPw?this.curPw:true) && (this.newPw === this.newPwCheck)
+            return this.name && this.email && this.tel && (this.curPw?this.newPw:true) && (this.newPw?this.curPw:true) && (this.newPw === this.newPwCheck) && (this.curPw&&this.newPw?this.curPw!=this.newPw:true)
         },
         save() {
             if(this.isSave()) {
@@ -114,10 +128,16 @@ export default {
                                 title: `수정되었습니다.`,
                                 icon: 'success',
                                 confirmButtonColor: '#ed5565',
-                            }).then(r => {
-                                if (r.isConfirmed) {
-                                    this.curPw='', this.newPw='', this.newPwCheck=''
-                                }
+                            }).then(() => {
+								if(this.newPw) {
+									this.$swal.fire({
+										html: '새로운 비밀번호로<br/>다시 로그인 바랍니다.',
+										icon: 'success',
+										confirmButtonColor: '#ed5565',
+									}).then(r => {
+										this.$shared.logout()
+									})
+								}
                             })
                         } else if(result === 1000) {
                             this.$swal.fire({
