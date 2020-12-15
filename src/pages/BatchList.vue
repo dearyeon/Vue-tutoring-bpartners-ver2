@@ -8,9 +8,9 @@
 		<Content>
 			<Table :headers="['No',{column:'고객사',default:false,var:{var1:'company'}},
 							  '담당자','회차','달성률','빌링',
-							  {column:'현재상태',default:true,var:{}},
-							  {column:'신청시작일시',default:false,var:{}},
-							  {column:'신청종료일시',default:false,var:{}},'수정일시']
+							  {column:'현재상태',default:true,var:{var1:'state'}},
+							  {column:'신청시작일시',default:false,var:{var1:'batches',var2:'selectedApplyIdx',var3:'fr_dt'}},
+							  {column:'신청종료일시',default:false,var:{var1:'batches',var2:'selectedApplyIdx',var3:'to_dt'}},'수정일시']
 							.concat($shared.isSupervisor()?['차수관리','신청양식설정','','URL']:null)"
 				:data="list" @sort="sort"
 				v-slot="{item, i}">
@@ -18,7 +18,7 @@
 				<td>{{ item.company }}</td>
 				<td>{{ item.name }}</td>
 				<td>
-					<select v-model="item.selectedApplyIdx" v-if="item.batches.length" style="height:30px; width:100%">
+					<select v-model="item.selectedApplyIdx" v-if="item.batches.length" style="height:30px; width:100%" @change="setBatchState()">
 						<option v-for="(apply,i) in item.batches" :value="i" :key="apply.id">
 							{{ apply.b_no }}회차
 							({{ moment(apply.fr_dt).format('YY.MM.DD') }}-{{ moment(apply.to_dt).format('MM.DD') }}){{ item.batches[item.selectedApplyIdx].del_yn ? ' 취소' : '' }}
@@ -139,7 +139,22 @@ export default {
 			this.per_page = data.per_page
 			this.total = data.total
 
-			this.$shared.sortBy(this.list,'apply','apply_fr_dt')
+			this.setBatchState()
+			this.$shared.sortBy(this.list,'state')
+		},
+		setBatchState() {
+			const date = moment().format('YYYY-MM-DD')
+			this.list.forEach(item => {
+				if (item.batches.length && date < item.batches[item.selectedApplyIdx].fr_dt) {
+					item['state']=2
+				} else if (item.apply && date >= item.apply.apply_fr_dt && date <= item.apply.apply_to_dt) {
+					item['state']=4
+				} else if (item.batches.length && date >= item.batches[item.selectedApplyIdx].fr_dt && date <= item.batches[item.selectedApplyIdx].to_dt) {
+					item['state']=1
+				} else if (item.batches.length && date > item.batches[item.selectedApplyIdx].to_dt) {
+					item['state']=3
+				}
+			})
 		},
 		async search(searchKey) {
 			this.searchKey = searchKey
