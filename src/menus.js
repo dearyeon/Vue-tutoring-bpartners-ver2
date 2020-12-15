@@ -8,7 +8,7 @@ const menus = [
 	{name: '추가 결제 관리', path: '/billingP/list', accLevel: '', icon: 'credit-card-alt'},
 	{name: shared.isSupervisor()?'차수 관리':'차수 현황', path: '/batch/list', accLevel: 'P', icon: 'list'},
 	{name: shared.isSupervisor()?'사이트 관리':'사이트 현황', path: '/site/list', accLevel: 'P', icon: 'handshake-o'},
-	{name: '본인정보 수정', path: '/account', accLevel: '', icon: 'handshake-o'},
+	{name: '본인정보 수정', path: '/account', accLevel: '', icon: 'user-o'},
 ]
 
 export default menus;
