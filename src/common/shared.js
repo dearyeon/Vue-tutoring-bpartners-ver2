@@ -141,19 +141,6 @@ const shared = {
 	removeElementInArray(arr, item) {
 		const idx = arr.indexOf(item)
 		if (idx > -1) arr.splice(idx, 1)
-	},
-	swal(title, html, confirmButtonText, showCancelButton, icon) {
-		return swal({
-			title: title,
-			html: html, 
-			icon: icon,
-			confirmButtonText: confirmButtonText?confirmButtonText:'확인',
-			confirmButtonColor: '#ed5565',
-			showCancelButton: showCancelButton,
-			cancelButtonText: '닫기',
-			cancelButtonColor: '#808080',
-			reverseButtons: true,
-		})
 	}
 }
 

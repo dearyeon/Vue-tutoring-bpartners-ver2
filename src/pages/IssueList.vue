@@ -81,6 +81,7 @@ import Table from "@/components/Table.vue";
 import ItemButton from "@/components/ItemButton.vue";
 import MngTextModal from "@/modals/MngTextModal.vue";
 import MngField from "@/components/MngField";
+import modal from "@/common/modal.js";
 
 export default {
 	components: {
@@ -328,37 +329,11 @@ export default {
 			}
 		},
 		async issueCancel(item) {
-			console.log(item)
-			this.$swal.fire({
-				title:`${item.user.name}님 입과 취소하시겠습니까?`,
-				showCancelButton: true,
-				cancelButtonText: '닫기',
-				cancelButtonColor: '#808080',
-				confirmButtonText: '확인',
-				confirmButtonColor: '#ed5565',
-				reverseButtons: true,
-			}).then( async r => {
-				if(r.isConfirmed) {
-					const {result,message} = await api.post("/partners/issueCancel", {boIdx:item.idx});
-					if(result === 2000) {
-						this.$swal.fire({
-							title:`${item.user.name}님 입과 취소가 완료되었습니다.`,
-							confirmButtonText: 'OK',
-                    		confirmButtonColor: '#ed5565',
-						})
-						this.refreshData()
-					} else if(result === 1000) {
-						this.$swal.fire({
-							title: '취소 실패',
-							text: message,
-							icon: 'warning',
-							confirmButtonText: 'OK',
-                    		confirmButtonColor: '#ed5565',
-						})
-					}
-				}
+			modal.confirm(item.user.name, item.user.email, item.user.cus_id, '입과 취소', async()=>{
+				return await api.post('/partners/issueCancel', {boIdx:item.idx})
+			}, ()=>{
+				this.refreshData()
 			})
-			
 		},
 		async issueCancelBatchCheck () {
 			const {result, data} = await api.get("/partners/issueCancelBatchCheck", {bbIdx:shared.getCurBatch().idx});

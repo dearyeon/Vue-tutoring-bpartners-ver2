@@ -300,37 +300,10 @@ export default {
 		},
 
 		approve(item) {
-			this.$swal.fire({
-				html: `<strong>${item.user.name}(${item.user.email?item.user.email:item.user.cus_id})</strong>님<br/>을 승인 하시겠습니까?`,
-				showCancelButton: true,
-				confirmButtonText: '승인',
-				confirmButtonColor: '#ed5565',
-				cancelButtonText: '닫기',
-				cancelButtonColor: '#808080',
-				showLoaderOnConfirm: true,
-				reverseButtons: true,
-			}).then(async (r) => {
-				if (r.isConfirmed) {
-					const res = await api.post('/partners/approveOrder', {boIdx: item.idx}).catch((e) => {
-						console.log('error : approveOrder ' + e)
-					})
-
-					if (res.result === 2000) {
-						this.$swal('승인이 완료되었습니다.').then(r => {
-							if (r.isConfirmed) this.refreshData()
-						})
-					} else {
-						this.$swal.fire({
-							html: `<strong>${res.message}</strong>`,
-							icon: 'error',
-							confirmButtonColor: '#ed5565',
-							confirmButtonText: '확인',
-							showLoaderOnConfirm: true,
-							reverseButtons: true,
-						})
-
-					}
-				}
+			modal.confirm(item.user.name, item.user.email, item.user.cus_id, '승인', async()=>{
+				return await api.post('/partners/approveOrder', {boIdx: item.idx})
+			}, ()=>{
+				this.refreshData()
 			})
 		},
 
