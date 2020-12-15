@@ -97,7 +97,8 @@
 </template>
 
 <script>
-	import api from '@/common/api'
+import api from '@/common/api'
+import modal from "@/common/modal.js";
 
 	export default {
 		data () {
@@ -167,31 +168,16 @@
 				} else {
 					const res = await api.post('/partners/importApply', form)
 					if (res.result === 2000) {
-						this.$swal.fire({
-							title: '단건 신청이 완료 되었습니다.',
-							confirmButtonText: 'OK',
-							confirmButtonColor: '#ed5565',
-						})
+						modal.simple('단건 신청이 완료 되었습니다.')
 						this.$router.go(-1)
 					} else if (res.result === 1000) {
-						this.$swal.fire({
-							title: res.message,
-							text: res.data.errMsg,
-							icon: 'warning',
-							confirmButtonText: 'OK',
-							confirmButtonColor: '#ed5565',
-						})
+						modal.simple(res.message,res.data.errMsg,'warning')
 					}
 				}
 			},
 			async checkUser () {
 				if (!this.email) {
-					this.$swal.fire({
-						title: '이메일을 입력하세요.',
-						icon: 'warning',
-						confirmButtonText: 'OK',
-						confirmButtonColor: '#ed5565',
-					})
+					modal.simple('이메일을 입력하세요.','','warning')
 					return
 				}
 				this.calEmail = true
@@ -211,8 +197,8 @@
 					this.cf2 = data.cf2
 
 					this.emailCheck = true
-				} else {
-					this.$swal(res.message)
+				} else if (res.result === 1000) {
+					modal.simple(res.message,'','warning')
 				}
 
 			},

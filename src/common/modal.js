@@ -35,6 +35,15 @@ const modal = {
 				}
 			}
 		})
+	},
+	simple(title, text, icon) {
+		swal.fire({
+			icon: icon,
+			title: title,
+			text: text,
+			confirmButtonText: '확인',
+			confirmButtonColor: '#ed5565'
+		})
 	}
 }
 
