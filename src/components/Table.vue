@@ -52,6 +52,9 @@ export default {
 				})
 				this.isSort[header.column] = 'fa fa-sort-asc'
 			}
+        },
+        filter (header) {
+            
         }
     }
 }
