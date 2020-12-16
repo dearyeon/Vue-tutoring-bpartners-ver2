@@ -5,6 +5,16 @@
 				search-placeholder="이름 or 고객식별ID" @search="setSearch" @reset="setSearch" 
 				btn1-text="학습현황 메일 일괄 발송" @btn1-click="openModal" btn1-variant="success"
 				btn2-text="엑셀 다운로드" @btn2-click="exportExcel" btn2-variant="success" :btn2-loading="loading">
+				<div>
+					<div class="row" style="margin-top:-10px">
+						<h3 class="pull-left">목표율</h3>
+						<h4 class="pull-left" style="margin-left:30px;">{{ batch ? batch.target_rt+'%' : '-' }}</h4>
+					</div>
+					<div class="row">
+						<h3 class="pull-left">평균학습률</h3>
+						<h4 class="pull-left" style="margin-left:30px;">{{ avgAttendPct ? avgAttendPct+'%' : '-' }}</h4>
+					</div>
+				</div>
 		</Header>
 
 
@@ -87,7 +97,8 @@ export default {
 			content:'',
 			curOrderIdx: '',
 			loading: false,
-			curBBIdx: 0
+			curBBIdx: 0,
+			avgAttendPct: 0
 		};
 	},
 	components: {
@@ -112,7 +123,12 @@ export default {
 				return !a['attend_pct'] ? 1 : !b['attend_pct'] ? -1 : a['attend_pct'] > b['attend_pct'] ? -1 : a['attend_pct'] < b['attend_pct'] ? 1 : 0
 			})
 			this.orders = this.ordersAll
+			this.orders.forEach(order => {
+				this.avgAttendPct += order.attend_pct
+			})
+			this.avgAttendPct /= this.orders.length
 			this.batch = data.batch
+			console.log(this.batch)
 			this.filteredData()
 		},
 
