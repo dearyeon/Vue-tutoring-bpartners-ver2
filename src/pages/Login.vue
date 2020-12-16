@@ -8,27 +8,26 @@
 				<p>B2B 파트너사이트에 오신 것을 환영합니다.</p>
 				<br><br><br>
 				<div class="form-group">
-					<input v-model="id" type="text" name="email" class="form-control" placeholder="이메일 주소" required>
+					<input v-model="id" type="text" name="email" class="form-control" placeholder="ID" required>
 				</div>
 				<div class="form-group">
-					<input v-model="pw" type="password" name="password" class="form-control" placeholder="비밀번호" required
+					<input v-model="pw" type="password" name="password" class="form-control" placeholder="PASSWORD" required
 						   v-on:keyup.enter="loginSubmit"
 					/>
 				</div>
 				<button type="submit" class="btn btn-success block full-width m-b" v-on:click="loginSubmit">로그인</button>
-				<!--        <a class="btn-block btn-password text-center" href="#">-->
-				<!--          <small>Forgot your password?</small>-->
-				<!--        </a>-->
-				<!--        <br>-->
-				<!--        <button class="btn btn-sm btn-white btn-block" @click="goToRegister" >B2B 파트너 신청하기</button>-->
+        <button type="button" class="btn btn-outline btn-link" @click="goToFindPassword">
+          <small>Forgot your password?</small>
+        </button>
+        <br>
+<!--        <button class="btn btn-sm btn-white btn-block" @click="goToRegister" >B2B 파트너 신청하기</button>-->
 			</div>
 			<div class="brochure-box">
 				<div class="row text-center">
 					<strong>튜터링은<br>함께하고<br>싶습니다</strong>
 				</div>
 				<div class="row">
-					<a class="btn btn-xs btn-outline btn-brochure" href="https://partners1.tutoring.co.kr/pdfViewer"
-					   target="_blank">
+					<a class="btn btn-xs btn-outline btn-brochure" href="https://res.tutoring.co.kr/res/pdf/Tutoring_brochure.pdf" target="_blank">
 						회사 소개서다운로드
 						<div class="down-icon pull-right"></div>
 					</a>
@@ -74,6 +73,9 @@ export default {
 		},
 		goToRegister() {
 			this.$router.push('/register')
+		},
+		goToFindPassword() {
+			this.$router.push('/findPass')
 		}
 	},
 }

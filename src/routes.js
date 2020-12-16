@@ -13,10 +13,12 @@ import SiteList from "@/pages/SiteList.vue";
 import SiteForm from "@/pages/SiteForm.vue";
 import AccountForm from "@/pages/AccountForm.vue";
 import BatchApplyPageForm from "@/pages/BatchApplyPageForm.vue";
+import FindPassword from '@/pages/FindPassword'
 
 const routes = [
 	{path: "", redirect: "/login"},
 	{path: "/login", component: Login},
+	{path: "/findPass", component: FindPassword},
 	{path: "/register", component: Register},
 	{
 		path: "/main",
