@@ -19,17 +19,20 @@
 
 
 		<Content>
-			<Table :headers="['No',{column:'이름',default:false,var:{var1:'user',var2:'name'}},'고객식별ID',
+			<Table :headers="['No',{column:'이름',default:false,var:{var1:'user',var2:'name'}},'고객식별ID','학습언어','수강권',
 					{column:'학습률',default:true,var:{var1:'attend_pct'}},
-					'수업','전체','학습 레벨','부서','직위','사번',
-					{column:'관리정보',default:false,var:{var1:'mng_info'}},
-					{column:'관리메모',default:false,var:{var1:'mng_memo'}},'수업 히스토리(횟수)']"
+					'수료여부','수업','전체','부서','직위','사번',
+					{column:'관리메모',default:false,var:{var1:'mng_memo'}},
+					{column:'관리정보',default:false,var:{var1:'mng_info'}},'수업 히스토리(횟수)']"
 				:data="orders"
 					v-slot="{item, i}" @sort="sort">
 				<td>{{ i+1 }}</td>
 				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
+				<td>{{ item.goods.charge_plan.mode==='E'?'영어':'중국어' }}</td>
+				<td>{{ item.goods.charge_plan.title }}</td>
 				<td>{{ item.attend_pct }}%</td>
+				<td>{{ item.attend_pct >= batch.target_rt ? '수료':'미수료' }}</td>
 				<td>
 					{{ item.use_ticket_minutes}}분/
 					{{ item.ticket_summary ? item.ticket_summary.use_ticket_cnt : '-' }}회
@@ -38,15 +41,14 @@
 					{{ item.goods ? item.goods.charge_plan.ticket_cnt * parseInt(item.goods.charge_plan.secs_per_day / 60) : '' }}분/
 					{{ item.goods ? item.goods.charge_plan.ticket_cnt : '' }}회
 				</td>
-				<td>{{ item.user.app_user ? item.user.app_user.level : '' }}</td>
 				<td><div class="department">{{ item.user.department }}</div></td>
 				<td>{{ item.user.position }}</td>
 				<td>{{ item.user.emp_no }}</td>
 				<td>
-					<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
+					<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
 				</td>
 				<td>
-					<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
+					<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
 				</td>
 				<td>
 					<div v-for="i in calBatchDate()" :key="i.id">
