@@ -105,10 +105,10 @@
 
 
 <style scoped>
-@import '/template/admin/css/bootstrap.min.css';
-@import '/template/admin/font-awesome/css/font-awesome.css';
-@import '/template/admin/css/animate.css';
-@import '/template/admin/css/style.css';
+/*@import '/template/admin/css/bootstrap.min.css';*/
+/*@import '/template/admin/font-awesome/css/font-awesome.css';*/
+/*@import '/template/admin/css/animate.css';*/
+/*@import '/template/admin/css/style.css';*/
 .body-bg {
 	background-color: rgb(47, 64, 79);
 }

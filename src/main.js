@@ -21,14 +21,14 @@ router.beforeEach((to, from, next) => {
 		next()
 	}
 	else if (to.path !='/login' && !shared.isLoggedIn()) {
-	  next({path: '/login'})
-  }
-  else if(to.path !='/login' && to.path !='/account' && shared.getAccount().needChangePw) {
-	  next({path: '/account'})
-  }
-  else {
-	  next()
-  }
+		next({path: '/login'})
+	}
+	else if(to.path !='/login' && to.path !='/account' && shared.getAccount().needChangePw) {
+		next({path: '/account'})
+	}
+	else {
+		next()
+	}
 })
 
 new Vue({
