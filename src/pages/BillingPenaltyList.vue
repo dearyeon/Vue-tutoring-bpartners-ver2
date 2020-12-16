@@ -24,8 +24,8 @@
 							  {column:'상태',default:false,var:{var1:'pcharge_status'}},
 							  {column:'집행일시',default:false,var:{var1:'pcharged_dt'}},'집행카드',
 							  {column:'집행TID/실패사유',default:false,var:{var1:'pcharged_t_id'}},
-							  {column:'관리정보',default:false,var:{var1:'mng_info'}},
-							  {column:'관리메모',default:false,var:{var1:'mng_memo'}}]"
+							  {column:'관리메모',default:false,var:{var1:'mng_memo'}},
+							  {column:'관리정보',default:false,var:{var1:'mng_info'}}]"
 				:data="orders" @sort="sort"
 					v-slot="{item, i}">
 				<td>{{ i + 1 }}</td>
@@ -52,10 +52,10 @@
 				<td>{{ item.pcharged_info && item.pcharged_info.replace(/\/\d{1}/gi, match => (match === "/0" ? "/신용" : "/직불")) }}</td>
 				<td :class="{'text-danger':item.pcharged_bill_dump}">{{ item.pcharged_t_id ? item.pcharged_t_id : item.pcharged_bill_dump }}</td>
 				<td>
-					<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
+					<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
 				</td>
 				<td>
-					<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
+					<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
 				</td>
 			</Table>
 		</Content>

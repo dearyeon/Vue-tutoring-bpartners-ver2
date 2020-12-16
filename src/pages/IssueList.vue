@@ -17,8 +17,8 @@
 						  {column:'입과일시',default:false,var:{var1:'issue_dt'}},
 						  {column:'입과취소일시',default:false,var:{var1:'issue_ccl_dt'}},
 						  {column:'AI지급일시',default:false,var:{var1:'alcpt_issue_dt'}},
-						  {column:'관리정보',default:false,var:{var1:'mng_info'}},
 						  {column:'관리메모',default:false,var:{var1:'mng_memo'}},
+						  {column:'관리정보',default:false,var:{var1:'mng_info'}},
 						  'AI지급','입과/취소']
 							.concat( issueBatchError ? '입과결과' : null)"
 			:data="orders" @sort="sort"
@@ -37,10 +37,10 @@
 				{{ item.alcpt_issue_dt && moment(item.alcpt_issue_dt).format('YY-MM-DD HH:mm') }}
 			</td>
 			<td>
-				<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
+				<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
 			</td>
 			<td>
-				<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
+				<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
 			</td>
 			<td>
 				<ItemButton v-if="item.charge_plan.mode==$shared.consts.MODE_ENGLISH && !item.issue_ccl_dt" text="AI티켓 지급" variant="success btn-outline" @click="aiModalOpen(item)" />

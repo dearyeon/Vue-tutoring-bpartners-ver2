@@ -15,12 +15,12 @@
 		<Content>
 			<Table
 				:headers="['No',{column:'이름',default:true,var:{var1:'user',var2:'name'}},
-							'고객식별ID','이메일','연락처','소속','부서','직위','사번']
+							'고객식별ID','이메일','연락처','부서','직위','사번']
 							.concat(cfs.map(a => a.title))
 							.concat([{column:'수강권',default:false,var:{var1:'goods',var2:'charge_plan',var3:'title'}},
-							'제공가','회사지원금','자기부담금',
-							{column:'관리정보',default:false,var:{var1:'mng_info'}},
+							'제공가','회사지원','자기부담',
 							{column:'관리메모',default:false,var:{var1:'mng_memo'}},
+							{column:'관리정보',default:false,var:{var1:'mng_info'}},
 							'신청번호',{column:'신청일시',default:false,var:{var1:'apply_dt'}},
 							{column:'취소일시',default:false,var:{var1:'apply_ccl_dt'}},
 							{column:'승인일시',default:false,var:{var1:'approve_dt'}}])
@@ -33,7 +33,6 @@
 				<td><CusIdField :user="item.user"/></td>
 				<td>{{ item.user.email }}</td>
 				<td>{{ item.user.cel }}</td>
-				<td>{{ item.user.company }}</td>
 				<td><div class="department">{{ item.user.department }}</div></td>
 				<td>{{ item.user.position }}</td>
 				<td>{{ item.user.emp_no }}</td>
@@ -43,10 +42,10 @@
 				<td>{{ item.goods ? $shared.nf(item.goods.supply_price - item.goods.charge_price) : '' }}</td>
 				<td>{{ item.goods ? $shared.nf(item.goods.charge_price) : '' }}</td>
 				<td>
-					<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
+					<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
 				</td>
 				<td>
-					<MngField btn-title="관리메모" :item="item" :data="item.mng_memo" @click="memoModalOpen"/>
+					<MngField btn-title="관리정보" :item="item" :data="item.mng_info" @click="infoModalOpen"/>
 				</td>
 				<td>{{ item.idx }}</td>
 				<td>{{ moment(item.apply_dt).format('YYYY-MM-DD HH:mm') }}</td>

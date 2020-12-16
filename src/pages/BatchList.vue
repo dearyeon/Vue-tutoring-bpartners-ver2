@@ -6,12 +6,12 @@
 		</Header>
 
 		<Content>
-			<Table :headers="['No',{column:'고객사',default:false,var:{var1:'company'}},
-							  '담당자','회차','달성률','빌링',
-							  {column:'현재상태',default:true,var:{var1:'state'}},
-							  {column:'신청시작일시',default:false,var:{var1:'batches',var2:'selectedApplyIdx',var3:'fr_dt'}},
-							  {column:'신청종료일시',default:false,var:{var1:'batches',var2:'selectedApplyIdx',var3:'to_dt'}},'수정일시']
-							.concat($shared.isSupervisor()?['차수관리','신청양식설정','','URL']:null)"
+			<Table :headers="['No',{column:'고객사',default:false,var:'company'},
+							  '담당자','회차','학습률','빌링',
+							  {column:'현재상태',default:true,var:'status'},
+							  {column:'학습시작일',default:false,var:'fr_dt'},
+							  {column:'학습종료일',default:false,var:'to_dt'},'수정일시']
+							.concat($shared.isSupervisor()?['차수관리','신청양식설정','신청시작일시','신청종료일시','','URL']:null)"
 				:data="list" @sort="sort"
 				v-slot="{item, i}">
 				<td>{{ total - ((current_page - 1) * per_page) - i }}</td>
@@ -30,17 +30,16 @@
 					}}
 				</td>
 				<td>{{ item.batches.length ? (item.batches[item.selectedApplyIdx].use_billing ? '빌링' : '') : '' }}</td>
-				<td><label :class="currentStatus(item,1)"
-					style="width:60px;text-align: center">{{ currentStatus(item, 0) }}</label></td>
+				<td><label :class="currentStatus(item,1)" style="width:60px;text-align: center">{{ currentStatus(item, 0) }}</label></td>
 				<td>{{
-						item.batches.length ? (item.batches[item.selectedApplyIdx].fr_dt ? moment(item.batches[item.selectedApplyIdx].fr_dt).format('YY-MM-DD HH:MM') : '') : ''
+						item.batches.length ? (item.batches[item.selectedApplyIdx].fr_dt ? moment(item.batches[item.selectedApplyIdx].fr_dt).format('YY-MM-DD') : '') : ''
 					}}
 				</td>
 				<td>{{
-						item.batches.length ? (item.batches[item.selectedApplyIdx].to_dt ? moment(item.batches[item.selectedApplyIdx].to_dt).format('YY-MM-DD HH:MM') : '') : ''
+						item.batches.length ? (item.batches[item.selectedApplyIdx].to_dt ? moment(item.batches[item.selectedApplyIdx].to_dt).format('YY-MM-DD') : '') : ''
 					}}
 				</td>
-				<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:MM') : '' }}</td>
+				<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:mm') : '' }}</td>
 				<td v-if="$shared.isSupervisor()" class="text-left" style='white-space: nowrap;'>
 					<ItemButton text="추가" variant="page-set" @click="createBatchPage(item.idx,item.company)"/>
 					<ItemButton v-if="item.batches.length?(!!item.batches[item.selectedApplyIdx].idx):0" text="수정"
@@ -54,6 +53,14 @@
 						<ItemButton v-else text="페이지 등록" variant="page-set"
 							@click="createApplyPage(item.batches[item.selectedApplyIdx].idx, item.idx)"/>
 					</div>
+				</td>
+				<td>{{
+						item.batches.length&&item.batches.apply ? (item.batches[item.selectedApplyIdx].apply.fr_dt ? moment(item.batches[item.selectedApplyIdx].apply.fr_dt).format('YY-MM-DD HH:mm') : '') : ''
+					}}
+				</td>
+				<td>{{
+						item.batches.length&&item.batches.apply ? (item.batches[item.selectedApplyIdx].apply.to_dt ? moment(item.batches[item.selectedApplyIdx].apply.to_dt).format('YY-MM-DD HH:mm') : '') : ''
+					}}
 				</td>
 				<td v-if="$shared.isSupervisor()">
 					<ItemButton v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" text="신청 페이지"
@@ -104,6 +111,8 @@ export default {
 			per_page: 0,
 			total: 0,
 			searchKey: '',
+			sortKey:'status',
+			sortType:'asc',
 			moment: moment
 		}
 	},
@@ -127,7 +136,9 @@ export default {
 	},
 	methods: {
 		async refreshData() {
-			const {data} = await api.get('/partners/siteBatchList', {sk: this.searchKey, page: this.current_page})
+			const {data} = await api.get('/partners/siteBatchList', {
+				sk: this.searchKey, page: this.current_page, sortCol:this.sortKey, sortType:this.sortType
+			})
 			let list = data.data;
 			list.forEach(item => {
 				item.selectedApplyIdx = 0,
@@ -140,19 +151,18 @@ export default {
 			this.total = data.total
 
 			this.setBatchState()
-			this.$shared.sortBy(this.list,'state')
 		},
 		setBatchState() {
 			const date = moment().format('YYYY-MM-DD')
 			this.list.forEach(item => {
 				if (item.batches.length && date < item.batches[item.selectedApplyIdx].fr_dt) {
-					item['state']=2
+					item['status']=2
 				} else if (item.apply && date >= item.apply.apply_fr_dt && date <= item.apply.apply_to_dt) {
-					item['state']=4
+					item['status']=4
 				} else if (item.batches.length && date >= item.batches[item.selectedApplyIdx].fr_dt && date <= item.batches[item.selectedApplyIdx].to_dt) {
-					item['state']=1
+					item['status']=1
 				} else if (item.batches.length && date > item.batches[item.selectedApplyIdx].to_dt) {
-					item['state']=3
+					item['status']=3
 				}
 			})
 		},
@@ -219,18 +229,22 @@ export default {
 		},
 		currentStatus(item, val) {
 			const date = moment().format('YYYY-MM-DD')
-			if (item.batches.length && date < item.batches[item.selectedApplyIdx].fr_dt) {
+			if (item.status===2) {
 				return val ? 'b-r-sm bg-warning' : '대기중'
-			} else if (item.apply && date >= item.apply.apply_fr_dt && date <= item.apply.apply_to_dt) {
+			} else if (item.status===4) {
 				return val ? 'b-r-sm btn-apply' : '신청중'
-			} else if (item.batches.length && date >= item.batches[item.selectedApplyIdx].fr_dt && date <= item.batches[item.selectedApplyIdx].to_dt) {
+			} else if (item.status===1) {
 				return val ? 'b-r-sm bg-primary' : '진행중'
-			} else if (item.batches.length && date > item.batches[item.selectedApplyIdx].to_dt) {
+			} else if (item.status===3) {
 				return val ? 'b-r-sm bg-success' : '완료'
 			}
 		},
 		sort(sortKey) {
-			this.$shared.sortBy(this.list,sortKey.var1,sortKey.var2,sortKey.var3)
+			if((sortKey === this.sortKey) && (this.sortType === 'asc')) this.sortType = 'desc'
+			else if((sortKey === this.sortKey) && (this.sortType === 'desc')) this.sortType = 'asc'
+			else if(sortKey !== this.sortKey) this.sortType = 'asc'
+			this.sortKey = sortKey
+			this.refreshData()
 		}
 	}
 }
