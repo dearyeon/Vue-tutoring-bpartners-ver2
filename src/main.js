@@ -17,14 +17,17 @@ Vue.config.productionTip = false
 
 const router = new VueRouter({routes});
 router.beforeEach((to, from, next) => {
-  if (to.path!='/login' && !shared.isLoggedIn()) {
-    next({path: '/login'})
+	if(to.path == '/findPass') {
+		next()
+	}
+	else if (to.path !='/login' && !shared.isLoggedIn()) {
+	  next({path: '/login'})
   }
-  else if(to.path!='/login' && to.path!='/account' && shared.getAccount().needChangePw) {
-    next({path: '/account'})
+  else if(to.path !='/login' && to.path !='/account' && shared.getAccount().needChangePw) {
+	  next({path: '/account'})
   }
   else {
-    next()
+	  next()
   }
 })
 
