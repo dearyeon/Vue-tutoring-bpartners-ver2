@@ -18,7 +18,7 @@
 		</Header>
 
 		<Content>
-			<Table :headers="['No','주문번호',{column:'학생',default:false,var:{var1:'user',var2:'name'}},'고객식별ID',
+			<Table :headers="['No','주문번호',{column:'이름',default:false,var:{var1:'user',var2:'name'}},'고객식별ID',
 							  {column:'수강권',default:false,var:{var1:'goods',var2:'charge_plan',var3:'title'}},'결제금액','사용될카드',
 							  {column:'학습률',default:true,var:{var1:'attend_pct'}},
 							  {column:'상태',default:false,var:{var1:'pcharge_status'}},
