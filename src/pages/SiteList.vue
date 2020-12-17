@@ -1,15 +1,17 @@
 <template>
 	<div>
-		<Header title="고객사 관리"
+		<Header title="사이트 관리"
 			search-placeholder="고객사 명" :search-key-default="searchKey" @search="search" @reset="search(null)"
+			switch1-text="비활성처리" @switch1-change="toggleDel"
 			btn1-text="고객사 등록" @btn1-click="createCustomerPage" btn1-variant="success" :btn1-loading="false" :btn1-hide="$shared.isPartnerManger()">
 		</Header>
 
 		<Content>
-			<Table :headers="['No',' ',{column:'고객사 명',default:true,var:{var1:'company'}},
-							  '담당자 이름','부서','전화번호','이메일',
-							  {column:'등록일자',default:false,var:{var1:'reg_dt'}},'수정일자']
-							.concat($shared.isSupervisor()?['고객사수정']:null)"
+			<Table :headers="['No',' ',{column:'고객사 명',default:true,var:'company'},
+							  '담당자 이름','전화번호','이메일',
+							  {column:'등록일자',default:false,var:'reg_dt'},'수정일자']
+							.concat($shared.isSupervisor()?['고객사수정']:null,
+							 {column:'상태',default:false,var:'del_yn'})"
 				:data="items" @sort="sort"
 				v-slot="{item, i}">
 				<td>{{ total - ((current_page - 1) * per_page) - i }}</td>
@@ -17,7 +19,6 @@
 					style="width:20px;height:20px;"></td>
 				<td>{{ item.company }}</td>
 				<td>{{ item.name }}</td>
-				<td>{{ item.part }}</td>
 				<td>{{ item.tel }}</td>
 				<td>{{ item.email }}</td>
 				<td>{{ item.reg_dt ? moment(item.reg_dt).format('YYYY-MM-DD') : '' }}</td>
@@ -25,6 +26,7 @@
 				<td v-if="!$shared.isPartnerManger()">
 					<ItemButton text="수정" variant="edit" @click="editCustomerPage(item.idx)"/>
 				</td>
+				<td>{{ item.del_yn ? '비활성화':'활성화' }}</td>
 			</Table>
 		</Content>
 
@@ -48,8 +50,10 @@ export default {
 	data() {
 		return {
 			items: [],
-			sortKey: '',
-			searchKey: '삼성',
+			searchKey: '',
+			sortKey: 'company',
+			sortType:'asc',
+			showAll: 0,
 			current_page: 1,
 			total_page: 1,
 			per_page: 1,
@@ -72,13 +76,14 @@ export default {
 	},
 	methods: {
 		async refreshData() {
-			const res = await api.get('/partners/siteList', {sk: this.searchKey, page: this.current_page})
+			const res = await api.get('/partners/siteList', {
+				sk: this.searchKey, page: this.current_page, sortCol:this.sortKey, sortType:this.sortType, showAll:this.showAll
+			})
 			this.current_page = res.data.current_page
 			this.total_page = res.data.last_page
 			this.per_page = res.data.per_page
 			this.items = res.data.data
 			this.total = res.data.total
-			this.$shared.sortBy(this.items,'company')
 		},
 		async search(searchKey) {
 			this.searchKey = searchKey
@@ -107,8 +112,16 @@ export default {
 			////
 		},
 		sort(sortKey) {
-			this.$shared.sortBy(this.items,sortKey.var1,sortKey.var2,sortKey.var3)
-		}
+			if((sortKey === this.sortKey) && (this.sortType === 'asc')) this.sortType = 'desc'
+			else if((sortKey === this.sortKey) && (this.sortType === 'desc')) this.sortType = 'asc'
+			else if(sortKey !== this.sortKey) this.sortType = 'asc'
+			this.sortKey = sortKey
+			this.refreshData()
+		},
+		toggleDel(event){
+			this.showAll = event?1:0
+			this.refreshData()
+		},
 	}
 }
 </script>
