@@ -2,7 +2,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<div class="ibox-title title">
-				<h2 class="pull-left">고객사 설정</h2>
+				<h2 class="pull-left">사이트 정보 설정</h2>
 				<button class="btn btn-blue-line pull-right" @click="$router.go(-1)">
 					뒤로가기
 				</button>
@@ -12,7 +12,25 @@
 			<div class="ibox content">
 				<div class="ibox-content">
 					<div class="form-group">
-						<h3 class="well">고객사 정보 입력</h3>
+						<div class="well col-xs-12">
+							<h3 class="col-xs-2 no-margins">{{ company ? company : '신규' }}</h3>
+							<div class="col-xs-3 pull-right">
+								<h3 class="col-xs-6 no-margins">활성화 여부</h3>
+								<div class="col-xs-6">
+									<div class="switch">
+										<div class="onoffswitch">
+											<input class="onoffswitch-checkbox form-control" name="cancel_bach"
+												id="cancel_bach" type="checkbox" v-model="isActive"/>
+											<label class="onoffswitch-label" for="cancel_bach">
+												<span class="onoffswitch-inner"></span>
+												<span class="onoffswitch-switch"></span>
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
 						<div class="row">
 							<div class="col-lg-6">
 								<table class="table">
@@ -109,7 +127,8 @@ export default {
             email: '',
             previewSrc: '',
             image: '',
-			ciImg: ''
+			ciImg: '',
+			isActive: true
         }
     },
     async created() {
@@ -123,6 +142,7 @@ export default {
             this.email = site.email;
             this.ciImg = site.ci_img;
             this.previewSrc = this.$shared.getSiteImgUrl(this.ciImg)
+			this.isActive = (site.del_yn == 0)
         } else {
             this.previewSrc = this.$shared.getSiteImgUrl(this.ciImg)
         }
@@ -145,7 +165,8 @@ export default {
                 part: this.part?this.part:'',
                 tel: this.tel?this.tel:'',
                 email: this.email?this.email:'',
-                ciImg: this.image?this.image:''
+                ciImg: this.image?this.image:'',
+				delYn: this.isActive?0:1
             }
             if(this.$route.params.idx) params['idx'] = this.$route.params.idx
             let res;

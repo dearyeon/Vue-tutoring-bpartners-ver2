@@ -65,8 +65,11 @@ export default {
 .sort {
     cursor: pointer
 }
+.fa-sort {
+	color: #1a7bb9;
+}
 .fa-sort-asc, .fa-sort-desc {
-	color: orangered;
+	color: red;
 }
 </style>
 
