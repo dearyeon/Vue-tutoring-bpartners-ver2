@@ -17,7 +17,7 @@
 				</div>
 				<button type="submit" class="btn btn-success block full-width m-b" v-on:click="loginSubmit">로그인</button>
         <button type="button" class="btn btn-outline btn-link" @click="goToFindPassword">
-          <small>Forgot your password?</small>
+          <small>비밀번호를 잊으셨습니까?</small>
         </button>
         <br>
 <!--        <button class="btn btn-sm btn-white btn-block" @click="goToRegister" >B2B 파트너 신청하기</button>-->
