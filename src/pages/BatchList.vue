@@ -1,7 +1,8 @@
 <template>
 	<div>
 		<Header title="차수 관리"
-			search-placeholder="고객사 명" :search-key-default="searchKey" @search="search" @reset="search(null)">
+			search-placeholder="고객사 명" :search-key-default="searchKey" @search="search" @reset="search(null)"
+			:dropDown="true" @statusChange="statusChange">
 			<!--<router-link :to="{ path: '/register/createPage' }"></router-link>-->
 		</Header>
 
@@ -155,12 +156,10 @@ export default {
 		setBatchState() {
 			const date = moment().format('YYYY-MM-DD')
 			this.list.forEach(item => {
-				if (item.batches.length && date < item.batches[item.selectedApplyIdx].fr_dt) {
-					item['status']=2
-				} else if (item.apply && date >= item.apply.apply_fr_dt && date <= item.apply.apply_to_dt) {
-					item['status']=4
-				} else if (item.batches.length && date >= item.batches[item.selectedApplyIdx].fr_dt && date <= item.batches[item.selectedApplyIdx].to_dt) {
+				if (item.batches.length && date >= item.batches[item.selectedApplyIdx].fr_dt && date <= item.batches[item.selectedApplyIdx].to_dt) {
 					item['status']=1
+				} else if (item.batches.length && date < item.batches[item.selectedApplyIdx].fr_dt) {
+					item['status']=2
 				} else if (item.batches.length && date > item.batches[item.selectedApplyIdx].to_dt) {
 					item['status']=3
 				}
@@ -229,12 +228,10 @@ export default {
 		},
 		currentStatus(item, val) {
 			const date = moment().format('YYYY-MM-DD')
-			if (item.status===2) {
-				return val ? 'b-r-sm bg-warning' : '대기중'
-			} else if (item.status===4) {
-				return val ? 'b-r-sm btn-apply' : '신청중'
-			} else if (item.status===1) {
+			if (item.status===1) {
 				return val ? 'b-r-sm bg-primary' : '진행중'
+			} else if (item.status===2) {
+				return val ? 'b-r-sm bg-warning' : '대기중'
 			} else if (item.status===3) {
 				return val ? 'b-r-sm bg-success' : '완료'
 			}
@@ -245,6 +242,9 @@ export default {
 			else if(sortKey !== this.sortKey) this.sortType = 'asc'
 			this.sortKey = sortKey
 			this.refreshData()
+		},
+		statusChange(event) {
+			console.log(1111,event)
 		}
 	}
 }

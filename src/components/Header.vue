@@ -47,6 +47,15 @@
 				</div>
 			</div>
 		</div>
+
+		<div id="dropdown" class="pull-left">
+			<div v-if="dropDown">
+				<span class="pull-left">
+					<DropDown @change="statusChange"/>
+				</span>
+			</div>
+		</div>
+
 		<div id="custom" class="pull-left">
 			<slot></slot>
 		</div>
@@ -77,11 +86,13 @@
 <script>
 import ClipLoader from "vue-spinner/src/ClipLoader";
 import BatchSelection from "@/components/BatchSelection.vue";
+import DropDown from "@/components/DropDown.vue";
 
 export default {
 	components: {
 		BatchSelection,
-		ClipLoader
+		ClipLoader,
+		DropDown
 	},
 	props: {
 		title: String,
@@ -113,6 +124,8 @@ export default {
 		btn4Text: String,
 		btn4Loading: Boolean,
 		btn4Hide: Boolean,
+
+		dropDown: Boolean
 	},
 	data() {
 		return {
@@ -120,6 +133,11 @@ export default {
 			switchModel: false
 		}
 	},
+	methods: {
+		statusChange(event) {
+			this.$emit('statusChange',event.target.value)
+		}
+	}
 };
 </script>
 
@@ -168,7 +186,9 @@ export default {
 	margin-right: 10px;
 }
 
-
+#dropdown {
+	margin-top:-10px
+}
 
 #custom {
 	margin-top: 5px;
@@ -183,4 +203,5 @@ export default {
 #buttons .btn {
 	margin-left: 10px;
 }
+
 </style>
