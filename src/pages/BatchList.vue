@@ -2,7 +2,7 @@
 	<div>
 		<Header title="차수 관리"
 			search-placeholder="고객사 명" :search-key-default="searchKey" @search="search" @reset="search(null)"
-			:dropDown="true" @statusChange="statusChange">
+			><!--:dropDown="true" @statusChange="statusChange"-->
 			<!--<router-link :to="{ path: '/register/createPage' }"></router-link>-->
 		</Header>
 
@@ -13,7 +13,7 @@
 							  {column:'학습시작일',default:false,var:'fr_dt'},
 							  {column:'학습종료일',default:false,var:'to_dt'},'수정일시']
 							.concat($shared.isSupervisor()?['차수관리','신청양식설정','신청시작일시','신청종료일시','페이지이동','URL복사']:null)"
-				:data="list" @sort="sort"
+				:data="list" @sort="sort" 
 				v-slot="{item, i}">
 				<td>{{ total - ((current_page - 1) * per_page) - i }}</td>
 				<td>{{ item.company }}</td>
@@ -245,8 +245,8 @@ export default {
 			this.refreshData()
 		},
 		statusChange(event) {
-			console.log(1111,event)
-			this.status = event
+			this.status = parseInt(event)
+			console.log(1,this.status)
 		}
 	}
 }

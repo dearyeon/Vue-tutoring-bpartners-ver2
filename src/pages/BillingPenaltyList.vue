@@ -33,7 +33,7 @@
 				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
 				<td>{{ item.goods ? item.goods.charge_plan.title : '' }}</td>
-				<td>{{ $shared.nf(item.goods.supply_price - item.goods.charge_price) }}</td>
+				<td>{{ item.goods&&$shared.nf(item.goods.supply_price - item.goods.charge_price) }}</td>
 
 				<td><ItemButton :text="item.user.card_name?'변경':'등록'"
 					:variant="item.user.card_name?'default':'danger'"

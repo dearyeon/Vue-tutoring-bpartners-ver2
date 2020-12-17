@@ -12,7 +12,7 @@
 					</div>
 					<div class="row">
 						<h3 class="pull-left">평균학습률</h3>
-						<h4 class="pull-left" style="margin-left:30px;">{{ avgAttendPct ? avgAttendPct+'%' : '-' }}</h4>
+						<h4 class="pull-left" style="margin-left:30px;">{{ avgAttendPct ? Math.round(avgAttendPct)+'%' : '-' }}</h4>
 					</div>
 				</div>
 		</Header>
@@ -29,8 +29,8 @@
 				<td>{{ i+1 }}</td>
 				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
-				<td>{{ item.goods.charge_plan.mode==='E'?'영어':'중국어' }}</td>
-				<td>{{ item.goods.charge_plan.title }}</td>
+				<td>{{ item.goods&&item.goods.charge_plan.mode==='E'?'영어':'중국어' }}</td>
+				<td>{{ item.goods&&item.goods.charge_plan.title }}</td>
 				<td>{{ item.attend_pct }}%</td>
 				<td>{{ item.attend_pct >= batch.target_rt ? '수료':'미수료' }}</td>
 				<td>
