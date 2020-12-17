@@ -22,7 +22,7 @@
 					<li v-for="(m,i) in menus" v-show="permitted(m)" :key="i" :class="{active: m.isActive}">
 						<router-link :to="m.path">
 							<span class="nav-label">
-								<i :class="['fa', 'fa-'+m.icon]"/><span>{{ m.name }}</span>
+								<i :class="['fa', 'fa-'+m.icon]"/><span>{{ menuName(m.name) }}</span>
 							</span>
 						</router-link>
 					</li>
@@ -46,7 +46,7 @@
 
 <script>
 import menus from "@/menus";
-import {consts} from "@/common/shared";
+import shared, {consts} from "@/common/shared";
 
 export default {
 	name: "Menu",
@@ -70,6 +70,12 @@ export default {
 				const m = menu.path.split('/')
 				menu.isActive = (m[1] == r[1])
 			}
+		},
+		menuName(name) {
+			if(name != '수업 현황' && shared.isSupervisor()) {
+				name = name.replaceAll('현황','관리')
+			}
+			return name
 		}
 	},
 	computed: {
