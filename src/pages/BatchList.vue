@@ -97,7 +97,7 @@ let server;
 if (hostId !== undefined) {
 	server = '-' + hostId;
 } else {
-	window.location.hostname.split('.')[0] === 'partners2' ? server = '' : server = '-dev'
+	window.location.hostname.split('.')[0] === 'partners' ? server = '' : server = '-dev'
 }
 
 const applyPageDomain = 'https://apply' + server + '.tutoring.co.kr/';
