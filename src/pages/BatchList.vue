@@ -247,6 +247,7 @@ export default {
 		},
 		statusChange(event) {
 			this.status = parseInt(event)
+			this.current_page = 1
 			this.refreshData()
 		}
 	}
