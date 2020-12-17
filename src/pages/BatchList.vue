@@ -114,6 +114,7 @@ export default {
 			searchKey: '',
 			sortKey:'status',
 			sortType:'asc',
+			status: 0,
 			moment: moment
 		}
 	},
@@ -245,6 +246,7 @@ export default {
 		},
 		statusChange(event) {
 			console.log(1111,event)
+			this.status = event
 		}
 	}
 }

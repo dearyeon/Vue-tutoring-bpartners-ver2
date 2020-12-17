@@ -4,8 +4,8 @@
             <strong>현재상태</strong>
         </span>
         <select id="select" style="font-size:15px" @change="$emit('change',$event)">
-			<option value="">-- 전체 --</option>
-            <option v-for="(item,i) in value" :value="i" :key="item.id">{{ item }}</option>
+			<option value="0">-- 전체 --</option>
+            <option v-for="(item,i) in value" :value="i+1" :key="item.id">{{ item }}</option>
         </select>
 	</span>
 </template>
