@@ -2,7 +2,7 @@
 	<div>
 		<Header title="차수 관리"
 			search-placeholder="고객사 명" :search-key-default="searchKey" @search="search" @reset="search(null)"
-			><!--:dropDown="true" @statusChange="statusChange"-->
+			:dropDown="true" @statusChange="statusChange">
 			<!--<router-link :to="{ path: '/register/createPage' }"></router-link>-->
 		</Header>
 
@@ -14,7 +14,7 @@
 							  {column:'학습종료일',default:false,var:'to_dt'},'수정일시']
 							.concat($shared.isSupervisor()?['차수관리','신청양식설정','신청시작일시','신청종료일시','페이지이동','URL복사']:null)"
 				:data="list" @sort="sort" 
-				v-slot="{item, i}">
+				v-slot="{item, i}"> <!--:filter="status"-->
 				<td>{{ total - ((current_page - 1) * per_page) - i }}</td>
 				<td>{{ item.company }}</td>
 				<td>{{ item.name }}</td>
@@ -138,9 +138,10 @@ export default {
 	},
 	methods: {
 		async refreshData() {
-			const {data} = await api.get('/partners/siteBatchList', {
-				sk: this.searchKey, page: this.current_page, sortCol:this.sortKey, sortType:this.sortType
-			})
+			let params
+			if(this.status) params = {sk: this.searchKey, page: this.current_page, sortCol:this.sortKey, sortType:this.sortType, status:this.status}
+			else params = {sk: this.searchKey, page: this.current_page, sortCol:this.sortKey, sortType:this.sortType}
+			const {data} = await api.get('/partners/siteBatchList', params)
 			let list = data.data;
 			list.forEach(item => {
 				item.selectedApplyIdx = 0,
@@ -246,7 +247,7 @@ export default {
 		},
 		statusChange(event) {
 			this.status = parseInt(event)
-			console.log(1,this.status)
+			this.refreshData()
 		}
 	}
 }

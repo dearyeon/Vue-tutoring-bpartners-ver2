@@ -8,9 +8,8 @@
             </th>
         </tr>
         </thead>
-        {{filter}}
         <tbody>
-        <tr class="hover-pointer" v-for="(item, i) in data" :key="i" v-show="!item.hide && (filter?filter===item.status:true)">
+        <tr class="hover-pointer" v-for="(item, i) in data" :key="i" v-show="!item.hide">
             <slot :item="item" :i="i"></slot>
         </tr>
         </tbody>
@@ -21,8 +20,7 @@
 export default {
     props: {
         headers: Array,
-        data: Array,
-        filter: Number
+        data: Array
     },
     data() {
         return {
@@ -31,7 +29,6 @@ export default {
         }
 	},
 	created() {
-        console.log('filter:',this.filter)
 		this.headers.forEach(header => {
 			if(typeof header==='object'&&header) {
 				if(header.default===true) {
