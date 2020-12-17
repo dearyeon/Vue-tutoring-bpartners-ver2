@@ -12,7 +12,7 @@
 							  {column:'현재상태',default:true,var:'status'},
 							  {column:'학습시작일',default:false,var:'fr_dt'},
 							  {column:'학습종료일',default:false,var:'to_dt'},'수정일시']
-							.concat($shared.isSupervisor()?['차수관리','신청양식설정','신청시작일시','신청종료일시','신청페이지','URL복사']:null)"
+							.concat($shared.isSupervisor()?['차수관리','신청양식설정','신청시작일시','신청종료일시','페이지이동','URL복사']:null)"
 				:data="list" @sort="sort"
 				v-slot="{item, i}">
 				<td>{{ total - ((current_page - 1) * per_page) - i }}</td>
@@ -64,7 +64,7 @@
 					}}
 				</td>
 				<td v-if="$shared.isSupervisor()">
-					<ItemButton v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" text="신청 페이지"
+					<ItemButton v-if="item.batches.length?item.batches[item.selectedApplyIdx].apply:0" text="페이지 이동"
 						variant="primary" @click="goToApplyPage(applyPageUrl(item,item.selectedApplyIdx)+'/7788')"/>
 				</td>
 				<td v-if="$shared.isSupervisor()">
