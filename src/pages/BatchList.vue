@@ -32,11 +32,11 @@
 				<td>{{ item.batches.length ? (item.batches[item.selectedApplyIdx].use_billing ? '빌링' : '') : '' }}</td>
 				<td><label :class="currentStatus(item,1)" style="width:60px;text-align: center">{{ currentStatus(item, 0) }}</label></td>
 				<td>{{
-						item.batches.length ? (item.batches[item.selectedApplyIdx].fr_dt ? moment(item.batches[item.selectedApplyIdx].fr_dt).format('YY-MM-DD') : '') : ''
+						item.batches.length ? (item.batches[item.selectedApplyIdx].fr_dt ? moment(item.batches[item.selectedApplyIdx].fr_dt).format('YYYY-MM-DD') : '') : ''
 					}}
 				</td>
 				<td>{{
-						item.batches.length ? (item.batches[item.selectedApplyIdx].to_dt ? moment(item.batches[item.selectedApplyIdx].to_dt).format('YY-MM-DD') : '') : ''
+						item.batches.length ? (item.batches[item.selectedApplyIdx].to_dt ? moment(item.batches[item.selectedApplyIdx].to_dt).format('YYYY-MM-DD') : '') : ''
 					}}
 				</td>
 				<td>{{ item.upd_dt ? moment(item.upd_dt).format('YY-MM-DD HH:mm') : '' }}</td>
