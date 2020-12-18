@@ -1,46 +1,32 @@
 <template>
 	<div>
-		<Header title="사용자 관리"
-			search-placeholder="이름 or 이메일 or 고객식별ID" :search-key-default="searchKey" @search="search" @reset="search(null)"
-			btn1-text="신규 등록" @btn1-click="routeAccountForm" btn1-variant="success" :btn1-loading="loading">
+		<Header title="계정 관리"
+			search-placeholder="이름 or 이메일 or 고객식별ID" @search="setSearch" @reset="setSearch"
+			btn1-text="신규 등록" @btn1-click="createAccountPage" btn1-variant="success">
 		</Header>
-"사용자 관리 기능 필요
-(헤더)
-[ID, 이름,이메일, 파트너/사이트 부분일치 검색]            [신규등록] 
-
-(테이블) *진한글씨는 소팅
-No, ID, 이름, 권한, 파트너/사이트, 이메일, 연락처, 로그인일시, 수정일시, [수정])
-
-(등록/수정화면)
-ID, 이름, 권한, 파트너/사이트(select), 이메일, 연락처, [비밀번호 초기화(수정시만)]"
 		<Content>
-			<Table :headers="['No',{column:'ID',default:true,var:{var1:''}},
-                              {column:'이름',default:false,var:{var1:''}},
-                              {column:'권한',default:false,var:{var1:''}},
-                              {column:'파트너/사이트',default:false,var:{var1:''}},
+			<Table :headers="['No',{column:'ID',default:true,var:{var1:'id'}},
+                              {column:'이름',default:false,var:{var1:'name'}},
+                              {column:'권한',default:false,var:{var1:'acc_level'}},
+                              {column:'파트너/사이트',default:false,var:{var1:'partner'}},
 							  '이메일','연락처',
-                              {column:'로그인일시',default:false,var:{var1:''}},'수정일시','']"
+                              {column:'로그인일시',default:false,var:{var1:'last_login_dt'}},'수정일시','']"
 				:data="items" @sort="sort"
 				v-slot="{item, i}">
-				<td>{{ total - ((current_page - 1) * per_page) - i }}</td>
-				<td><img alt="image" class="img-rounded" :src="$shared.getSiteImgThumbnailUrl(item.ci_img)"
-					style="width:20px;height:20px;"></td>
-				<td>{{ item.company }}</td>
+				<td>{{ i+1 }}</td>
+				<td>{{ item.id }}</td>
 				<td>{{ item.name }}</td>
-				<td>{{ item.tel }}</td>
+				<td>{{ item.acc_level==='P'?'리셀러':item.acc_level==='S'?'사이트관리자':'슈퍼바이저' }}</td>
+				<td>{{ item.partner?'파트너':item.site?'사이트':'' }}</td>
 				<td>{{ item.email }}</td>
-				<td>{{ item.reg_dt ? moment(item.reg_dt).format('YYYY-MM-DD') : '' }}</td>
-				<td>{{ item.upd_dt ? moment(item.upd_dt).format('YYYY-MM-DD') : '' }}</td>
+				<td>{{ item.tel }}</td>
+				<td>{{ item.last_login_dt ? moment(item.last_login_dt).format('YYYY-MM-DD mm:ss') : '' }}</td>
+				<td>{{ item.upd_dt ? moment(item.upd_dt).format('YYYY-MM-DD mm:ss') : '' }}</td>
 				<td v-if="!$shared.isPartnerManger()">
-					<ItemButton text="수정" variant="edit" @click="editCustomerPage(item.idx)"/>
+					<ItemButton text="수정" variant="edit" @click="editAccountPage(item.idx)"/>
 				</td>
-				<td>{{ item.del_yn ? '비활성화':'활성화' }}</td>
 			</Table>
 		</Content>
-
-		<Pagination :currentPage="parseInt(current_page)" :totalPage="parseInt(total_page)"
-			@returnPage="setCurrentPage"/>
-		<AddSiteModal v-if="showModal" @close="openModal" @update="updateItem"/>
 	</div>
 </template>
 
@@ -51,23 +37,13 @@ import Header from "@/components/Header.vue";
 import Content from "@/components/Content.vue";
 import Table from "@/components/Table.vue";
 import ItemButton from "@/components/ItemButton.vue";
-import Pagination from "@/components/Pagination.vue";
-import AddSiteModal from "@/modals/AddSiteModal.vue";
 
 export default {
 	data() {
 		return {
 			items: [],
+			itemsAll: [],
 			searchKey: '',
-			sortKey: 'company',
-			sortType:'asc',
-			showAll: 0,
-			current_page: 1,
-			total_page: 1,
-			per_page: 1,
-			total: 0,
-            showModal: false,
-            loading: false,
 			moment: moment
 		};
 	},
@@ -75,9 +51,7 @@ export default {
 		Header,
 		Content,
 		Table,
-		ItemButton,
-		Pagination,
-		AddSiteModal
+		ItemButton
 	},
 	async created() {
 		this.searchKey = this.$shared.getCurSite().company;
@@ -85,14 +59,11 @@ export default {
 	},
 	methods: {
 		async refreshData() {
-			const res = await api.get('/partners/siteList', {
-				sk: this.searchKey, page: this.current_page, sortCol:this.sortKey, sortType:this.sortType, showAll:this.showAll
-			})
-			this.current_page = res.data.current_page
-			this.total_page = res.data.last_page
-			this.per_page = res.data.per_page
-			this.items = res.data.data
-			this.total = res.data.total
+			const res = await api.get('/partners/accountList')
+			console.log(res)
+			this.items = res.data
+			this.$shared.sortBy(this.items,'id')
+			this.itemsAll = this.items
 		},
 		async search(searchKey) {
 			this.searchKey = searchKey
@@ -100,37 +71,30 @@ export default {
 			this.$shared.setCurSite({company: searchKey})
 			this.refreshData()
 		},
-		async setCurrentPage(page) {
-			this.current_page = page
-			this.refreshData()
-		},
-
-		createCustomerPage() {
-			this.$router.push({name: 'siteNew'})
-		},
-		editCustomerPage(idx) {
+		createAccountPage() {
 			this.$router.push({
-				name: 'siteForm',
+				name: 'accountNew'
+			})
+		},
+		editAccountPage(idx) {
+			this.$router.push({
+				name: 'accountForm',
 				params: {idx: idx}
 			})
 		},
-		openModal() {
-			this.showModal = !this.showModal;
-		},
-		updateItem() {
-			////
-		},
 		sort(sortKey) {
-			if((sortKey === this.sortKey) && (this.sortType === 'asc')) this.sortType = 'desc'
-			else if((sortKey === this.sortKey) && (this.sortType === 'desc')) this.sortType = 'asc'
-			else if(sortKey !== this.sortKey) this.sortType = 'asc'
-			this.sortKey = sortKey
-			this.refreshData()
+			this.$shared.sortBy(this.items,sortKey.var1,sortKey.var2,sortKey.var3)
 		},
-		toggleDel(event){
-			this.showAll = event?1:0
-			this.refreshData()
-		},
+		setSearch(sk) {
+			this.items = this.itemsAll
+			if (sk) {
+				this.items = this.items.filter((item) => {
+					return !item.name.indexOf(sk) ||
+						(item.id && !item.id.indexOf(sk)) ||
+						(item.email && !item.email.indexOf(sk))
+				})
+			}
+		}
 	}
 }
 </script>
