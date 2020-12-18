@@ -8,7 +8,8 @@ const menus = [
 	{name: '추가 결제 관리', path: '/billingP/list', accLevel: '', icon: 'credit-card-alt'},
 	{name: '차수 현황', path: '/batch/list', accLevel: 'P', icon: 'list'},
 	{name: '사이트 현황', path: '/site/list', accLevel: 'P', icon: 'handshake-o'},
-	{name: '본인정보 수정', path: '/account', accLevel: 'S|P', icon: 'user-o'},
+	{name: '사용자 관리', path: '/account/list', accLevel: '', icon: 'users'},
+	{name: '본인정보 수정', path: '/me/form', accLevel: 'S|P', icon: 'user-o'},
 ]
 
 export default menus;

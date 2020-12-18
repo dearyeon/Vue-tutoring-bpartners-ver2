@@ -23,8 +23,8 @@ router.beforeEach((to, from, next) => {
 	else if (to.path !='/login' && !shared.isLoggedIn()) {
 		next({path: '/login'})
 	}
-	else if(to.path !='/login' && to.path !='/account' && shared.getAccount().needChangePw) {
-		next({path: '/account'})
+	else if(to.path !='/login' && to.path !='/me/form' && shared.getAccount().needChangePw) {
+		next({path: '/me/form'})
 	}
 	else {
 		next()

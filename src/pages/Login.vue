@@ -65,7 +65,7 @@ export default {
 				const me = res.data.account
 				shared.setAccount(me)
 				if(me.needChangePw) {
-					this.$router.push('/account')
+					this.$router.push('/me/form')
 				}else {
 					this.$router.push('/main')
 				}
