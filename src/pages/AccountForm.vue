@@ -29,11 +29,11 @@
 									</tr>
 									<tr>
 										<th>이메일</th>
-										<td><input type="text" class="form-control" placeholder="이름을 입력해 주세요." v-model="email"/></td>
+										<td><input type="text" class="form-control" placeholder="이메일을 입력해 주세요." v-model="email"/></td>
 									</tr>
 									<tr>
 										<th>연락처</th>
-										<td><input type="text" class="form-control" placeholder="권한을 입력해 주세요." v-model="cel"/></td>
+										<td><input type="text" class="form-control" placeholder="연락처를 입력해 주세요." v-model="tel"/></td>
 									</tr>
 								</table>
 							</div>
@@ -42,15 +42,15 @@
                                     <tr>
 										<th>권한</th>
 										<td>
-                                            <select class="col-xs-12" style="font-size:15px" @change="SelectedAuthority($event)">
+                                            <select class="col-xs-12" style="font-size:15px" v-model="acc_level" @change="SelectedAuthority($event)">
                                                 <option value="">-- 선택하세요. --</option>
-                                                <option value="1">사이트관리자</option>
-                                                <option value="2">리셀러</option>
-                                                <option value="3">슈퍼바이저</option>
+                                                <option value="S">사이트관리자</option>
+                                                <option value="P">리셀러</option>
+                                                <option value="V" v-if="$route.params.idx">슈퍼바이저</option>
                                             </select>
                                         </td>
 									</tr>
-									<tr v-show="authority===1">
+									<tr v-show="acc_level==='S'">
 										<th>사이트</th>
 										<td>
                                             <select class="col-xs-12" style="font-size:15px" @change="SelectedCompany($event)">
@@ -59,7 +59,7 @@
                                             </select>
 										</td>
 									</tr>
-									<tr v-show="authority===2">
+									<tr v-show="acc_level==='P'">
 										<th>파트너</th>
 										<td>
                                             <select class="col-xs-12" style="font-size:15px" @change="SelectedCompany($event)">
@@ -77,7 +77,7 @@
 						<button class="pull-left btn btn-primary" @click="accountPwReset">비밀번호 초기화</button>
                         <button class="pull-left btn btn-primary" style="margin-left:10px" @click="accountRemove">계정삭제</button>
                         </div>
-                        <button class="pull-right col-xs-2 btn btn-success" @click="">수정</button>
+                        <button class="pull-right col-xs-2 btn btn-success" @click="save">수정</button>
 					</div>
 				</div>
 			</div>
@@ -96,14 +96,28 @@ export default {
             name: '',
             siteIdx: '',
             email: '',
-            cel: '',
+            tel: '',
             authority: '',
+            acc_level: '',
+            bp_idx: '',
+            bs_idx: '',
             sites: [],
             partners: []
         }
     },
-    created () {
+    async created () {
         console.log(this.$route.params.idx)
+        if(this.$route.params.idx) {
+            const res = await api.get('/partners/account', { idx:this.$route.params.idx })
+            const data = res.data
+            this.id = data.id
+            this.name = data.name
+            this.email = data.email
+            this.tel = data.tel
+            this.acc_level = data.acc_level
+            this.bp_idx = data.bp_idx
+            this.bs_idx = data.bs_idx
+        }
         this.refresh()
     },
     methods: {
@@ -114,8 +128,8 @@ export default {
             this.partners = res2.data
         },
         SelectedAuthority (event) {
-            this.authority = parseInt(event.target.value)
-            console.log(this.authority)
+            this.acc_level = event.target.value
+            console.log(this.acc_level)
         },
         SelectedCompany (event) {
             this.siteIdx = event.target.value
@@ -175,6 +189,52 @@ export default {
                             })
                         } else if (result === 1000) {
 					        modal.simple('비밀번호를 초기화에 실패하였습니다.')
+                        }
+					}
+				})
+        },
+        save() {
+            this.$swal.fire({
+					title: `<strong>수정 하시겠습니까?</strong>`,
+					icon: 'warning',
+					confirmButtonText: '수정',
+					confirmButtonColor: '#ed5565',
+					cancelButtonText: '닫기',
+					cancelButtonColor: '#808080',
+					showCancelButton: true,
+					reverseButtons: true,
+				}).then(async (r) => {
+					if (r.isConfirmed) {
+                        let params = { 
+                            name:this.name,
+                            email:this.email,
+                            tel:this.tel,
+                            accLevel:this.acc_level
+                        }
+                        if (this.$route.params.idx) {
+                            params.idx=this.$route.params.idx
+                        }
+                        if (this.acc_level==='S') {
+                            params.bsIdx =this.bs_idx
+                        }                        
+                        if (this.acc_level==='P') {
+                            params.bpIdx =this.bp_idx
+                        }
+                        console.log('test:',params)
+                        const {result, data} = await api.post('/partners/account', params)
+                        if (result === 2000) {
+                            this.$swal.fire({
+                                title: '수정하였습니다.',
+                                icon: 'success',
+                                confirmButtonText: '확인',
+                                confirmButtonColor: '#ed5565'
+                            }).then(async (r) => {
+                                if (r.isConfirmed) {
+                                    this.$router.go(-1)
+                                }
+                            })
+                        } else if (result === 1000) {
+					        modal.simple('수정에 실패하였습니다.')
                         }
 					}
 				})
