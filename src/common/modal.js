@@ -37,7 +37,7 @@ const modal = {
 		})
 	},
 	simple(title, text, icon) {
-		swal.fire({
+		return swal.fire({
 			icon: icon,
 			title: title,
 			text: text,
