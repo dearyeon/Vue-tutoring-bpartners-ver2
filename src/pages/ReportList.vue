@@ -19,7 +19,9 @@
 
 
 		<Content>
-			<Table :headers="['No',{column:'이름',default:false,var:{var1:'user',var2:'name'}},'고객식별ID','학습언어','수강권',
+			<Table :headers="['No',{column:'이름',default:false,var:{var1:'user',var2:'name'}},'고객식별ID',
+					{column:'학습언어',default:false,var:{var1:'goods',var2:'charge_plan',var3:'mode'}},
+					{column:'수강권',default:false,var:{var1:'goods',var2:'charge_plan',var3:'title'}},
 					{column:'학습률',default:true,var:{var1:'attend_pct'}},
 					'수료여부','수업','전체','부서','직위','사번',
 					{column:'관리메모',default:false,var:{var1:'mng_memo'}},
