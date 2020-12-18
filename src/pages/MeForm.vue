@@ -117,7 +117,7 @@ export default {
                         if(this.newPwCheck) params = { name:this.name, email:this.email, tel:this.tel, curPw:this.curPw, newPw:this.newPw }
                         else params = { name:this.name, email:this.email, tel:this.tel }
 
-                        const { result, message } = await api.post("/partners/account", params );
+                        const { result, message } = await api.post("/partners/me", params );
                         if(result === 2000) {
                             let account = this.$shared.getAccount()
                             account.name = this.name
