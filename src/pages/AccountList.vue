@@ -89,9 +89,9 @@ export default {
 			this.items = this.itemsAll
 			if (sk) {
 				this.items = this.items.filter((item) => {
-					return !item.name.indexOf(sk) ||
-						(item.id && !item.id.indexOf(sk)) ||
-						(item.email && !item.email.indexOf(sk))
+					return item.name.includes(sk) ||
+						(item.id && item.id.includes(sk)) ||
+						(item.email && item.email.includes(sk))
 				})
 			}
 		}
