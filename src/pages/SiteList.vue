@@ -2,7 +2,7 @@
 	<div>
 		<Header title="사이트 관리"
 			search-placeholder="고객사 명" :search-key-default="searchKey" @search="search" @reset="search(null)"
-			switch1-text="비활성처리" @switch1-change="toggleDel"
+			switch1-text="비활성포함" @switch1-change="toggleDel"
 			btn1-text="고객사 등록" @btn1-click="createCustomerPage" btn1-variant="success" :btn1-loading="false" :btn1-hide="$shared.isPartnerManger()">
 		</Header>
 

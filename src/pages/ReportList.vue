@@ -231,6 +231,7 @@ export default {
 						'학습 시간': order.use_ticket_minutes + '분',
 						'학습률': order.attend_pct+'%',
 						'학습 목표율': batch.target_rt+'%',
+						'수료여부': order.attend_pct >= batch.target_rt ? '수료':'미수료',
 						'관리정보': order.mng_info,
 						'관리메모': order.mng_memo,
 						'고객식별ID': order.user.app_user ? order.user.app_user.cus_id : '',
