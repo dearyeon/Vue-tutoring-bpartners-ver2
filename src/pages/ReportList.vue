@@ -31,7 +31,7 @@
 				<td>{{ i+1 }}</td>
 				<td><NameField :item="item"></NameField></td>
 				<td><CusIdField :user="item.user"></CusIdField></td>
-				<td>{{ item.goods&&item.goods.charge_plan.mode==='E'?'영어':'중국어' }}</td>
+				<td>{{ item.goods?item.goods.charge_plan.mode:'' }}</td>
 				<td>{{ item.goods&&item.goods.charge_plan.title }}</td>
 				<td>{{ item.attend_pct }}%</td>
 				<td>{{ item.attend_pct >= batch.target_rt ? '수료':'미수료' }}</td>
@@ -126,13 +126,19 @@ export default {
 			this.ordersAll = data.orders.sort(function (a, b) {
 				return !a['attend_pct'] ? 1 : !b['attend_pct'] ? -1 : a['attend_pct'] > b['attend_pct'] ? -1 : a['attend_pct'] < b['attend_pct'] ? 1 : 0
 			})
+			this.ordersAll.map((item) => {
+				if(item.goods&&item.goods.charge_plan.mode==='E')
+					return item.goods.charge_plan.mode = '영어'
+				if (item.goods&&item.goods.charge_plan.mode==='C') {
+					return item.goods.charge_plan.mode = '중국어'
+				}
+			})
 			this.orders = this.ordersAll
 			this.orders.forEach(order => {
 				this.avgAttendPct += order.attend_pct
 			})
 			this.avgAttendPct /= this.orders.length
 			this.batch = data.batch
-			console.log(this.batch)
 			this.filteredData()
 		},
 
@@ -305,7 +311,7 @@ export default {
 			}
 		},
 		sort(sortKey) {
-			this.$shared.sortBy(this.orders,sortKey.var1,sortKey.var2)
+			this.$shared.sortBy(this.orders,sortKey.var1,sortKey.var2,sortKey.var3)
 		}
 	},
 };

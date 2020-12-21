@@ -104,15 +104,20 @@ const shared = {
 	sortBy (items, sortKey1, sortKey2, sortKey3) {
 		if(this.items !== items) this.sortKey = '', this.items=items
 		if(sortKey3) {
-			if(sortKey2 === 'selectedApplyIdx') {
-				(this.sortKey === sortKey3) ? items.reverse() : (items.sort(function (a, b) {
-					return !a[sortKey1] ? -1 : !b[sortKey1] ? 1 : !a[sortKey1][a.selectedApplyIdx] ? -1 : !b[sortKey1][b.selectedApplyIdx] ? 1 : a[sortKey1][a.selectedApplyIdx][sortKey3] < b[sortKey1][b.selectedApplyIdx][sortKey3] ? -1 : a[sortKey1][a.selectedApplyIdx][sortKey3] > b[sortKey1][b.selectedApplyIdx][sortKey3] ? 1 : 0
-				}))
-			} else {
-				(this.sortKey === sortKey3) ? items.reverse() : (items.sort(function (a, b) {
-					return !a[sortKey1] ? -1 : !b[sortKey1] ? 1 : !a[sortKey1][sortKey2] ? -1 : !b[sortKey1][sortKey2] ? 1 : a[sortKey1][sortKey2][sortKey3] < b[sortKey1][sortKey2][sortKey3] ? -1 : a[sortKey1][sortKey2][sortKey3] > b[sortKey1][sortKey2][sortKey3] ? 1 : 0
-				}))
-			}
+			(this.sortKey === sortKey3) ? items.reverse() : (items.sort(function (a, b) {
+				/*if(!a[sortKey1] || !a[sortKey1][sortKey2] || !a[sortKey1][sortKey2][sortKey3]){
+					return -1
+				} else if (!b[sortKey1] || !b[sortKey1][sortKey2] || !b[sortKey1][sortKey2][sortKey3]) {
+					return 1
+				} else if(a[sortKey1][sortKey2][sortKey3] < b[sortKey1][sortKey2][sortKey3]) {
+					return -1
+				} else if(a[sortKey1][sortKey2][sortKey3] > b[sortKey1][sortKey2][sortKey3]) {
+					return 1
+				} else if(a[sortKey1][sortKey2][sortKey3] === b[sortKey1][sortKey2][sortKey3]) {
+					return 0
+				}*/
+				return !a[sortKey1] ? -1 : !b[sortKey1] ? 1 : !a[sortKey1][sortKey2] ? -1 : !b[sortKey1][sortKey2] ? 1 : a[sortKey1][sortKey2][sortKey3] < b[sortKey1][sortKey2][sortKey3] ? -1 : a[sortKey1][sortKey2][sortKey3] > b[sortKey1][sortKey2][sortKey3] ? 1 : 0
+			}))
 			this.sortKey = sortKey3
 		} else if(sortKey2) {
 			(this.sortKey === sortKey2) ? items.reverse() : (items.sort(function (a, b) {
