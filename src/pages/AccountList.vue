@@ -16,7 +16,7 @@
 				<td>{{ i+1 }}</td>
 				<td>{{ item.id }}</td>
 				<td>{{ item.name }}</td>
-				<td>{{ item.acc_level==='P'?'리셀러':item.acc_level==='S'?'사이트관리자':'슈퍼바이저' }}</td>
+				<td>{{ item.acc }}</td>
 				<td>{{ item.company }}</td>
 				<td>{{ item.email }}</td>
 				<td>{{ item.tel }}</td>
@@ -64,6 +64,7 @@ export default {
 			this.items = res.data
 			this.items.map(item=>{
 				item.company = item.acc_level==='V'? '' : (item.site ? item.site.company : item.partner.company)
+				item.acc = item.acc_level==='P'?'리셀러':item.acc_level==='S'?'사이트관리자':'슈퍼바이저'
 				return item
 			})
 			this.$shared.sortBy(this.items,'id')
